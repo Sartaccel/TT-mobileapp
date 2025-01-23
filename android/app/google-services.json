@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "293834446714",
+    "firebase_url": "https://projecttestings-pb-default-rtdb.firebaseio.com",
+    "project_id": "projecttestings-pb",
+    "storage_bucket": "projecttestings-pb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293834446714:android:72ccda0f6f8299f2c9a8c3",
+        "android_client_info": {
+          "package_name": "com.pb.android.talentturbo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPntJzuAFSiazm87QK2vKWI4iFVj9SAe8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293834446714:android:f6887a6ad2c2b781c9a8c3",
+        "android_client_info": {
+          "package_name": "com.talentturbo.referral.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPntJzuAFSiazm87QK2vKWI4iFVj9SAe8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
