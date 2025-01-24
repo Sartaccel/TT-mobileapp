@@ -383,7 +383,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         });
                       }
                       else{
-                          //setNewPassword();
+                          setNewPassword();
                       }
                     },
 
@@ -399,7 +399,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                 ],
               ),
-            )
+            ),
 
           ],
         ),

@@ -23,7 +23,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.talentturbo.referral.talent_turbo_new"
-    compileSdk 35 // Update to 35 for compatibility with latest plugins
+    compileSdk 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -34,7 +34,7 @@ android {
     defaultConfig {
         applicationId "com.talentturbo.referral.android"
         minSdkVersion 23
-        targetSdk 34 // Update targetSdkVersion to 35
+        targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -50,8 +50,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false // Disable if you are not using ProGuard
-            shrinkResources false // Disable resource shrinking if not required
+            minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.release
         }
     }

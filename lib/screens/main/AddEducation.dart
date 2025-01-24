@@ -489,7 +489,8 @@ Row(
                   _startDateSelected = true;
                   _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                   startYear = pickedDate.year.toString();
-                });
+                }
+                );
               }
             },
           ),
@@ -504,52 +505,53 @@ Row(
           Text('End Date', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
           SizedBox(height: 10,),
           TextField(
-            controller: _endDateController,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-              hintText: 'To', // Display 'To' for both Yes and No
-              suffixIcon: Icon(Icons.calendar_today),
-              border: OutlineInputBorder(),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: isEndDateValid ? Colors.grey : Colors.red, // Default border color
-                    width: 1
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: isEndDateValid ? Colors.blue : Colors.red, // Border color when focused
-                    width: 1
-                ),
-              ),
-              errorText: isEndDateValid ? null : endDateErrorMsg,
-            ),
-            readOnly: false, // Allow manual input for both Yes and No
-            onChanged: (text) {
-              // Update validation based on input
-              setState(() {
-                isEndDateValid = text.isNotEmpty;
-              });
-            },
-            onTap: _selectedOption == 'No' && _startDateSelected == true
-                ? () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: startDatems,
-                      firstDate: startDatems,
-                      lastDate: DateTime.now(),
-                      initialDatePickerMode: DatePickerMode.year
-                    );
-                    if (pickedDate != null) {
-                      setState(() {
-                        isEndDateValid = true;
-                        _endDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                        endYear = pickedDate.year.toString();
-                      });
-                    }
-                  }
-                : null, // Allow manual input without picking a date when 'Yes' is selected
-          ),
+  controller: _endDateController,
+  decoration: InputDecoration(
+    contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+    hintText: 'To', // Display 'To' as the placeholder
+    suffixIcon: Icon(Icons.calendar_today),
+    border: OutlineInputBorder(),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: isEndDateValid ? Colors.grey : Colors.red, // Default border color
+        width: 1,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: isEndDateValid ? Colors.blue : Colors.red, // Border color when focused
+        width: 1,
+      ),
+    ),
+    errorText: isEndDateValid ? null : endDateErrorMsg, // Show error if invalid
+  ),
+  readOnly: false, // Allow manual input
+  onChanged: (text) {
+    // Validate input as user types
+    setState(() {
+      isEndDateValid = text.isNotEmpty; // Add custom validation logic if needed
+    });
+  },
+  onTap: () async {
+    // Allow date picking regardless of option
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: startDatems,
+      firstDate: startDatems,
+      lastDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
+    );
+    if (pickedDate != null) {
+      setState(() {
+        isEndDateValid = true; // Mark date as valid
+        _endDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}"; // Update field
+        endYear = pickedDate.year.toString(); // Optionally store the year
+      });
+    }
+  },
+),
+
+
         ],
       ),
     ),
