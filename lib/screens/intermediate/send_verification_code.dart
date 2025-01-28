@@ -25,6 +25,7 @@ class SendVerificationCode extends StatefulWidget {
 
 
 class _SendVerificationCodeState extends State<SendVerificationCode> {
+  final TextEditingController otpController = TextEditingController();
 
   bool isLoading = false;
   UserData? retrievedUserData;
@@ -220,13 +221,14 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                     autoFillEnable: false,
                     maxLength: 6,
                     onSubmit: (otp){
-                      validateOTP(otp);
+                   
                     },
                     onChange: (txt){
                       print('txt: ${txt} length: ${txt.length}');
                       setState(() {
                         enteredOTP = txt;
                         inValidOTP = false;
+                        
                       });
                     },
 
@@ -299,24 +301,37 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                     children: [
                       Text('Didn\'t receive the code?', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w700),),
                       SizedBox(width: 10,),
-                      InkWell(onTap: (){
+                      InkWell(
+  onTap: () {
+    setState(() {
+      enteredOTP = ""; // Clear the entered OTP
+      inValidOTP = false; // Reset the invalid OTP flag
+    });
 
-                        if(widget.type =='phone'){
-                          if(kDebugMode){
-                            print(widget.mobile);
-                          }
-                          String? m_mobile =  widget.mobile;
+    // Resend the verification code based on the type
+    if (widget.type == 'phone') {
+      if (kDebugMode) {
+        print(widget.mobile);
+      }
+      String? m_mobile = widget.mobile;
 
-                          if(m_mobile !=null) {
-                            sendMobileVerificationCode(m_mobile);
-                          }
-                        }
+      if (m_mobile != null) {
+        sendMobileVerificationCode(m_mobile);
+      }
+    } else if (widget.type == "email") {
+      sendEmailVerificationCode();
+    }
+  },
+  child: Text(
+    'Click to resend',
+    style: TextStyle(
+      color: Color(0xff004C99),
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+    ),
+  ),
+),
 
-                        if(widget.type=="email"){
-                          sendEmailVerificationCode();
-                        }
-
-                      },child: Text('Click to resend', style: TextStyle(color: Color(0xff004C99), fontSize: 14, fontWeight: FontWeight.w700),)),
                     ],
                   ),
 

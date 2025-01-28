@@ -706,7 +706,6 @@ class _LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(builder: (context) => HomeContainer()),
                 (Route<dynamic> route) => false, // This will keep Screen 1
           );
-
         }
 
       } else{

@@ -8,7 +8,6 @@ import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/login_data_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:talent_turbo_new/screens/main/personal_details.dart';
 
 class Adddeleteskills extends StatefulWidget {

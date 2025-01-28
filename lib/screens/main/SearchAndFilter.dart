@@ -411,75 +411,102 @@ class _SearchandfilterState extends State<Searchandfilter> {
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-            padding: EdgeInsets.all(20),
-            child: Container(
-              width: MediaQuery.of(context).size.width - 50,
-              height: 40,
-              padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50), color: Colors.white),
-              child: Center(
-                child: Autocomplete<String>(
-                  optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) {
-                      return const Iterable<String>.empty();
-                    }
-                    return jobSuggestions.where((String option) {
-                      return option
-                          .toLowerCase()
-                          .contains(textEditingValue.text.toLowerCase());
-                    });
-                  },
-                  onSelected: (String selection) {
-                    print('You just selected $selection');
-                    setState(() {
-                      selectedJob = selection;
-
-                    });
-                    saveStringToPreferences("search",  selection);
-                    Navigator.pop(context);
-
-                  },
-                  fieldViewBuilder:
-                      (context, textEditingController, focusNode, onFieldSubmitted) {
-                    return TextField(
-                      textAlign: TextAlign.start,
-                      controller: textEditingController,
-                      focusNode: focusNode,
-                      
-                      onChanged: (s){
-                        setState(() {
-                          searchedJob = s;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.search, color: Color(0xff818385),),
-                        hintText: 'Search for job',
-                        border: InputBorder.none,
-                      ),
-                    );
-                  },
-                ),
+  width: MediaQuery.of(context).size.width,
+  decoration: BoxDecoration(color: Color(0xff001B3E)),
+  padding: EdgeInsets.all(20),
+  child: Container(
+    width: MediaQuery.of(context).size.width - 50,
+    height: 40,
+    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(50),
+      color: Colors.white,
+    ),
+    child: Center(
+      child: Autocomplete<String>(
+        optionsBuilder: (TextEditingValue textEditingValue) {
+          if (textEditingValue.text.isEmpty) {
+            return const Iterable<String>.empty();
+          }
+          return jobSuggestions.where((String option) {
+            return option
+                .toLowerCase()
+                .contains(textEditingValue.text.toLowerCase());
+          });
+        },
+        onSelected: (String selection) {
+          // Update the text field and save to preferences but don't navigate
+         
+          setState(() {
+            selectedJob = selection;
+            searchedJob = selection;
+          });
+          saveStringToPreferences("search", selection);
+        },
+        fieldViewBuilder:
+            (context, textEditingController, focusNode, onFieldSubmitted) {
+          return TextField(
+            textAlign: TextAlign.start,
+            controller: textEditingController,
+            focusNode: focusNode,
+            onChanged: (s) {
+              setState(() {
+                searchedJob = s;
+              });
+            },
+            decoration: InputDecoration(
+              icon: Icon(
+                Icons.search,
+                color: Color(0xff818385),
               ),
+              hintText: 'Search for job or skills',
+              border: InputBorder.none,
             ),
-          ),
+            onSubmitted: (value) {
+              
+            
+            },
+          );
+        },
+      ),
+    ),
+  ),
+),
+
 
           SizedBox(height: 20,),
 
           InkWell(
-            onTap: (){
-              saveStringToPreferences("search",  searchedJob);
-              Navigator.pop(context);
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width - 40,
-              decoration: BoxDecoration(color: Color(0xff004C99), borderRadius: BorderRadius.circular(10)),
-              height: 50,
-              child: Center(child: Text('Search Jobs', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),),),
-            ),
-          ),
+  onTap: () {
+    if (searchedJob.isEmpty) {
+      // Show an error popup
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter a job or skill to search.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      saveStringToPreferences("search", searchedJob);
+      Navigator.pop(context);
+    }
+  },
+  child: Container(
+    width: MediaQuery.of(context).size.width - 40,
+    decoration: BoxDecoration(
+      color: Color(0xff004C99), 
+      borderRadius: BorderRadius.circular(10),
+    ),
+    height: 50,
+    child: Center(
+      child: Text(
+        'Search Jobs',
+        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+      ),
+    ),
+  ),
+),
+
 
 
 

@@ -243,25 +243,35 @@ class _HomeFragmentState extends State<HomeFragment> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              InkWell(
-                                onTap: () async {
-                                  await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Searchandfilter()));
-                                  String? pref_value = await getStringFromPreferences("search");
-                                  setState(() {
-                                    jobSearchTerm = pref_value!;
-                                    fetchAllJobs();
-                                  });
-                                  //await saveStringToPreferences("search", "");
-                                } ,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.search, color: Color(0xff818385),),
-                                    SizedBox(width: 10,),
-                                    Text(
-                                      jobSearchTerm.isEmpty? 'Search for jobs or skills' : jobSearchTerm, style: TextStyle(color: Color(0xff7D7C7C)),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () async {
+                                    await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Searchandfilter()));
+                                    String? pref_value = await getStringFromPreferences("search");
+                                    setState(() {
+                                      jobSearchTerm = pref_value!;
+                                      fetchAllJobs();
+                                    });
+                                    //await saveStringToPreferences("search", "");
+                                  } ,
+                                  child: Expanded(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.search, color: Color(0xff818385),),
+                                        SizedBox(width: 10,),
+                                        Flexible(
+                                          child: Text(
+                                            jobSearchTerm.isEmpty ? 'Search for jobs or skills' : jobSearchTerm,
+                                            style: TextStyle(color: Color(0xff7D7C7C)),
+                                            overflow: TextOverflow.ellipsis, // Add this line to handle overflow
+                                            maxLines: 1, // Optional: Limits text to a single line
+                                          ),
+                                        )
+                                    
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
 
@@ -289,10 +299,7 @@ class _HomeFragmentState extends State<HomeFragment> {
                               InkWell(
                                 onTap: () async {
                                   await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => JobSearchFilter()));
-
-
-
-
+                                  
                                   String? pref_filt = await getStringFromPreferences("searchExp");
                                   exp_search = pref_filt ?? '';
 
@@ -458,7 +465,7 @@ class _HomeFragmentState extends State<HomeFragment> {
                                                 Container(width: MediaQuery.of(context).size.width-180 ,child:Text(
                                                         jobList[index]['jobTitle'],
                                                         //"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddjobList[index]['jobTitle']",
-                                                        maxLines: 2,
+                                                        maxLines: 1,
                                                         overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(fontWeight: FontWeight.w700, fontFamily: 'Lato', fontSize: 16, color: Color(0xff333333)),))),
                                             Flexible(

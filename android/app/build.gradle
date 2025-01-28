@@ -1,7 +1,7 @@
 plugins {
-    id "com.android.application"
-    id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
 }
 
 def localProperties = new Properties()
@@ -12,7 +12,7 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '2')
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '2').toInteger() + 2 // Automatically increment version code
 def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0.1')
 
 def keystoreProperties = new Properties()
@@ -22,7 +22,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.talentturbo.referral.talent_turbo_new"
+    namespace 'com.talentturbo.referral.talent_turbo_new'
     compileSdk 35
     ndkVersion flutter.ndkVersion
 
@@ -32,10 +32,10 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.talentturbo.referral.android"
+        applicationId 'com.talentturbo.referral.android'
         minSdkVersion 23
-        targetSdk 35
-        versionCode flutterVersionCode.toInteger()
+        targetSdkVersion 35
+        versionCode flutterVersionCode
         versionName flutterVersionName
     }
 
@@ -43,7 +43,7 @@ android {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storeFile file(keystoreProperties['storeFile'])
             storePassword keystoreProperties['storePassword']
         }
     }

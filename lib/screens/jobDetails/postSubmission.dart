@@ -367,13 +367,6 @@ class _PostJobApplicationSubmissionState extends State<PostJobApplicationSubmiss
                                   ),
                                 ),
 
-
-
-
-
-
-
-
                                 Row(
                                   children: [
                                     Row(
