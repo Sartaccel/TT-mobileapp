@@ -290,12 +290,12 @@ class _JobdetailsState extends State<Jobdetails> {
                                   image: widget.jobData['logo'] != null && widget.jobData['logo'].isNotEmpty
                                       ? NetworkImage(widget.jobData['logo'],) as ImageProvider<Object>
                                       : const AssetImage('assets/images/tt_logo_resized.png'),
-                                  height: 32,
-                                  width: 32,
-                                  fit: BoxFit.cover,
+                                  height: 40,
+                                  width: 40,
+                                  fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
                                     // Fallback to asset if network image fails
-                                    return Image.asset('assets/images/tt_logo_resized.png', height: 32, width: 32);
+                                    return Image.asset('assets/images/tt_logo_resized.png', height: 40, width: 40);
                                   },
                                 ),
                                 SizedBox(width: 20,),
@@ -369,7 +369,11 @@ class _JobdetailsState extends State<Jobdetails> {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                                 decoration: BoxDecoration(color: Color(0xffEEEEEE), borderRadius: BorderRadius.circular(5)),
-                                child: Text('Due ${widget.jobData['dueDate']}', style: TextStyle(fontSize: 12, color: Color(0xff545454)),),
+                                child: Text(
+  'Posted ${processDate(widget.jobData['createdDate'])}',
+  style: const TextStyle(fontSize: 12, color: Color(0xff545454)),
+),
+
                               ),
                             ],
                           ),

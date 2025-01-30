@@ -386,7 +386,8 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
           );*/
 
-          Navigator.pop(context);
+          // ignore: use_build_context_synchronously
+      
           setState(() {
             isLoading = false;
           });
@@ -552,9 +553,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 Container(
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')), // Allow only letters and spaces
-                    ],
+                    
                     controller: fNameController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
@@ -990,80 +989,103 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 ) : Container(),
                 SizedBox(height: 20,),
                 InkWell(
+  onTap: () {
+    int validLength = getValidLengthForCountry(_selectedCountryCode!);
+    if (fNameController.text.isEmpty ||
+        lNameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        mobileController.text.isEmpty ||
+        mobileController.text.length < validLength ||
+        mobileController.text.length > validLength ||
+        locationController.text.isEmpty ||
+        currentPositionController.text.isEmpty ||
+        experienceController.text.isEmpty ||
+        _startDateController.text.isEmpty) {
 
-                  onTap: (){
+      if (fNameController.text.isEmpty) {
+        setState(() {
+          _isFirstNameValid = false;
+        });
+      }
 
-                    int validLength = getValidLengthForCountry(_selectedCountryCode!);
-                    if(fNameController.text.isEmpty || lNameController.text.isEmpty || emailController.text.isEmpty || mobileController.text.isEmpty || mobileController.text.length < validLength || mobileController.text.length > validLength || locationController.text.isEmpty || currentPositionController.text.isEmpty || experienceController.text.isEmpty || _startDateController.text.isEmpty){
+      if (_startDateController.text.isEmpty) {
+        setState(() {
+          isStartDateValid = false;
+        });
+      }
 
-                      if(fNameController.text.isEmpty){
-                          setState(() {
-                            _isFirstNameValid = false;
-                          });
-                        }
+      if (lNameController.text.isEmpty) {
+        setState(() {
+          _isLastNameValid = false;
+        });
+      }
 
-                      if(_startDateController.text.isEmpty){
-                        setState(() {
-                          isStartDateValid = false;
-                        });
-                      }
+      if (emailController.text.isEmpty) {
+        setState(() {
+          _isEmailValid = false;
+        });
+      }
 
-                      if(lNameController.text.isEmpty){
-                        setState(() {
-                          _isLastNameValid = false;
-                        });
-                      }
+      if (locationController.text.isEmpty) {
+        setState(() {
+          _isLocationValid = false;
+        });
+      }
 
-                      if(emailController.text.isEmpty){
-                        setState(() {
-                          _isEmailValid = false;
-                        });
-                      }
+      if (mobileController.text.isEmpty ||
+          mobileController.text.length < validLength ||
+          mobileController.text.length > validLength) {
+        setState(() {
+          _isMobileNumberValid = false;
+          mobileErrorMsg = 'Enter a valid $validLength digits mobile number';
+        });
+      }
 
-                      if(locationController.text.isEmpty){
-                        setState(() {
-                          _isLocationValid = false;
-                        });
-                      }
+      if (currentPositionController.text.isEmpty) {
+        setState(() {
+          _isPositionValid = false;
+        });
+      }
 
-                      if(mobileController.text.isEmpty || mobileController.text.length<validLength || mobileController.text.length > validLength){
-                        setState(() {
-                          _isMobileNumberValid = false;
-                          mobileErrorMsg = 'Enter a valid $validLength digits mobile number';
-                        });
-                      }
+      if (experienceController.text.isEmpty) {
+        setState(() {
+          _isExperienceValid = false;
+        });
+      }
 
-                      if(currentPositionController.text.isEmpty){
-                        setState(() {
-                          _isPositionValid = false;
-                        });
-                      }
+    } else {
+      if (kDebugMode) {
+        print('Processing........');
+      }
 
-                      if(experienceController.text.isEmpty){
-                        setState(() {
-                          _isExperienceValid = false;
-                        });
-                      }
+      // Call your updateProfile function
+      updateProfile().then((_) {
+        // On successful profile update, navigate back to the previous screen
+        Navigator.pop(context);
+      }).catchError((error) {
+        // Handle any errors that occur during the update
+        print('Error updating profile: $error');
+      });
+    }
+  },
+  child: Container(
+    width: (MediaQuery.of(context).size.width) - 20,
+    height: 44,
+    margin: EdgeInsets.symmetric(horizontal: 0),
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(
+      color: AppColors.primaryColor,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Center(
+      child: Text(
+        'Save',
+        style: TextStyle(color: Colors.white),
+      ),
+    ),
+  ),
+)
 
-                    } else{
-                      if(kDebugMode){
-                        print('Processing........');
-                      }
-
-                      updateProfile();
-                    }
-
-                  },
-
-                  child: Container(
-                    width: (MediaQuery.of(context).size.width) - 20,
-                    height: 44,
-                    margin: EdgeInsets.symmetric(horizontal: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
-                    child: Center(child: Text('Save', style: TextStyle(color: Colors.white),),),
-                  ),
-                )
               ],
             ),
           )))

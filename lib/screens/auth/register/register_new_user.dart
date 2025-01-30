@@ -625,7 +625,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
 
                           },
                               //icon: Icon( passwordHide?Icons.visibility :Icons.visibility_off)),
-                              icon: SvgPicture.asset( passwordHide?'assets/images/ic_show_password.svg' :'assets/images/ic_hide_password.svg')),
+                              icon: SvgPicture.asset( passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
 
                           hintText: 'Enter your password',
                           border: OutlineInputBorder(),
@@ -673,7 +673,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
 
                           },
                               //icon: Icon( confirmPasswordHide?Icons.visibility :Icons.visibility_off)),
-                              icon: SvgPicture.asset( confirmPasswordHide?'assets/images/ic_show_password.svg' :'assets/images/ic_hide_password.svg')),
+                              icon: SvgPicture.asset( confirmPasswordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
                           hintText: 'Re-enter your password',
                           border: OutlineInputBorder(),
                           enabledBorder: OutlineInputBorder(

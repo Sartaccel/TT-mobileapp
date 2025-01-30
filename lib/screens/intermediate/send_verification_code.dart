@@ -26,6 +26,8 @@ class SendVerificationCode extends StatefulWidget {
 
 class _SendVerificationCodeState extends State<SendVerificationCode> {
   final TextEditingController otpController = TextEditingController();
+  final GlobalKey otpKey =GlobalKey();
+   String otpFieldKey = UniqueKey().toString();
 
   bool isLoading = false;
   UserData? retrievedUserData;
@@ -216,168 +218,172 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                   SizedBox(height: 40,),
 
 
-                  OtpPinField(
-                    cursorColor: AppColors.primaryColor,
-                    autoFillEnable: false,
-                    maxLength: 6,
-                    onSubmit: (otp){
-                   
-                    },
-                    onChange: (txt){
-                      print('txt: ${txt} length: ${txt.length}');
-                      setState(() {
-                        enteredOTP = txt;
-                        inValidOTP = false;
-                        
-                      });
-                    },
+                   OtpPinField(
+                   cursorColor: AppColors.primaryColor,
+                     autoFillEnable: false,
+                       maxLength: 6,
+                      onSubmit: (otp) { },
+  onChange: (txt) {
+    setState(() {
+       ValueKey(enteredOTP);
+      enteredOTP = txt;
+      inValidOTP = false;
+      otpFieldKey = UniqueKey().toString();
+      otpController.clear(); 
+    });
+  },
+  otpPinFieldStyle: OtpPinFieldStyle(
+    activeFieldBorderColor: AppColors.primaryColor,
+    defaultFieldBorderColor: inValidOTP ? Colors.red : Color(0xff333333),
+  ),
+  otpPinFieldDecoration: OtpPinFieldDecoration.underlinedPinBoxDecoration,
+),
 
-                    otpPinFieldStyle: OtpPinFieldStyle(
-                      activeFieldBorderColor: AppColors.primaryColor,
-                      defaultFieldBorderColor: inValidOTP? Colors.red : Color(0xff333333),
-                    ),
-                    otpPinFieldDecoration: OtpPinFieldDecoration.underlinedPinBoxDecoration,
-                  ),
 
-                  inValidOTP ?
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 20, 0, 0),
-                        child: Text(otpErrorMsg, style: TextStyle(fontFamily: 'Lato', fontSize: 12, color: Colors.red),),
-                      ),
-                    ],
-                  ):
-                  Container(),
 
-                  //Loading
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
-                      child: Visibility(
-                        visible: isLoading,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 30,),
-                            LoadingAnimationWidget.fourRotatingDots(
-                              color: AppColors.primaryColor,
-                              size: 40,
-                            ),
-                          ],
+                    inValidOTP ?
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30, 20, 0, 0),
+                          child: Text(otpErrorMsg, style: TextStyle(fontFamily: 'Lato', fontSize: 12, color: Colors.red),),
+                        ),
+                      ],
+                    ):
+                    Container(),
+
+                    //Loading
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                        child: Visibility(
+                          visible: isLoading,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 30,),
+                              LoadingAnimationWidget.fourRotatingDots(
+                                color: AppColors.primaryColor,
+                                size: 40,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  SizedBox(height: 50),
-                  InkWell(
-                    onTap: (){
-                      //validateOTP(finOTP);
-                      if(kDebugMode)
-                        print('length ${enteredOTP.length}');
-                      if(enteredOTP.length < 6){
-                        setState(() {
-                          inValidOTP = true;
-                          otpErrorMsg = 'Enter valid OTP before clicking verify';
-                        });
-                      } else{
-                        validateOTP(enteredOTP);
-                      }
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 44,
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
-                      child: Center(child: Text('Verify', style: TextStyle(color: Colors.white),),),
+                    SizedBox(height: 50),
+                    InkWell(
+                      onTap: (){
+                        //validateOTP(finOTP);
+                        if(kDebugMode)
+                          print('length ${enteredOTP.length}');
+                        if(enteredOTP.length < 6){
+                          setState(() {
+                            inValidOTP = true;
+                            otpErrorMsg = 'Enter valid OTP before clicking verify';
+                          });
+                        } else{
+                          validateOTP(enteredOTP);
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 44,
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
+                        child: Center(child: Text('Verify', style: TextStyle(color: Colors.white),),),
+                      ),
                     ),
-                  ),
 
-                  SizedBox(height: 60,),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Didn\'t receive the code?', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w700),),
-                      SizedBox(width: 10,),
-                      InkWell(
-  onTap: () {
-    setState(() {
-      enteredOTP = ""; // Clear the entered OTP
-      inValidOTP = false; // Reset the invalid OTP flag
-    });
+                    SizedBox(height: 60,),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Didn\'t receive the code?', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w700),),
+                        SizedBox(width: 10,),
+                     InkWell(
+                        onTap: () {
+                          // Reset OTP field and clear states
+                          setState(() {
+                            enteredOTP = "";
+                            inValidOTP = false;
+                            otpController.clear();
+                            otpFieldKey = UniqueKey().toString(); // Clear text controller
+                          });
 
-    // Resend the verification code based on the type
-    if (widget.type == 'phone') {
-      if (kDebugMode) {
-        print(widget.mobile);
-      }
-      String? m_mobile = widget.mobile;
+                          // Recreate the OtpPinField widget
+                          setState(() {
+                            otpKey.currentState?.dispose(); // Dispose the old widget
+                          });
 
-      if (m_mobile != null) {
-        sendMobileVerificationCode(m_mobile);
-      }
-    } else if (widget.type == "email") {
-      sendEmailVerificationCode();
-    }
-  },
-  child: Text(
-    'Click to resend',
-    style: TextStyle(
-      color: Color(0xff004C99),
-      fontSize: 14,
-      fontWeight: FontWeight.w700,
-    ),
-  ),
-),
+                          // Resend logic
+                          if (widget.type == 'phone') {
+                            String? m_mobile = widget.mobile;
+                            if (m_mobile != null) {
+                              sendMobileVerificationCode(m_mobile);
+                            }
+                          } else if (widget.type == 'email') {
+                            sendEmailVerificationCode();
+                          }
+                        },
+                        child: Text(
+                          'Click to resend',
+                          style: TextStyle(
+                            color: Color(0xff004C99),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
 
-                    ],
-                  ),
+  ],
+                    ),
 
-                  SizedBox(height: 30,),
+                    SizedBox(height: 30,),
 
 
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
 
-          Positioned(top: 40,left: 0,child: Row( children: [ IconButton(icon:  Icon(Icons.arrow_back_ios_new), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('Back', style: TextStyle(fontSize: 16),)))) ],)),
+            Positioned(top: 40,left: 0,child: Row( children: [ IconButton(icon:  Icon(Icons.arrow_back_ios_new), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('Back', style: TextStyle(fontSize: 16),)))) ],)),
 
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+    }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchProfileFromPref();
+    @override
+    void initState() {
+      // TODO: implement initState
+      super.initState();
+      fetchProfileFromPref();
 
-  }
+    }
 
-  Future<void> fetchProfileFromPref() async {
-    UserData? _retrievedUserData = await getUserData();
-    setState(() {
-      retrievedUserData = _retrievedUserData;
+    Future<void> fetchProfileFromPref() async {
+      UserData? _retrievedUserData = await getUserData();
+      setState(() {
+        retrievedUserData = _retrievedUserData;
 
-      if(widget.type =='phone'){
-        if(kDebugMode){
-          print(widget.mobile);
+        if(widget.type =='phone'){
+          if(kDebugMode){
+            print(widget.mobile);
+          }
+          String? m_mobile = widget.mobile;
+          if(m_mobile !=null) {
+            sendMobileVerificationCode(m_mobile);
+          }
+          //sendMobileVerificationCode("+918056709318");
         }
-        String? m_mobile = widget.mobile;
-        if(m_mobile !=null) {
-          sendMobileVerificationCode(m_mobile);
+
+        if(widget.type=="email"){
+          sendEmailVerificationCode();
         }
-        //sendMobileVerificationCode("+918056709318");
-      }
 
-      if(widget.type=="email"){
-        sendEmailVerificationCode();
-      }
-
-    });
+      });
+    }
   }
-}
