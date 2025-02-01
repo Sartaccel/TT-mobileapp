@@ -1,0 +1,28 @@
+buildscript {
+    repositories {
+        google() // Required to fetch Android Gradle Plugin
+        mavenCentral() // General-purpose dependency repository
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.1' // AGP version
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10" // Latest Kotlin plugin version
+    }
+}
+
+allprojects {
+    repositories {
+        google() // Required for Android dependencies
+        mavenCentral() // General-purpose dependency repository
+    }
+}
+
+rootProject.buildDir = '../build'
+
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(':app') // Ensure ':app' dependencies are resolved
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
