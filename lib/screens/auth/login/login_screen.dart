@@ -486,11 +486,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 
-                SizedBox(height: 30,),
-                Container( width: MediaQuery.of(context).size.width,child: Text('Or Log in with your', style: TextStyle(color: AppColors.tertiaryColor), textAlign: TextAlign.center,)),
+                
+              //  Container( width: MediaQuery.of(context).size.width,child: Text('Or Log in with your', style: TextStyle(color: AppColors.tertiaryColor), textAlign: TextAlign.center,)),
             
-                SizedBox(height: 30,),
-                Container(
+               // SizedBox(height: 30,),
+               /* Container(
                   width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Row(
@@ -520,10 +520,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 50,
                             width: 50,
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),border: Border.all(color: Color(0xffD9D9D9))),
-                            child: Center(child: Image.asset('assets/images/Google__G__Logo-512.webp', height: 35,),),
+                           // child: Center(child: Image.asset('assets/images/Google__G__Logo-512.webp', height: 35,),),
                             //child: Center(child: SvgPicture.asset('assets/images/ic_google.svg', height: 220,),),
                           )),
-                        ),
+                        )
                        /* SizedBox(width: 53,),
                         InkWell(
                           onTap: (){
@@ -560,7 +560,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                ),
+                ),*/
             
                 SizedBox(height: 30,),
                 Container(

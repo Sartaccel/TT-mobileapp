@@ -211,9 +211,9 @@ class _JobStatusState extends State<JobStatus> {
                           image: widget.jobData['logo'] != null && widget.jobData['logo'].isNotEmpty
                               ? NetworkImage(widget.jobData['logo'],) as ImageProvider<Object>
                               : const AssetImage('assets/images/tt_logo_resized.png'),
-                          height: 32,
-                          width: 32,
-                          fit: BoxFit.cover,
+                          height: 40,
+                          width: 40,
+                          fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) {
                             // Fallback to asset if network image fails
                             return Image.asset('assets/images/tt_logo_resized.png', height: 32, width: 32);

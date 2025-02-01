@@ -370,7 +370,7 @@ class _JobdetailsState extends State<Jobdetails> {
                                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                                 decoration: BoxDecoration(color: Color(0xffEEEEEE), borderRadius: BorderRadius.circular(5)),
                                 child: Text(
-  'Posted ${processDate(widget.jobData['createdDate'])}',
+  'Posted ${processDate(widget.jobData['dueDate'])}',
   style: const TextStyle(fontSize: 12, color: Color(0xff545454)),
 ),
 

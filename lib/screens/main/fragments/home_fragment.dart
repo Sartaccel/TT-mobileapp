@@ -534,14 +534,6 @@ class _HomeFragmentState extends State<HomeFragment> {
                                                 ],
                                               ),
                                             ),
-
-
-
-
-
-
-
-
                                             Row(
                                               children: [
                                                 Row(
@@ -634,7 +626,7 @@ class _HomeFragmentState extends State<HomeFragment> {
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Center(
-                            child: Text('No results found for ${jobSearchTerm}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
+                            child: Text('No Jobs Here ${jobSearchTerm}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
                           ),
                         ),
                       ) :

@@ -543,8 +543,8 @@ class _AddemploymentState extends State<Addemployment> {
                                               _startDateSelected = true;
                                               startDatems = pickedDate;
                                               //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                              _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                                              startYear = '${pickedDate.year}-${pickedDate.month}';
+                                              _startDateController.text = "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                                              startYear = '${pickedDate.month}-${pickedDate.year}';
                                             });
                                           }
                                         },
@@ -596,9 +596,9 @@ class _AddemploymentState extends State<Addemployment> {
                                               setState(() {
                                                 isEndDateValid = true;
                                                 //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                                _endDateController.text ="${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                                                _endDateController.text ="${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
                                                 //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                                endYear = '${pickedDate.year}-${pickedDate.month}';
+                                                endYear = '${pickedDate.month}-${pickedDate.year}';
                                               });
                                             }
                                           }

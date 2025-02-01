@@ -847,7 +847,8 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                        // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                         _startDateController.text =
-                        "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+    "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+
 
                       });
                     }

@@ -487,7 +487,7 @@ Row(
                   startDatems = pickedDate;
                    isStartDateValid = true;
                   _startDateSelected = true;
-                  _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                  _startDateController.text = "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
                   startYear = pickedDate.year.toString();
                 }
                 );
@@ -544,7 +544,7 @@ Row(
     if (pickedDate != null) {
       setState(() {
         isEndDateValid = true; // Mark date as valid
-        _endDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}"; // Update field
+        _endDateController.text = "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}"; // Update field
         endYear = pickedDate.year.toString(); // Optionally store the year
       });
     }
