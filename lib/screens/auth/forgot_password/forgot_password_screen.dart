@@ -21,6 +21,8 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+
+
   bool isLoading = false;
 
   bool _isEmailValid = true;
@@ -58,15 +60,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         isLoading = true;
       });
 
-      final response = await http.post(
-        url,
+      final response = await http.post(url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(bodyParams),
       );
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
+      if(kDebugMode) {
+        print('Response code ${response.statusCode} :: Response => ${response
+            .body}');
       }
 
       var resOBJ = jsonDecode(response.body);

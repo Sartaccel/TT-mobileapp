@@ -137,7 +137,7 @@ class _HomeContainerState extends State<HomeContainer> {
                           children: [
                               scr == 3? SvgPicture.asset('assets/images/ic_profile_selected.svg') : SvgPicture.asset('assets/images/ic_profile.svg'),
                               SizedBox(height: 5,),
-                              Text('Profile', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'NunitoSans', fontSize: 12, color: AppColors.textColor),)
+                              const Text('Profile', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'NunitoSans', fontSize: 12, color: AppColors.textColor),)
                           ],
                         ),
                       ),

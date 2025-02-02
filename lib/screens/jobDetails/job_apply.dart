@@ -35,16 +35,16 @@ class JobApply extends StatefulWidget {
 }
 
 class _JobApplyState extends State<JobApply> {
+
   bool isLoading = false;
-  final databaseRef =
-      FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
+  final databaseRef = FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
 
   ReferralData? referralData;
   UserData? retrievedUserData;
   CandidateProfileModel? candidateProfileModel;
 
-  String email = '';
-  String resumeUpdatedDate = '';
+  String email ='';
+  String resumeUpdatedDate='';
 
   bool _isEmailValid = true;
   TextEditingController emailController = TextEditingController();
@@ -53,52 +53,52 @@ class _JobApplyState extends State<JobApply> {
   String? _selectedCountryCode = '+91';
   //final List<String> countryOptions = ['+91', '+1', '+2'];
   final List<String> countryOptions = [
-    '+1', // USA, Canada, etc.
-    '+7', // Russia, Kazakhstan
-    '+20', // Egypt
-    '+27', // South Africa
-    '+30', // Greece
-    '+31', // Netherlands
-    '+32', // Belgium
-    '+33', // France
-    '+34', // Spain
-    '+36', // Hungary
-    '+39', // Italy
-    '+40', // Romania
-    '+41', // Switzerland
-    '+43', // Austria
-    '+44', // UK
-    '+45', // Denmark
-    '+46', // Sweden
-    '+47', // Norway
-    '+48', // Poland
-    '+49', // Germany
-    '+51', // Peru
-    '+52', // Mexico
-    '+53', // Cuba
-    '+54', // Argentina
-    '+55', // Brazil
-    '+56', // Chile
-    '+57', // Colombia
-    '+58', // Venezuela
-    '+60', // Malaysia
-    '+61', // Australia
-    '+62', // Indonesia
-    '+63', // Philippines
-    '+64', // New Zealand
-    '+65', // Singapore
-    '+66', // Thailand
-    '+81', // Japan
-    '+82', // South Korea
-    '+84', // Vietnam
-    '+86', // China
-    '+90', // Turkey
-    '+91', // India
-    '+92', // Pakistan
-    '+93', // Afghanistan
-    '+94', // Sri Lanka
-    '+95', // Myanmar
-    '+98', // Iran
+    '+1',   // USA, Canada, etc.
+    '+7',   // Russia, Kazakhstan
+    '+20',  // Egypt
+    '+27',  // South Africa
+    '+30',  // Greece
+    '+31',  // Netherlands
+    '+32',  // Belgium
+    '+33',  // France
+    '+34',  // Spain
+    '+36',  // Hungary
+    '+39',  // Italy
+    '+40',  // Romania
+    '+41',  // Switzerland
+    '+43',  // Austria
+    '+44',  // UK
+    '+45',  // Denmark
+    '+46',  // Sweden
+    '+47',  // Norway
+    '+48',  // Poland
+    '+49',  // Germany
+    '+51',  // Peru
+    '+52',  // Mexico
+    '+53',  // Cuba
+    '+54',  // Argentina
+    '+55',  // Brazil
+    '+56',  // Chile
+    '+57',  // Colombia
+    '+58',  // Venezuela
+    '+60',  // Malaysia
+    '+61',  // Australia
+    '+62',  // Indonesia
+    '+63',  // Philippines
+    '+64',  // New Zealand
+    '+65',  // Singapore
+    '+66',  // Thailand
+    '+81',  // Japan
+    '+82',  // South Korea
+    '+84',  // Vietnam
+    '+86',  // China
+    '+90',  // Turkey
+    '+91',  // India
+    '+92',  // Pakistan
+    '+93',  // Afghanistan
+    '+94',  // Sri Lanka
+    '+95',  // Myanmar
+    '+98',  // Iran
     '+211', // South Sudan
     '+212', // Morocco
     '+213', // Algeria
@@ -268,7 +268,7 @@ class _JobApplyState extends State<JobApply> {
       final String sanitizedEmail = email.replaceAll('.', ',');
 
       final DatabaseReference resumeUpdatedRef =
-          databaseRef.child('$sanitizedEmail/resumeUpdated');
+      databaseRef.child('$sanitizedEmail/resumeUpdated');
 
       await resumeUpdatedRef.set(DateTime.now().toIso8601String());
 
@@ -283,7 +283,7 @@ class _JobApplyState extends State<JobApply> {
       final String sanitizedEmail = email.replaceAll('.', ',');
 
       final DatabaseReference resumeUpdatedRef =
-          databaseRef.child('$sanitizedEmail/resumeUpdated');
+      databaseRef.child('$sanitizedEmail/resumeUpdated');
 
       final DataSnapshot snapshot = await resumeUpdatedRef.get();
 
@@ -443,9 +443,9 @@ class _JobApplyState extends State<JobApply> {
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
-    final url = Uri.parse(AppConstants.BASE_URL +
-        AppConstants.CANDIDATE_PROFILE +
-        profileId.toString());
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.CANDIDATE_PROFILE + profileId.toString());
+
+
 
     try {
       setState(() {
@@ -457,12 +457,12 @@ class _JobApplyState extends State<JobApply> {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
+      if(kDebugMode) {
+        print('Response code ${response.statusCode} :: Response => ${response
+            .body}');
       }
 
-      if (response.statusCode == 200) {
+      if(response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
@@ -502,13 +502,17 @@ class _JobApplyState extends State<JobApply> {
             isLoading = false;
           });
         }
-      } else {
+
+      } else{
         print(response);
         setState(() {
           isLoading = false;
         });
       }
-    } catch (e) {
+
+
+    }
+    catch(e){
       print(e);
     }
   }
@@ -594,7 +598,6 @@ class _JobApplyState extends State<JobApply> {
 
     return null;
   }
-
   Future<File?> pickPDF_() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -614,8 +617,7 @@ class _JobApplyState extends State<JobApply> {
   Future<void> uploadPDF(File file) async {
     Dio dio = Dio();
 
-    String url =
-        'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
+    String url = 'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
 
     FormData formData = FormData.fromMap({
       "id": retrievedUserData!.profileId.toString(), // Your id
@@ -762,9 +764,7 @@ class _JobApplyState extends State<JobApply> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -773,52 +773,25 @@ class _JobApplyState extends State<JobApply> {
                         children: [
                           //Image.asset('assets/images/bmw_logo.png', height: 41, width: 41, ),
                           Image(
-                            image: widget.jobData['logo'] != null &&
-                                    widget.jobData['logo'].isNotEmpty
-                                ? NetworkImage(
-                                    widget.jobData['logo'],
-                                  ) as ImageProvider<Object>
-                                : const AssetImage(
-                                    'assets/images/tt_logo_resized.png'),
-                            height: 32,
-                            width: 32,
-                            fit: BoxFit.cover,
+                            image: widget.jobData['logo'] != null && widget.jobData['logo'].isNotEmpty
+                                ? NetworkImage(widget.jobData['logo'],) as ImageProvider<Object>
+                                : const AssetImage('assets/images/tt_logo_resized.png'),
+                            height: 40,
+                            width: 40,
+                            fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) {
                               // Fallback to asset if network image fails
-                              return Image.asset(
-                                  'assets/images/tt_logo_resized.png',
-                                  height: 32,
-                                  width: 32);
+                              return Image.asset('assets/images/tt_logo_resized.png', height: 40, width: 40);
                             },
                           ),
-                          SizedBox(
-                            width: 20,
-                          ),
+                          SizedBox(width: 20,),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                widget.jobData['jobTitle'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Lato',
-                                    fontSize: 20,
-                                    color: Color(0xff333333)),
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ),
-                              Text(
-                                widget.jobData['companyName'] == null
-                                    ? ''
-                                    : widget.jobData['companyName'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Lato',
-                                    fontSize: 14,
-                                    color: Color(0xff545454)),
-                              ),
+                              Text(widget.jobData['jobTitle'], style: TextStyle(fontWeight: FontWeight.w700, fontFamily: 'Lato', fontSize: 20, color: Color(0xff333333)),),
+                              SizedBox(height: 3,),
+                              Text(widget.jobData['companyName'] == null ? '' : widget.jobData['companyName'], style: TextStyle(fontWeight: FontWeight.w400, fontFamily: 'Lato', fontSize: 14, color: Color(0xff545454)),),
                             ],
                           ),
                         ],
@@ -826,52 +799,17 @@ class _JobApplyState extends State<JobApply> {
                     ],
                   ),
 
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 1,
-                    color: Color(0xffE6E6E6),
-                  ),
+                  SizedBox(height: 30,),
+                  Container(width:MediaQuery.of(context).size.width ,height: 1, color: Color(0xffE6E6E6),),
 
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    'Confirm your application',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'This will let the recruiter contact you.',
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                  ),
+                  SizedBox(height: 30,),
+                  Text('Confirm your application', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, fontFamily: 'Lato', color: Color(0xff333333)),),
+                  SizedBox(height: 10,),
+                  Text('This will let the recruiter contact you.', style: TextStyle(fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Lato', color: Color(0xff333333)),),
 
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Text(
-                    'Email',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 40,),
+                  Text('Email', style: TextStyle(fontSize: 13, fontFamily: 'Lato', fontWeight: FontWeight.w500, color: Color(0xff333333)),),
+                  SizedBox(height: 10,),
                   TextField(
                     readOnly: true,
                     controller: emailController,
@@ -881,23 +819,21 @@ class _JobApplyState extends State<JobApply> {
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isEmailValid
-                                  ? Colors.grey
-                                  : Colors.red, // Default border color
-                              width: 1),
+                              color: _isEmailValid ? Colors.grey : Colors.red, // Default border color
+                              width: 1
+                          ),
                         ),
+
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isEmailValid
-                                  ? Colors.blue
-                                  : Colors.red, // Border color when focused
-                              width: 1),
+                              color: _isEmailValid ? Colors.blue : Colors.red, // Border color when focused
+                              width: 1
+                          ),
                         ),
-                        errorText: _isEmailValid
-                            ? null
-                            : emailErrorMessage, // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+
+                        errorText: _isEmailValid ? null : emailErrorMessage, // Display error message if invalid
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                    ),
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
@@ -907,39 +843,27 @@ class _JobApplyState extends State<JobApply> {
                     },
                   ),
 
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Text(
-                    'Mobile Number',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 40,),
+                  Text('Mobile Number', style: TextStyle(fontSize: 13, fontFamily: 'Lato', fontWeight: FontWeight.w500, color: Color(0xff333333)),),
+                  SizedBox(height: 10,),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         height: 48,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey),
-                            borderRadius: BorderRadius.circular(4)),
+                        decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey), borderRadius: BorderRadius.circular(4)),
                         padding: EdgeInsets.all(9),
                         child: DropdownButton(
                             underline: Container(),
                             value: _selectedCountryCode,
-                            items: countryOptions.map((countryCode) {
+                            items: countryOptions.map((countryCode){
                               return DropdownMenuItem(
-                                  value: countryCode, child: Text(countryCode));
-                            }).toList(),
-                            onChanged: (val) {}),
+                                  value: countryCode,
+                                  child: Text(countryCode));
+                            }).toList(), onChanged: (val){}),
                       ),
+
                       Container(
                         width: (MediaQuery.of(context).size.width) - 120,
                         child: TextField(
@@ -953,24 +877,21 @@ class _JobApplyState extends State<JobApply> {
                               border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: _isMobileNumberValid
-                                        ? Colors.grey
-                                        : Colors.red, // Default border color
-                                    width: 1),
+                                    color: _isMobileNumberValid ? Colors.grey : Colors.red, // Default border color
+                                    width: 1
+                                ),
                               ),
+
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: _isMobileNumberValid
-                                        ? Colors.blue
-                                        : Colors
-                                            .red, // Border color when focused
-                                    width: 1),
+                                    color: _isMobileNumberValid ? Colors.blue : Colors.red, // Border color when focused
+                                    width: 1
+                                ),
                               ),
-                              errorText: _isMobileNumberValid
-                                  ? null
-                                  : mobileErrorMsg, // Display error message if invalid
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10)),
+
+                              errorText: _isMobileNumberValid ? null : mobileErrorMsg, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                          ),
                           keyboardType: TextInputType.phone,
                           onChanged: (value) {
                             // Validate the email here and update _isEmailValid
@@ -985,209 +906,151 @@ class _JobApplyState extends State<JobApply> {
                     ],
                   ),
 
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Text(
-                    'Resume',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 40,),
+                  Text('Resume', style: TextStyle(fontSize: 13, fontFamily: 'Lato', fontWeight: FontWeight.w500, color: Color(0xff333333)),),
+                  SizedBox(height: 10,),
 
-                  SizedBox(
-                    height: 20,
-                  ),
+
+
+                  SizedBox(height: 20,),
                   Container(
                     decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(width: 0.3, color: Colors.grey)),
+                        border: Border.all(width: 0.3, color: Colors.grey)
+                    ),
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Resume',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xff333333)),
-                          ),
+                          child: Text('Resume', style: TextStyle(fontSize: 16, fontFamily: 'Lato', fontWeight: FontWeight.w700, color: Color(0xff333333)),),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        candidateProfileModel!.fileName == null
-                            ? InkWell(
-                                onTap: () {
-                                  pickAndUploadPDF();
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Upload file',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xff004C99)),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                100,
-                                            child: Flexible(
-                                              fit: FlexFit.loose,
-                                              child: Text(
-                                                'File types: pdf, .doc, .docx  Max file size: 5MB',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                style: TextStyle(
-                                                    color: Color(0xff7D7C7C),
-                                                    fontSize: 14),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      SvgPicture.asset(
-                                          'assets/images/mage_upload.svg')
-                                    ],
-                                  ),
+                        SizedBox(height: 10,),
+
+
+
+                        candidateProfileModel!.fileName == null ?
+
+                        InkWell(
+                          onTap: (){
+                            pickAndUploadPDF();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Upload file', style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xff004C99)),),
+                                    SizedBox(height: 10,),
+                                   Container(
+                                     width: MediaQuery.of(context).size.width -100 ,
+  child: Flexible(
+    fit: FlexFit.loose,
+    child: Text(
+      'File types: pdf, .doc, .docx  Max file size: 5MB',
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+      style: TextStyle(color: Color(0xff7D7C7C), fontSize: 14),
+    ),
+  ),
+)
+
+
+                                  ],
                                 ),
-                              )
-                            : InkWell(
-                                onTap: () => {
-                                  showMaterialModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 30, horizontal: 10),
-                                      width: MediaQuery.of(context).size.width,
+                                SvgPicture.asset('assets/images/mage_upload.svg')
+                              ],
+                            ),
+                          ),
+                        ):
+                        InkWell(
+                          onTap: ()=>{
+                            showMaterialModalBottomSheet(
+                              context: context,
+                              builder: (context) =>
+                                  Container(
+                                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+
+                                        ListTile(
+                                          onTap: (){
+                                            final String? filePath = candidateProfileModel?.filePath;
+                                            if (filePath != null) {
+                                              Navigator.pop(context);
+                                              Navigator.push(context,
+                                                MaterialPageRoute(
+                                                  builder: (
+                                                      context) =>
+                                                      DocViewerPage(
+                                                          url: filePath),),);
+                                            }
+                                          },
+                                          leading: Icon(Icons.visibility_outlined),
+                                          title: Text('View Resume'),
+                                        ),
+                                        ListTile(
+                                          onTap: (){
+                                            Navigator.pop(context);
+                                            pickAndUploadPDF();
+                                          },
+                                          leading: Icon(Icons.refresh),
+                                          title: Text('Replace Resume'),
+                                        ),
+                                        ListTile(
+                                          onTap: (){
+                                            _launchURL();
+                                          },
+                                          leading: Icon(Icons.download),
+                                          title: Text('Download'),
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                            )
+
+
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Color(0xafFAFCFF)),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Image.asset('assets/images/ic_curriculum.png'),
+                                    SizedBox(width: 10,),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width - 180,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          ListTile(
-                                            onTap: () {
-                                              final String? filePath =
-                                                  candidateProfileModel
-                                                      ?.filePath;
-                                              if (filePath != null) {
-                                                Navigator.pop(context);
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DocViewerPage(
-                                                            url: filePath),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            leading:
-                                                Icon(Icons.visibility_outlined),
-                                            title: Text('View Resume'),
-                                          ),
-                                          ListTile(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              pickAndUploadPDF();
-                                            },
-                                            leading: Icon(Icons.refresh),
-                                            title: Text('Replace Resume'),
-                                          ),
-                                          ListTile(
-                                            onTap: () {
-                                              _launchURL();
-                                            },
-                                            leading: Icon(Icons.download),
-                                            title: Text('Download'),
-                                          ),
+                                          Flexible(fit: FlexFit.loose, child: Text(overflow: TextOverflow.ellipsis, '${candidateProfileModel!.fileName}', style: TextStyle(color: Color(0xff004C99), fontFamily: 'NunitoSans', fontWeight: FontWeight.w600),)),
+                                          Text('Last updated $resumeUpdatedDate', style: TextStyle(color: Color(0xff004C99), fontFamily: 'NunitoSans', fontWeight: FontWeight.normal),),
                                         ],
                                       ),
                                     ),
-                                  )
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Color(0xafFAFCFF)),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Image.asset(
-                                              'assets/images/ic_curriculum.png'),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                180,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Flexible(
-                                                    fit: FlexFit.loose,
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      '${candidateProfileModel!.fileName}',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xff004C99),
-                                                          fontFamily:
-                                                              'NunitoSans',
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    )),
-                                                Text(
-                                                  'Last updated $resumeUpdatedDate',
-                                                  style: TextStyle(
-                                                      color: Color(0xff004C99),
-                                                      fontFamily: 'NunitoSans',
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Image.asset('assets/images/ic_more.png')
-                                    ],
-                                  ),
+                                  ],
                                 ),
-                              ),
+
+                                Image.asset('assets/images/ic_more.png')
+                              ],
+                            ),
+                          ),
+                        ),
+
                       ],
                     ),
                   ),
@@ -1200,9 +1063,7 @@ class _JobApplyState extends State<JobApply> {
                         visible: isLoading,
                         child: Column(
                           children: [
-                            SizedBox(
-                              height: 30,
-                            ),
+                            SizedBox(height: 30,),
                             LoadingAnimationWidget.fourRotatingDots(
                               color: AppColors.primaryColor,
                               size: 40,
@@ -1213,11 +1074,9 @@ class _JobApplyState extends State<JobApply> {
                     ),
                   ),
 
-                  SizedBox(
-                    height: 50,
-                  ),
+                  SizedBox(height: 50,),
                   InkWell(
-                    onTap: () {
+                    onTap: (){
                       //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> Companydetails()));
                       applyJob();
                     },
@@ -1226,17 +1085,12 @@ class _JobApplyState extends State<JobApply> {
                       height: 50,
                       margin: EdgeInsets.symmetric(horizontal: 0),
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                        child: Text(
-                          'Apply',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                      decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
+                      child: Center(child: Text('Apply', style: TextStyle(color: Colors.white),),),
                     ),
                   ),
+
+
                 ],
               ),
             ),
@@ -1257,8 +1111,7 @@ class _JobApplyState extends State<JobApply> {
   Future<void> fetchProfileFromPref() async {
     ReferralData? _referralData = await getReferralProfileData();
     UserData? _retrievedUserData = await getUserData();
-    CandidateProfileModel? _candidateProfileModel =
-        await getCandidateProfileData();
+    CandidateProfileModel? _candidateProfileModel = await getCandidateProfileData();
 
     setState(() {
       referralData = _referralData;

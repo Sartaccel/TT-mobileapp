@@ -186,7 +186,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                         },
                             //icon: Icon( old_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset( old_passwordHide?'assets/images/ic_show_password.svg' :'assets/images/ic_hide_password.svg')),
+                            icon: SvgPicture.asset( old_passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
 
                         hintText: 'Enter your password',
                         border: OutlineInputBorder(),
@@ -229,7 +229,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                         },
                             //icon: Icon( new_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset( new_passwordHide?'assets/images/ic_show_password.svg' :'assets/images/ic_hide_password.svg')),
+                            icon: SvgPicture.asset( new_passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
 
                         hintText: 'Enter your password',
                         border: OutlineInputBorder(),
@@ -272,7 +272,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                         },
                             //icon: Icon( confirm_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset( confirm_passwordHide?'assets/images/ic_show_password.svg' :'assets/images/ic_hide_password.svg')),
+                            icon: SvgPicture.asset( confirm_passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
 
                         hintText: 'Enter your password',
                         border: OutlineInputBorder(),

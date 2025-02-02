@@ -161,7 +161,7 @@ class _InviteAndEarnState extends State<InviteAndEarn> {
 
                   SizedBox(height: 50,),
                   Container(
-                    width: 250,
+                    width: 300,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

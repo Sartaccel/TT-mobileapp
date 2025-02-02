@@ -818,17 +818,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                     child: Column(
                                       children: [
                                        Text(
-  '${candidateProfileModel!.candidateName}',
-  style: TextStyle(
-    fontWeight: FontWeight.w700,
-    color: Color(0xff333333),
-    fontSize: 16,
-  ),
-  maxLines: 1,
-  overflow: TextOverflow.ellipsis,
-),
-                                        SizedBox(height: 5,),
-                                        Text('${candidateProfileModel!.position?? 'Designation not updated'}', style: TextStyle(fontWeight: FontWeight.w400, color: Color(0xff333333), fontSize: 14), ),
+                                '${candidateProfileModel!.candidateName}',
+                            style: const TextStyle(
+                               fontWeight: FontWeight.w700,
+                              color: Color(0xff333333),
+                                    fontSize: 16,
+                                       ),
+                                  maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                               ),
+                                        const SizedBox(height: 5,),
+                                        Text('${candidateProfileModel!.position?? 'Designation not updated'}', style: const TextStyle(fontWeight: FontWeight.w400, color: Color(0xff333333), fontSize: 14), ),
                                       ],
                                     ),
                                   ),)

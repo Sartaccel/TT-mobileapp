@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
@@ -385,28 +386,66 @@ class _HomeFragmentState extends State<HomeFragment> {
                     ),
                   ),
 
-                  isLoading?
-                      Expanded(
-                        child: Center(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Center(
-                              child: Visibility(
-                                visible: isLoading,
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 30,),
-                                    LoadingAnimationWidget.fourRotatingDots(
-                                      color: AppColors.primaryColor,
-                                      size: 40,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                 isLoading
+    ? Expanded(
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300]!, // Base color for the shimmer
+          highlightColor: Colors.grey[100]!, // Highlight color for the shimmer
+          child: ListView.builder(
+            itemCount: 5, // Number of skeleton items to show
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.2, color: Colors.grey),
+                  color: Colors.white,
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 160,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Shimmer placeholder for job title
+                        Container(
+                          width: 200,
+                          height: 20,
+                          color: Colors.white,
                         ),
-                      ):
+                        SizedBox(height: 10),
+                        // Shimmer placeholder for company name
+                        Container(
+                          width: 150,
+                          height: 15,
+                          color: Colors.white,
+                        ),
+                        SizedBox(height: 10),
+                        // Shimmer placeholder for location
+                        Container(
+                          width: 100,
+                          height: 15,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    // Shimmer placeholder for other widgets (e.g., icons)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      )
+    :
                   jobList.length > 0 ?Expanded(
                         child: RefreshIndicator(
                           onRefresh: fetchAllJobs,
@@ -446,12 +485,13 @@ class _HomeFragmentState extends State<HomeFragment> {
                                                     image: jobList[index]['logo'] != null && jobList[index]['logo'].isNotEmpty
                                           ? NetworkImage(jobList[index]['logo'],) as ImageProvider<Object>
                                               : const AssetImage('assets/images/tt_logo_resized.png'),
-                                          height: 32,
-                                          width: 32,
-                                          fit: BoxFit.cover,
+                                          height: 40,
+                                          width: 40,
+                                          fit: BoxFit.contain,
                                           errorBuilder: (context, error, stackTrace) {
                                           // Fallback to asset if network image fails
-                                          return Image.asset('assets/images/tt_logo_resized.png', height: 32, width: 32);
+                                          return Image.asset('assets/images/tt_logo_resized.png', height: 37, width: 37,fit: BoxFit.contain,);
+      
                                           },
                                           ),
 
@@ -494,14 +534,6 @@ class _HomeFragmentState extends State<HomeFragment> {
                                                 ],
                                               ),
                                             ),
-
-
-
-
-
-
-
-
                                             Row(
                                               children: [
                                                 Row(
@@ -594,7 +626,7 @@ class _HomeFragmentState extends State<HomeFragment> {
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Center(
-                            child: Text('No results found for ${jobSearchTerm}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
+                            child: Text('No Jobs Here ${jobSearchTerm}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
                           ),
                         ),
                       ) :
