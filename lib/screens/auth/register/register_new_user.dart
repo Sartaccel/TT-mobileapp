@@ -854,77 +854,104 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width - 20,
-                        child: Row(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              height: 48,
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(width: 1, color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(4)),
-                              padding: EdgeInsets.all(9),
-                              child: DropdownButton(
-                                  value: _selectedCountryCode,
-                                  underline: Container(),
-                                  items: countryOptions.map((countryCode) {
-                                    return DropdownMenuItem(
-                                        value: countryCode,
-                                        child: Text(countryCode));
-                                  }).toList(),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      _selectedCountryCode = val;
-                                    });
-                                  }),
-                            ),
-                            Container(
-                              width: (MediaQuery.of(context).size.width) - 110,
-                              child: TextField(
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter
-                                      .digitsOnly, // This allows only digits
-                                ],
-                                maxLength: getValidLengthForCountry(
-                                    _selectedCountryCode!),
-                                controller: mobileController,
-                                style:
-                                    TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                                decoration: InputDecoration(
-                                    counterText: '',
-                                    hintText: 'Enter mobile number',
-                                    border: OutlineInputBorder(),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1,
                                           color: _isMobileNumberValid
                                               ? Colors.grey
-                                              : Colors
-                                                  .red, // Default border color
-                                          width: 1),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: _isMobileNumberValid
-                                              ? Colors.blue
-                                              : Colors
-                                                  .red, // Border color when focused
-                                          width: 1),
-                                    ),
-                                    errorText: _isMobileNumberValid
-                                        ? null
-                                        : mobileErrorMsg, // Display error message if invalid
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10)),
-                                keyboardType: TextInputType.phone,
-                                onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
-                                  setState(() {
-                                    _isMobileNumberValid = true;
-                                  });
-                                },
-                              ),
+                                              : Colors.red),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  padding: EdgeInsets.all(9),
+                                  child: DropdownButton(
+                                      value: _selectedCountryCode,
+                                      underline: Container(),
+                                      items: countryOptions.map((countryCode) {
+                                        return DropdownMenuItem(
+                                            value: countryCode,
+                                            child: Text(countryCode,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontFamily: 'Lato',
+                                                    color: const Color(
+                                                        0xFF333333))));
+                                      }).toList(),
+                                      onChanged: (val) {
+                                        setState(() {
+                                          _selectedCountryCode = val;
+                                        });
+                                      }),
+                                ),
+                                Container(
+                                  width:
+                                      (MediaQuery.of(context).size.width) - 120,
+                                  child: TextField(
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter
+                                          .digitsOnly, // This allows only digits
+                                    ],
+                                    maxLength: getValidLengthForCountry(
+                                        _selectedCountryCode!),
+                                    controller: mobileController,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Lato',
+                                        color: _isMobileNumberValid
+                                            ? Colors.grey
+                                            : Colors.red),
+                                    decoration: InputDecoration(
+                                        counterText: '',
+                                        hintText: 'Enter mobile number',
+                                        border: OutlineInputBorder(),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Colors.grey
+                                                  : Colors
+                                                      .red, // Default border color
+                                              width: 1),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Colors.blue
+                                                  : Colors
+                                                      .red, // Border color when focused
+                                              width: 1),
+                                        ),
+                                        // errorText: _isMobileNumberValid
+                                        //     ? null
+                                        //     : mobileErrorMsg, // Display error message if invalid
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10)),
+                                    keyboardType: TextInputType.phone,
+                                    onChanged: (value) {
+                                      // Validate the email here and update _isEmailValid
+                                      setState(() {
+                                        _isMobileNumberValid = true;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
+                            if (!_isMobileNumberValid)
+                              Padding(
+                                padding: EdgeInsets.only(top: 4, left: 10),
+                                child: Text(
+                                  mobileErrorMsg ?? '',
+                                  style: TextStyle(
+                                      color: Color(0xFFBA1A1A), fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -985,7 +1012,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               child: Text(
                                   'I agree to the Terms of Service and Privacy Policy',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     fontFamily: 'Lato',
                                     color: AppColors.primaryColor,
                                   )))

@@ -9,15 +9,15 @@ class DiscardDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-    
       backgroundColor: Colors.white,
       child: Container(
         height: 144,
-        width: 390,
+        width: screenWidth * 0.80,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -29,11 +29,17 @@ class DiscardDialog extends StatelessWidget {
           children: [
             Text(
               'Discard changes',
-              style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
+              style: GoogleFonts.lato(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black),
             ),
             Text(
               'Are you sure you want to discard all changes?',
-              style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),
+              style: GoogleFonts.lato(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -49,7 +55,10 @@ class DiscardDialog extends StatelessWidget {
                   ),
                   child: Text(
                     'Cancel',
-                    style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF004C99)),
+                    style: GoogleFonts.lato(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF004C99)),
                   ),
                   minWidth: 102,
                   height: 36,
@@ -58,7 +67,7 @@ class DiscardDialog extends StatelessWidget {
                 MaterialButton(
                   onPressed: () {
                     onDiscard(); // Call the discard callback
-              
+
                     showCustomSnackbar(context, 'Profile picture updated !');
                     Navigator.of(context).pop(); // Close the dialog
                   },
@@ -68,7 +77,10 @@ class DiscardDialog extends StatelessWidget {
                   ),
                   child: Text(
                     'Discard',
-                    style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: GoogleFonts.lato(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                   ),
                   minWidth: 102,
                   height: 36,

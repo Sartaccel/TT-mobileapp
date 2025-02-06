@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -78,7 +79,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     }
   }
 
-
   Future<XFile?> processResizeImage(XFile? image) async {
     if (image == null) return null;
 
@@ -127,10 +127,12 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
 
       // Get the app's temporary directory to save the image
       final tempDir = await getTemporaryDirectory();
-      String jpegPath = path.join(tempDir.path, 'processed_image${DateTime.now().millisecondsSinceEpoch}.jpg');
+      String jpegPath = path.join(tempDir.path,
+          'processed_image${DateTime.now().millisecondsSinceEpoch}.jpg');
 
       // Encode to JPEG format and save the file
-      final jpegBytes = img.encodeJpg(decodedImage, quality: 85); // Set JPEG quality to 85
+      final jpegBytes =
+          img.encodeJpg(decodedImage, quality: 85); // Set JPEG quality to 85
       File jpegFile = await File(jpegPath).writeAsBytes(jpegBytes);
 
       return XFile(jpegFile.path);
@@ -153,7 +155,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         isLoading = true;
       });
 
-      if(kDebugMode){
+      if (kDebugMode) {
         print('MIME ${mimeType}');
       }
 
@@ -167,7 +169,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
             _imageFile = image;
           });
         } else {
-         // _showError('Image size or dimensions are too large. Select a smaller one');
+          // _showError('Image size or dimensions are too large. Select a smaller one');
           print('Non- Valid Dimensions');
           final XFile? processedImage = await processResizeImage(image);
           setState(() {
@@ -179,9 +181,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
           isLoading = false;
         });
       } else {
-
-
-       /* String errorMessage = mimeType != 'image/jpeg'
+        /* String errorMessage = mimeType != 'image/jpeg'
             ? 'Please select a JPEG image.'
             : 'File size must be less than 5 MB.';
 
@@ -202,7 +202,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         setState(() {
           isLoading = false;
         });
-
       }
     }
   }
@@ -219,8 +218,8 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
           return true;
         }
       }
-    }catch(e){
-      if(kDebugMode){
+    } catch (e) {
+      if (kDebugMode) {
         print(e);
       }
       //_showError('Image size is too large.');
@@ -234,16 +233,13 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     );
   }
 
-
   Future<void> _removeImage() async {
-
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REMOVE_PHOTO );
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REMOVE_PHOTO);
 
     final bodyParams = {
       "id": retrievedUserData!.profileId,
-      "type" : "Candidate"
+      "type": "Candidate"
     };
-
 
     try {
       setState(() {
@@ -260,34 +256,34 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       );
 
       if (kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-
-      if(response.statusCode == 200){
-
-
-
-        Fluttertoast.showToast(
-            msg: 'Removed successfully',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xff2D2D2D),
-            textColor: Colors.white,
-            fontSize: 16.0);
+      if (response.statusCode == 200) {
+        // Fluttertoast.showToast(
+        //     msg: 'Removed successfully',
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.BOTTOM,
+        //     timeInSecForIosWeb: 1,
+        //     backgroundColor: Color(0xff2D2D2D),
+        //     textColor: Colors.white,
+        //     fontSize: 16.0);
+        IconSnackBar.show(
+          context,
+          label: 'Removed successfully',
+          snackBarType: SnackBarType.success,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
 
         String token = retrievedUserData!.token;
         //Navigator.pop(context);
         fetchCandidateProfileData(retrievedUserData!.profileId, token);
       }
-
-    }catch(e){
+    } catch (e) {
       print(e);
     }
-
-
   }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
@@ -317,19 +313,26 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          Fluttertoast.showToast(
-              msg: 'Personal details updated successfully',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff2D2D2D),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          // Fluttertoast.showToast(
+          //     msg: 'Personal details updated successfully',
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Color(0xff2D2D2D),
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: 'Personal details updated successfully',
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff4CAF50),
+            iconColor: Colors.white,
+          );
 
           final Map<String, dynamic> data = resOBJ['data'];
           //ReferralData referralData = ReferralData.fromJson(data);
           CandidateProfileModel candidateData =
-          CandidateProfileModel.fromJson(data);
+              CandidateProfileModel.fromJson(data);
 
           await saveCandidateProfileData(candidateData);
 
@@ -358,7 +361,8 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
   Future<void> uploadImage(File file) async {
     Dio dio = Dio();
 
-    String url = AppConstants.BASE_URL + AppConstants.UPDATE_CANDIDATE_PROFILE_PICTURE;
+    String url =
+        AppConstants.BASE_URL + AppConstants.UPDATE_CANDIDATE_PROFILE_PICTURE;
 
     print('id ${retrievedUserData!.profileId.toString()}');
     print('file.path ${file.path}');
@@ -392,14 +396,21 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       );
       print('Upload success: ${response.statusCode}');
 
-      Fluttertoast.showToast(
-          msg: 'Successfully uploaded',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      // Fluttertoast.showToast(
+      //     msg: 'Successfully uploaded',
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Color(0xff2D2D2D),
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+      IconSnackBar.show(
+        context,
+        label: 'Successfully uploaded',
+        snackBarType: SnackBarType.success,
+        backgroundColor: Color(0xff4CAF50),
+        iconColor: Colors.white,
+      );
 
       fetchCandidateProfileData(retrievedUserData!.profileId, token);
       //Navigator.pop(context);
@@ -412,14 +423,21 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       });
       print('Upload failed: $e');
 
-      Fluttertoast.showToast(
-          msg: e.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      // Fluttertoast.showToast(
+      //     msg: e.toString(),
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Color(0xff2D2D2D),
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+      IconSnackBar.show(
+        context,
+        label: e.toString(),
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xFFBA1A1A),
+        iconColor: Colors.white,
+      );
     }
   }
 
@@ -428,26 +446,49 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
           actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 20, 20, 20),
-          title: Text('Remove', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Color(0xff333333)),),
+          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+          title: Text(
+            'Remove',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff333333)),
+          ),
           content: Container(
               width: MediaQuery.of(context).size.width,
-              child: Text('Are you sure you want to remove your profile photo?', style: TextStyle(height: 1.4, fontSize: 16,fontWeight: FontWeight.w400, color: Color(0xff333333)),)),
+              child: Text(
+                'Are you sure you want to remove your profile photo?',
+                style: TextStyle(
+                    height: 1.4,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff333333)),
+              )),
           actions: [
             InkWell(
-              onTap: (){Navigator.pop(context);},
+              onTap: () {
+                Navigator.pop(context);
+              },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 1, color: AppColors.primaryColor) ,borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
-                  child: Text('Cancel', style: TextStyle(color: AppColors.primaryColor),),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.primaryColor),
+                  ),
                 ),
               ),
             ),
-
             InkWell(
               onTap: () async {
                 Navigator.pop(context);
@@ -456,13 +497,17 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
-                  child: Text('Remove', style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    'Remove',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             )
-
           ],
         );
       },
@@ -474,39 +519,66 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
           actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 20, 20, 20),
-          title: Text('Discard changes?', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Color(0xff333333)),),
-          content: Text('Are you sure you want to discard changes?', style: TextStyle(height: 1.4, fontSize: 16,fontWeight: FontWeight.w400, color: Color(0xff333333)),),
+          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+          title: Text(
+            'Discard changes?',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff333333)),
+          ),
+          content: Text(
+            'Are you sure you want to discard changes?',
+            style: TextStyle(
+                height: 1.4,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff333333)),
+          ),
           actions: [
             InkWell(
-              onTap: (){Navigator.pop(context);},
+              onTap: () {
+                Navigator.pop(context);
+              },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 1, color: AppColors.primaryColor) ,borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
-                  child: Text('Cancel', style: TextStyle(color: AppColors.primaryColor),),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.primaryColor),
+                  ),
                 ),
               ),
             ),
-
             InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
-                  child: Text('Discard', style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    'Discard',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             )
-
           ],
         );
       },
@@ -547,7 +619,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                           ),
                           InkWell(
                               onTap: () {
-
                                 showDiscardConfirmationDialog(context);
 
                                 // Navigator.pop(context);
@@ -570,21 +641,28 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
 
-
-                      _imageFile !=null ?  Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: InkWell(
-                        onTap: (){
-                          if(_imageFile !=null){
-                            File file = File(_imageFile!.path);
-                            uploadImage(file);
-                          } else{
-                            showCustomSnackbar(context, 'Failed to upload!');
-                          }
-                        }
-                        ,child: Text('Save', style: TextStyle(color: Colors.white, fontSize: 16),)),
-                      ) : Container(width: 60,),
-
+                      _imageFile != null
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: InkWell(
+                                  onTap: () {
+                                    if (_imageFile != null) {
+                                      File file = File(_imageFile!.path);
+                                      uploadImage(file);
+                                    } else {
+                                      showCustomSnackbar(
+                                          context, 'Failed to upload!');
+                                    }
+                                  },
+                                  child: Text(
+                                    'Save',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  )),
+                            )
+                          : Container(
+                              width: 60,
+                            ),
                     ],
                   ),
                 ),
@@ -606,90 +684,91 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                                       fit: BoxFit.cover),
                                 )
                               : ClipOval(
-                                  child: (candidateProfileModel != null && candidateProfileModel!.imagePath != null)
+                                  child: (candidateProfileModel != null &&
+                                          candidateProfileModel!.imagePath !=
+                                              null)
                                       ? Image.network(
-                                    candidateProfileModel!.imagePath!,
-                                    height: 300,
-                                    width: 300,
-                                    fit: BoxFit.cover,
-                                  )
+                                          candidateProfileModel!.imagePath!,
+                                          height: 300,
+                                          width: 300,
+                                          fit: BoxFit.cover,
+                                        )
                                       : Image.asset(
-                                    'assets/images/profile.jfif',
-                                    height: 300,
-                                    width: 300,
-                                    fit: BoxFit.cover,
-                                  ),
+                                          'assets/images/profile.jfif',
+                                          height: 300,
+                                          width: 300,
+                                          fit: BoxFit.cover,
+                                        ),
                                 ),
                         ),
                       ),
-
                       isLoading
                           ? Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 30,
-                              ),
-                              LoadingAnimationWidget.fourRotatingDots(
-                                color: AppColors.primaryColor,
-                                size: 40,
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                          : Container(),
-
-
-                      const SizedBox(height: 20),
-                      _imageFile !=null ?Column(
-                        children: [
-                          const Divider(
-                              thickness: 0.5, color: Color(0xffD9D9D9)),
-                          Row(children: [
-                            const SizedBox(width: 30),
-                            const Icon(Icons.crop,
-                                color: Color(0xFF484C52), size: 14),
-                            const SizedBox(width: 8),
-                            TextButton(
-                              onPressed: () async {
-                                if (_imageFile != null) {
-                                  final croppedImagePath =
-                                      await Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          Croppage(imagePath: _imageFile!.path),
+                              width: MediaQuery.of(context).size.width,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 30,
                                     ),
-                                  );
-
-                                  if (croppedImagePath != null) {
-                                    setState(() {
-                                      _imageFile = XFile(croppedImagePath);
-                                    });
-                                  }
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            "Please select an image first.")),
-                                  );
-                                }
-                              },
-                              child: Text(
-                                "Crop",
-                                style: GoogleFonts.lato(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
+                                    LoadingAnimationWidget.fourRotatingDots(
+                                      color: AppColors.primaryColor,
+                                      size: 40,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ]),
-                        ],
-                      ) : Container(),
+                            )
+                          : Container(),
+                      const SizedBox(height: 20),
+                      _imageFile != null
+                          ? Column(
+                              children: [
+                                const Divider(
+                                    thickness: 0.5, color: Color(0xffD9D9D9)),
+                                Row(children: [
+                                  const SizedBox(width: 30),
+                                  const Icon(Icons.crop,
+                                      color: Color(0xFF484C52), size: 14),
+                                  const SizedBox(width: 8),
+                                  TextButton(
+                                    onPressed: () async {
+                                      if (_imageFile != null) {
+                                        final croppedImagePath =
+                                            await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => Croppage(
+                                                imagePath: _imageFile!.path),
+                                          ),
+                                        );
 
-
+                                        if (croppedImagePath != null) {
+                                          setState(() {
+                                            _imageFile =
+                                                XFile(croppedImagePath);
+                                          });
+                                        }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  "Please select an image first.")),
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      "Crop",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black),
+                                    ),
+                                  ),
+                                ]),
+                              ],
+                            )
+                          : Container(),
                       const Divider(thickness: 0.5, color: Color(0xffD9D9D9)),
                       Row(
                         children: [
@@ -727,7 +806,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             GestureDetector(
-                                              onTap: (){
+                                              onTap: () {
                                                 _openCamera();
                                                 Navigator.pop(context);
                                               },
@@ -736,7 +815,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                                                   'Camera'),
                                             ),
                                             GestureDetector(
-                                              onTap: (){
+                                              onTap: () {
                                                 Navigator.pop(context);
                                                 _openGallery();
                                               },
@@ -770,34 +849,34 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                           ),
                         ],
                       ),
-
-                      candidateProfileModel!.imagePath !=null ? Column(
-                        children: [
-                          const Divider(thickness: 0.5, color: Color(0xffD9D9D9)),
-                          Row(
-                            children: [
-                              const SizedBox(width: 30),
-                              const Icon(Icons.delete,
-                                  color: Color(0xFF484C52), size: 14),
-                              const SizedBox(width: 8),
-                              TextButton(
-                                onPressed: () {
-                                  showDeleteConfirmationDialog(context);
-                                },
-                                child: Text(
-                                  "Remove Photo",
-                                  style: GoogleFonts.lato(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff333333)),
+                      candidateProfileModel!.imagePath != null
+                          ? Column(
+                              children: [
+                                const Divider(
+                                    thickness: 0.5, color: Color(0xffD9D9D9)),
+                                Row(
+                                  children: [
+                                    const SizedBox(width: 30),
+                                    const Icon(Icons.delete,
+                                        color: Color(0xFF484C52), size: 14),
+                                    const SizedBox(width: 8),
+                                    TextButton(
+                                      onPressed: () {
+                                        showDeleteConfirmationDialog(context);
+                                      },
+                                      child: Text(
+                                        "Remove Photo",
+                                        style: GoogleFonts.lato(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xff333333)),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ):Container(),
-
-
+                              ],
+                            )
+                          : Container(),
                       const Divider(thickness: 0.5, color: Color(0xffD9D9D9)),
                     ],
                   ),
@@ -847,12 +926,12 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
   Future<void> fetchProfileFromPref() async {
     //ReferralData? _referralData = await getReferralProfileData();
     CandidateProfileModel? _candidateProfileModel =
-    await getCandidateProfileData();
+        await getCandidateProfileData();
     UserData? _retrievedUserData = await getUserData();
 
     print('Resume : ${_candidateProfileModel!.fileName}');
     UserCredentials? loadedCredentials =
-    await UserCredentials.loadCredentials();
+        await UserCredentials.loadCredentials();
 
     setState(() {
       //referralData = _referralData;

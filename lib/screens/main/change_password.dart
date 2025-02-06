@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -21,7 +22,6 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
-
   UserData? retrievedUserData;
 
   bool _isOldPasswordValid = true;
@@ -43,10 +43,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController confirm_passwordController = TextEditingController();
 
   Future<void> setNewPassword() async {
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD_UPDATE_PASSWORD);
+    final url = Uri.parse(
+        AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD_UPDATE_PASSWORD);
 
     final bodyParams = {
-      "id" : retrievedUserData!.accountId.toString(),
+      "id": retrievedUserData!.accountId.toString(),
       "password": new_passwordController.text
     };
 
@@ -54,63 +55,68 @@ class _ChangePasswordState extends State<ChangePassword> {
       setState(() {
         isLoading = true;
       });
-      final response = await http.post(
-          url,
+      final response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(bodyParams)
-      );
+          body: jsonEncode(bodyParams));
 
       setState(() {
         isLoading = false;
       });
 
-      if(response.statusCode == 200 || response.statusCode == 202) {
+      if (response.statusCode == 200 || response.statusCode == 202) {
         var resOBJ = jsonDecode(response.body);
 
         // String statusMessage = resOBJ["status"];
         String statusMessage = resOBJ["message"];
 
-        if(statusMessage.toLowerCase().contains('success')){
-          Fluttertoast.showToast(
-              msg: statusMessage,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              fontSize: 16.0);
+        if (statusMessage.toLowerCase().contains('success')) {
+          // Fluttertoast.showToast(
+          //     msg: statusMessage,
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.green,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: statusMessage,
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff4CAF50),
+            iconColor: Colors.white,
+          );
 
           Navigator.pop(context);
-
-        } else{
-          Fluttertoast.showToast(
-              msg: statusMessage,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+        } else {
+          // Fluttertoast.showToast(
+          //     msg: statusMessage,
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.red,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: statusMessage,
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xFFBA1A1A),
+            iconColor: Colors.white,
+          );
         }
-
-      }
-      else{
-        if(kDebugMode){
+      } else {
+        if (kDebugMode) {
           print('${response.statusCode} :: ${response.body}');
         }
       }
-
-
-    }catch(e){
+    } catch (e) {
       setState(() {
         isLoading = true;
       });
-      if(kDebugMode){
+      if (kDebugMode) {
         print(e.toString());
       }
     }
-
-
   }
 
   @override
@@ -151,12 +157,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                               height: 50,
                               child: Center(
                                   child: Text(
-                                    'Back',
-                                    style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 16,
-                                        color: Colors.white),
-                                  ))))
+                                'Back',
+                                style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 16,
+                                    color: Colors.white),
+                              ))))
                     ],
                   ),
                   SizedBox(
@@ -165,142 +171,170 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ],
               ),
             ),
-
             Container(
               padding: EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 20,),
-                  Text('Old Password', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Old Password',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   TextField(
                     obscureText: old_passwordHide,
                     controller: old_passwordController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
-                        suffixIcon: IconButton( onPressed: (){
-                          setState(() {
-                            old_passwordHide = !old_passwordHide;
-                          });
-
-                        },
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                old_passwordHide = !old_passwordHide;
+                              });
+                            },
                             //icon: Icon( old_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset( old_passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
-
+                            icon: SvgPicture.asset(old_passwordHide
+                                ? 'assets/images/ic_hide_password.svg'
+                                : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isOldPasswordValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
+                              color: _isOldPasswordValid
+                                  ? Colors.grey
+                                  : Colors.red, // Default border color
+                              width: 1),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isOldPasswordValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
+                              color: _isOldPasswordValid
+                                  ? Colors.blue
+                                  : Colors.red, // Border color when focused
+                              width: 1),
                         ),
-
-                        errorText: _isOldPasswordValid ? null : old_passwordErrorMessage, // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
-                    onChanged: (val){
+                        errorText: _isOldPasswordValid
+                            ? null
+                            : old_passwordErrorMessage, // Display error message if invalid
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                    onChanged: (val) {
                       setState(() {
                         _isOldPasswordValid = true;
                       });
                     },
                   ),
-
-                  SizedBox(height: 20,),
-                  Text('New Password', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'New Password',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   TextField(
                     obscureText: new_passwordHide,
                     controller: new_passwordController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
-                        suffixIcon: IconButton( onPressed: (){
-                          setState(() {
-                            new_passwordHide = !new_passwordHide;
-                          });
-
-                        },
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                new_passwordHide = !new_passwordHide;
+                              });
+                            },
                             //icon: Icon( new_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset( new_passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
-
+                            icon: SvgPicture.asset(new_passwordHide
+                                ? 'assets/images/ic_hide_password.svg'
+                                : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isNewPasswordValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
+                              color: _isNewPasswordValid
+                                  ? Colors.grey
+                                  : Colors.red, // Default border color
+                              width: 1),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isNewPasswordValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
+                              color: _isNewPasswordValid
+                                  ? Colors.blue
+                                  : Colors.red, // Border color when focused
+                              width: 1),
                         ),
-
-                        errorText: _isNewPasswordValid ? null : new_passwordErrorMessage, // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
-                    onChanged: (val){
+                        errorText: _isNewPasswordValid
+                            ? null
+                            : new_passwordErrorMessage, // Display error message if invalid
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                    onChanged: (val) {
                       setState(() {
                         _isNewPasswordValid = true;
                       });
                     },
                   ),
-
-                  SizedBox(height: 20,),
-                  Text('Confirm New Password', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Confirm New Password',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   TextField(
                     obscureText: confirm_passwordHide,
                     controller: confirm_passwordController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
-                        suffixIcon: IconButton( onPressed: (){
-                          setState(() {
-                            confirm_passwordHide = !confirm_passwordHide;
-                          });
-
-                        },
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                confirm_passwordHide = !confirm_passwordHide;
+                              });
+                            },
                             //icon: Icon( confirm_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset( confirm_passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
-
+                            icon: SvgPicture.asset(confirm_passwordHide
+                                ? 'assets/images/ic_hide_password.svg'
+                                : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isConfirmPasswordValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
+                              color: _isConfirmPasswordValid
+                                  ? Colors.grey
+                                  : Colors.red, // Default border color
+                              width: 1),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isConfirmPasswordValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
+                              color: _isConfirmPasswordValid
+                                  ? Colors.blue
+                                  : Colors.red, // Border color when focused
+                              width: 1),
                         ),
-
-                        errorText: _isConfirmPasswordValid ? null : confirm_passwordErrorMessage, // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
-                    onChanged: (val){
+                        errorText: _isConfirmPasswordValid
+                            ? null
+                            : confirm_passwordErrorMessage, // Display error message if invalid
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                    onChanged: (val) {
                       setState(() {
                         _isConfirmPasswordValid = true;
                       });
                     },
                   ),
-
-                  SizedBox(height: 30,),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: Center(
@@ -308,7 +342,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                         visible: isLoading,
                         child: Column(
                           children: [
-                            SizedBox(height: 30,),
+                            SizedBox(
+                              height: 30,
+                            ),
                             LoadingAnimationWidget.fourRotatingDots(
                               color: AppColors.primaryColor,
                               size: 40,
@@ -318,89 +354,104 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                     ),
                   ),
-
                   SizedBox(height: 30),
                   InkWell(
-
                     onTap: () async {
-                      UserCredentials? loadedCredentials = await UserCredentials.loadCredentials();
+                      UserCredentials? loadedCredentials =
+                          await UserCredentials.loadCredentials();
 
-                      if(old_passwordController.text.trim().isEmpty || new_passwordController.text.trim().isEmpty || confirm_passwordController.text.trim().isEmpty || new_passwordController.text.length < 8 || new_passwordController.text != confirm_passwordController.text){
-
-                        if(old_passwordController.text.trim().isEmpty){
+                      if (old_passwordController.text.trim().isEmpty ||
+                          new_passwordController.text.trim().isEmpty ||
+                          confirm_passwordController.text.trim().isEmpty ||
+                          new_passwordController.text.length < 8 ||
+                          new_passwordController.text !=
+                              confirm_passwordController.text) {
+                        if (old_passwordController.text.trim().isEmpty) {
                           setState(() {
-                            _isOldPasswordValid =false;
-                            old_passwordErrorMessage = 'Password cannot be empty';
+                            _isOldPasswordValid = false;
+                            old_passwordErrorMessage =
+                                'Password cannot be empty';
                           });
                         }
 
-                        if(new_passwordController.text.trim().isEmpty){
+                        if (new_passwordController.text.trim().isEmpty) {
                           setState(() {
-                            _isNewPasswordValid =false;
-                            new_passwordErrorMessage = 'Password cannot be empty';
+                            _isNewPasswordValid = false;
+                            new_passwordErrorMessage =
+                                'Password cannot be empty';
                           });
                         }
 
-                        if(confirm_passwordController.text.trim().isEmpty){
+                        if (confirm_passwordController.text.trim().isEmpty) {
                           setState(() {
-                            _isConfirmPasswordValid =false;
-                            confirm_passwordErrorMessage = 'Password cannot be empty';
+                            _isConfirmPasswordValid = false;
+                            confirm_passwordErrorMessage =
+                                'Password cannot be empty';
                           });
-                        }else if(new_passwordController.text.length < 8){
+                        } else if (new_passwordController.text.length < 8) {
                           setState(() {
-                            _isNewPasswordValid =false;
-                            new_passwordErrorMessage = 'Password must be at least 8 characters in length';
+                            _isNewPasswordValid = false;
+                            new_passwordErrorMessage =
+                                'Password must be at least 8 characters in length';
                           });
                         }
 
-                        if(new_passwordController.text != confirm_passwordController.text){
+                        if (new_passwordController.text !=
+                            confirm_passwordController.text) {
                           setState(() {
-                           // _isNewPasswordValid =false;
+                            // _isNewPasswordValid =false;
                             //new_passwordErrorMessage = 'New password do not match';
 
-                            _isConfirmPasswordValid =false;
-                            confirm_passwordErrorMessage = 'New password do not match';
-
+                            _isConfirmPasswordValid = false;
+                            confirm_passwordErrorMessage =
+                                'New password do not match';
                           });
                         }
-
-                      }
-                      else if(loadedCredentials != null && loadedCredentials.password!=old_passwordController.text){
+                      } else if (loadedCredentials != null &&
+                          loadedCredentials.password !=
+                              old_passwordController.text) {
                         setState(() {
                           _isOldPasswordValid = false;
-                          old_passwordErrorMessage ='Wrong password';
+                          old_passwordErrorMessage = 'Wrong password';
                         });
-                      }
-                      else if(loadedCredentials != null && loadedCredentials.password == new_passwordController.text){
+                      } else if (loadedCredentials != null &&
+                          loadedCredentials.password ==
+                              new_passwordController.text) {
                         setState(() {
                           _isOldPasswordValid = false;
                           _isNewPasswordValid = false;
                           _isConfirmPasswordValid = false;
 
-                          old_passwordErrorMessage ='Old and new passwords cannot be same';
-                          new_passwordErrorMessage ='Old and new passwords cannot be same';
-                          confirm_passwordErrorMessage ='Old and new passwords cannot be same';
+                          old_passwordErrorMessage =
+                              'Old and new passwords cannot be same';
+                          new_passwordErrorMessage =
+                              'Old and new passwords cannot be same';
+                          confirm_passwordErrorMessage =
+                              'Old and new passwords cannot be same';
                         });
-                      }
-                      else{
-                          setNewPassword();
+                      } else {
+                        setNewPassword();
                       }
                     },
-
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       height: 44,
                       margin: EdgeInsets.symmetric(horizontal: 0),
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
-                      child: Center(child: Text('Confirm', style: TextStyle(color: Colors.white),),),
+                      decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Text(
+                          'Confirm',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
-
                 ],
               ),
             ),
-
           ],
         ),
       ),

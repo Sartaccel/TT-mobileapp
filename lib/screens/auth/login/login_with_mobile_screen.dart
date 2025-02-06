@@ -456,34 +456,32 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                 style:
                                     TextStyle(fontSize: 14, fontFamily: 'Lato'),
                                 decoration: InputDecoration(
-                                  counterText: '',
-                                  hintText: 'Enter mobile number',
-                                  border: OutlineInputBorder(),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: _isMobileNumberValid
-                                          ? Colors.grey
-                                          : const Color(0xFFBA1A1A),
-                                      width: 1,
+                                    counterText: '',
+                                    hintText: 'Enter mobile number',
+                                    border: OutlineInputBorder(),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: _isMobileNumberValid
+                                            ? Colors.grey
+                                            : const Color(0xFFBA1A1A),
+                                        width: 1,
+                                      ),
                                     ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                      color: _isMobileNumberValid
-                                          ? Colors.blue
-                                          : const Color(0xFFBA1A1A),
-                                      width: 1,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      borderSide: BorderSide(
+                                        color: _isMobileNumberValid
+                                            ? Colors.blue
+                                            : const Color(0xFFBA1A1A),
+                                        width: 1,
+                                      ),
                                     ),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10)),
                                 keyboardType: TextInputType.phone,
                                 onChanged: (value) {
                                   setState(() {
-                                    _isMobileNumberValid =
-                                        RegExp(r'^[0-9]{10}$').hasMatch(value);
+                                    _isMobileNumberValid = true;
                                   });
                                 },
                               ),
@@ -496,7 +494,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                           Padding(
                             padding: EdgeInsets.only(top: 4, left: 4),
                             child: Text(
-                              mobileErrorMsg,
+                              mobileErrorMsg ?? '',
                               style: TextStyle(
                                   color: const Color(0xFFBA1A1A), fontSize: 12),
                             ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -93,14 +94,21 @@ class _CroppageState extends State<Croppage> {
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          Fluttertoast.showToast(
-              msg: 'Personal details updated successfully',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff2D2D2D),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          // Fluttertoast.showToast(
+          //     msg: 'Personal details updated successfully',
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Color(0xff2D2D2D),
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: 'Personal details updated successfully',
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff4CAF50),
+            iconColor: Colors.white,
+          );
 
           final Map<String, dynamic> data = resOBJ['data'];
           //ReferralData referralData = ReferralData.fromJson(data);
@@ -165,14 +173,21 @@ class _CroppageState extends State<Croppage> {
       );
       print('Upload success: ${response.statusCode}');
 
-      Fluttertoast.showToast(
-          msg: 'Successfully uploaded',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      // Fluttertoast.showToast(
+      //     msg: 'Successfully uploaded',
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Color(0xff2D2D2D),
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+      IconSnackBar.show(
+        context,
+        label: 'Successfully uploaded',
+        snackBarType: SnackBarType.success,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
 
       fetchCandidateProfileData(retrievedUserData!.profileId, token);
       //Navigator.pop(context);
@@ -185,14 +200,21 @@ class _CroppageState extends State<Croppage> {
       });
       print('Upload failed: $e');
 
-      Fluttertoast.showToast(
-          msg: e.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      // Fluttertoast.showToast(
+      //     msg: e.toString(),
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Color(0xff2D2D2D),
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+      IconSnackBar.show(
+        context,
+        label: e.toString(),
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xFFBA1A1A),
+        iconColor: Colors.white,
+      );
     }
   }
 

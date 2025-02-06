@@ -53,7 +53,7 @@ class _JobdetailsState extends State<Jobdetails> {
     final url = widget.isFromSaved
         ? Uri.parse(AppConstants.BASE_URL +
             AppConstants.VIEW_JOB +
-            widget.jobData['jobId'].toString())
+            (widget.jobData['jobId'] ?? widget.jobData['id']).toString())
         : Uri.parse(AppConstants.BASE_URL +
             AppConstants.VIEW_JOB +
             widget.jobData['id'].toString());

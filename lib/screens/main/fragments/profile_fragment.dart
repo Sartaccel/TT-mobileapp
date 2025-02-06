@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
@@ -28,7 +29,6 @@ class ProfileFragment extends StatefulWidget {
 }
 
 class _ProfileFragmentState extends State<ProfileFragment> {
-
   final AuthService _googleAuthService = AuthService();
   CandidateProfileModel? candidateProfileModel;
   UserData? retrievedUserData;
@@ -42,49 +42,78 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       //await launchUrlString(filePath, mode: LaunchMode.externalApplication);
       await launchUrl(Uri.parse(filePath));
       //await launch(filePath, forceSafariVC: false, forceWebView: false);
-    }else {
-      Fluttertoast.showToast(
-          msg: 'Could not launch ${filePath}',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
+    } else {
+      // Fluttertoast.showToast(
+      //     msg: 'Could not launch ${filePath}',
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Color(0xff2D2D2D),
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+      IconSnackBar.show(
+        context,
+        label: 'Could not launch ${filePath}',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
       throw 'Could not launch ${filePath}';
     }
   }
-
 
   void showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
           actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 20, 20, 20),
-          title: Text('Logout', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Color(0xff333333)),),
+          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+          title: Text(
+            'Logout',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff333333)),
+          ),
           content: Container(
               width: MediaQuery.of(context).size.width,
-              child: Text('Are you sure you want to log out?', style: TextStyle(height: 1.4, fontSize: 16,fontWeight: FontWeight.w400, color: Color(0xff333333)),)),
+              child: Text(
+                'Are you sure you want to log out?',
+                style: TextStyle(
+                    height: 0.5,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff333333)),
+              )),
           actions: [
             InkWell(
-              onTap: (){Navigator.pop(context);},
+              onTap: () {
+                Navigator.pop(context);
+              },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 1, color: AppColors.primaryColor) ,borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(7)),
                 child: Center(
-                  child: Text('Cancel', style: TextStyle(color: AppColors.primaryColor),),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.primaryColor),
+                  ),
                 ),
               ),
             ),
-
             InkWell(
               onTap: () async {
-
-                UserCredentials credentials = UserCredentials(username: '', password: '');
+                UserCredentials credentials =
+                    UserCredentials(username: '', password: '');
 
                 await credentials.deleteCredentials();
                 await _googleAuthService.signOut();
@@ -92,27 +121,31 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => LoginScreen()),
-                      (Route<dynamic> route) => false, // This will keep Screen 1
+                  (Route<dynamic> route) => false, // This will keep Screen 1
                 );
               },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(7)),
                 child: Center(
-                  child: Text('Logout', style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             )
-
           ],
         );
       },
     );
   }
 
-  final String appUrl = "https://play.google.com/store/apps/details?id=com.android.referral.talentturbo";
-
+  final String appUrl =
+      "https://play.google.com/store/apps/details?id=com.android.referral.talentturbo";
 
   void _shareApp() {
     Share.share(
@@ -123,7 +156,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
 
   @override
   Widget build(BuildContext context) {
-  return RefreshIndicator(
+    return RefreshIndicator(
       onRefresh: fetchProfileFromPref,
       child: Column(
         children: [
@@ -157,7 +190,8 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               width: 100,
                               height: 100,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white, width: 2),
+                                border:
+                                    Border.all(color: Colors.white, width: 2),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               child: InkWell(
@@ -195,7 +229,8 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           Positioned(
                             left: (MediaQuery.of(context).size.width / 2) + 20,
                             top: 130,
-                            child: Image.asset('assets/images/pro_image_edit.png'),
+                            child:
+                                Image.asset('assets/images/pro_image_edit.png'),
                           ),
                           Positioned(
                             top: 170,
@@ -353,7 +388,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               onTap: () {
                                 showDeleteConfirmationDialog(context);
                               },
-                              leading: Icon(Icons.logout, color: Color(0xffBA1A1A)),
+                              leading: SvgPicture.asset(
+                                'assets/icon/Logout.svg',
+                                width: 50,
+                                height: 50,
+                              ),
                               title: Text(
                                 'Logout',
                                 style: TextStyle(
@@ -369,77 +408,71 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                         ),
                       ),
                     ),
-              
-                
-              ],
-            )  :
-            Expanded(
-      child: Center(
-      child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-      SvgPicture.asset('no_internet_ic.svg'),
-      Text(
-      'No Internet connection',
-      style: TextStyle(
-      fontFamily: 'Lato',
-      fontWeight: FontWeight.bold,
-      fontSize: 18,
-      color: Color(0xff333333)),
-      ),
-      SizedBox(
-      height: 15,
-      ),
-      Text(
-      'Connect to Wi-Fi or cellular data and try again.',
-      style: TextStyle(
-      fontFamily: 'Lato',
-      fontWeight: FontWeight.w400,
-      fontSize: 14,
-      color: Color(0xff545454)),
-      ),
-      SizedBox(height: 30),
-      InkWell(
-      onTap: () {
-      checkInternetAvailability();
-      },
-      child: Container(
-      width: MediaQuery.of(context).size.width - 50,
-      height: 44,
-      margin: EdgeInsets.symmetric(horizontal: 0),
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-      color: AppColors.primaryColor,
-      borderRadius: BorderRadius.circular(10)),
-      child: Center(
-      child: Text(
-      'Try Again',
-      style: TextStyle(color: Colors.white),
-      ),
-      ),
-      ),
-      ),
-      ],
-      ),
-      ))
-
-
-
-          ]
-      ,
+                  ],
+                )
+              : Expanded(
+                  child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset('no_internet_ic.svg'),
+                      Text(
+                        'No Internet connection',
+                        style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Color(0xff333333)),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        'Connect to Wi-Fi or cellular data and try again.',
+                        style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Color(0xff545454)),
+                      ),
+                      SizedBox(height: 30),
+                      InkWell(
+                        onTap: () {
+                          checkInternetAvailability();
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 50,
+                          height: 44,
+                          margin: EdgeInsets.symmetric(horizontal: 0),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                            child: Text(
+                              'Try Again',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ))
+        ],
       ),
     );
   }
 
   Future<void> fetchProfileFromPref() async {
     //ReferralData? _referralData = await getReferralProfileData();
-    CandidateProfileModel? _candidateProfileModel = await getCandidateProfileData();
+    CandidateProfileModel? _candidateProfileModel =
+        await getCandidateProfileData();
     UserData? _retrievedUserData = await getUserData();
     setState(() {
       //referralData = _referralData;
       candidateProfileModel = _candidateProfileModel;
       retrievedUserData = _retrievedUserData;
-
     });
   }
 
@@ -453,14 +486,21 @@ class _ProfileFragmentState extends State<ProfileFragment> {
   Future<void> checkInternetAvailability() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.none)) {
-      Fluttertoast.showToast(
-        msg: "No internet connection",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
+      // Fluttertoast.showToast(
+      //   msg: "No internet connection",
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 1,
+      //   backgroundColor: Color(0xff2D2D2D),
+      //   textColor: Colors.white,
+      //   fontSize: 16.0,
+      // );
+      IconSnackBar.show(
+        context,
+        label: 'No internet connection',
+        snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
-        textColor: Colors.white,
-        fontSize: 16.0,
+        iconColor: Colors.white,
       );
 
       setState(() {
@@ -474,5 +514,4 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       });
     }
   }
-
 }
