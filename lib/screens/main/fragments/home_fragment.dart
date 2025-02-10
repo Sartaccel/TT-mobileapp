@@ -255,23 +255,21 @@ class _HomeFragmentState extends State<HomeFragment> {
                                     });
                                     //await saveStringToPreferences("search", "");
                                   } ,
-                                  child: Expanded(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(Icons.search, color: Color(0xff818385),),
-                                        SizedBox(width: 10,),
-                                        Flexible(
-                                          child: Text(
-                                            jobSearchTerm.isEmpty ? 'Search for jobs or skills' : jobSearchTerm,
-                                            style: TextStyle(color: Color(0xff7D7C7C)),
-                                            overflow: TextOverflow.ellipsis, // Add this line to handle overflow
-                                            maxLines: 1, // Optional: Limits text to a single line
-                                          ),
-                                        )
-                                    
-                                      ],
-                                    ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.search, color: Color(0xff818385),),
+                                      SizedBox(width: 10,),
+                                      Flexible(
+                                        child: Text(
+                                          jobSearchTerm.isEmpty ? 'Search for jobs or skills' : jobSearchTerm,
+                                          style: TextStyle(color: Color(0xff7D7C7C)),
+                                          overflow: TextOverflow.ellipsis, // Add this line to handle overflow
+                                          maxLines: 1, // Optional: Limits text to a single line
+                                        ),
+                                      )
+                                  
+                                    ],
                                   ),
                                 ),
                               ),

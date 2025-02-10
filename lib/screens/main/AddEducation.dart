@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -128,15 +129,22 @@ class _AddeducationState extends State<Addeducation> {
     try{
  var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
-      Fluttertoast.showToast(
-        msg: "No internet connection",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Color(0xff2D2D2D),
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      // Fluttertoast.showToast(
+      //   msg: "No internet connection",
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 1,
+      //   backgroundColor: Color(0xff2D2D2D),
+      //   textColor: Colors.white,
+      //   fontSize: 16.0,
+      // );
+      IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
       return;  // Exit the function if no internet
     }
       setState(() {

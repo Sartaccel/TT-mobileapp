@@ -13,26 +13,32 @@ class Removedialog extends StatefulWidget {
 class _RemoveDialogState extends State<Removedialog> {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-  
       backgroundColor: Colors.white,
       child: Container(
-        height: 144,
-        width: 390,
+        height: 134,
+        width: screenWidth * 0.80,
         padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Remove',
-              style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
+              style: GoogleFonts.lato(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black),
             ),
             Text(
               'Are you sure you want to remove your profile photo?',
-              style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),
+              style: GoogleFonts.lato(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -48,7 +54,10 @@ class _RemoveDialogState extends State<Removedialog> {
                   ),
                   child: Text(
                     'Cancel',
-                    style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF004C99)),
+                    style: GoogleFonts.lato(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF004C99)),
                   ),
                   minWidth: 102,
                   height: 36,
@@ -60,7 +69,7 @@ class _RemoveDialogState extends State<Removedialog> {
                     /*ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Profile photo removed.")),
                     );*/
-                    Navigator.of(context).pop(); 
+                    Navigator.of(context).pop();
                   },
                   color: Color(0xFF004C99),
                   shape: RoundedRectangleBorder(
@@ -68,7 +77,10 @@ class _RemoveDialogState extends State<Removedialog> {
                   ),
                   child: Text(
                     'Remove',
-                    style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: GoogleFonts.lato(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                   ),
                   minWidth: 102,
                   height: 36,

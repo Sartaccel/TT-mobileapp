@@ -38,10 +38,9 @@ class PersonalDetails extends StatefulWidget {
 }
 
 class _PersonalDetailsState extends State<PersonalDetails> {
-
-
   bool isLoading = false;
-  final databaseRef = FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
+  final databaseRef =
+      FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
   List<String> userSkills = [];
 
   List<dynamic> educationList = [];
@@ -52,12 +51,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   CandidateProfileModel? candidateProfileModel;
   UserData? retrievedUserData;
 
-  String email ='';
-  String resumeUpdatedDate='';
-
+  String email = '';
+  String resumeUpdatedDate = '';
 
   Future<void> deleteEducation(String id) async {
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.DELETE_EDUCATION + '/${id}');
+    final url = Uri.parse(
+        AppConstants.BASE_URL + AppConstants.DELETE_EDUCATION + '/${id}');
 
     try {
       setState(() {
@@ -81,10 +80,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         },
       );
 
-
       if (kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
       Fluttertoast.showToast(
@@ -96,7 +94,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           textColor: Colors.white,
           fontSize: 16.0);
 
-      if(response.statusCode == 200 || response.statusCode == 202){
+      if (response.statusCode == 200 || response.statusCode == 202) {
         Fluttertoast.showToast(
             msg: 'Refreshing profile. Please wait a moment',
             toastLength: Toast.LENGTH_SHORT,
@@ -105,18 +103,19 @@ class _PersonalDetailsState extends State<PersonalDetails> {
             backgroundColor: Color(0xff2D2D2D),
             textColor: Colors.white,
             fontSize: 16.0);
-        fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+        fetchCandidateProfileData(
+            retrievedUserData!.profileId, retrievedUserData!.token);
       }
-
-    }catch(e){
-      if(kDebugMode){
+    } catch (e) {
+      if (kDebugMode) {
         print(e.toString());
       }
     }
   }
 
   Future<void> deleteEmployment(String id) async {
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.DELETE_EMPLOYMENT + '/${id}');
+    final url = Uri.parse(
+        AppConstants.BASE_URL + AppConstants.DELETE_EMPLOYMENT + '/${id}');
 
     try {
       setState(() {
@@ -140,10 +139,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         },
       );
 
-
       if (kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
       Fluttertoast.showToast(
@@ -155,7 +153,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           textColor: Colors.white,
           fontSize: 16.0);
 
-      if(response.statusCode == 200 || response.statusCode == 202){
+      if (response.statusCode == 200 || response.statusCode == 202) {
         Fluttertoast.showToast(
             msg: 'Refreshing profile. Please wait a moment',
             toastLength: Toast.LENGTH_SHORT,
@@ -164,18 +162,19 @@ class _PersonalDetailsState extends State<PersonalDetails> {
             backgroundColor: Color(0xff2D2D2D),
             textColor: Colors.white,
             fontSize: 16.0);
-        fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+        fetchCandidateProfileData(
+            retrievedUserData!.profileId, retrievedUserData!.token);
       }
-
-    }catch(e){
-      if(kDebugMode){
+    } catch (e) {
+      if (kDebugMode) {
         print(e.toString());
       }
     }
   }
 
   Future<void> deleteResume(int id) async {
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.DELETE_RESUME + '${id}');
+    final url =
+        Uri.parse(AppConstants.BASE_URL + AppConstants.DELETE_RESUME + '${id}');
 
     try {
       setState(() {
@@ -191,8 +190,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       );
 
       if (kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
       Fluttertoast.showToast(
@@ -204,7 +203,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           textColor: Colors.white,
           fontSize: 16.0);
 
-      if(response.statusCode == 200 || response.statusCode == 202){
+      if (response.statusCode == 200 || response.statusCode == 202) {
         Fluttertoast.showToast(
             msg: 'Refreshing profile. Please wait a moment',
             toastLength: Toast.LENGTH_SHORT,
@@ -213,22 +212,20 @@ class _PersonalDetailsState extends State<PersonalDetails> {
             backgroundColor: Color(0xff2D2D2D),
             textColor: Colors.white,
             fontSize: 16.0);
-        fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+        fetchCandidateProfileData(
+            retrievedUserData!.profileId, retrievedUserData!.token);
       }
-
-
-    }catch(e){
-      if(kDebugMode){
+    } catch (e) {
+      if (kDebugMode) {
         print(e);
       }
     }
-
-
   }
 
   Future<void> fetchSkills() async {
     final String sanitizedEmail = email.replaceAll('.', ',');
-    final DatabaseReference skillRef = databaseRef.child('$sanitizedEmail/mySkills');
+    final DatabaseReference skillRef =
+        databaseRef.child('$sanitizedEmail/mySkills');
 
     // Listen for value changes in Firebase
     skillRef.onValue.listen((event) {
@@ -256,7 +253,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       //await launchUrlString(filePath, mode: LaunchMode.externalApplication);
       await launchUrl(Uri.parse(filePath));
       //await launch(filePath, forceSafariVC: false, forceWebView: false);
-    }else {
+    } else {
       Fluttertoast.showToast(
           msg: 'Could not launch ${filePath}',
           toastLength: Toast.LENGTH_SHORT,
@@ -269,11 +266,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     }
   }
 
-  Future<void> fetchCandidateProfileData(int profileId, String token, [int show = 1]) async {
+  Future<void> fetchCandidateProfileData(int profileId, String token,
+      [int show = 1]) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.CANDIDATE_PROFILE + profileId.toString());
-
-
+    final url = Uri.parse(AppConstants.BASE_URL +
+        AppConstants.CANDIDATE_PROFILE +
+        profileId.toString());
 
     try {
       setState(() {
@@ -285,20 +283,19 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
 
-      if(kDebugMode) {
+      if (kDebugMode) {
         //Debug mode print
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
 
-        if(statusMessage.toLowerCase().contains('success')){
-
-          if(show == 1) {
+        if (statusMessage.toLowerCase().contains('success')) {
+          if (show == 1) {
             Fluttertoast.showToast(
                 msg: 'Personal details updated successfully',
                 toastLength: Toast.LENGTH_SHORT,
@@ -310,11 +307,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           }
           final Map<String, dynamic> data = resOBJ['data'];
           //ReferralData referralData = ReferralData.fromJson(data);
-          CandidateProfileModel candidateData = CandidateProfileModel.fromJson(data);
+          CandidateProfileModel candidateData =
+              CandidateProfileModel.fromJson(data);
 
           await saveCandidateProfileData(candidateData);
-
-
 
           /*Navigator.pushAndRemoveUntil(
             context,
@@ -328,17 +324,13 @@ class _PersonalDetailsState extends State<PersonalDetails> {
             isLoading = false;
           });
         }
-
-      } else{
+      } else {
         print(response);
         setState(() {
           isLoading = false;
         });
       }
-
-
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -358,12 +350,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     if (result != null) {
       File file = File(result.files.single.path!);
 
-
-
       String extension = file.path.split('.').last.toLowerCase();
-      if (!_isValidExtension(extension))
-        {
-         Fluttertoast.showToast(
+      if (!_isValidExtension(extension)) {
+        Fluttertoast.showToast(
             msg: 'Unsupported file type.',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -387,7 +376,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           fontSize: 16.0,
         );
         return null;
-      } else if (fileSize > 5 * 1024 * 1024) { // 5MB in bytes
+      } else if (fileSize > 5 * 1024 * 1024) {
+        // 5MB in bytes
         Fluttertoast.showToast(
           msg: 'File must be less than 5MB.',
           toastLength: Toast.LENGTH_SHORT,
@@ -408,13 +398,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   File? selectedFile;
 
-
   Future<void> setUpdatedTimeInRTDB() async {
     try {
       final String sanitizedEmail = email.replaceAll('.', ',');
 
       final DatabaseReference resumeUpdatedRef =
-      databaseRef.child('$sanitizedEmail/resumeUpdated');
+          databaseRef.child('$sanitizedEmail/resumeUpdated');
 
       await resumeUpdatedRef.set(DateTime.now().toIso8601String());
 
@@ -422,7 +411,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     } catch (e) {
       print('Failed to update resume time: $e');
     }
-
   }
 
   Future<void> fetchAndFormatUpdatedTime() async {
@@ -430,7 +418,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       final String sanitizedEmail = email.replaceAll('.', ',');
 
       final DatabaseReference resumeUpdatedRef =
-      databaseRef.child('$sanitizedEmail/resumeUpdated');
+          databaseRef.child('$sanitizedEmail/resumeUpdated');
 
       final DataSnapshot snapshot = await resumeUpdatedRef.get();
 
@@ -453,14 +441,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   }
 
   String formatResumeDate(String? inputDate) {
-
-    if(inputDate != null) {
+    if (inputDate != null) {
       DateTime dateTime = DateTime.parse(inputDate);
       String formattedDate = DateFormat('dd-MM-yyyy').format(dateTime);
 
       return formattedDate;
-    }
-    else{
+    } else {
       return "Unknown date";
     }
   }
@@ -468,7 +454,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   Future<void> uploadPDF(File file) async {
     Dio dio = Dio();
 
-    String url = 'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
+    String url =
+        'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
 
     FormData formData = FormData.fromMap({
       "id": retrievedUserData!.profileId.toString(), // Your id
@@ -483,12 +470,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       setState(() {
         isLoading = true;
       });
-      Response response = await dio.post(url, data: formData, options: Options(
-        headers: {
-          'Authorization': token,  // Authorization Header
-          'Content-Type': 'multipart/form-data',  // Content-Type for file uploads
-        },
-      ),);
+      Response response = await dio.post(
+        url,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': token, // Authorization Header
+            'Content-Type':
+                'multipart/form-data', // Content-Type for file uploads
+          },
+        ),
+      );
       print('Upload success: ${response.statusCode}');
       setUpdatedTimeInRTDB();
 
@@ -520,7 +512,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           backgroundColor: Color(0xff2D2D2D),
           textColor: Colors.white,
           fontSize: 16.0);
-
     }
   }
 
@@ -534,48 +525,71 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     }
   }
 
-
-
-
   void showResumeDeleteConfirmationDialog(BuildContext context, int id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
           actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 20, 20, 20),
-          title: Text('Delete resume', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Color(0xff333333)),),
-          content: Text('Are you sure you want to delete your resume?', style: TextStyle(height: 1.4, fontSize: 16,fontWeight: FontWeight.w400, color: Color(0xff333333)),),
+          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+          title: Text(
+            'Delete resume',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff333333)),
+          ),
+          content: Text(
+            'Are you sure you want to delete your resume?',
+            style: TextStyle(
+                height: 1.4,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff333333)),
+          ),
           actions: [
             InkWell(
-              onTap: (){Navigator.pop(context);},
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 1, color: AppColors.primaryColor) ,borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: Text('Cancel', style: TextStyle(color: AppColors.primaryColor),),
-                ),
-              ),
-            ),
-
-            InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
-                deleteResume(id);
-
               },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
-                  child: Text('Delete', style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.primaryColor),
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                deleteResume(id);
+              },
+              child: Container(
+                height: 40,
+                width: 100,
+                decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Center(
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             )
-
           ],
         );
       },
@@ -587,40 +601,66 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
           actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 20, 20, 20),
-          title: Text('Delete educational details', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Color(0xff333333)),),
-          content: Text('Are you sure you want to delete your educational details?', style: TextStyle(height: 1.4, fontSize: 16,fontWeight: FontWeight.w400, color: Color(0xff333333)),),
+          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+          title: Text(
+            'Delete educational details',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff333333)),
+          ),
+          content: Text(
+            'Are you sure you want to delete your educational details?',
+            style: TextStyle(
+                height: 1.4,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff333333)),
+          ),
           actions: [
             InkWell(
-              onTap: (){Navigator.pop(context);},
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 1, color: AppColors.primaryColor) ,borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: Text('Cancel', style: TextStyle(color: AppColors.primaryColor),),
-                ),
-              ),
-            ),
-
-            InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
-                deleteEducation(id);
-
               },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
-                  child: Text('Delete', style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.primaryColor),
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                deleteEducation(id);
+              },
+              child: Container(
+                height: 40,
+                width: 100,
+                decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Center(
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             )
-
           ],
         );
       },
@@ -632,50 +672,74 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
           actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 20, 20, 20),
-          title: Text('Delete employment details', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Color(0xff333333)),),
-          content: Text('Are you sure you want to delete this employment detail?', style: TextStyle(height: 1.4, fontSize: 16,fontWeight: FontWeight.w400, color: Color(0xff333333)),),
+          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+          title: Text(
+            'Delete employment details',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff333333)),
+          ),
+          content: Text(
+            'Are you sure you want to delete this employment detail?',
+            style: TextStyle(
+                height: 1.4,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff333333)),
+          ),
           actions: [
             InkWell(
-              onTap: (){Navigator.pop(context);},
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 1, color: AppColors.primaryColor) ,borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: Text('Cancel', style: TextStyle(color: AppColors.primaryColor),),
-                ),
-              ),
-            ),
-
-            InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
-                deleteEmployment(id);
-
               },
               child: Container(
                 height: 40,
                 width: 100,
-                decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
-                  child: Text('Delete', style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.primaryColor),
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                deleteEmployment(id);
+              },
+              child: Container(
+                height: 40,
+                width: 100,
+                decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Center(
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             )
-
           ],
         );
       },
     );
   }
 
-
   Future<void> downloadAndShareCV(String fileUrl, String fileName) async {
     try {
-
       double downloadProgress = 0.0;
       showDialog(
         context: context,
@@ -687,11 +751,13 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
       // Download the file
       final tempDir = await getTemporaryDirectory();
-      String filePath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_${fileName}';
+      String filePath =
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_${fileName}';
 
       // Using Dio to download the file
       Dio dio = Dio();
-      await dio.download(fileUrl, filePath, onReceiveProgress: (received, total) {
+      await dio.download(fileUrl, filePath,
+          onReceiveProgress: (received, total) {
         if (total != -1) {
           downloadProgress = received / total;
 
@@ -704,7 +770,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
               return ProgressDialog(progress: downloadProgress);
             },
           );
-        }});
+        }
+      });
 
       Navigator.of(context).pop();
       // Share the downloaded file
@@ -718,34 +785,60 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: ()async {
-          await fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token, 0);
+        onRefresh: () async {
+          await fetchCandidateProfileData(
+              retrievedUserData!.profileId, retrievedUserData!.token, 0);
         },
         child: Container(
           color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 40,
-                decoration: BoxDecoration(color: Color(0xff001B3E)),),
+                decoration: BoxDecoration(color: Color(0xff001B3E)),
+              ),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 60,
                 decoration: BoxDecoration(color: Color(0xff001B3E)),
-                child:
-                Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row( children: [ IconButton(icon:  Icon(Icons.arrow_back_ios_new, color: Colors.white,), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('Back', style: TextStyle(fontFamily: 'Lato', fontSize: 16, color: Colors.white),)))) ],),
-                    SizedBox(width: 80,)
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                height: 50,
+                                child: Center(
+                                    child: Text(
+                                  'Back',
+                                  style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontSize: 16,
+                                      color: Colors.white),
+                                ))))
+                      ],
+                    ),
+                    SizedBox(
+                      width: 80,
+                    )
                   ],
                 ),
-
-
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -760,570 +853,972 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                               height: 270,
                               child: Stack(
                                 children: [
-
                                   Container(
                                     width: MediaQuery.of(context).size.width,
                                     height: 120,
-                                    decoration: BoxDecoration(color: Color(0xff001B3E), borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),),
-
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff001B3E),
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
+                                            bottomRight: Radius.circular(20))),
+                                  ),
                                   Positioned(
                                       top: 70,
-                                      left: ((MediaQuery.of(context).size.width)/2) -50,
+                                      left:
+                                          ((MediaQuery.of(context).size.width) /
+                                                  2) -
+                                              50,
                                       child: Container(
-                                        width: 100, height: 100,
-                                        decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), borderRadius: BorderRadius.circular(50)),
+                                        width: 100,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.white, width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
                                         child: InkWell(
                                           onTap: () async {
-                                            await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> EditPhotoPage() ));
+                                            await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        EditPhotoPage()));
                                             fetchProfileFromPref();
                                           },
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(50),
+                                            borderRadius:
+                                                BorderRadius.circular(50),
                                             //child: Image.asset('assets/images/profile.jfif', height: 100, width: 100, fit: BoxFit.cover,),
-                                            child: (candidateProfileModel != null && candidateProfileModel!.imagePath != null)
+                                            child: (candidateProfileModel !=
+                                                        null &&
+                                                    candidateProfileModel!
+                                                            .imagePath !=
+                                                        null)
                                                 ? Image.network(
-                                              candidateProfileModel!.imagePath!,
-                                              height: 100,
-                                              width: 100,
-                                              fit: BoxFit.cover,
-                                            )
+                                                    candidateProfileModel!
+                                                        .imagePath!,
+                                                    height: 100,
+                                                    width: 100,
+                                                    fit: BoxFit.cover,
+                                                  )
                                                 : Image.asset(
-                                              'assets/images/profile.jfif',
-                                              height: 100,
-                                              width: 100,
-                                              fit: BoxFit.cover,
-                                            ),
+                                                    'assets/images/profile.jfif',
+                                                    height: 100,
+                                                    width: 100,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                         ),
                                       )),
-
-                                  Positioned( left: ((MediaQuery.of(context).size.width)/2)+20 ,top: 140,child: Image.asset('assets/images/pro_image_edit.png')),
-
-                                  Positioned( right: 20 ,top: 140,child:
-                                    InkWell(
-                                      onTap: () async {
-                                        await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditPersonalDetails()));
-                                        fetchProfileFromPref();
-                                      },
-                                      child: Row(
+                                  Positioned(
+                                      left:
+                                          ((MediaQuery.of(context).size.width) /
+                                                  2) +
+                                              20,
+                                      top: 140,
+                                      child: Image.asset(
+                                          'assets/images/pro_image_edit.png')),
+                                  Positioned(
+                                      right: 20,
+                                      top: 140,
+                                      child: InkWell(
+                                        onTap: () async {
+                                          await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      EditPersonalDetails()));
+                                          fetchProfileFromPref();
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.edit_outlined),
+                                            Text(
+                                              'Edit',
+                                              style: TextStyle(
+                                                  color: Color(0xff001B3E)),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  Positioned(
+                                    top: 190,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: Column(
                                         children: [
-                                          Icon(Icons.edit_outlined),
-                                          Text('Edit', style: TextStyle(color: Color(0xff001B3E)),)
+                                          Text(
+                                            '${candidateProfileModel!.candidateName}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              color: Color(0xff333333),
+                                              fontSize: 16,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            '${candidateProfileModel!.position ?? 'Designation not updated'}',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xff333333),
+                                                fontSize: 14),
+                                          ),
                                         ],
                                       ),
-                                    )
-                                  ),
-
-                                  Positioned(top: 190, left: 0, right: 0, child: Center(
-                                    child: Column(
-                                      children: [
-                                       Text(
-                                '${candidateProfileModel!.candidateName}',
-                            style: const TextStyle(
-                               fontWeight: FontWeight.w700,
-                              color: Color(0xff333333),
-                                    fontSize: 16,
-                                       ),
-                                  maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                               ),
-                                        const SizedBox(height: 5,),
-                                        Text('${candidateProfileModel!.position?? 'Designation not updated'}', style: const TextStyle(fontWeight: FontWeight.w400, color: Color(0xff333333), fontSize: 14), ),
-                                      ],
                                     ),
-                                  ),)
-
+                                  )
                                 ],
                               ),
                             ),
-
-                            SizedBox(height: 0,),
-
-                            Container(child:
-                            Column(
-                              children: [
-                                ListTile(dense: true, leading: Icon(Icons.location_on_outlined), minLeadingWidth: 10, title: Text('${candidateProfileModel?.location ?? 'Location not updated'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
-                                //ListTile(dense: true, leading: Icon(Icons.work_outline_rounded), minLeadingWidth: 10, title: Text('${candidateProfileModel!.experience} Years', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
-                                ListTile(dense: true, leading: Icon(Icons.work_outline_rounded), minLeadingWidth: 10, title: Text( candidateProfileModel!.experience != null ? '${candidateProfileModel!.experience} Years' : 'Experience not updated', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
-                                ListTile(dense: true, leading: Icon(Icons.call), minLeadingWidth: 10, title: Text('${candidateProfileModel!.mobile}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
-                                ListTile(dense: true, leading: Icon(Icons.email_outlined), minLeadingWidth: 10, title: Text('${candidateProfileModel!.email}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
-                              ],
-                            ),),
-
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 0,
+                            ),
+                            Container(
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    dense: true,
+                                    leading: Icon(Icons.location_on_outlined),
+                                    minLeadingWidth: 10,
+                                    title: Text(
+                                      '${candidateProfileModel?.location ?? 'Location not updated'}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xff333333)),
+                                    ),
+                                  ),
+                                  //ListTile(dense: true, leading: Icon(Icons.work_outline_rounded), minLeadingWidth: 10, title: Text('${candidateProfileModel!.experience} Years', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
+                                  ListTile(
+                                    dense: true,
+                                    leading: Icon(Icons.work_outline_rounded),
+                                    minLeadingWidth: 10,
+                                    title: Text(
+                                      candidateProfileModel!.experience != null
+                                          ? '${candidateProfileModel!.experience} Years'
+                                          : 'Experience not updated',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xff333333)),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    dense: true,
+                                    leading: Icon(Icons.call),
+                                    minLeadingWidth: 10,
+                                    title: Text(
+                                      '${candidateProfileModel!.mobile}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xff333333)),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    dense: true,
+                                    leading: Icon(Icons.email_outlined),
+                                    minLeadingWidth: 10,
+                                    title: Text(
+                                      '${candidateProfileModel!.email}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xff333333)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
                           ],
                         ),
                       ),
-
-                      isLoading? Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                          child: Visibility(
-                            visible: isLoading,
-                            child: Column(
-                              children: [
-                                SizedBox(height: 30,),
-                                LoadingAnimationWidget.fourRotatingDots(
-                                  color: AppColors.primaryColor,
-                                  size: 40,
+                      isLoading
+                          ? Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Center(
+                                child: Visibility(
+                                  visible: isLoading,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      LoadingAnimationWidget.fourRotatingDots(
+                                        color: AppColors.primaryColor,
+                                        size: 40,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ) : Container(),
-
-                      SizedBox(height: 20,),
+                              ),
+                            )
+                          : Container(),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(width: 0.3, color: Colors.grey)
-                        ),
+                            border: Border.all(width: 0.3, color: Colors.grey)),
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Resume', style: TextStyle(fontSize: 16, fontFamily: 'Lato', fontWeight: FontWeight.w700, color: Color(0xff333333)),),
+                              child: Text(
+                                'Resume',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xff333333)),
+                              ),
                             ),
-                            SizedBox(height: 10,),
-
-
-
-                            candidateProfileModel!.fileName == null ?
-
-                              InkWell(
-                                onTap: (){
-                                  pickAndUploadPDF();
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                            SizedBox(
+                              height: 10,
+                            ),
+                            candidateProfileModel!.fileName == null
+                                ? InkWell(
+                                    onTap: () {
+                                      pickAndUploadPDF();
+                                    },
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text('Upload file', style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xff004C99)),),
-                                          SizedBox(height: 10,),
-                                          Text('File types: pdf, .doc, .docx  Max file size: 5MB', style: TextStyle(color: Color(0xff7D7C7C), fontSize: 14),)
-
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Upload file',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Color(0xff004C99)),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                'File types: pdf, .doc, .docx  Max file size: 5MB',
+                                                style: TextStyle(
+                                                    color: Color(0xff7D7C7C),
+                                                    fontSize: 14),
+                                              )
+                                            ],
+                                          ),
+                                          SvgPicture.asset(
+                                              'assets/images/mage_upload.svg')
                                         ],
                                       ),
-                                      SvgPicture.asset('assets/images/mage_upload.svg')
-                                    ],
-                                  ),
-                                ),
-                              ):
-                                InkWell(
-                                onTap: ()=>{
-                                  showMaterialModalBottomSheet(
-                                    context: context,
-                                    builder: (context) =>
-                                        Container(
-                                          padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                                          width: MediaQuery.of(context).size.width,
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () => {
+                                      showMaterialModalBottomSheet(
+                                        context: context,
+                                        builder: (context) => Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 30, horizontal: 10),
+                                          width:
+                                              MediaQuery.of(context).size.width,
                                           child: Column(
-
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-
                                               ListTile(
-                                                onTap: (){
-                                                        final String? filePath = candidateProfileModel?.filePath;
-                                                        if (filePath != null) {
-                                                          Navigator.pop(context);
-                                                          Navigator.push(context,
-                                                            MaterialPageRoute(
-                                                              builder: (
-                                                                  context) =>
-                                                                  DocViewerPage(
-                                                                      url: filePath),),);
-                                                        }
-                                                  },
+                                                onTap: () {
+                                                  final String? filePath =
+                                                      candidateProfileModel
+                                                          ?.filePath;
+                                                  if (filePath != null) {
+                                                    Navigator.pop(context);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DocViewerPage(
+                                                                url: filePath),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
                                                 //leading: Icon(Icons.visibility_outlined),
-                                                leading: SvgPicture.asset('assets/images/ic_resume_view.svg'),
+                                                leading: SvgPicture.asset(
+                                                    'assets/images/ic_resume_view.svg'),
                                                 title: Text('View Resume'),
                                               ),
                                               ListTile(
-                                                onTap: (){
+                                                onTap: () {
                                                   Navigator.pop(context);
                                                   pickAndUploadPDF();
                                                 },
                                                 //leading: Icon(Icons.refresh),
-                                                leading: SvgPicture.asset('assets/images/ic_resume_change.svg'),
+                                                leading: SvgPicture.asset(
+                                                    'assets/images/ic_resume_change.svg'),
                                                 title: Text('Change Resume'),
                                               ),
                                               ListTile(
-                                                onTap: (){_launchURL();},
-                                                //leading: Icon(Icons.download),
-                                                leading: SvgPicture.asset('assets/images/ic_resume_download.svg'),
-                                                title: Text('Download'),
-                                              ),
-
-                                              ListTile(
-                                                onTap: (){
-                                                      final String? filePath = candidateProfileModel?.filePath;
-                                                      final String? fileName = candidateProfileModel!.fileName;
-                                                      if (filePath != null && fileName != null) {
-                                                        Navigator.pop(context);
-                                                        downloadAndShareCV(filePath, fileName);
-                                                      }
-
+                                                onTap: () {
+                                                  _launchURL();
                                                 },
                                                 //leading: Icon(Icons.download),
-                                                leading: SvgPicture.asset('assets/images/ic_share_resume.svg'),
+                                                leading: SvgPicture.asset(
+                                                    'assets/images/ic_resume_download.svg'),
+                                                title: Text('Download'),
+                                              ),
+                                              ListTile(
+                                                onTap: () {
+                                                  final String? filePath =
+                                                      candidateProfileModel
+                                                          ?.filePath;
+                                                  final String? fileName =
+                                                      candidateProfileModel!
+                                                          .fileName;
+                                                  if (filePath != null &&
+                                                      fileName != null) {
+                                                    Navigator.pop(context);
+                                                    downloadAndShareCV(
+                                                        filePath, fileName);
+                                                  }
+                                                },
+                                                //leading: Icon(Icons.download),
+                                                leading: SvgPicture.asset(
+                                                    'assets/images/ic_share_resume.svg'),
                                                 title: Text('Share'),
                                               ),
-
                                               ListTile(
-                                                onTap: (){
+                                                onTap: () {
                                                   Navigator.pop(context);
 
-                                                  final int? resumeId = candidateProfileModel?.resumeId;
-                                                  if(kDebugMode){
+                                                  final int? resumeId =
+                                                      candidateProfileModel
+                                                          ?.resumeId;
+                                                  if (kDebugMode) {
                                                     print(resumeId);
                                                   }
 
-                                                  if(resumeId != null) {
+                                                  if (resumeId != null) {
                                                     showResumeDeleteConfirmationDialog(
                                                         context, resumeId);
                                                   }
                                                 },
                                                 //leading: Icon(Icons.download),
-                                                leading: SvgPicture.asset('assets/images/ic_resume_delete.svg'),
+                                                leading: SvgPicture.asset(
+                                                    'assets/images/ic_resume_delete.svg'),
                                                 title: Text('Delete'),
                                               ),
-
                                             ],
                                           ),
                                         ),
-                                  )
-
-
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Color(0xafFAFCFF)),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                      )
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          color: Color(0xafFAFCFF)),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Image.asset('assets/images/ic_curriculum.png'),
-                                          SizedBox(width: 10,),
-                                          Container(
-                                            width: MediaQuery.of(context).size.width - 150,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Flexible(fit: FlexFit.loose, child: Text(softWrap: true, '${candidateProfileModel!.fileName}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Color(0xff004C99), fontFamily: 'NunitoSans', fontWeight: FontWeight.w600),)),
-                                                //resumeUpdatedDate.isEmpty? SizedBox() : Text('Last updated ${resumeUpdatedDate}', style: TextStyle(color: Color(0xff004C99), fontFamily: 'NunitoSans', fontWeight: FontWeight.normal),),
-                                                Text('Last updated ${formatResumeDate(candidateProfileModel!.lastResumeUpdatedDate)}', style: TextStyle(color: Color(0xff004C99), fontFamily: 'NunitoSans', fontWeight: FontWeight.normal),),
-                                              ],
-                                            ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                  'assets/images/ic_curriculum.png'),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    150,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Flexible(
+                                                        fit: FlexFit.loose,
+                                                        child: Text(
+                                                          softWrap: true,
+                                                          '${candidateProfileModel!.fileName}',
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xff004C99),
+                                                              fontFamily:
+                                                                  'NunitoSans',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        )),
+                                                    //resumeUpdatedDate.isEmpty? SizedBox() : Text('Last updated ${resumeUpdatedDate}', style: TextStyle(color: Color(0xff004C99), fontFamily: 'NunitoSans', fontWeight: FontWeight.normal),),
+                                                    Text(
+                                                      'Last updated ${formatResumeDate(candidateProfileModel!.lastResumeUpdatedDate)}',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xff004C99),
+                                                          fontFamily:
+                                                              'NunitoSans',
+                                                          fontWeight: FontWeight
+                                                              .normal),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
+                                          Image.asset(
+                                              'assets/images/ic_more.png')
                                         ],
                                       ),
-
-                                      Image.asset('assets/images/ic_more.png')
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-
                           ],
                         ),
                       ),
-
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white
-                        ),
+                            color: Colors.white),
                         child: Column(
                           children: [
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 20,
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Work Experience', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xff333333)),),
+                                Text(
+                                  'Work Experience',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xff333333)),
+                                ),
                                 InkWell(
-                                  onTap: () async {
-                                    await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Addemployment(emplomentData: null,)));
-                                    fetchProfileFromPref();
-                                  }
-                                ,child: Image.asset('assets/images/ic_add_round.png'))
+                                    onTap: () async {
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Addemployment(
+                                                    emplomentData: null,
+                                                  )));
+                                      fetchProfileFromPref();
+                                    },
+                                    child: Image.asset(
+                                        'assets/images/ic_add_round.png'))
                               ],
                             ),
-
-                            workList.length == 0?
-                              Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 10,),
-                                Text('Include your work experience to help recruiters match your profile with suitable job openings.',textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w400, height: 1.5,color: Color(0xff7D7C7C), fontSize: 14),)
-                              ],
-                            ) :
-                                ListView.builder(shrinkWrap: true, physics: NeverScrollableScrollPhysics(), itemCount: workList.length, itemBuilder: (context, index){
-                                  return Column(
+                            workList.length == 0
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      InkWell(
-                                        onTap: (){
-                                          showMaterialModalBottomSheet(
-                                            isDismissible: true,
-                                            context: context,
-                                            builder: (context) =>
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                                                  width: MediaQuery.of(context).size.width,
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        'Include your work experience to help recruiters match your profile with suitable job openings.',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.5,
+                                            color: Color(0xff7D7C7C),
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: workList.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              showMaterialModalBottomSheet(
+                                                isDismissible: true,
+                                                context: context,
+                                                builder: (context) => Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 30,
+                                                      horizontal: 10),
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
                                                   child: Column(
-
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: [
-
                                                       ListTile(
-                                                        leading: SvgPicture.asset('assets/images/tabler_edit.svg'),
+                                                        leading: SvgPicture.asset(
+                                                            'assets/images/tabler_edit.svg'),
                                                         title: Text('Edit'),
                                                         onTap: () async {
-                                                          Navigator.pop(context);
-                                                          await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Addemployment(emplomentData: workList[index],)));
+                                                          Navigator.pop(
+                                                              context);
+                                                          await Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      Addemployment(
+                                                                        emplomentData:
+                                                                            workList[index],
+                                                                      )));
                                                           fetchProfileFromPref();
                                                         },
                                                       ),
                                                       ListTile(
-                                                        leading: Icon(Icons.delete, color: Colors.black,),
+                                                        leading: Icon(
+                                                          Icons.delete,
+                                                          color: Colors.black,
+                                                        ),
                                                         title: Text('Delete'),
-                                                        onTap: (){
-                                                          Navigator.pop(context);
+                                                        onTap: () {
+                                                          Navigator.pop(
+                                                              context);
                                                           setState(() {
-                                                            showExperienceDeleteConfirmationDialog(context, workList[index]['id'].toString());
+                                                            showExperienceDeleteConfirmationDialog(
+                                                                context,
+                                                                workList[index]
+                                                                        ['id']
+                                                                    .toString());
                                                           });
-
                                                         },
                                                       ),
-
                                                     ],
                                                   ),
                                                 ),
-                                          );
-                                        } ,
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              );
+                                            },
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Icon(Icons.brightness_1_outlined, color: AppColors.primaryColor, size: 14,),
-                                                SizedBox(width: 17,),
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(workList[index]['jobTitle'], style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Color(0xff333333)),),
-                                                    SizedBox(height: 10,),
-                                                    Text(workList[index]['companyName'], overflow: TextOverflow.ellipsis, maxLines: 1,  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff333333)),),
-                                                    SizedBox(height: 10,),
-                                                    Text('${workList[index]['employedFrom']} - ${workList[index]['employedTo'] =='1970-01-01' ? 'Present' : workList[index]['employedTo']}', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff7D7C7C)),),
-                                                    SizedBox(height: 10,),
+                                                    Icon(
+                                                      Icons
+                                                          .brightness_1_outlined,
+                                                      color: AppColors
+                                                          .primaryColor,
+                                                      size: 14,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 17,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          workList[index]
+                                                              ['jobTitle'],
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 16,
+                                                              color: Color(
+                                                                  0xff333333)),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          workList[index]
+                                                              ['companyName'],
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 1,
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: 14,
+                                                              color: Color(
+                                                                  0xff333333)),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          '${workList[index]['employedFrom']} - ${workList[index]['employedTo'] == '1970-01-01' ? 'Present' : workList[index]['employedTo']}',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: 14,
+                                                              color: Color(
+                                                                  0xff7D7C7C)),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
-
-
-                                              ],
-                                            ),
-                                            Image.asset('assets/images/ic_more.png')
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 30,),
-                                    ],
-                                  );
-                                })
-
-
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(height: 20,),
-                      Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(height: 20,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Educational Details', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xff333333)),),
-                                InkWell(onTap: () async {
-
-                                  await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> Addeducation(educationDetail: null,)));
-                                  fetchProfileFromPref();
-
-                                },child: Image.asset('assets/images/ic_add_round.png'))
-                              ],
-                            ),
-
-                            educationList.length ==0 ?
-                              Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 10,),
-                                Text('Update your education details to boost your chances of securing a job more quickly.',textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w400, height: 1.5,color: Color(0xff7D7C7C), fontSize: 14),)
-                              ],
-                            ) :
-                                ListView.builder(shrinkWrap: true, physics: NeverScrollableScrollPhysics(), itemCount: educationList.length, itemBuilder: (context, index){
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: (){
-                                    showMaterialModalBottomSheet(
-                                      isDismissible: true,
-                                      context: context,
-                                      builder: (context) =>
-                                          Container(
-                                            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                                            width: MediaQuery.of(context).size.width,
-                                            child: Column(
-
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-
-                                                ListTile(
-                                                  leading: SvgPicture.asset('assets/images/tabler_edit.svg'),
-                                                  title: Text('Edit'),
-                                                  onTap: () async {
-                                                    Navigator.pop(context);
-                                                    await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Addeducation(educationDetail: educationList[index])));
-                                                    fetchProfileFromPref();
-                                                  },
-                                                ),
-                                                ListTile(
-                                                  leading: Icon(Icons.delete, color: Colors.black,),
-                                                  title: Text('Delete'),
-                                                  onTap: (){
-                                                    Navigator.pop(context);
-                                                    setState(() {
-                                                      showDeleteConfirmationDialog(context, educationList[index]['id'].toString());
-                                                    });
-
-                                                  },
-                                                ),
-
+                                                Image.asset(
+                                                    'assets/images/ic_more.png')
                                               ],
                                             ),
                                           ),
-                                    );
-                                  } ,
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Icon(Icons.brightness_1_outlined, color: AppColors.primaryColor, size: 14,),
-                                                SizedBox(width: 20,),
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(educationList[index]['specialization'] ?? 'Unknown', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Color(0xff333333)),),
-                                                    SizedBox(height: 10,),
-                                                    Text(educationList[index]['schoolName'] ?? 'Unknown', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff333333)),),
-                                                    SizedBox(height: 10,),
-                                                    //Text('${educationList[index]['year']}', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff7D7C7C)),),
-                                                    Text('${educationList[index]['graduatedFrom']?? 'Unknown'} - ${educationList[index]['graduatedTo'] =='1970-01-01' ? 'Present' : educationList[index]['graduatedTo']?? 'Unknown'}', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff7D7C7C)),),
-                                                    SizedBox(height: 10,),
-                                                  ],
-                                                ),
-
-
-                                              ],
-                                            ),
-                                            Image.asset('assets/images/ic_more.png')
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 30,),
-                                    ],
-                                  );
-                                })
-
-
-
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                        ],
+                                      );
+                                    })
                           ],
                         ),
                       ),
-
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white
-                        ),
+                            color: Colors.white),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 20,
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Skills', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xff333333)),),
-                                InkWell(onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Adddeleteskills()));
-                                },child: Image.asset('assets/images/ic_add_round.png'))
-                              ],
-                            ),
-
-                            userSkills.length==0?
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 10,),
-                                Text('List your skills on your profile. This will help recruiters find you more easily.',textAlign: TextAlign.start, style: TextStyle(fontWeight: FontWeight.w400, height: 1.5,color: Color(0xff7D7C7C), fontSize: 14),)
-                              ],
-                            )
-                              :Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 30,),
-                                Wrap(
-                                  alignment: WrapAlignment.start,
-                                  crossAxisAlignment: WrapCrossAlignment.start,
-                                  spacing: 12.0, // Horizontal space between boxes
-                                  runSpacing: 12.0,
-                                  children: List.generate(userSkills.length, (i){
-                                    return Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          color: AppColors.primaryColor
-                                      ),
-                                      child: Text(userSkills[i], style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),),
-                                    );
-                                  }),
+                                Text(
+                                  'Educational Details',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xff333333)),
                                 ),
+                                InkWell(
+                                    onTap: () async {
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Addeducation(
+                                                    educationDetail: null,
+                                                  )));
+                                      fetchProfileFromPref();
+                                    },
+                                    child: Image.asset(
+                                        'assets/images/ic_add_round.png'))
                               ],
                             ),
-
-
-                            SizedBox(height: 30,),
-
+                            educationList.length == 0
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        'Update your education details to boost your chances of securing a job more quickly.',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.5,
+                                            color: Color(0xff7D7C7C),
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: educationList.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              showMaterialModalBottomSheet(
+                                                isDismissible: true,
+                                                context: context,
+                                                builder: (context) => Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 30,
+                                                      horizontal: 10),
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      ListTile(
+                                                        leading: SvgPicture.asset(
+                                                            'assets/images/tabler_edit.svg'),
+                                                        title: Text('Edit'),
+                                                        onTap: () async {
+                                                          Navigator.pop(
+                                                              context);
+                                                          await Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      Addeducation(
+                                                                          educationDetail:
+                                                                              educationList[index])));
+                                                          fetchProfileFromPref();
+                                                        },
+                                                      ),
+                                                      ListTile(
+                                                        leading: Icon(
+                                                          Icons.delete,
+                                                          color: Colors.black,
+                                                        ),
+                                                        title: Text('Delete'),
+                                                        onTap: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                          setState(() {
+                                                            showDeleteConfirmationDialog(
+                                                                context,
+                                                                educationList[
+                                                                            index]
+                                                                        ['id']
+                                                                    .toString());
+                                                          });
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .brightness_1_outlined,
+                                                      color: AppColors
+                                                          .primaryColor,
+                                                      size: 14,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          educationList[index][
+                                                                  'specialization'] ??
+                                                              'Unknown',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 16,
+                                                              color: Color(
+                                                                  0xff333333)),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          educationList[index][
+                                                                  'schoolName'] ??
+                                                              'Unknown',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: 14,
+                                                              color: Color(
+                                                                  0xff333333)),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        //Text('${educationList[index]['year']}', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff7D7C7C)),),
+                                                        Text(
+                                                          '${educationList[index]['graduatedFrom'] ?? 'Unknown'} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : educationList[index]['graduatedTo'] ?? 'Unknown'}',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: 14,
+                                                              color: Color(
+                                                                  0xff7D7C7C)),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                Image.asset(
+                                                    'assets/images/ic_more.png')
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                        ],
+                                      );
+                                    })
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.3, color: Colors.grey),
+                            color: Colors.white),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Skills',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xff333333)),
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Adddeleteskills()));
+                                    },
+                                    child: Image.asset(
+                                        'assets/images/ic_add_round.png'))
+                              ],
+                            ),
+                            userSkills.length == 0
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        'List your skills on your profile. This will help recruiters find you more easily.',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.5,
+                                            color: Color(0xff7D7C7C),
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  )
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Wrap(
+                                        alignment: WrapAlignment.start,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.start,
+                                        spacing:
+                                            12.0, // Horizontal space between boxes
+                                        runSpacing: 12.0,
+                                        children: List.generate(
+                                            userSkills.length, (i) {
+                                          return Container(
+                                            padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: AppColors.primaryColor),
+                                            child: Text(
+                                              userSkills[i],
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+                            SizedBox(
+                              height: 30,
+                            ),
                           ],
                         ),
                       ),
@@ -1331,21 +1826,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   ),
                 ),
               )
-
-
-
-
-
-
-
-
             ],
           ),
         ),
       ),
     );
   }
-
 
   @override
   void initState() {
@@ -1370,11 +1856,13 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   Future<void> fetchProfileFromPref() async {
     //ReferralData? _referralData = await getReferralProfileData();
-    CandidateProfileModel? _candidateProfileModel = await getCandidateProfileData();
+    CandidateProfileModel? _candidateProfileModel =
+        await getCandidateProfileData();
     UserData? _retrievedUserData = await getUserData();
 
     print('Resume : ${_candidateProfileModel!.fileName}');
-    UserCredentials? loadedCredentials = await UserCredentials.loadCredentials();
+    UserCredentials? loadedCredentials =
+        await UserCredentials.loadCredentials();
 
     setState(() {
       //referralData = _referralData;
@@ -1388,12 +1876,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         email = loadedCredentials.username;
         fetchAndFormatUpdatedTime();
         fetchSkills();
-      } else if(retrievedUserData!= null){
+      } else if (retrievedUserData != null) {
         email = retrievedUserData!.email;
         fetchAndFormatUpdatedTime();
         fetchSkills();
       }
-
     });
   }
 }

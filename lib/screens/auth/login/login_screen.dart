@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -31,16 +31,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   bool _isEmailValid = true;
   TextEditingController emailController = TextEditingController();
-  String emailErrorMessage = 'Email cannot be empty';
+  String emailErrorMessage = 'Email ID is Required';
   final AuthService _googleAuthService = AuthService();
 
   bool _isPasswordValid = true;
   bool passwordHide = true;
   final TextEditingController passwordController = TextEditingController();
-  String passwordErrorMessage = 'Password cannot be empty';
+  String passwordErrorMessage = 'Password is Required';
 
   bool isLoading = false;
 
@@ -61,83 +60,96 @@ class _LoginScreenState extends State<LoginScreen> {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
 
     final bodyParams = {
-      "email" : emailController.text,
-      "password" : passwordController.text
+      "email": emailController.text,
+      "password": passwordController.text
     };
 
-    try{
- var connectivityResult = await Connectivity().checkConnectivity();
- if (connectivityResult.contains(ConnectivityResult.none)) {
-   Fluttertoast.showToast(
-     msg: "No internet connection",
-     toastLength: Toast.LENGTH_SHORT,
-     gravity: ToastGravity.BOTTOM,
-     timeInSecForIosWeb: 1,
-     backgroundColor: Color(0xff2D2D2D),
-     textColor: Colors.white,
-     fontSize: 16.0,
-   );
-   return;  // Exit the function if no internet
- }
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
+        return; // Exit the function if no internet
+      }
       setState(() {
         isLoading = true;
       });
 
       final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(bodyParams),
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(bodyParams),
       );
 
-
-      if(kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode ==200){
+      if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
 
-        if(!resOBJ['result']){
-
-          if(statusMessage.toLowerCase().contains('exists')){
+        if (!resOBJ['result']) {
+          if (statusMessage.toLowerCase().contains('exists')) {
             setState(() {
               _isEmailValid = false;
               emailErrorMessage = 'User doesn\'t exists';
             });
-          } else if(statusMessage.toLowerCase().contains('passwo')){
+          } else if (statusMessage.toLowerCase().contains('passwo')) {
             setState(() {
               _isPasswordValid = false;
               passwordErrorMessage = 'Invalid password';
             });
-          } else{
-            Fluttertoast.showToast(
-                msg: statusMessage,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+          } else {
+            // Fluttertoast.showToast(
+            //     msg: statusMessage,
+            //     toastLength: Toast.LENGTH_SHORT,
+            //     gravity: ToastGravity.BOTTOM,
+            //     timeInSecForIosWeb: 1,
+            //     backgroundColor: Color(0xffBA1A1A),
+            //     textColor: Colors.white,
+            //     fontSize: 16.0);
+            IconSnackBar.show(
+              context,
+              label: statusMessage,
+              snackBarType: SnackBarType.alert,
+              backgroundColor: Color(0xffBA1A1A),
+              iconColor: Colors.white,
+            );
           }
-        } else{
+        } else {
           print(resOBJ.toString());
 
           final Map<String, dynamic> data = resOBJ['data'];
           // Map the API response to UserData model
           UserData userData = UserData.fromJson(data);
 
-
-          UserCredentials credentials = UserCredentials(username: emailController.text, password: passwordController.text);
+          UserCredentials credentials = UserCredentials(
+              username: emailController.text,
+              password: passwordController.text);
           await credentials.saveCredentials();
 
           await saveUserData(userData);
 
           UserData? retrievedUserData = await getUserData();
 
-          if(kDebugMode){
+          if (kDebugMode) {
             print('Saved Successfully');
             print('User Name: ${retrievedUserData!.name}');
           }
@@ -164,37 +176,44 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> socialGoogleSignin(String email, String fn, String ln, String mobile) async {
+  Future<void> socialGoogleSignin(
+      String email, String fn, String ln, String mobile) async {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SOCIAL_LOGIN);
 
-    final bodyParams =
-      {
-        "firstName" : fn,
-        "lastName" : ln,
-        "email" : email,
-        "phoneNumber" : mobile,
-        "countryCode" : "+91",
-        "priAccUserType" : "candidate",
-        "socialLoginProvider" : "Google",
-        "deviceType" : "Android",
-        "deviceToken" : "",
-        "deviceUuid" : ""
-      };
+    final bodyParams = {
+      "firstName": fn,
+      "lastName": ln,
+      "email": email,
+      "phoneNumber": mobile,
+      "countryCode": "+91",
+      "priAccUserType": "candidate",
+      "socialLoginProvider": "Google",
+      "deviceType": "Android",
+      "deviceToken": "",
+      "deviceUuid": ""
+    };
 
-    try{
- var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult.contains(ConnectivityResult.none)) {
-      Fluttertoast.showToast(
-        msg: "No internet connection",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: const Color(0xff2D2D2D),
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return;  // Exit the function if no internet
-    }
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: const Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
+        return; // Exit the function if no internet
+      }
       setState(() {
         isLoading = true;
       });
@@ -205,58 +224,59 @@ class _LoginScreenState extends State<LoginScreen> {
         body: jsonEncode(bodyParams),
       );
 
-
-      if(kDebugMode) {
-        print('Response code Social ${response.statusCode} :: Response => ${response
-            .body}');
+      if (kDebugMode) {
+        print(
+            'Response code Social ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode ==200){
-        if(kDebugMode){
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
           print('Trying to save - 1');
         }
         var resOBJ = jsonDecode(response.body);
 
-
-        if(kDebugMode){
+        if (kDebugMode) {
           print('Trying to save - 2');
         }
 
         String statusMessage = resOBJ['message'] ?? '';
 
-        if(kDebugMode){
+        if (kDebugMode) {
           print('Trying to save - 3');
         }
 
-        if(!resOBJ['result']){
-
-          if(statusMessage.toLowerCase().contains('exists')){
+        if (!resOBJ['result']) {
+          if (statusMessage.toLowerCase().contains('exists')) {
             setState(() {
               _isEmailValid = false;
               emailErrorMessage = 'User doesn\'t exists';
             });
-          } else if(statusMessage.toLowerCase().contains('passwo')){
+          } else if (statusMessage.toLowerCase().contains('passwo')) {
             setState(() {
               _isPasswordValid = false;
               passwordErrorMessage = 'Invalid password';
             });
-          } else{
-            Fluttertoast.showToast(
-                msg: statusMessage,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+          } else {
+            // Fluttertoast.showToast(
+            //     msg: statusMessage,
+            //     toastLength: Toast.LENGTH_SHORT,
+            //     gravity: ToastGravity.BOTTOM,
+            //     timeInSecForIosWeb: 1,
+            //     backgroundColor: Colors.red,
+            //     textColor: Colors.white,
+            //     fontSize: 16.0);
+            IconSnackBar.show(
+              context,
+              label: statusMessage,
+              snackBarType: SnackBarType.alert,
+              backgroundColor: Color(0xffBA1A1A),
+              iconColor: Colors.white,
+            );
           }
-
-
-
-        } else{
+        } else {
           print(resOBJ.toString());
 
-          if(kDebugMode){
+          if (kDebugMode) {
             print('Trying to save');
           }
           final Map<String, dynamic> data = resOBJ['data'];
@@ -264,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           UserData userData = UserData.fromJson(data);
 
-          if(kDebugMode){
+          if (kDebugMode) {
             print('Stage 1');
           }
           //UserCredentials credentials = UserCredentials(username: emailController.text, password: passwordController.text);
@@ -272,36 +292,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
           await saveUserData(userData);
 
-          if(kDebugMode){
+          if (kDebugMode) {
             print('Stage 2');
           }
 
           UserData? retrievedUserData = await getUserData();
 
-          if(kDebugMode){
+          if (kDebugMode) {
             print('Stage 3');
           }
-          if(kDebugMode){
+          if (kDebugMode) {
             print('Saved Successfully');
             print('User Name: ${retrievedUserData!.name}');
           }
 
           //fetchProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
-          fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+          fetchCandidateProfileData(
+              retrievedUserData!.profileId, retrievedUserData!.token);
 
           // In Screen 3
-
-
         }
-
-
       }
-
-
-
-    }catch(e){
-      print( 'exception :  => ' +  e.toString());
-    } finally{
+    } catch (e) {
+      print('exception :  => ' + e.toString());
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -591,7 +605,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -606,7 +619,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-
     emailController.dispose();
     passwordController.dispose();
 

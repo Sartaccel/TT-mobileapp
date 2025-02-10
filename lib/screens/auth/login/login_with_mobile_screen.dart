@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -18,55 +19,54 @@ class MobileNumberLogin extends StatefulWidget {
 }
 
 class _MobileNumberLoginState extends State<MobileNumberLogin> {
-
   String? _selectedCountryCode = '+91';
   final List<String> countryOptions = [
-    '+1',   // USA, Canada, etc.
-    '+7',   // Russia, Kazakhstan
-    '+20',  // Egypt
-    '+27',  // South Africa
-    '+30',  // Greece
-    '+31',  // Netherlands
-    '+32',  // Belgium
-    '+33',  // France
-    '+34',  // Spain
-    '+36',  // Hungary
-    '+39',  // Italy
-    '+40',  // Romania
-    '+41',  // Switzerland
-    '+43',  // Austria
-    '+44',  // UK
-    '+45',  // Denmark
-    '+46',  // Sweden
-    '+47',  // Norway
-    '+48',  // Poland
-    '+49',  // Germany
-    '+51',  // Peru
-    '+52',  // Mexico
-    '+53',  // Cuba
-    '+54',  // Argentina
-    '+55',  // Brazil
-    '+56',  // Chile
-    '+57',  // Colombia
-    '+58',  // Venezuela
-    '+60',  // Malaysia
-    '+61',  // Australia
-    '+62',  // Indonesia
-    '+63',  // Philippines
-    '+64',  // New Zealand
-    '+65',  // Singapore
-    '+66',  // Thailand
-    '+81',  // Japan
-    '+82',  // South Korea
-    '+84',  // Vietnam
-    '+86',  // China
-    '+90',  // Turkey
-    '+91',  // India
-    '+92',  // Pakistan
-    '+93',  // Afghanistan
-    '+94',  // Sri Lanka
-    '+95',  // Myanmar
-    '+98',  // Iran
+    '+1', // USA, Canada, etc.
+    '+7', // Russia, Kazakhstan
+    '+20', // Egypt
+    '+27', // South Africa
+    '+30', // Greece
+    '+31', // Netherlands
+    '+32', // Belgium
+    '+33', // France
+    '+34', // Spain
+    '+36', // Hungary
+    '+39', // Italy
+    '+40', // Romania
+    '+41', // Switzerland
+    '+43', // Austria
+    '+44', // UK
+    '+45', // Denmark
+    '+46', // Sweden
+    '+47', // Norway
+    '+48', // Poland
+    '+49', // Germany
+    '+51', // Peru
+    '+52', // Mexico
+    '+53', // Cuba
+    '+54', // Argentina
+    '+55', // Brazil
+    '+56', // Chile
+    '+57', // Colombia
+    '+58', // Venezuela
+    '+60', // Malaysia
+    '+61', // Australia
+    '+62', // Indonesia
+    '+63', // Philippines
+    '+64', // New Zealand
+    '+65', // Singapore
+    '+66', // Thailand
+    '+81', // Japan
+    '+82', // South Korea
+    '+84', // Vietnam
+    '+86', // China
+    '+90', // Turkey
+    '+91', // India
+    '+92', // Pakistan
+    '+93', // Afghanistan
+    '+94', // Sri Lanka
+    '+95', // Myanmar
+    '+98', // Iran
     '+211', // South Sudan
     '+212', // Morocco
     '+213', // Algeria
@@ -228,7 +228,8 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
     '+998', // Uzbekistan
   ];
   bool _isMobileNumberValid = true;
-  String mobileErrorMsg = 'Mobile number cannot be empty';
+  String mobileErrorMsg =
+      'Please enter your mobile number to receive an OTP for verification';
   TextEditingController mobileController = TextEditingController();
 
   bool isLoading = false;
@@ -237,26 +238,32 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN_BY_MOBILE);
 
     final bodyParams = {
-      "countryCode" : _selectedCountryCode,
-      "phoneNumber" : mobileController.text
+      "countryCode": _selectedCountryCode,
+      "phoneNumber": mobileController.text
     };
 
-    try{
- var connectivityResult = await Connectivity().checkConnectivity();
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
 
-       if (connectivityResult.contains(ConnectivityResult.none)) {
-         Fluttertoast.showToast(
-           msg: "No internet connection",
-           toastLength: Toast.LENGTH_SHORT,
-           gravity: ToastGravity.BOTTOM,
-           timeInSecForIosWeb: 1,
-           backgroundColor: Color(0xff2D2D2D),
-           textColor: Colors.white,
-           fontSize: 16.0,
-         );
-         return;
-       }
-
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
+        return;
+      }
 
       setState(() {
         isLoading = true;
@@ -268,49 +275,63 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
         body: jsonEncode(bodyParams),
       );
 
-
-      if(kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode ==200){
+      if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
 
-        if(resOBJ['result']==true && statusMessage.toLowerCase().contains('sent')){
-            Fluttertoast.showToast(
-              msg: statusMessage,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff2D2D2D),
-              textColor: Colors.white,
-              fontSize: 16.0);
-
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> LoginOTPScreen(countryCode: _selectedCountryCode, mobileNumber: mobileController.text,)));
-
-        } else{
-          Fluttertoast.showToast(
-            msg: 'Invalid user !',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0,
+        if (resOBJ['result'] == true &&
+            statusMessage.toLowerCase().contains('sent')) {
+          // Fluttertoast.showToast(
+          //     msg: statusMessage,
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Color(0xff2D2D2D),
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: statusMessage,
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff004C99),
+            iconColor: Colors.white,
+          );
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => LoginOTPScreen(
+                        countryCode: _selectedCountryCode,
+                        mobileNumber: mobileController.text,
+                      )));
+        } else {
+          // Fluttertoast.showToast(
+          //   msg: 'Invalid user !',
+          //   toastLength: Toast.LENGTH_SHORT,
+          //   gravity: ToastGravity.BOTTOM,
+          //   timeInSecForIosWeb: 1,
+          //   backgroundColor: Colors.red,
+          //   textColor: Colors.white,
+          //   fontSize: 16.0,
+          // );
+          IconSnackBar.show(
+            context, // Pass the context as the first argument
+            label: 'Invalid user !', // The label for the snackbar
+            snackBarType: SnackBarType
+                .alert, // Specify the type of snackbar (e.g., alert)
+            backgroundColor: Color(0xFFBA1A1A), // Optional background color
+            iconColor: Colors.white, // Optional icon color
           );
         }
-
-
       }
-
-
-
-    }catch(e){
+    } catch (e) {
       print(e.toString());
-    } finally{
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -322,142 +343,258 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(right: 0,child: Image.asset('assets/images/Ellipse 1.png'),),
-          Positioned(left: 0, bottom: 0 ,child: Image.asset('assets/images/ellipse_bottom.png'),),
-          Positioned(top: 31,left: 0,child: Image.asset('assets/images/tt_logo_resized.png', width: MediaQuery.of(context).size.width, height: 216,),),
           Positioned(
-              top: 200,
-            child: Container( width: MediaQuery.of(context).size.width,
+            right: 0,
+            child: Image.asset('assets/images/Ellipse 1.png'),
+          ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: Image.asset('assets/images/ellipse_bottom.png'),
+          ),
+          Positioned(
+            top: 31,
+            left: 0,
+            child: Image.asset(
+              'assets/images/tt_logo_resized.png',
+              width: MediaQuery.of(context).size.width,
+              height: 216,
+            ),
+          ),
+          Positioned(
+            top: 200,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Center(child: InkWell(
-                    onTap: (){
-                      //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> LoginOTPScreen()));
+                  Center(
+                      child: InkWell(
+                          onTap: () {
+                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> LoginOTPScreen()));
+                          },
+                          child: Text(
+                            'Login with OTP',
+                            style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ))),
 
-                    }
-                  ,child: Text('Login with OTP', style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.bold),))),
-
-                  SizedBox(height: 50,),
-                  Text('Mobile Number', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text(
+                    'Mobile Number',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontFamily: 'Lato',
+                      color: _isMobileNumberValid
+                          ? const Color(0xFF333333)
+                          : const Color(0xFFBA1A1A),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Container(
                     width: MediaQuery.of(context).size.width - 20,
-                    child: Row(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: 48,
-                          decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey), borderRadius: BorderRadius.circular(4)),
-                          padding: EdgeInsets.all(9),
-                          child: DropdownButton(
-                              value: _selectedCountryCode,
-                              underline: Container(),
-                              items: countryOptions.map((countryCode){
-                                return DropdownMenuItem(
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Country Code Dropdown
+                            Container(
+                              height: 48,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color: _isMobileNumberValid
+                                      ? Colors.grey
+                                      : const Color(
+                                          0xFFBA1A1A), // Error color for dropdown
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              padding: EdgeInsets.all(9),
+                              child: DropdownButton<String>(
+                                value: _selectedCountryCode,
+                                underline: SizedBox(),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Lato',
+                                    color: const Color(0xFF333333)),
+                                items: countryOptions.map((countryCode) {
+                                  return DropdownMenuItem(
                                     value: countryCode,
-                                    child: Text(countryCode));
-                              }).toList(), onChanged: (val){setState(() {
-                            _selectedCountryCode = val;
-                              });}),
-                        ),
-
-                        Container(
-                          width: (MediaQuery.of(context).size.width) - 110,
-                          child: TextField(
-                            maxLength: 10,
-                            controller: mobileController,
-                            style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                            decoration: InputDecoration(
-                              counterText: '',
-                                hintText: 'Enter mobile number',
-                                border: OutlineInputBorder(),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: _isMobileNumberValid ? Colors.grey : Colors.red, // Default border color
-                                      width: 1
-                                  ),
-                                ),
-
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: _isMobileNumberValid ? Colors.blue : Colors.red, // Border color when focused
-                                      width: 1
-                                  ),
-                                ),
-
-                                errorText: _isMobileNumberValid ? null : mobileErrorMsg, // Display error message if invalid
-                                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                                    child: Text(countryCode,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: 'Lato',
+                                            color: const Color(0xFF333333))),
+                                  );
+                                }).toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    _selectedCountryCode = val!;
+                                  });
+                                },
+                              ),
                             ),
-                            keyboardType: TextInputType.phone,
-                            onChanged: (value) {
-                              // Validate the email here and update _isEmailValid
-                              setState(() {
-                                setState(() {
-                                  _isMobileNumberValid = true;
-                                });
-                              });
-                            },
-                          ),
+                            // Mobile Number TextField
+                            Container(
+                              height: 48,
+                              width: (MediaQuery.of(context).size.width) - 120,
+                              child: TextField(
+                                maxLength: 10,
+                                controller: mobileController,
+                                style:
+                                    TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                                decoration: InputDecoration(
+                                    counterText: '',
+                                    hintText: 'Enter mobile number',
+                                    border: OutlineInputBorder(),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: _isMobileNumberValid
+                                            ? Colors.grey
+                                            : const Color(0xFFBA1A1A),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      borderSide: BorderSide(
+                                        color: _isMobileNumberValid
+                                            ? Colors.blue
+                                            : const Color(0xFFBA1A1A),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10)),
+                                keyboardType: TextInputType.phone,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _isMobileNumberValid = true;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
+
+                        // Single Error Message for Both Fields
+                        if (!_isMobileNumberValid)
+                          Padding(
+                            padding: EdgeInsets.only(top: 4, left: 4),
+                            child: Text(
+                              mobileErrorMsg ?? '',
+                              style: TextStyle(
+                                  color: const Color(0xFFBA1A1A), fontSize: 12),
+                            ),
+                          ),
                       ],
                     ),
                   ),
 
                   //Loading
-                  isLoading?
-                    Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
-                      child: Visibility(
-                        visible: isLoading,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 30,),
-                            LoadingAnimationWidget.fourRotatingDots(
-                              color: AppColors.primaryColor,
-                              size: 40,
+                  isLoading
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Visibility(
+                              visible: isLoading,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  LoadingAnimationWidget.fourRotatingDots(
+                                    color: AppColors.primaryColor,
+                                    size: 40,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ) : Container(),
-
+                          ),
+                        )
+                      : Container(),
 
                   SizedBox(height: 60),
                   InkWell(
-                    onTap: (){
-                    if(mobileController.text.isEmpty){
-                      setState(() {
-                        _isMobileNumberValid =false;
-                      });
-                    }
-                    else{
-                      otpSignIn();
-                    }
+                    onTap: () {
+                      if (mobileController.text.isEmpty ||
+                          mobileController.text.length < 10) {
+                        setState(() {
+                          _isMobileNumberValid = false;
+                        });
+                      } else {
+                        setState(() {
+                          isLoading =
+                              true; // Start loader before calling otpSignIn
+                        });
+
+                        otpSignIn().then((_) {
+                          setState(() {
+                            isLoading = false; // Stop loader after API call
+                          });
+                        }).catchError((error) {
+                          setState(() {
+                            isLoading = false; // Ensure loading stops on error
+                          });
+                        });
+                      }
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       height: 44,
                       margin: EdgeInsets.symmetric(horizontal: 0),
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
-                      child: Center(child: Text('Get OTP', style: TextStyle(color: Colors.white),),),
+                      decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Text(
+                          'Get OTP',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
-
-
                 ],
               ),
             ),
           ),
-
-          Positioned(top: 40,left: 0,child: Row( children: [ IconButton(icon:  Icon(Icons.arrow_back_ios_new), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('Back', style: TextStyle(fontSize: 16),)))) ],)),
-
+          Positioned(
+              top: 40,
+              left: 0,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios_new),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                            'Back',
+                            style: TextStyle(fontSize: 16),
+                          ))))
+                ],
+              )),
         ],
       ),
     );
