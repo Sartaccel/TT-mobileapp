@@ -158,6 +158,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: fetchProfileFromPref,
+      color: Color(0xffFCFCFC),
       child: Column(
         children: [
           Container(
@@ -178,8 +179,8 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             decoration: BoxDecoration(
                               color: Color(0xff001B3E),
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20),
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
                               ),
                             ),
                           ),
@@ -255,7 +256,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
-                                          Icons.location_on_outlined,
+                                          Icons.location_on,
                                           size: 16,
                                         ),
                                         Text(
@@ -292,7 +293,21 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                 );
                                 fetchProfileFromPref();
                               },
-                              leading: Icon(Icons.person),
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffF7F7F7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'assets/icon/PDnotes.svg',
+                                    width: 28,
+                                    height: 28,
+                                  ),
+                                ),
+                              ),
                               title: Text(
                                 'Personal Details',
                                 style: TextStyle(
@@ -301,7 +316,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: Icon(Icons.chevron_right),
+                              trailing: SvgPicture.asset(
+                                'assets/icon/ArrowRight.svg', // Update with your correct path
+                                width: 24, // Adjust size as needed
+                                height: 24,
+                              ),
                             ),
                             Divider(),
                             ListTile(
@@ -314,7 +333,21 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   ),
                                 );
                               },
-                              leading: Icon(Icons.settings),
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffF7F7F7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'assets/icon/Setting.svg',
+                                    width: 26,
+                                    height: 26,
+                                  ),
+                                ),
+                              ),
                               title: Text(
                                 'Settings',
                                 style: TextStyle(
@@ -323,7 +356,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: Icon(Icons.chevron_right),
+                              trailing: SvgPicture.asset(
+                                'assets/icon/ArrowRight.svg', // Update with your correct path
+                                width: 24, // Adjust size as needed
+                                height: 24,
+                              ),
                             ),
                             Divider(),
                             ListTile(
@@ -336,7 +373,21 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   ),
                                 );
                               },
-                              leading: Icon(Icons.card_giftcard),
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffF7F7F7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'assets/icon/gift.svg',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
+                              ),
                               title: Text(
                                 'My Rewards',
                                 style: TextStyle(
@@ -345,7 +396,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: Icon(Icons.chevron_right),
+                              trailing: SvgPicture.asset(
+                                'assets/icon/ArrowRight.svg', // Update with your correct path
+                                width: 24, // Adjust size as needed
+                                height: 24,
+                              ),
                             ),
                             Divider(),
                             ListTile(
@@ -358,7 +413,21 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   ),
                                 );
                               },
-                              leading: Icon(Icons.group_add),
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffF7F7F7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'assets/icon/invite.svg',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
+                              ),
                               title: Text(
                                 'Invite & Earn',
                                 style: TextStyle(
@@ -367,12 +436,30 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: Icon(Icons.chevron_right),
+                              trailing: SvgPicture.asset(
+                                'assets/icon/ArrowRight.svg', // Update with your correct path
+                                width: 24, // Adjust size as needed
+                                height: 24,
+                              ),
                             ),
                             Divider(),
                             ListTile(
                               onTap: _launchTermsURL,
-                              leading: Icon(Icons.file_copy),
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffF7F7F7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'assets/icon/notes.svg',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
+                              ),
                               title: Text(
                                 'Terms & Conditions',
                                 style: TextStyle(
@@ -381,17 +468,31 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: Icon(Icons.chevron_right),
+                              trailing: SvgPicture.asset(
+                                'assets/icon/ArrowRight.svg', // Update with your correct path
+                                width: 24, // Adjust size as needed
+                                height: 24,
+                              ),
                             ),
                             Divider(),
                             ListTile(
                               onTap: () {
                                 showDeleteConfirmationDialog(context);
                               },
-                              leading: SvgPicture.asset(
-                                'assets/icon/Logout.svg',
-                                width: 50,
-                                height: 50,
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffF7F7F7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    'assets/icon/Logout.svg',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
                               ),
                               title: Text(
                                 'Logout',
@@ -401,7 +502,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xffBA1A1A),
                                 ),
                               ),
-                              trailing: Icon(Icons.chevron_right),
+                              trailing: SvgPicture.asset(
+                                'assets/icon/ArrowRight.svg', // Update with your correct path
+                                width: 24, // Adjust size as needed
+                                height: 24,
+                              ),
                             ),
                             Divider(),
                           ],
@@ -415,7 +520,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SvgPicture.asset('no_internet_ic.svg'),
+                      SvgPicture.asset('assets/icon/noInternet.svg'),
                       Text(
                         'No Internet connection',
                         style: TextStyle(
@@ -447,7 +552,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                               color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(10)),
+                              borderRadius: BorderRadius.circular(8)),
                           child: Center(
                             child: Text(
                               'Try Again',

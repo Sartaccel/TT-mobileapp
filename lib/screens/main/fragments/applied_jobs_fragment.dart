@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -81,14 +82,21 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
       });
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult.contains(ConnectivityResult.none)) {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0,
+          iconColor: Colors.white,
         );
 
         setState(() {
@@ -377,7 +385,7 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('no_internet_ic.svg'),
+                        SvgPicture.asset('assets/icon/noInternet.svg'),
                         Text(
                           'No Internet connection',
                           style: TextStyle(

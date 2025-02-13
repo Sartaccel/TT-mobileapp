@@ -155,21 +155,15 @@ class _LoginScreenState extends State<LoginScreen> {
           }
 
           //fetchProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
-          fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+          fetchCandidateProfileData(
+              retrievedUserData!.profileId, retrievedUserData!.token);
 
           // In Screen 3
-
-
         }
-
-
       }
-
-
-
-    }catch(e){
+    } catch (e) {
       print(e.toString());
-    } finally{
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -320,191 +314,288 @@ class _LoginScreenState extends State<LoginScreen> {
         isLoading = false;
       });
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(right: 0,child: Image.asset('assets/images/Ellipse 1.png'),),
-          Positioned(top: 61,left: 0,child: Image.asset('assets/images/Ellipse 2.png'),),
-          Positioned(top: 31,left: 0, right: 0 ,child: Center(child: Image.asset('assets/images/tt_logo_full_1.png' , width: 260, height: 216,)),),
-          Positioned(top: 200, left: 15, right: 15, bottom: 0, child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(alignment: Alignment.center,child: Text('Login', style: TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: 'Lato'),)),
-                SizedBox(height: 20,),
-                Text('Email', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
-                TextField(
-                  controller: emailController,
-                  style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                  decoration: InputDecoration(
-                    hintText: 'Enter your email',
-                    border: OutlineInputBorder(),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: _isEmailValid ? Colors.grey : Colors.red, // Default border color
-                          width: 1
-                      ),
-                    ),
-            
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: _isEmailValid ? Colors.blue : Colors.red, // Border color when focused
-                        width: 1
-                      ),
-                    ),
-            
-                    errorText: _isEmailValid ? null : emailErrorMessage, // Display error message if invalid
-                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (value) {
-                    // Validate the email here and update _isEmailValid
-                    setState(() {
-                      _isEmailValid = true;
-                    });
-                  },
-                ),
-            
-                SizedBox(height: 20,),
-                Text('Password', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
-                TextField(
-                  obscureText: passwordHide,
-                  controller: passwordController,
-                  style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton( onPressed: (){
-                        setState(() {
-                          passwordHide = !passwordHide;
-                        });
-            
-                    },
-                        //icon: Icon( passwordHide?Icons.visibility :Icons.visibility_off)),
-                        icon: SvgPicture.asset( passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
-                      hintText: 'Enter your password',
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: _isPasswordValid ? Colors.grey : Colors.red, // Default border color
-                            width: 1
-                        ),
-                      ),
-            
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: _isPasswordValid ? Colors.blue : Colors.red, // Border color when focused
-                            width: 1
-                        ),
-                      ),
-            
-                      errorText: _isPasswordValid ? null : passwordErrorMessage, // Display error message if invalid
-                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                  ),
-                  onChanged: (val){
-                    setState(() {
-                      _isPasswordValid = true;
-                    });
-                  },
-                ),
-            
-                SizedBox(height: 30,),
-                Container(width: (MediaQuery.of(context).size.width) - 15, child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+          Positioned(
+            right: 0,
+            child: Image.asset('assets/images/Ellipse 1.png'),
+          ),
+          Positioned(
+            top: 61,
+            left: 0,
+            child: Image.asset('assets/images/Ellipse 2.png'),
+          ),
+          Positioned(
+            top: 31,
+            left: 0,
+            right: 0,
+            child: Center(
+                child: Image.asset(
+              'assets/images/tt_logo_full_1.png',
+              width: 260,
+              height: 216,
+            )),
+          ),
+          Positioned(
+              top: 200,
+              left: 15,
+              right: 15,
+              bottom: 0,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ForgotPasswordScreen()));
-                      }
-                    ,child: Text('Forgot Password?',textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.w600,color: AppColors.textColor2, ),)),
-                  ],
-                ),),
-
-                //Loading
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Center(
-                    child: Visibility(
-                      visible: isLoading,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 30,),
-                          LoadingAnimationWidget.fourRotatingDots(
-                            color: AppColors.primaryColor,
-                            size: 40,
+                    Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                              color: AppColors.textColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              fontFamily: 'Lato'),
+                        )),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'Email',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontFamily: 'Lato',
+                          color: Color(0xff333333)),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      controller: emailController,
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Lato',
+                          color: Color(0xff333333)),
+                      decoration: InputDecoration(
+                          hintText: 'Enter your email',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                                color: _isEmailValid
+                                    ? Color(0xffD9D9D9)
+                                    : Colors.red, // Default border color
+                                width: 1),
                           ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                                color: _isEmailValid
+                                    ? Colors.blue
+                                    : Colors.red, // Border color when focused
+                                width: 1),
+                          ),
+                          errorText: _isEmailValid
+                              ? null
+                              : emailErrorMessage, // Display error message if invalid
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10)),
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (value) {
+                        // Validate the email here and update _isEmailValid
+                        setState(() {
+                          _isEmailValid = true;
+                        });
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text('Password',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato')),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      obscureText: passwordHide,
+                      controller: passwordController,
+                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                      decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  passwordHide = !passwordHide;
+                                });
+                              },
+                              //icon: Icon( passwordHide?Icons.visibility :Icons.visibility_off)),
+                              icon: SvgPicture.asset(passwordHide
+                                  ? 'assets/images/ic_hide_password.svg'
+                                  : 'assets/images/ic_show_password.svg')),
+                          hintText: 'Enter your password',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                                color: _isPasswordValid
+                                    ? Color(0xffD9D9D9)
+                                    : Colors.red, // Default border color
+                                width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                                color: _isPasswordValid
+                                    ? Colors.blue
+                                    : Colors.red, // Border color when focused
+                                width: 1),
+                          ),
+                          errorText: _isPasswordValid
+                              ? null
+                              : passwordErrorMessage, // Display error message if invalid
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10)),
+                      onChanged: (val) {
+                        setState(() {
+                          _isPasswordValid = true;
+                        });
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      width: (MediaQuery.of(context).size.width) - 15,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            ForgotPasswordScreen()));
+                              },
+                              child: Text(
+                                'Forgot Password?',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textColor2,
+                                ),
+                              )),
                         ],
                       ),
                     ),
-                  ),
-                ),
 
-                //Button
-                SizedBox(height: 30),
-                InkWell(
-                  onTap: (){
-                    if(emailController.text.trim().isEmpty || !validateEmail(emailController.text) || passwordController.text.trim().isEmpty){
-                      if(emailController.text.trim().isEmpty){
-                        setState(() {
-                          _isEmailValid = false;
-                          emailErrorMessage = 'Email address cannot be empty';
-                        });
-                      } else if(!validateEmail(emailController.text)){
-                        setState(() {
-                          _isEmailValid = false;
-                          emailErrorMessage = 'Enter a valid email address';
-                        });
-                      }
+                    //Loading
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                        child: Visibility(
+                          visible: isLoading,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              LoadingAnimationWidget.fourRotatingDots(
+                                color: AppColors.primaryColor,
+                                size: 40,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
 
-                      if(passwordController.text.trim().isEmpty){
-                        setState(() {
-                          _isPasswordValid = false;
-                          passwordErrorMessage = 'Password cannot be empty';
-                        });
-                      }
-                    } else{
-                      emailSignIn();
-                    }
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 44,
-                    margin: EdgeInsets.symmetric(horizontal: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
-                    child: Center(child: Text('Login', style: TextStyle(color: Colors.white),),),
-                  ),
-                ),
+                    //Button
+                    SizedBox(height: 30),
+                    InkWell(
+                      onTap: () {
+                        if (emailController.text.trim().isEmpty ||
+                            !validateEmail(emailController.text) ||
+                            passwordController.text.trim().isEmpty) {
+                          if (emailController.text.trim().isEmpty) {
+                            setState(() {
+                              _isEmailValid = false;
+                              emailErrorMessage =
+                                  'Email address cannot be empty';
+                            });
+                          } else if (!validateEmail(emailController.text)) {
+                            setState(() {
+                              _isEmailValid = false;
+                              emailErrorMessage = 'Enter a valid email address';
+                            });
+                          }
 
-                //Mobile Login
-                SizedBox(height: 20),
-                InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext con)=>MobileNumberLogin()));
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 44,
-                    margin: EdgeInsets.symmetric(horizontal: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(border: Border.all(color: AppColors.primaryColor) , color: Colors.white,borderRadius: BorderRadius.circular(10)),
-                    child: Center(child: Text('Login with OTP', style: TextStyle(color: AppColors.primaryColor),),),
-                  ),
-                ),
-                
-                
-              //  Container( width: MediaQuery.of(context).size.width,child: Text('Or Log in with your', style: TextStyle(color: AppColors.tertiaryColor), textAlign: TextAlign.center,)),
-            
-               // SizedBox(height: 30,),
-               /* Container(
+                          if (passwordController.text.trim().isEmpty) {
+                            setState(() {
+                              _isPasswordValid = false;
+                              passwordErrorMessage = 'Password cannot be empty';
+                            });
+                          }
+                        } else {
+                          emailSignIn();
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 44,
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: AppColors.primaryColor,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //Mobile Login
+                    SizedBox(height: 20),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext con) =>
+                                    MobileNumberLogin()));
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 44,
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.primaryColor),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                          child: Text(
+                            'Login with OTP',
+                            style: TextStyle(color: AppColors.primaryColor),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //  Container( width: MediaQuery.of(context).size.width,child: Text('Or Log in with your', style: TextStyle(color: AppColors.tertiaryColor), textAlign: TextAlign.center,)),
+
+                    // SizedBox(height: 30,),
+                    /* Container(
                   width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Row(
@@ -575,31 +666,60 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),*/
-            
-                SizedBox(height: 30,),
-                Container(
-                  padding: EdgeInsets.all(10),
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Don’t have an account?', style: TextStyle(fontSize: MediaQuery.of(context).size.width > 360 ? 13 : 12, fontFamily: 'NunitoSans', color: AppColors.textColor, fontWeight: FontWeight.w600),),
-                      SizedBox(width: 5,),
-                      InkWell(
-                          onTap: (){
-                            print(MediaQuery.of(context).size.width);
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> RegisterNewUser()));
-                          },
-                          child: Text('Register for free', style: TextStyle(fontSize: MediaQuery.of(context).size.width > 360 ? 13 : 12, fontFamily: 'NunitoSans', color: AppColors.textColor2, fontWeight: FontWeight.w600),)),
-                    ],
-                  ),
-                ),
 
-                SizedBox(height: 0,),
-            
-              ],
-            ),
-          ))
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Don’t have an account?',
+                            style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width > 360
+                                        ? 13
+                                        : 12,
+                                fontFamily: 'NunitoSans',
+                                color: AppColors.textColor,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          InkWell(
+                              onTap: () {
+                                print(MediaQuery.of(context).size.width);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            RegisterNewUser()));
+                              },
+                              child: Text(
+                                'Register for free',
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width > 360
+                                            ? 13
+                                            : 12,
+                                    fontFamily: 'NunitoSans',
+                                    color: AppColors.textColor2,
+                                    fontWeight: FontWeight.w600),
+                              )),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 0,
+                    ),
+                  ],
+                ),
+              ))
         ],
       ),
     );
@@ -626,10 +746,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> fetchProfileData(int profileId, String token) async {
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
+    final url = Uri.parse(AppConstants.BASE_URL +
+        AppConstants.REFERRAL_PROFILE +
+        profileId.toString());
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.CANDIDATE_PROFILE + profileId.toString());
-
-
 
     try {
       setState(() {
@@ -641,18 +761,17 @@ class _LoginScreenState extends State<LoginScreen> {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
 
-      if(kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
 
-        if(statusMessage.toLowerCase().contains('success')){
-
+        if (statusMessage.toLowerCase().contains('success')) {
           final Map<String, dynamic> data = resOBJ['data'];
           ReferralData referralData = ReferralData.fromJson(data);
 
@@ -661,29 +780,24 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomeContainer()),
-                (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
+            (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
           );
-
         }
-
-      } else{
-
-      }
+      } else {}
 
       setState(() {
         isLoading = false;
       });
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.CANDIDATE_PROFILE + profileId.toString());
-
-
+    final url = Uri.parse(AppConstants.BASE_URL +
+        AppConstants.CANDIDATE_PROFILE +
+        profileId.toString());
 
     try {
       setState(() {
@@ -695,40 +809,36 @@ class _LoginScreenState extends State<LoginScreen> {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
 
-      if(kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
 
-        if(statusMessage.toLowerCase().contains('success')){
-
+        if (statusMessage.toLowerCase().contains('success')) {
           final Map<String, dynamic> data = resOBJ['data'];
           //ReferralData referralData = ReferralData.fromJson(data);
-          CandidateProfileModel candidateData = CandidateProfileModel.fromJson(data);
+          CandidateProfileModel candidateData =
+              CandidateProfileModel.fromJson(data);
 
           await saveCandidateProfileData(candidateData);
 
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomeContainer()),
-                (Route<dynamic> route) => false, // This will keep Screen 1
+            (Route<dynamic> route) => false, // This will keep Screen 1
           );
         }
-
-      } else{
-
-      }
+      } else {}
 
       /*setState(() {
         isLoading = false;
       });*/
-    }
-    catch(e){
+    } catch (e) {
       print('Exception : ${e}');
       throw e;
     }

@@ -954,53 +954,71 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 10,
                 ),
-                TextField(
-                  controller: _startDateController,
-                  decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.calendar_today),
-                      hintText: 'Date of Birth',
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: isStartDateValid
-                                ? Colors.grey
-                                : Colors.red, // Default border color
-                            width: 1),
+                Container(
+                  width: (MediaQuery.of(context).size.width) - 20,
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    child: TextField(
+                      controller: _startDateController,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xff7D7c7c),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: isStartDateValid
-                                ? Colors.blue
-                                : Colors.red, // Border color when focused
-                            width: 1),
-                      ),
-                      errorText: isStartDateValid
-                          ? null
-                          : startDateErrorMsg, // Display error message if invalid
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now().subtract(Duration(days: 1)),
-                        firstDate: DateTime(1970),
-                        //lastDate: DateTime(2101),
-                        lastDate: DateTime.now().subtract(Duration(days: 1)),
-                        initialDatePickerMode: DatePickerMode.year);
-                    if (pickedDate != null) {
-                      setState(() {
-                        isStartDateValid = true;
-                        _startDateSelected = true;
-                        //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                        // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                        _startDateController.text =
-                            "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
-                      });
-                    }
-                  },
+                      decoration: InputDecoration(
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.all(7),
+                            child: SvgPicture.asset(
+                              'assets/icon/Calendar.svg',
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
+                          hintText: 'Date of Birth',
+                          border: OutlineInputBorder(),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: isStartDateValid
+                                    ? Colors.grey
+                                    : Colors.red, // Default border color
+                                width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: isStartDateValid
+                                    ? Colors.blue
+                                    : Colors.red, // Border color when focused
+                                width: 1),
+                          ),
+                          errorText: isStartDateValid
+                              ? null
+                              : startDateErrorMsg, // Display error message if invalid
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10)),
+                      readOnly: true,
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate:
+                                DateTime.now().subtract(Duration(days: 1)),
+                            firstDate: DateTime(1970),
+                            //lastDate: DateTime(2101),
+                            lastDate:
+                                DateTime.now().subtract(Duration(days: 1)),
+                            initialDatePickerMode: DatePickerMode.year);
+                        if (pickedDate != null) {
+                          setState(() {
+                            isStartDateValid = true;
+                            _startDateSelected = true;
+                            //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                            // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                            _startDateController.text =
+                                "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                          });
+                        }
+                      },
+                    ),
+                  ),
                 ),
-
                 /*SizedBox(height: 20,),
                 Text('Date of Birth', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
                 SizedBox(height: 10,),

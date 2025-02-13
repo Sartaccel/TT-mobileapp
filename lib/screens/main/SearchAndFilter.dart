@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/Utils.dart';
@@ -455,12 +456,20 @@ class _SearchandfilterState extends State<Searchandfilter> {
                         });
                       },
                       decoration: InputDecoration(
-                        icon: Icon(
-                          Icons.search,
-                          color: Color(0xff818385),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SvgPicture.asset(
+                            'assets/icon/Search.svg',
+                            width: 22,
+                            height: 22,
+                          ),
                         ),
                         hintText: 'Search for job or skills',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF818385),
+                        ),
                         border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 5),
                       ),
                       onSubmitted: (value) {},
                     );

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -320,12 +321,11 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
           //   fontSize: 16.0,
           // );
           IconSnackBar.show(
-            context, // Pass the context as the first argument
-            label: 'Invalid user !', // The label for the snackbar
-            snackBarType: SnackBarType
-                .alert, // Specify the type of snackbar (e.g., alert)
-            backgroundColor: Color(0xFFBA1A1A), // Optional background color
-            iconColor: Colors.white, // Optional icon color
+            context,
+            label: 'Invalid user !',
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xFFBA1A1A),
+            iconColor: Colors.white,
           );
         }
       }
@@ -478,7 +478,10 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                     ),
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
-                                keyboardType: TextInputType.phone,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
                                 onChanged: (value) {
                                   setState(() {
                                     _isMobileNumberValid = true;

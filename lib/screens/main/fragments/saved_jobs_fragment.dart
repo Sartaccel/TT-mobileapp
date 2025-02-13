@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -36,7 +37,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
 
   Future<void> getAppliedJobsList() async {
     final url =
-       // Uri.parse(AppConstants.BASE_URL + AppConstants.SAVED_JOBS_LISTS_GET);
+        // Uri.parse(AppConstants.BASE_URL + AppConstants.SAVED_JOBS_LISTS_GET);
         Uri.parse(AppConstants.BASE_URL + AppConstants.GET_FAV_NEW);
 
     try {
@@ -72,22 +73,27 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       }
     } catch (e) {
       print(e.toString());
-    }
-
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult.contains(ConnectivityResult.none)) {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0,
+          iconColor: Colors.white,
         );
 
         setState(() {
@@ -101,7 +107,6 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
         });
       }
     }
-
   }
 
   bool checkExpiry(String dateString) {
@@ -117,7 +122,8 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
 
   Future<void> removeJob(int jobId) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV);
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
+    final url =
+        Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
 
     final bodyParams = {"jobId": jobId, "isSaved": 0};
 
@@ -141,14 +147,21 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       }
 
       if (response.statusCode == 200 || response.statusCode == 202) {
-        Fluttertoast.showToast(
-            msg: 'Removed successfully',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color(0xff2D2D2D),
-            textColor: Colors.white,
-            fontSize: 16.0);
+        // Fluttertoast.showToast(
+        //     msg: 'Removed successfully',
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.BOTTOM,
+        //     timeInSecForIosWeb: 1,
+        //     backgroundColor: Color(0xff2D2D2D),
+        //     textColor: Colors.white,
+        //     fontSize: 16.0);
+        IconSnackBar.show(
+          context,
+          label: 'Removed successfully',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
 
         getAppliedJobsList();
       }
@@ -156,21 +169,27 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       if (kDebugMode) {
         print(e);
       }
-    }
-    finally {
+    } finally {
       setState(() {
         isLoading = false;
       });
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult.contains(ConnectivityResult.none)) {
-        Fluttertoast.showToast(
-          msg: "No internet connection",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0,
+          iconColor: Colors.white,
         );
 
         setState(() {
@@ -189,67 +208,68 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-    ? Expanded(
-        child: Shimmer.fromColors(
-          baseColor: Colors.grey[300]!, // Base color for the shimmer
-          highlightColor: Colors.grey[100]!, // Highlight color for the shimmer
-          child: ListView.builder(
-            itemCount: 5, // Number of skeleton items to show
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.2, color: Colors.grey),
-                  color: Colors.white,
-                ),
-                width: MediaQuery.of(context).size.width,
-                height: 160,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
+        ? Expanded(
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!, // Base color for the shimmer
+              highlightColor:
+                  Colors.grey[100]!, // Highlight color for the shimmer
+              child: ListView.builder(
+                itemCount: 5, // Number of skeleton items to show
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 0.2, color: Colors.grey),
+                      color: Colors.white,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 160,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Shimmer placeholder for job title
-                        Container(
-                          width: 200,
-                          height: 20,
-                          color: Colors.white,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Shimmer placeholder for job title
+                            Container(
+                              width: 200,
+                              height: 20,
+                              color: Colors.white,
+                            ),
+                            SizedBox(height: 10),
+                            // Shimmer placeholder for company name
+                            Container(
+                              width: 150,
+                              height: 15,
+                              color: Colors.white,
+                            ),
+                            SizedBox(height: 10),
+                            // Shimmer placeholder for location
+                            Container(
+                              width: 100,
+                              height: 15,
+                              color: Colors.white,
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 10),
-                        // Shimmer placeholder for company name
+                        // Shimmer placeholder for other widgets (e.g., icons)
                         Container(
-                          width: 150,
-                          height: 15,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 10),
-                        // Shimmer placeholder for location
-                        Container(
-                          width: 100,
-                          height: 15,
+                          width: 40,
+                          height: 40,
                           color: Colors.white,
                         ),
                       ],
                     ),
-                    // Shimmer placeholder for other widgets (e.g., icons)
-                    Container(
-                      width: 40,
-                      height: 40,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      )
-    : (jobList.length > 0
+                  );
+                },
+              ),
+            ),
+          )
+        : (jobList.length > 0
             ? RefreshIndicator(
-      onRefresh: getAppliedJobsList,
+                onRefresh: getAppliedJobsList,
                 child: ListView.builder(
                     itemCount: jobList.length,
                     itemBuilder: (context, index) {
@@ -279,15 +299,22 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Image(
-                                image: jobList[index]['logo'] != null && jobList[index]['logo'].isNotEmpty
-                                    ? NetworkImage(jobList[index]['logo'],) as ImageProvider<Object>
-                                    : const AssetImage('assets/images/tt_logo_resized.png'),
+                                image: jobList[index]['logo'] != null &&
+                                        jobList[index]['logo'].isNotEmpty
+                                    ? NetworkImage(
+                                        jobList[index]['logo'],
+                                      ) as ImageProvider<Object>
+                                    : const AssetImage(
+                                        'assets/images/tt_logo_resized.png'),
                                 height: 40,
                                 width: 40,
                                 fit: BoxFit.contain,
                                 errorBuilder: (context, error, stackTrace) {
                                   // Fallback to asset if network image fails
-                                  return Image.asset('assets/images/tt_logo_resized.png', height: 32, width: 32);
+                                  return Image.asset(
+                                      'assets/images/tt_logo_resized.png',
+                                      height: 32,
+                                      width: 32);
                                 },
                               ),
                               SizedBox(
@@ -299,10 +326,11 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Flexible(
-                                      fit: FlexFit.loose,
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width - 150,
-                                        child: Text(
+                                    fit: FlexFit.loose,
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width -
+                                          150,
+                                      child: Text(
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         jobList[index]['jobTitle'] ?? 'NA',
@@ -315,8 +343,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                     ),
                                   ),
                                   Text(
-                                    jobList[index]['companyName'] ??
-                                        'N/A',
+                                    jobList[index]['companyName'] ?? 'N/A',
                                     style: TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontFamily: 'Lato',
@@ -365,8 +392,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                             width: 5,
                                           ),
                                           Text(
-                                            jobList[index]['workType'] ??
-                                                'N/A',
+                                            jobList[index]['workType'] ?? 'N/A',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 14,
@@ -378,65 +404,81 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                         width: 20,
                                       ),
                                       Container(
-                                                  width: MediaQuery.of(context).size.width - 255,
-                                                  child: Row(
-                                                    children: [
-                                                      SvgPicture.asset('assets/images/ic_location.svg', height: 14, width: 14, color: Colors.black,),
-                                                      SizedBox(width: 5,),
-                                                      //Text(jobList[index]['location'], overflow: TextOverflow.ellipsis, maxLines: 1, softWrap: false, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff545454)),),
-                                                      Flexible(
-                                                        fit: FlexFit.loose,
-                                                        child: Text(
-                                                          jobList[index]['location'] ?? 'N/A',
-                                                          //"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
-                                                          overflow: TextOverflow.ellipsis,
-                                                          maxLines: 1,
-                                                          softWrap: false,
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.w400,
-                                                            fontSize: 14,
-                                                            color: Color(0xff545454),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                255,
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.asset(
+                                              'assets/images/ic_location.svg',
+                                              height: 14,
+                                              width: 14,
+                                              color: Colors.black,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            //Text(jobList[index]['location'], overflow: TextOverflow.ellipsis, maxLines: 1, softWrap: false, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff545454)),),
+                                            Flexible(
+                                              fit: FlexFit.loose,
+                                              child: Text(
+                                                jobList[index]['location'] ??
+                                                    'N/A',
+                                                //"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                softWrap: false,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                  color: Color(0xff545454),
                                                 ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(
                                     height: 0,
                                   ),
                                   Container(
-                                      height: 24,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 2),
-                                      //decoration: BoxDecoration(color: checkExpiry(jobList[index]['job']['dueDate'] ) ? Color(0xffFBE2E0) : Color(0xffE0EDFB), borderRadius: BorderRadius.circular(3)),
-                                      decoration: BoxDecoration(
+                                    height: 24,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    //decoration: BoxDecoration(color: checkExpiry(jobList[index]['job']['dueDate'] ) ? Color(0xffFBE2E0) : Color(0xffE0EDFB), borderRadius: BorderRadius.circular(3)),
+                                    decoration: BoxDecoration(
+                                      color: checkExpiry(jobList[index]
+                                                  ['dueDate'] ??
+                                              '1990-01-01')
+                                          ? const Color(0xffFBE2E0)
+                                          : const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                    child:
+                                        //Text(checkExpiry(jobList[index]['job']['dueDate']) ? "Expired" : "Expires ${jobList[index]['job']['dueDate']}" , style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: checkExpiry(jobList[index]['job']['dueDate']) ? Color(0xffBA1A1A) : Color(0xff004C99)),)
+                                        Text(
+                                      checkExpiry(jobList[index]['dueDate'] ??
+                                              '1990-01-01')
+                                          ? 'Expired'
+                                          : processDate(jobList[index]
+                                                  ['jobCreatedDate'] ??
+                                              '1990-01-01'), // Formatting createdDate
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
                                         color: checkExpiry(jobList[index]
                                                     ['dueDate'] ??
                                                 '1990-01-01')
-                                            ? const Color(0xffFBE2E0)
-                                            : const Color.fromARGB(255, 255, 255, 255),
-                                        borderRadius: BorderRadius.circular(3),
+                                            ? const Color(
+                                                0xffBA1A1A) // Expired color
+                                            : const Color(
+                                                0xff545454), // Active/Default color
                                       ),
-                                      child:
-                                          //Text(checkExpiry(jobList[index]['job']['dueDate']) ? "Expired" : "Expires ${jobList[index]['job']['dueDate']}" , style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: checkExpiry(jobList[index]['job']['dueDate']) ? Color(0xffBA1A1A) : Color(0xff004C99)),)
-                                         Text(
-  checkExpiry(jobList[index]['dueDate'] ?? '1990-01-01')
-      ? 'Expired'
-      : processDate(jobList[index]['jobCreatedDate'] ?? '1990-01-01'), // Formatting createdDate
-  style: TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-    color: checkExpiry(jobList[index]['dueDate'] ?? '1990-01-01')
-        ? const Color(0xffBA1A1A) // Expired color
-        : const Color(0xff545454), // Active/Default color
-  ),
-),
-
-
-                                      )
+                                    ),
+                                  )
                                 ],
                               ),
                               InkWell(
@@ -446,14 +488,12 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                   child: Icon(
                                     Icons.bookmark,
                                     size: 25,
-                                  )
-                              )
+                                  ))
                             ],
                           ),
                         ),
                       );
-                    }
-                    ),
+                    }),
               )
             : isConnectionAvailable
                 ? Center(
@@ -464,7 +504,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('no_internet_ic.svg'),
+                        SvgPicture.asset('assets/icon/noInternet.svg'),
                         Text(
                           'No Internet connection',
                           style: TextStyle(
@@ -496,7 +536,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
                                 color: AppColors.primaryColor,
-                                borderRadius: BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(8)),
                             child: Center(
                               child: Text(
                                 'Try Again',

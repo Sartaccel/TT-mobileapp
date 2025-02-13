@@ -846,7 +846,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                     children: [
                       PhysicalModel(
                         elevation: 0.5,
-                        color: Colors.white,
+                        color: Color(0xffFCFCFC),
                         child: Column(
                           children: [
                             Container(
@@ -859,8 +859,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                     decoration: BoxDecoration(
                                         color: Color(0xff001B3E),
                                         borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20))),
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10))),
                                   ),
                                   Positioned(
                                       top: 70,
@@ -934,7 +934,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         },
                                         child: Row(
                                           children: [
-                                            Icon(Icons.edit_outlined),
+                                            SvgPicture.asset(
+                                              'assets/icon/edit.svg',
+                                              width: 25,
+                                              height: 25,
+                                            ),
+                                            const SizedBox(width: 3),
                                             Text(
                                               'Edit',
                                               style: TextStyle(
@@ -967,7 +972,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                             '${candidateProfileModel!.position ?? 'Designation not updated'}',
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
-                                                color: Color(0xff333333),
+                                                color: Color(0xff545454),
                                                 fontSize: 14),
                                           ),
                                         ],
@@ -985,7 +990,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 children: [
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.location_on_outlined),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/location.svg',
+                                      width: 26,
+                                      height: 30,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       '${candidateProfileModel?.location ?? 'Location not updated'}',
@@ -998,7 +1007,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                   //ListTile(dense: true, leading: Icon(Icons.work_outline_rounded), minLeadingWidth: 10, title: Text('${candidateProfileModel!.experience} Years', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.work_outline_rounded),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/newJob.svg',
+                                      width: 26,
+                                      height: 26,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       candidateProfileModel!.experience != null
@@ -1012,7 +1025,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                   ),
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.call),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/phone.svg',
+                                      width: 28,
+                                      height: 28,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       '${candidateProfileModel!.mobile}',
@@ -1024,7 +1041,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                   ),
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.email_outlined),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/mail.svg',
+                                      width: 28,
+                                      height: 28,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       '${candidateProfileModel!.email}',
@@ -1082,7 +1103,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w500,
                                     color: Color(0xff333333)),
                               ),
                             ),
@@ -1118,12 +1139,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                 'File types: pdf, .doc, .docx  Max file size: 5MB',
                                                 style: TextStyle(
                                                     color: Color(0xff7D7C7C),
-                                                    fontSize: 14),
+                                                    fontSize: 12),
                                               )
                                             ],
                                           ),
                                           SvgPicture.asset(
-                                              'assets/images/mage_upload.svg')
+                                              'assets/images/mage_upload.svg',
+                                              width: 30,
+                                              height: 30)
                                         ],
                                       ),
                                     ),
@@ -1320,23 +1343,35 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Text(
                                   'Work Experience',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff333333)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff333333),
+                                  ),
                                 ),
                                 InkWell(
-                                    onTap: () async {
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Addemployment(
-                                                    emplomentData: null,
-                                                  )));
-                                      fetchProfileFromPref();
-                                    },
-                                    child: Image.asset(
-                                        'assets/images/ic_add_round.png'))
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Addemployment(
+                                          emplomentData: null,
+                                        ),
+                                      ),
+                                    );
+                                    fetchProfileFromPref();
+                                  },
+                                  child: Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/icon/add.svg',
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                      SizedBox(width: 9),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                             workList.length == 0
@@ -1533,23 +1568,35 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Text(
                                   'Educational Details',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff333333)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff333333),
+                                  ),
                                 ),
                                 InkWell(
-                                    onTap: () async {
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Addeducation(
-                                                    educationDetail: null,
-                                                  )));
-                                      fetchProfileFromPref();
-                                    },
-                                    child: Image.asset(
-                                        'assets/images/ic_add_round.png'))
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Addeducation(
+                                          educationDetail: null,
+                                        ),
+                                      ),
+                                    );
+                                    fetchProfileFromPref();
+                                  },
+                                  child: Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/icon/add.svg',
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                      SizedBox(width: 9),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                             educationList.length == 0
@@ -1747,20 +1794,32 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Text(
                                   'Skills',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff333333)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff333333),
+                                  ),
                                 ),
                                 InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Adddeleteskills()));
-                                    },
-                                    child: Image.asset(
-                                        'assets/images/ic_add_round.png'))
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Adddeleteskills(),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/icon/add.svg',
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                      SizedBox(width: 9),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                             userSkills.length == 0
