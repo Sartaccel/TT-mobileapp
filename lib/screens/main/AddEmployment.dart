@@ -31,7 +31,7 @@ class _AddemploymentState extends State<Addemployment> {
   final databaseRef =
       FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
 
-  final int maxLength = 50;
+  final int maxLength = 2000;
 
   bool isLoading = false;
   bool isEdit = false;
@@ -708,7 +708,7 @@ class _AddemploymentState extends State<Addemployment> {
                                   border: Border.all(
                                       width: 1,
                                       color: isWorkTypeValid
-                                          ? Color(0xffD9D9D9)
+                                          ? Colors.grey
                                           : Colors.red),
                                   borderRadius: BorderRadius.circular(10)),
                               width: (MediaQuery.of(context).size.width) - 20,
@@ -769,7 +769,7 @@ class _AddemploymentState extends State<Addemployment> {
                                     selectedWorkType.isEmpty
                                         ? 'Select your work type'
                                         : selectedWorkType,
-                                    style: TextStyle(color: Color(0xff7D7C7C)),
+                                    style: TextStyle(color:Colors.grey),
                                   ),
                                 ),
                               ),
@@ -792,7 +792,7 @@ class _AddemploymentState extends State<Addemployment> {
                                   border: Border.all(
                                       width: 1,
                                       color: isWorkTypeValid
-                                          ? Color(0xffD9D9D9)
+                                          ?Colors.grey
                                           : Colors.red),
                                   borderRadius: BorderRadius.circular(10)),
                               width: (MediaQuery.of(context).size.width) - 20,

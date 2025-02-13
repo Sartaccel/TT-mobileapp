@@ -62,87 +62,99 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     }
   }
 
-  void showDeleteConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
-          actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
-          title: Text(
-            'Logout',
+ void showDeleteConfirmationDialog(BuildContext context, bool isConnectionAvailable) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+        contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+        title: Text(
+          'Logout',
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xff333333)),
+        ),
+        content: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Text(
+            'Are you sure you want to log out?',
             style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+                height: 1.2,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
                 color: Color(0xff333333)),
           ),
-          content: Container(
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                'Are you sure you want to log out?',
-                style: TextStyle(
-                    height: 0.5,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff333333)),
-              )),
-          actions: [
-            InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(width: 1, color: AppColors.primaryColor),
-                    borderRadius: BorderRadius.circular(7)),
-                child: Center(
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  ),
+        ),
+        actions: [
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              height: 40,
+              width: 100,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(width: 1, color: AppColors.primaryColor),
+                  borderRadius: BorderRadius.circular(7)),
+              child: Center(
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.primaryColor),
                 ),
               ),
             ),
-            InkWell(
-              onTap: () async {
-                UserCredentials credentials =
-                    UserCredentials(username: '', password: '');
-
-                await credentials.deleteCredentials();
-                await _googleAuthService.signOut();
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (Route<dynamic> route) => false, // This will keep Screen 1
-                );
-              },
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(7)),
-                child: Center(
-                  child: Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.white),
+          ),
+          InkWell(
+            onTap: () async {
+              if (!isConnectionAvailable) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('No internet connection. Please try again later.'),
+                    backgroundColor: Colors.red,
                   ),
+                );
+                return;
+              }
+
+              // Proceed with logout if connected
+              UserCredentials credentials = UserCredentials(username: '', password: '');
+              await credentials.deleteCredentials();
+              await _googleAuthService.signOut();
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (Route<dynamic> route) => false,
+              );
+            },
+            child: Container(
+              height: 40,
+              width: 100,
+              decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(7)),
+              child: Center(
+                child: Text(
+                  'Logout',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-            )
-          ],
-        );
-      },
-    );
-  }
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   final String appUrl =
       "https://play.google.com/store/apps/details?id=com.android.referral.talentturbo";
@@ -386,7 +398,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             Divider(),
                             ListTile(
                               onTap: () {
-                                showDeleteConfirmationDialog(context);
+                                showDeleteConfirmationDialog(context,isConnectionAvailable);
                               },
                               leading:
                                   Icon(Icons.logout, color: Color(0xffBA1A1A)),

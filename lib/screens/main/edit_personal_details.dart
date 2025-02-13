@@ -983,10 +983,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                         context: context,
-                        initialDate: DateTime.now().subtract(Duration(days: 1)),
+                        initialDate: DateTime.now().subtract(const Duration(days: 1)),
                         firstDate: DateTime(1970),
                         //lastDate: DateTime(2101),
-                        lastDate: DateTime.now().subtract(Duration(days: 1)),
+                        lastDate: DateTime.now().subtract(const Duration(days: 1)),
                         initialDatePickerMode: DatePickerMode.year);
                     if (pickedDate != null) {
                       setState(() {
@@ -1089,47 +1089,93 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   height: 20,
                 ),
                 Text(
-                  'Total Experience in years',
+                  'Work Experience ',
                   style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    controller: experienceController,
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                    decoration: InputDecoration(
-                        hintText: 'Experience',
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: _isExperienceValid
-                                  ? Colors.grey
-                                  : Colors.red, // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: _isExperienceValid
-                                  ? Colors.blue
-                                  : Colors.red, // Border color when focused
-                              width: 1),
-                        ),
-                        errorText: _isExperienceValid
-                            ? null
-                            : 'Experience cannot be empty', // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isExperienceValid = true;
-                      });
-                    },
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    
+                    Container(
+                      width: 180,
+                      child: TextField(
+                        
+                        controller: experienceController,
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                        decoration: InputDecoration(
+                            hintText: 'Year',
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.grey
+                                      : Colors.red, // Default border color
+                                  width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.blue
+                                      : Colors.red, // Border color when focused
+                                  width: 1),
+                            ),
+                            errorText: _isExperienceValid
+                                ? null
+                                : 'Experience cannot be empty', // Display error message if invalid
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          // Validate the email here and update _isEmailValid
+                          setState(() {
+                            _isExperienceValid = true;
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 180,
+                     
+                      child: TextField(
+                        
+                        controller: experienceController,
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                        decoration: InputDecoration(
+                            hintText: 'Month',
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.grey
+                                      : Colors.red, // Default border color
+                                  width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.blue
+                                      : Colors.red, // Border color when focused
+                                  width: 1),
+                            ),
+                            errorText: _isExperienceValid
+                                ? null
+                                : 'Experience cannot be empty', // Display error message if invalid
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          // Validate the email here and update _isEmailValid
+                          setState(() {
+                            _isExperienceValid = true;
+                          });
+                        },
+                      ),
+                    ),
+                    
+                  ],
                 ),
                 isLoading
                     ? Container(

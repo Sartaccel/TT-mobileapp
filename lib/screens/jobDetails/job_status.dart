@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -8,9 +7,7 @@ import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
-import 'package:talent_turbo_new/screens/main/home_container.dart';
 import 'package:http/http.dart' as http;
-
 class JobStatus extends StatefulWidget {
   final jobData;
   const JobStatus({super.key, required this.jobData});
@@ -98,9 +95,6 @@ class _JobStatusState extends State<JobStatus> {
         print(e.toString());
       }
     }
-
-
-
   }
 
 // Helper method to build each timeline row
@@ -328,19 +322,18 @@ class _JobStatusState extends State<JobStatus> {
                           child: Text('Status', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xff333333)),)),
 
                       SizedBox(height: 0,),
-               Padding(
+              Padding(
   padding: const EdgeInsets.all(16.0),
   child: ListView.builder(
     physics: NeverScrollableScrollPhysics(),
     shrinkWrap: true,
     itemCount: 4, // Ensure exactly 4 steps
     itemBuilder: (context, index) {
-      // Mapping of backend status keywords to display names
       Map<String, String> statusMapping = {
-        "applied": "Applied",
-        "shortlisted": "Shortlisted",
-        "interview": "Interview",
-        "selection": "Selection"
+        "Talent Identified": "Applied",
+        "Shortlisted": "Shortlisted",
+        "Interview Completed": "Interview",
+        "Offer Given": "Selection"
       };
 
       List<Map<String, String>> timelineSteps = [
@@ -356,7 +349,8 @@ class _JobStatusState extends State<JobStatus> {
       if (statusList.isNotEmpty) {
         for (var status in statusList) {
           if (statusMapping.containsKey(status['statusName'])) {
-            int stepIndex = timelineSteps.indexWhere((step) => step['statusName'] == statusMapping[status['statusName']]);
+            int stepIndex = timelineSteps.indexWhere(
+                (step) => step['statusName'] == statusMapping[status['statusName']]);
             if (stepIndex != -1) {
               timelineSteps[stepIndex]["createdAt"] = status['createdAt'] ?? "";
               if (index == stepIndex) {
@@ -420,27 +414,16 @@ class _JobStatusState extends State<JobStatus> {
               ),
             ],
           ),
+    
         ],
       );
     },
   ),
 ),
 
-
-
-
-
-
-
-                    ],
-                  ),
-
-
-
-
-
-
-                ],
+],
+ ),
+],
               ),
             ),
           )),

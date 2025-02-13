@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -117,8 +117,8 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
                 itemCount: 5, // Number of skeleton items to show
                 itemBuilder: (context, index) {
                   return Container(
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    padding: EdgeInsets.all(15),
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                       border: Border.all(width: 0.2, color: Colors.grey),
                       color: Colors.white,
@@ -138,14 +138,14 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
                               height: 20,
                               color: Colors.white,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             // Shimmer placeholder for company name
                             Container(
                               width: 150,
                               height: 15,
                               color: Colors.white,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             // Shimmer placeholder for location
                             Container(
                               width: 100,
