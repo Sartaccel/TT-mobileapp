@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
-import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/Utils.dart';
 
 class Searchandfilter extends StatefulWidget {

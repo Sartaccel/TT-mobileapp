@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -485,12 +486,38 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     });
   }
 
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchProfileFromPref();
-    checkInternetAvailability();
-  }
+late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+
+@override
+void initState() {
+  super.initState();
+  fetchProfileFromPref();
+  checkInternetAvailability();
+
+  _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+    setState(() {
+      isConnectionAvailable = results.contains(ConnectivityResult.mobile) || results.contains(ConnectivityResult.wifi);
+    });
+
+    if (!isConnectionAvailable) {
+      IconSnackBar.show(
+        context,
+        label: 'No internet connection',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
+    }
+  });
+}
+
+@override
+void dispose() {
+  _connectivitySubscription.cancel();
+  super.dispose();
+}
+
+
 
   Future<void> checkInternetAvailability() async {
     var connectivityResult = await Connectivity().checkConnectivity();
