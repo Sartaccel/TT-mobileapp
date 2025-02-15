@@ -1216,27 +1216,36 @@ class _JobApplyState extends State<JobApply> {
                   SizedBox(
                     height: 50,
                   ),
-                  InkWell(
-                    onTap: () {
-                      //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> Companydetails()));
-                      applyJob();
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      margin: EdgeInsets.symmetric(horizontal: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                        child: Text(
-                          'Apply',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
+                 InkWell(
+  onTap: () {
+    if (candidateProfileModel?.fileName == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please upload your resume before applying.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      applyJob();
+    }
+  },
+  child: Container(
+    width: MediaQuery.of(context).size.width,
+    height: 50,
+    margin: EdgeInsets.symmetric(horizontal: 0),
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(
+        color: AppColors.primaryColor,
+        borderRadius: BorderRadius.circular(10)),
+    child: Center(
+      child: Text(
+        'Apply',
+        style: TextStyle(color: Colors.white),
+      ),
+    ),
+  ),
+),
+
                 ],
               ),
             ),
