@@ -364,6 +364,7 @@ class _AddemploymentState extends State<Addemployment> {
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: TextField(
                                 controller: txtDesignationController,
+                                cursorColor: Color(0xff004C99),
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
@@ -385,7 +386,7 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
                                           color: _isDesignationValid
-                                              ? Colors.blue
+                                              ? Color(0xff004C99)
                                               : Colors
                                                   .red, // Border color when focused
                                           width: 1),
@@ -422,6 +423,7 @@ class _AddemploymentState extends State<Addemployment> {
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: TextField(
                                 controller: txtComanyNameController,
+                                cursorColor: Color(0xff004C99),
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
@@ -443,7 +445,7 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
                                           color: _isCompanyNameValid
-                                              ? Colors.blue
+                                              ? Color(0xff004C99)
                                               : Colors
                                                   .red, // Border color when focused
                                           width: 1),
@@ -622,7 +624,7 @@ class _AddemploymentState extends State<Addemployment> {
                                                   BorderRadius.circular(8),
                                               borderSide: BorderSide(
                                                   color: isStartDateValid
-                                                      ? Colors.blue
+                                                      ? Color(0xff004C99)
                                                       : Colors
                                                           .red, // Border color when focused
                                                   width: 1),
@@ -718,7 +720,7 @@ class _AddemploymentState extends State<Addemployment> {
                                                 BorderRadius.circular(8),
                                             borderSide: BorderSide(
                                                 color: isEndDateValid
-                                                    ? Colors.blue
+                                                    ? Color(0xff004C99)
                                                     : Colors.red,
                                                 width: 1),
                                           ),
@@ -809,6 +811,7 @@ class _AddemploymentState extends State<Addemployment> {
                                     builder: (context) => Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 30, horizontal: 10),
+                                      color: Color(0xffFCFCFC),
                                       width: MediaQuery.of(context).size.width,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -892,7 +895,18 @@ class _AddemploymentState extends State<Addemployment> {
                                   showMaterialModalBottomSheet(
                                     isDismissible: true,
                                     context: context,
+                                    backgroundColor: Colors
+                                        .transparent, // Fix: Removes default background
                                     builder: (context) => Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffFCFCFC),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(
+                                              20), // Top-left corner
+                                          topRight: Radius.circular(
+                                              20), // Top-right corner
+                                        ),
+                                      ),
                                       padding: EdgeInsets.symmetric(
                                           vertical: 30, horizontal: 10),
                                       width: MediaQuery.of(context).size.width,
@@ -900,7 +914,6 @@ class _AddemploymentState extends State<Addemployment> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           ListTile(
-                                            //leading: Icon(Icons.visibility_outlined),
                                             title: Text('Full time'),
                                             onTap: () {
                                               setState(() {
@@ -912,7 +925,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.refresh),
                                             title: Text('Part time'),
                                             onTap: () {
                                               setState(() {
@@ -924,7 +936,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.download),
                                             title: Text('Internship'),
                                             onTap: () {
                                               setState(() {
@@ -936,7 +947,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.download),
                                             title: Text('Freelance'),
                                             onTap: () {
                                               setState(() {
@@ -948,7 +958,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.download),
                                             title: Text('Self-employed'),
                                             onTap: () {
                                               setState(() {
@@ -995,6 +1004,7 @@ class _AddemploymentState extends State<Addemployment> {
                                 maxLines: 4,
                                 maxLength: maxLength,
                                 controller: txtDescriptionController,
+                                cursorColor: Color(0xff004C99),
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
@@ -1017,7 +1027,7 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
                                           color: _isDescriptionValid
-                                              ? Colors.blue
+                                              ? Color(0xff004C99)
                                               : Colors
                                                   .red, // Border color when focused
                                           width: 1),

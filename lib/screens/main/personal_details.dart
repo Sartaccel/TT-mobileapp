@@ -950,8 +950,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                       )),
                                   Positioned(
                                     top: 190,
-                                    left: 0,
-                                    right: 0,
+                                    left: 10,
+                                    right: 10,
                                     child: Center(
                                       child: Column(
                                         children: [
@@ -1259,7 +1259,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
@@ -1315,8 +1315,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                               ),
                                             ],
                                           ),
-                                          Image.asset(
-                                              'assets/images/ic_more.png')
+                                          SvgPicture.asset(
+                                              'assets/icon/moreDot.svg')
                                         ],
                                       ),
                                     ),
@@ -1368,7 +1368,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         width: 30,
                                         height: 30,
                                       ),
-                                      SizedBox(width: 9),
+                                      SizedBox(width: 8),
                                     ],
                                   ),
                                 ),
@@ -1535,8 +1535,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     ),
                                                   ],
                                                 ),
-                                                Image.asset(
-                                                    'assets/images/ic_more.png')
+                                                SvgPicture.asset(
+                                                    'assets/icon/moreDot.svg')
                                               ],
                                             ),
                                           ),
@@ -1593,7 +1593,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         width: 30,
                                         height: 30,
                                       ),
-                                      SizedBox(width: 9),
+                                      SizedBox(width: 8),
                                     ],
                                   ),
                                 ),
@@ -1760,8 +1760,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     ),
                                                   ],
                                                 ),
-                                                Image.asset(
-                                                    'assets/images/ic_more.png')
+                                                SvgPicture.asset(
+                                                    'assets/icon/moreDot.svg')
                                               ],
                                             ),
                                           ),
@@ -1816,7 +1816,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         width: 30,
                                         height: 30,
                                       ),
-                                      SizedBox(width: 9),
+                                      SizedBox(width: 8),
                                     ],
                                   ),
                                 ),

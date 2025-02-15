@@ -177,6 +177,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: passwordController,
+                          cursorColor: Color(0xff004C99),
                           obscureText: passwordHide,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
@@ -190,18 +191,21 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Enter password',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -241,6 +245,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: confirmPasswordController,
+                          cursorColor: Color(0xff004C99),
                           obscureText: confirmPasswordHide,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
@@ -249,24 +254,27 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                     setState(() {
                                       confirmPasswordHide =
                                           !confirmPasswordHide;
-                                    }); 
+                                    });
                                   },
                                   icon: SvgPicture.asset(confirmPasswordHide
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Re-enter your password',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),

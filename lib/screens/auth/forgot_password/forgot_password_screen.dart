@@ -220,21 +220,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                         TextField(
                           controller: emailController,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               hintText: 'Enter your email',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),

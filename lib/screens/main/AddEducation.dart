@@ -358,7 +358,7 @@ class _AddeducationState extends State<Addeducation> {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: isQualificationValid
-                                    ? Colors.blue
+                                    ? Color(0xff004C99)
                                     : Colors.red, // Border color when focused
                                 width: 1),
                           ),
@@ -396,6 +396,7 @@ class _AddeducationState extends State<Addeducation> {
                             r'[a-zA-Z\s]')), // Allow only letters and spaces
                       ],
                       controller: txtSpecializationController,
+                      cursorColor: Color(0xff004C99),
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Lato',
@@ -416,7 +417,7 @@ class _AddeducationState extends State<Addeducation> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
                                 color: isSpecializationValid
-                                    ? Colors.blue
+                                    ? Color(0xff004C99)    
                                     : Colors.red, // Border color when focused
                                 width: 1),
                           ),
@@ -454,6 +455,7 @@ class _AddeducationState extends State<Addeducation> {
                             r'[a-zA-Z\s]')), // Allow only letters and spaces
                       ],
                       controller: txtInstituteController,
+                      cursorColor: Color(0xff004C99),
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Lato',
@@ -474,10 +476,10 @@ class _AddeducationState extends State<Addeducation> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
                                 color: isInstituteValid
-                                    ? Colors.blue
+                                    ? Color(0xff004C99)
                                     : Colors.red, // Border color when focused
                                 width: 1),
-                          ), 
+                          ),
                           errorText: isInstituteValid
                               ? null
                               : instituteErrorMsg, // Display error message if invalid
@@ -619,6 +621,7 @@ class _AddeducationState extends State<Addeducation> {
                             ),
                             TextField(
                               controller: _startDateController,
+                              cursorColor: Color(0xff004C99),
                               style: TextStyle(
                                   fontSize: 14, color: Color(0xFF505050)),
                               decoration: InputDecoration(
@@ -646,7 +649,7 @@ class _AddeducationState extends State<Addeducation> {
                                     borderRadius: BorderRadius.circular(8),
                                     borderSide: BorderSide(
                                         color: isStartDateValid
-                                            ? Colors.blue
+                                            ? Color(0xff004C99)
                                             : Colors
                                                 .red, // Border color when focused
                                         width: 1),
@@ -698,6 +701,7 @@ class _AddeducationState extends State<Addeducation> {
                             ),
                             TextField(
                               controller: _endDateController,
+                              cursorColor: Color(0xff004C99),
                               style: TextStyle(
                                   fontSize: 14, color: Color(0xFF505050)),
                               decoration: InputDecoration(
@@ -728,7 +732,7 @@ class _AddeducationState extends State<Addeducation> {
                                   borderRadius: BorderRadius.circular(8),
                                   borderSide: BorderSide(
                                     color: isEndDateValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1,

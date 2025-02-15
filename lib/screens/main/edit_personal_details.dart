@@ -561,6 +561,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           Expanded(
               child: SingleChildScrollView(
                   child: Container(
+            color: Color(0xffFCFCFC),
             padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -579,21 +580,28 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     controller: fNameController,
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    cursorColor: Color(0xff004C99),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff545454)),
                     decoration: InputDecoration(
                         hintText: 'Enter your first name',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isFirstNameValid
-                                  ? Colors.grey
+                                  ? Color(0xffd9d9d9)
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isFirstNameValid
-                                  ? Colors.blue
+                                  ? Color(0xff004C99)
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -629,21 +637,28 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                           r'[a-zA-Z\s]')), // Allow only letters and spaces
                     ],
                     controller: lNameController,
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    cursorColor: Color(0xff004C99),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff545454)),
                     decoration: InputDecoration(
                         hintText: 'Enter your last name',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLastNameValid
-                                  ? Colors.grey
+                                  ? Color(0xffd9d9d9)
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLastNameValid
-                                  ? Colors.blue
+                                  ? Color(0xff004C99)
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -677,14 +692,20 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                       width: (MediaQuery.of(context).size.width) - 100,
                       child: TextField(
                         controller: emailController,
-                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                        cursorColor: Color(0xff004C99),
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Lato',
+                            color: Color(0xff545454)),
                         decoration: InputDecoration(
                             hintText: 'Enter your email',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8)),
                             enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
                                   color: _isEmailValid
-                                      ? Colors.grey
+                                      ? Color(0xffd9d9d9)
                                       : Colors.red, // Default border color
                                   width: 1),
                             ),
@@ -693,9 +714,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                     ? 'assets/images/verified_ic.svg'
                                     : 'assets/images/pending_ic.svg'),
                             focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
                                   color: _isEmailValid
-                                      ? Colors.blue
+                                      ? Color(0xff004C99)
                                       : Colors.red, // Border color when focused
                                   width: 1),
                             ),
@@ -773,9 +795,9 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                       border: Border.all(
                                           width: 1,
                                           color: _isMobileNumberValid
-                                              ? Colors.grey
+                                              ? Color(0xffd9d9d9)
                                               : Colors.red),
-                                      borderRadius: BorderRadius.circular(4)),
+                                      borderRadius: BorderRadius.circular(8)),
                                   padding: EdgeInsets.all(9),
                                   child: DropdownButton(
                                       underline: Container(),
@@ -787,8 +809,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontFamily: 'Lato',
-                                                    color: const Color(
-                                                        0xFF333333))));
+                                                    color: Color(0xff545454))));
                                       }).toList(),
                                       onChanged: (val) {
                                         setState(() {
@@ -803,8 +824,11 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                     maxLength: getValidLengthForCountry(
                                         _selectedCountryCode!),
                                     controller: mobileController,
+                                    cursorColor: Color(0xff004C99),
                                     style: TextStyle(
-                                        fontSize: 14, fontFamily: 'Lato'),
+                                        fontSize: 14,
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff545454)),
                                     decoration: InputDecoration(
                                         counterText: '',
                                         hintText: 'Enter mobile number',
@@ -814,19 +838,25 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                                     1
                                                 ? 'assets/images/verified_ic.svg'
                                                 : 'assets/images/pending_ic.svg'),
-                                        border: OutlineInputBorder(),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
                                         enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Colors.grey
+                                                  ? Color(0xffd9d9d9)
                                                   : Colors
                                                       .red, // Default border color
                                               width: 1),
                                         ),
                                         focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Colors.blue
+                                                  ? Color(0xff004C99)
                                                   : Colors
                                                       .red, // Border color when focused
                                               width: 1),
@@ -912,21 +942,28 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     controller: locationController,
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    cursorColor: Color(0xff004C99),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff545454)),
                     decoration: InputDecoration(
                         hintText: 'Enter your Location',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLocationValid
-                                  ? Colors.grey
+                                  ? Color(0xffd9d9d9)
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLocationValid
-                                  ? Colors.blue
+                                  ? Color(0xff004C99)
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -960,10 +997,8 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   child: SizedBox(
                     child: TextField(
                       controller: _startDateController,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xff7D7c7c),
-                      ),
+                      cursorColor: Color(0xff004C99),
+                      style: TextStyle(fontSize: 14, color: Color(0xff545454)),
                       decoration: InputDecoration(
                           suffixIcon: Padding(
                             padding: const EdgeInsets.all(7),
@@ -974,18 +1009,21 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                             ),
                           ),
                           hintText: 'Date of Birth',
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8)),
                           enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
                                 color: isStartDateValid
-                                    ? Colors.grey
+                                    ? Color(0xffd9d9d9)
                                     : Colors.red, // Default border color
                                 width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
                                 color: isStartDateValid
-                                    ? Colors.blue
+                                    ? Color(0xff004C99)
                                     : Colors.red, // Border color when focused
                                 width: 1),
                           ),
@@ -1071,21 +1109,28 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     controller: currentPositionController,
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    cursorColor: Color(0xff004C99),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff545454)),
                     decoration: InputDecoration(
                         hintText: 'Enter your position',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isPositionValid
-                                  ? Colors.grey
+                                  ? Color(0xffd9d9d9)
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isPositionValid
-                                  ? Colors.blue
+                                  ? Color(0xff004C99)
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -1117,21 +1162,28 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     controller: experienceController,
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    cursorColor: Color(0xff004C99),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff545454)),
                     decoration: InputDecoration(
                         hintText: 'Experience',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isExperienceValid
-                                  ? Colors.grey
+                                  ? Color(0xffd9d9d9)
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isExperienceValid
-                                  ? Colors.blue
+                                  ? Color(0xff004C99)
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),

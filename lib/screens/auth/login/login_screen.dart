@@ -375,6 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextField(
                       controller: emailController,
+                      cursorColor: Color(0xff004C99),
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Lato',
@@ -395,7 +396,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
                                 color: _isEmailValid
-                                    ? Colors.blue
+                                    ? Color(0xff004C99)
                                     : Colors.red, // Border color when focused
                                 width: 1),
                           ),
@@ -424,6 +425,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextField(
                       obscureText: passwordHide,
                       controller: passwordController,
+                      cursorColor: Color(0xff004C99),
                       style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                       decoration: InputDecoration(
                           suffixIcon: IconButton(
@@ -451,7 +453,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
                                 color: _isPasswordValid
-                                    ? Colors.blue
+                                    ? Color(0xff004C99)
                                     : Colors.red, // Border color when focused
                                 width: 1),
                           ),

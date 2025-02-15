@@ -415,11 +415,10 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                 border: Border.all(
                                   width: 1,
                                   color: _isMobileNumberValid
-                                      ? Colors.grey
-                                      : const Color(
-                                          0xFFBA1A1A), // Error color for dropdown
+                                      ? Color(0xffD9D9D9)
+                                      : const Color(0xFFBA1A1A),
                                 ),
-                                borderRadius: BorderRadius.circular(5),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               padding: EdgeInsets.all(9),
                               child: DropdownButton<String>(
@@ -453,25 +452,29 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                               child: TextField(
                                 maxLength: 10,
                                 controller: mobileController,
+                                cursorColor: Color(0xff004C99),
                                 style:
                                     TextStyle(fontSize: 14, fontFamily: 'Lato'),
                                 decoration: InputDecoration(
                                     counterText: '',
                                     hintText: 'Enter mobile number',
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide(
                                         color: _isMobileNumberValid
-                                            ? Colors.grey
+                                            ? Color(0xffD9D9D9)
                                             : const Color(0xFFBA1A1A),
                                         width: 1,
                                       ),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide(
                                         color: _isMobileNumberValid
-                                            ? Colors.blue
+                                            ? Color(0xff004C99)
                                             : const Color(0xFFBA1A1A),
                                         width: 1,
                                       ),

@@ -875,21 +875,25 @@ class _JobApplyState extends State<JobApply> {
                   TextField(
                     readOnly: true,
                     controller: emailController,
+                    cursorColor: Color(0xff004C99),
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         hintText: 'Enter your email',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isEmailValid
-                                  ? Colors.grey
+                                  ? Color(0xffd9d9d9)
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isEmailValid
-                                  ? Colors.blue
+                                  ? Color(0xff004C99)
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -951,22 +955,26 @@ class _JobApplyState extends State<JobApply> {
                           readOnly: true,
                           maxLength: 10,
                           controller: mobileController,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               counterText: '',
                               hintText: 'Enter mobile number',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isMobileNumberValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isMobileNumberValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),

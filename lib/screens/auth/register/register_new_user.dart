@@ -585,21 +585,25 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: fNameController,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               hintText: 'Enter your first name',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isFirstNameValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isFirstNameValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -637,6 +641,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: lNameController,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(
@@ -644,18 +649,21 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                           ],
                           decoration: InputDecoration(
                               hintText: 'Enter your last name',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isLastNameValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isLastNameValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -689,21 +697,25 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: emailController,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               hintText: 'Enter your email address',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -738,6 +750,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         child: TextField(
                           controller: passwordController,
                           obscureText: passwordHide,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
@@ -751,18 +764,21 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Enter your password',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -796,6 +812,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: confirmPasswordController,
+                          cursorColor: Color(0xff004C99),
                           obscureText: confirmPasswordHide,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
@@ -811,18 +828,21 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Re-enter your password',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Colors.grey
+                                        ? Color(0xffd9d9d9)
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Colors.blue
+                                        ? Color(0xff004C99)
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -867,9 +887,9 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       border: Border.all(
                                           width: 1,
                                           color: _isMobileNumberValid
-                                              ? Colors.grey
+                                              ? Color(0xffd9d9d9)
                                               : Colors.red),
-                                      borderRadius: BorderRadius.circular(4)),
+                                      borderRadius: BorderRadius.circular(8)),
                                   padding: EdgeInsets.all(9),
                                   child: DropdownButton(
                                       value: _selectedCountryCode,
@@ -901,28 +921,35 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                     maxLength: getValidLengthForCountry(
                                         _selectedCountryCode!),
                                     controller: mobileController,
+                                    cursorColor: Color(0xff004C99),
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontFamily: 'Lato',
                                         color: _isMobileNumberValid
-                                            ? Colors.grey
+                                            ? Color(0xffd9d9d9)
                                             : Colors.red),
                                     decoration: InputDecoration(
                                         counterText: '',
                                         hintText: 'Enter mobile number',
-                                        border: OutlineInputBorder(),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
                                         enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Colors.grey
+                                                  ? Color(0xffd9d9d9)
                                                   : Colors
                                                       .red, // Default border color
                                               width: 1),
                                         ),
                                         focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Colors.blue
+                                                  ? Color(0xff004C99)
                                                   : Colors
                                                       .red, // Border color when focused
                                               width: 1),
