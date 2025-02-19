@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -15,7 +14,6 @@ import 'package:talent_turbo_new/models/candidate_profile_model.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:talent_turbo_new/screens/main/personal_details.dart';
 
 class Addeducation extends StatefulWidget {
   final educationDetail;

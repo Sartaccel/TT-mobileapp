@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -138,7 +137,6 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
         print(
             'Response code ${response.statusCode} :: Response => ${response.body}');
       }
-
       if (response.statusCode == 200 || response.statusCode == 202) {
         Fluttertoast.showToast(
             msg: 'Removed successfully',

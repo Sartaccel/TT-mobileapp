@@ -612,46 +612,43 @@ class _JobApplyState extends State<JobApply> {
   File? selectedFile;
 
   Future<void> uploadPDF(File file) async {
-    Dio dio = Dio();
+  Dio dio = Dio();
 
-    String url =
-        'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
+  String url =
+      'https://mobileapi.talentturbo.us/api/v1/resumeresource/uploadresume';
 
-    FormData formData = FormData.fromMap({
-      "id": retrievedUserData!.profileId.toString(), // Your id
-      "file": await MultipartFile.fromFile(
-        file.path,
-        filename: file.path.split('/').last,
-      ),
+  // Prepare the form data for the file upload
+  FormData formData = FormData.fromMap({
+    "id": retrievedUserData!.profileId.toString(), // Your id
+    "file": await MultipartFile.fromFile(
+      file.path,
+      filename: file.path.split('/').last,
+    ),
+  });
+
+  String token = retrievedUserData!.token;
+  try {
+    setState(() {
+      isLoading = true;
     });
 
-    String token = retrievedUserData!.token;
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      Response response = await dio.post(
-        url,
-        data: formData,
-        options: Options(
-          headers: {
-            'Authorization': token, // Authorization Header
-            'Content-Type':
-                'multipart/form-data', // Content-Type for file uploads
-          },
-        ),
-      );
+    // Sending the request to upload the file
+    Response response = await dio.post(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': token, // Authorization Header
+          'Content-Type': 'multipart/form-data', // Content-Type for file uploads
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
       print('Upload success: ${response.statusCode}');
       setUpdatedTimeInRTDB();
-
-      // Fluttertoast.showToast(
-      //     msg: 'Successfully uploaded',
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
+      
+      // Success feedback using Snackbar
       IconSnackBar.show(
         context,
         label: 'Successfully uploaded',
@@ -659,42 +656,51 @@ class _JobApplyState extends State<JobApply> {
         backgroundColor: Color(0xff4CAF50),
         iconColor: Colors.white,
       );
-
+      
       fetchCandidateProfileData(retrievedUserData!.profileId, token);
-      //Navigator.pop(context);
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      print('Upload failed: $e');
-
-      // Fluttertoast.showToast(
-      //     msg: e.toString(),
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
-      IconSnackBar.show(
-        context,
-        label: e.toString(),
-        snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
-      );
+    } else {
+      // Handle case where upload wasn't successful
+      throw Exception('Upload failed with status: ${response.statusCode}');
     }
-  }
+  } catch (e) {
+    setState(() {
+      isLoading = false;
+    });
 
-  Future<void> pickAndUploadPDF() async {
-    File? file = await pickPDF();
-    if (file != null) {
-      setState(() {
-        selectedFile = file;
-      });
-      await uploadPDF(file);
-    }
+    print('Upload failed: $e');
+    
+    // Error feedback using Snackbar
+    IconSnackBar.show(
+      context,
+      label: e.toString(),
+      snackBarType: SnackBarType.alert,
+      backgroundColor: Color(0xff2D2D2D),
+      iconColor: Colors.white,
+    );
   }
+}
+
+Future<void> pickAndUploadPDF() async {
+  // Pick a file
+  File? file = await pickPDF();
+  if (file != null) {
+    setState(() {
+      selectedFile = file;
+    });
+
+    // Upload the file
+    await uploadPDF(file);
+  } else {
+    // Provide feedback if no file was selected
+    IconSnackBar.show(
+      context,
+      label: 'No file selected',
+      snackBarType: SnackBarType.alert,
+      backgroundColor: Color(0xff2D2D2D),
+      iconColor: Colors.white,
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -803,7 +809,7 @@ class _JobApplyState extends State<JobApply> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontFamily: 'Lato',
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     color: Color(0xff333333)),
                               ),
                               SizedBox(
@@ -1193,25 +1199,7 @@ class _JobApplyState extends State<JobApply> {
                   ),
 
                   //Loading
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
-                      child: Visibility(
-                        visible: isLoading,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 30,
-                            ),
-                            LoadingAnimationWidget.fourRotatingDots(
-                              color: AppColors.primaryColor,
-                              size: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                 
 
                   SizedBox(
                     height: 50,
@@ -1238,15 +1226,35 @@ class _JobApplyState extends State<JobApply> {
         color: AppColors.primaryColor,
         borderRadius: BorderRadius.circular(10)),
     child: Center(
-      child: Text(
-        'Apply',
-        style: TextStyle(color: Colors.white),
-      ),
+      child: isLoading
+          ? SizedBox(
+  height: 24,
+  width: 24,
+  child: TweenAnimationBuilder<double>(
+    tween: Tween<double>(begin: 0, end: 5),
+    duration: Duration(seconds: 2), // Faster rotation (Reduced duration)
+    curve: Curves.linear,
+    builder: (context, value, child) {
+      return Transform.rotate(
+        angle: value * 2 * 3.1416, // Full rotation effect
+        child: CircularProgressIndicator(
+          strokeWidth: 4,
+          value: 0.20, // 1/5 of the circle
+          backgroundColor: const Color.fromARGB(142, 234, 232, 232), // Grey stroke
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white), // White rotating stroke
+        ),
+      );
+    },
+    onEnd: () => {}, // Ensures smooth infinite animation
+  ),
+) : Text(
+              'Apply',
+              style: TextStyle(color: Colors.white),
+            ),
     ),
   ),
 ),
-
-                ],
+],
               ),
             ),
           ))

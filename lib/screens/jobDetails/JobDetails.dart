@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -412,7 +411,6 @@ class _JobdetailsState extends State<Jobdetails> {
                                       InkWell(
                                           onTap: () {
                                             //saveJob(jobList[index]['id'], jobList[index]['isSaved'] ? 0 : 1);
-
                                             if (kDebugMode) {
                                               print('Status: ${isSaved}');
                                               print(

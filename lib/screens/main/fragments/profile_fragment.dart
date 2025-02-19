@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'dart:io';
+
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:share_plus/share_plus.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/Utils.dart';
