@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyReferralsFragment extends StatefulWidget {
   const MyReferralsFragment({super.key});
@@ -10,37 +11,70 @@ class MyReferralsFragment extends StatefulWidget {
 class _MyReferralsFragmentState extends State<MyReferralsFragment> {
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Column(
       children: [
-
         Container(
           width: MediaQuery.of(context).size.width,
           height: 40,
-          decoration: BoxDecoration(color: Color(0xff001B3E)),),
+          decoration: BoxDecoration(color: Color(0xff001B3E)),
+        ),
         Container(
           width: MediaQuery.of(context).size.width,
           height: 60,
           decoration: BoxDecoration(color: Color(0xff001B3E)),
-          child:
-          Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row( children: [ IconButton(icon:  Container(), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('', style: TextStyle(fontFamily: 'Lato', fontSize: 16, color: Colors.white),)))) ],),
-              Text('My Referrals', style: TextStyle(color: Colors.white, fontFamily: 'Lato', fontWeight: FontWeight.w400, fontSize: 16),),
-              SizedBox(width: 80,)
+              Row(
+                children: [
+                  IconButton(
+                    icon: Container(),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                            '',
+                            style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 16,
+                                color: Colors.white),
+                          ))))
+                ],
+              ),
+              Text(
+                'My Referrals',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16),
+              ),
+              SizedBox(
+                width: 80,
+              )
             ],
           ),
-
-
         ),
-
-
-       Expanded(
-         child: Center(child:
-           Text('No data to show here'),),
-       )
-       /* Column(
+        Expanded(
+          child: Center(
+            child: Text('No data to show here'),
+          ),
+        )
+        /* Column(
           children: [
             Container(
               padding: EdgeInsets.all(10),
@@ -78,9 +112,6 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
             Divider()
           ],
         ),*/
-
-
-
       ],
     );
   }

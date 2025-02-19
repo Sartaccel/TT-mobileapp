@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -704,6 +705,11 @@ Future<void> pickAndUploadPDF() async {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Column(
         children: [
@@ -881,22 +887,26 @@ Future<void> pickAndUploadPDF() async {
                   TextField(
                     readOnly: true,
                     controller: emailController,
+                    cursorColor: Color(0xff004C99),
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         hintText: 'Enter your email',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isEmailValid
-                                  ? Colors.grey
-                                  : Colors.red, // Default border color
+                                  ? Color(0xffd9d9d9)
+                                  : Color(0xffBA1A1A), // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isEmailValid
-                                  ? Colors.blue
-                                  : Colors.red, // Border color when focused
+                                  ? Color(0xff004C99)
+                                  : Color(0xffBA1A1A), // Border color when focused
                               width: 1),
                         ),
                         errorText: _isEmailValid
@@ -957,24 +967,27 @@ Future<void> pickAndUploadPDF() async {
                           readOnly: true,
                           maxLength: 10,
                           controller: mobileController,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               counterText: '',
                               hintText: 'Enter mobile number',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isMobileNumberValid
-                                        ? Colors.grey
-                                        : Colors.red, // Default border color
+                                        ? Color(0xffd9d9d9)
+                                        : Color(0xffBA1A1A), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isMobileNumberValid
-                                        ? Colors.blue
-                                        : Colors
-                                            .red, // Border color when focused
+                                        ? Color(0xff004C99)
+                                        : Color(0xffBA1A1A), // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isMobileNumberValid
@@ -1210,7 +1223,7 @@ Future<void> pickAndUploadPDF() async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Please upload your resume before applying.'),
-          backgroundColor: Colors.red,
+          backgroundColor: Color(0xffBA1A1A),
         ),
       );
     } else {

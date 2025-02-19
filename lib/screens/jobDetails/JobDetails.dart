@@ -1,6 +1,9 @@
 import 'dart:convert';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,6 +47,8 @@ class _JobdetailsState extends State<Jobdetails> {
       subject: 'Try this awesome app!',
     );
   }
+
+  bool isConnectionAvailable = true;
 
   var rawJobData = null;
 
@@ -97,7 +102,35 @@ class _JobdetailsState extends State<Jobdetails> {
       setState(() {
         isLoading = false;
       });
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
 
+        setState(() {
+          isConnectionAvailable = false;
+        });
+
+        //return;  // Exit the function if no internet
+      } else {
+        setState(() {
+          isConnectionAvailable = true;
+        });
+      }
       print(e.toString());
     }
   }
@@ -233,6 +266,11 @@ class _JobdetailsState extends State<Jobdetails> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Column(
         children: [

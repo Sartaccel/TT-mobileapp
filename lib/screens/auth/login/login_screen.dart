@@ -374,15 +374,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderSide: BorderSide(
                               color: _isEmailValid
                                   ? Color(0xffD9D9D9)
-                                  : Colors.red, // Default border color
+                                  : Color(0xffBA1A1A), // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
                               color: _isEmailValid
-                                  ? Colors.blue
-                                  : Colors.red, // Border color when focused
+                                  ? Color(0xff004C99)
+                                  : Color(0xffBA1A1A), // Border color when focused
                               width: 1),
                         ),
                         errorText: _isEmailValid
@@ -430,15 +430,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderSide: BorderSide(
                               color: _isPasswordValid
                                   ? Color(0xffD9D9D9)
-                                  : Colors.red, // Default border color
+                                  : Color(0xffBA1A1A), // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
                               color: _isPasswordValid
-                                  ? Colors.blue
-                                  : Colors.red, // Border color when focused
+                                  ? Color(0xff004C99)
+                                  : Color(0xffBA1A1A), // Border color when focused
                               width: 1),
                         ),
                         errorText: _isPasswordValid

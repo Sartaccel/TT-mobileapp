@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:talent_turbo_new/Utils.dart';
@@ -318,6 +319,11 @@ class _SearchandfilterState extends State<Searchandfilter> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Column(
         children: [
@@ -436,6 +442,11 @@ class _SearchandfilterState extends State<Searchandfilter> {
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(vertical: 5),
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[a-zA-Z0-9\s#+.\-]'),
+                        ),
+                      ],
                       onSubmitted: (value) {},
                     );
                   },

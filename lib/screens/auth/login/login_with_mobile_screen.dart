@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -318,12 +320,11 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
           //   fontSize: 16.0,
           // );
           IconSnackBar.show(
-            context, // Pass the context as the first argument
-            label: 'Invalid user !', // The label for the snackbar
-            snackBarType: SnackBarType
-                .alert, // Specify the type of snackbar (e.g., alert)
-            backgroundColor: Color(0xFFBA1A1A), // Optional background color
-            iconColor: Colors.white, // Optional icon color
+            context,
+            label: 'Invalid user !',
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xFFBA1A1A),
+            iconColor: Colors.white,
           );
         }
       }
@@ -338,6 +339,11 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0x04FCFCFC),
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return Scaffold(
       body: Stack(
         children: [
@@ -380,7 +386,6 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
                           ))),
-
                   SizedBox(
                     height: 50,
                   ),
@@ -413,11 +418,10 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                 border: Border.all(
                                   width: 1,
                                   color: _isMobileNumberValid
-                                      ? Colors.grey
-                                      : const Color(
-                                          0xFFBA1A1A), // Error color for dropdown
+                                      ? Color(0xffD9D9D9)
+                                      : const Color(0xFFBA1A1A),
                                 ),
-                                borderRadius: BorderRadius.circular(5),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               padding: EdgeInsets.all(9),
                               child: DropdownButton<String>(
@@ -451,32 +455,39 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                               child: TextField(
                                 maxLength: 10,
                                 controller: mobileController,
+                                cursorColor: Color(0xff004C99),
                                 style:
                                     TextStyle(fontSize: 14, fontFamily: 'Lato'),
                                 decoration: InputDecoration(
                                     counterText: '',
                                     hintText: 'Enter mobile number',
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide(
                                         color: _isMobileNumberValid
-                                            ? Colors.grey
+                                            ? Color(0xffD9D9D9)
                                             : const Color(0xFFBA1A1A),
                                         width: 1,
                                       ),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide(
                                         color: _isMobileNumberValid
-                                            ? Colors.blue
+                                            ? Color(0xff004C99)
                                             : const Color(0xFFBA1A1A),
                                         width: 1,
                                       ),
                                     ),
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
-                                keyboardType: TextInputType.phone,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
                                 onChanged: (value) {
                                   setState(() {
                                     _isMobileNumberValid = true;
@@ -500,30 +511,6 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                       ],
                     ),
                   ),
-
-                  //Loading
-                  isLoading
-                      ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: Visibility(
-                              visible: isLoading,
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  LoadingAnimationWidget.fourRotatingDots(
-                                    color: AppColors.primaryColor,
-                                    size: 40,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(),
-
                   SizedBox(height: 60),
                   InkWell(
                     onTap: () {
@@ -558,10 +545,38 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                           color: AppColors.primaryColor,
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
-                        child: Text(
-                          'Get OTP',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        child: isLoading
+                            ? SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: TweenAnimationBuilder<double>(
+                                  tween: Tween<double>(begin: 0, end: 5),
+                                  duration: Duration(seconds: 2),
+                                  curve: Curves.linear,
+                                  builder: (context, value, child) {
+                                    return Transform.rotate(
+                                      angle: value *
+                                          2 *
+                                          3.1416, // Full rotation effect
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 4,
+                                        value: 0.20, // 1/5 of the circle
+                                        backgroundColor: const Color.fromARGB(
+                                            142, 234, 232, 232), // Grey stroke
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(Colors
+                                                .white), // White rotating stroke
+                                      ),
+                                    );
+                                  },
+                                  onEnd: () =>
+                                      {}, // Ensures smooth infinite animation
+                                ),
+                              )
+                            : Text(
+                                'Get OTP',
+                                style: TextStyle(color: Colors.white),
+                              ),
                       ),
                     ),
                   ),

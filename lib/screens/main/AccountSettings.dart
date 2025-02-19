@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:talent_turbo_new/screens/main/change_password.dart';
 import 'package:talent_turbo_new/screens/main/notification_settings.dart';
@@ -13,6 +15,11 @@ class Accountsettings extends StatefulWidget {
 class _AccountsettingsState extends State<Accountsettings> {
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Column(
         children: [
@@ -48,12 +55,12 @@ class _AccountsettingsState extends State<Accountsettings> {
                             height: 50,
                             child: Center(
                                 child: Text(
-                                  'Back',
-                                  style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 16,
-                                      color: Colors.white),
-                                ))))
+                              'Back',
+                              style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 16,
+                                  color: Colors.white),
+                            ))))
                   ],
                 ),
                 //SizedBox(width: 80,)
@@ -73,31 +80,53 @@ class _AccountsettingsState extends State<Accountsettings> {
           ),
           Expanded(
               child: SingleChildScrollView(
-              child: Container(
-              padding: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ChangePassword()));
-                      },
-                      title: Text('Change Password'),
-                      trailing: Icon(Icons.chevron_right),
-                    ),
-                    Divider(),
-                    ListTile(
-                      title: Text('Notification Settings'),
-                      trailing: Icon(Icons.chevron_right),
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NotificationSettings()));
-                      },
-                    ),
-                    Divider(),
-                  ],
+                  child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: [
+                ListTile(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ChangePassword()));
+                  },
+                  title: Text('Change Password'),
+                  trailing: SvgPicture.asset(
+                    'assets/icon/ArrowRight.svg',
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
-              )
-              )
-          )
+                Divider(
+                  color: Color(0xffD9D9D9),
+                  indent: 15,
+                  endIndent: 15,
+                ),
+                ListTile(
+                  title: Text('Notification Settings'),
+                  trailing: SvgPicture.asset(
+                    'assets/icon/ArrowRight.svg',
+                    width: 24,
+                    height: 24,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                NotificationSettings()));
+                  },
+                ),
+                Divider(
+                  color: Color(0xffD9D9D9),
+                  indent: 15,
+                  endIndent: 15,
+                ),
+              ],
+            ),
+          )))
         ],
       ),
     );
