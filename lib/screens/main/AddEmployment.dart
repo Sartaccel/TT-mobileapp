@@ -280,6 +280,11 @@ class _AddemploymentState extends State<Addemployment> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Column(
         children: [
@@ -397,6 +402,10 @@ class _AddemploymentState extends State<Addemployment> {
                                     // Display error message if invalid
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
                                 onChanged: (value) {
                                   // Validate the email here and update _isEmailValid
                                   setState(() {
@@ -456,6 +465,10 @@ class _AddemploymentState extends State<Addemployment> {
                                     // Display error message if invalid
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
                                 onChanged: (value) {
                                   // Validate the email here and update _isEmailValid
                                   setState(() {
@@ -1038,6 +1051,10 @@ class _AddemploymentState extends State<Addemployment> {
                                     // Display error message if invalid
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
                                 onChanged: (value) {
                                   // Validate the email here and update _isEmailValid
                                   setState(() {
@@ -1046,28 +1063,6 @@ class _AddemploymentState extends State<Addemployment> {
                                 },
                               ),
                             ),
-                            isLoading
-                                ? Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Center(
-                                      child: Visibility(
-                                        visible: isLoading,
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              height: 30,
-                                            ),
-                                            LoadingAnimationWidget
-                                                .fourRotatingDots(
-                                              color: AppColors.primaryColor,
-                                              size: 40,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Container(),
                             SizedBox(
                               height: 25,
                             ),
@@ -1143,10 +1138,47 @@ class _AddemploymentState extends State<Addemployment> {
                                     color: AppColors.primaryColor,
                                     borderRadius: BorderRadius.circular(10)),
                                 child: Center(
-                                  child: Text(
-                                    'Save',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                                  child: isLoading
+                                      ? SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: TweenAnimationBuilder<double>(
+                                            tween:
+                                                Tween<double>(begin: 0, end: 5),
+                                            duration: Duration(seconds: 2),
+                                            curve: Curves.linear,
+                                            builder: (context, value, child) {
+                                              return Transform.rotate(
+                                                angle: value *
+                                                    2 *
+                                                    3.1416, // Full rotation effect
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 4,
+                                                  value:
+                                                      0.20, // 1/5 of the circle
+                                                  backgroundColor:
+                                                      const Color.fromARGB(
+                                                          142,
+                                                          234,
+                                                          232,
+                                                          232), // Grey stroke
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          Colors
+                                                              .white), // White rotating stroke
+                                                ),
+                                              );
+                                            },
+                                            onEnd: () =>
+                                                {}, // Ensures smooth infinite animation
+                                          ),
+                                        )
+                                      : Text(
+                                          'Save',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                 ),
                               ),
                             )

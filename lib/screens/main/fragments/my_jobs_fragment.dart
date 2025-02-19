@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
@@ -20,67 +21,96 @@ class MyJobsFragment extends StatefulWidget {
 }
 
 class _MyJobsFragmentState extends State<MyJobsFragment> {
-
-
-
-
   @override
   Widget build(BuildContext context) {
-
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Column(
       children: [
         Container(
           width: MediaQuery.of(context).size.width,
           height: 40,
-          decoration: BoxDecoration(color: Color(0xff001B3E)),),
+          decoration: BoxDecoration(color: Color(0xff001B3E)),
+        ),
         Container(
           width: MediaQuery.of(context).size.width,
           height: 60,
           decoration: BoxDecoration(color: Color(0xff001B3E)),
-          child:
-          Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row( children: [ IconButton(icon:  Container(), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('', style: TextStyle(fontFamily: 'Lato', fontSize: 16, color: Colors.white),)))) ],),
-              Text('My Jobs', style: TextStyle(color: Colors.white, fontFamily: 'Lato', fontWeight: FontWeight.w400, fontSize: 16),),
-              SizedBox(width: 80,)
+              Row(
+                children: [
+                  IconButton(
+                    icon: Container(),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                            '',
+                            style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 16,
+                                color: Colors.white),
+                          ))))
+                ],
+              ),
+              Text(
+                'My Jobs',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16),
+              ),
+              SizedBox(
+                width: 80,
+              )
             ],
           ),
-
-
         ),
-
-        DefaultTabController(length: 2,
+        DefaultTabController(
+            length: 2,
             child: Column(
               children: [
                 TabBar(
                     indicatorColor: Colors.blue,
                     unselectedLabelColor: Color(0xff333333),
-                    labelStyle: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Lato', fontSize: 16),
+                    labelStyle: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Lato',
+                        fontSize: 16),
                     labelColor: Color(0xff004C99),
                     tabs: [
-                        Tab(text: 'Saved', ),
-                        Tab(text: 'Applied',),
+                      Tab(
+                        text: 'Saved',
+                      ),
+                      Tab(
+                        text: 'Applied',
+                      ),
                     ]),
                 Container(
                   height: (MediaQuery.of(context).size.height) - 230,
-                  child: TabBarView(children:
-                    [
-                      SavedJobsFragment(),
-                      AppliedJobsFragment(),
-                    ]
-                  ),
+                  child: TabBarView(children: [
+                    SavedJobsFragment(),
+                    AppliedJobsFragment(),
+                  ]),
                 )
               ],
-            )
-        ),
-
-
-
+            )),
       ],
     );
   }
-
-
 }

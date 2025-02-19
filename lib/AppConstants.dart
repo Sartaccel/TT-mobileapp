@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String BASE_URL = "https://mobileapidev.talentturbo.us";
+  static const String BASE_URL = "https://mobileapi.talentturbo.us";
 
   static String APP_NAME = 'talent_turbo_referral';
 

@@ -353,6 +353,11 @@ class _SearchandfilterState extends State<Searchandfilter> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Column(
         children: [
@@ -471,6 +476,11 @@ class _SearchandfilterState extends State<Searchandfilter> {
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(vertical: 5),
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[a-zA-Z0-9\s#+.\-]'),
+                        ),
+                      ],
                       onSubmitted: (value) {},
                     );
                   },

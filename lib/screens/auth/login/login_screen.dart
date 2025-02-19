@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -318,6 +319,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0x04FCFCFC),
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return Scaffold(
       body: Stack(
         children: [
@@ -379,7 +385,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Lato',
-                          color: Color(0xff333333)),
+                          color: Color(0xff545454)),
                       decoration: InputDecoration(
                           hintText: 'Enter your email',
                           border: OutlineInputBorder(
@@ -406,6 +412,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 10, horizontal: 10)),
                       keyboardType: TextInputType.emailAddress,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
+                        ),
+                        FilteringTextInputFormatter.deny(
+                          RegExp(r'\s'),
+                        ),
+                        FilteringTextInputFormatter.deny(
+                          RegExp(
+                              r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                              unicode: true),
+                        ),
+                      ],
                       onChanged: (value) {
                         // Validate the email here and update _isEmailValid
                         setState(() {
@@ -426,7 +445,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: passwordHide,
                       controller: passwordController,
                       cursorColor: Color(0xff004C99),
-                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Lato',
+                          color: Color(0xff545454)),
                       decoration: InputDecoration(
                           suffixIcon: IconButton(
                               onPressed: () {
@@ -462,6 +484,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               : passwordErrorMessage, // Display error message if invalid
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 10, horizontal: 10)),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
+                        ),
+                        FilteringTextInputFormatter.deny(
+                          RegExp(r'\s'),
+                        ),
+                        FilteringTextInputFormatter.deny(
+                          RegExp(
+                              r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                              unicode: true),
+                        ),
+                      ],
                       onChanged: (val) {
                         setState(() {
                           _isPasswordValid = true;
