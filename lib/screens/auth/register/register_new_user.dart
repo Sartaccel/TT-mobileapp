@@ -608,7 +608,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isFirstNameValid
                                         ? Color(0xffd9d9d9)
-                                        : Colors.red, // Default border color
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -616,8 +617,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isFirstNameValid
                                         ? Color(0xff004C99)
-                                        : Colors
-                                            .red, // Border color when focused
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isFirstNameValid
@@ -676,7 +677,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isLastNameValid
                                         ? Color(0xffd9d9d9)
-                                        : Colors.red, // Default border color
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -684,8 +686,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isLastNameValid
                                         ? Color(0xff004C99)
-                                        : Colors
-                                            .red, // Border color when focused
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isLastNameValid
@@ -736,7 +738,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isEmailValid
                                         ? Color(0xffd9d9d9)
-                                        : Colors.red, // Default border color
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -744,8 +747,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isEmailValid
                                         ? Color(0xff004C99)
-                                        : Colors
-                                            .red, // Border color when focused
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isEmailValid
@@ -807,7 +810,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
                                         ? Color(0xffd9d9d9)
-                                        : Colors.red, // Default border color
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -815,8 +819,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
                                         ? Color(0xff004C99)
-                                        : Colors
-                                            .red, // Border color when focused
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isPasswordValid
@@ -1000,7 +1004,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                         fontFamily: 'Lato',
                                         color: _isMobileNumberValid
                                             ? Color(0xff545454)
-                                            : Colors.red),
+                                            : Color(0xffBA1A1A)),
                                     decoration: InputDecoration(
                                         counterText: '',
                                         hintText: 'Enter mobile number',
