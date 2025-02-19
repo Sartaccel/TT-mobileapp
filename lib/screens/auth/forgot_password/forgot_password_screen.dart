@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -176,6 +175,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset('assets/images/forgot_password.png'),
+
                     SizedBox(
                       height: 80,
                     ),
@@ -186,6 +186,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
+
                     SizedBox(
                       height: 40,
                     ),
@@ -203,6 +204,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     SizedBox(
                       height: 10,
                     ),
+
                     SizedBox(
                       height: 50,
                     ),
@@ -218,28 +220,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                         TextField(
                           controller: emailController,
-                          cursorColor: Color(0xff004C99),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Lato',
-                              color: Color(0xff545454)),
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               hintText: 'Enter your email',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Color(0xffd9d9d9)
+                                        ? Colors.grey
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Color(0xff004C99)
+                                        ? Colors.blue
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -250,19 +245,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10)),
                           keyboardType: TextInputType.emailAddress,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                            ),
-                            FilteringTextInputFormatter.deny(
-                              RegExp(r'\s'),
-                            ),
-                            FilteringTextInputFormatter.deny(
-                              RegExp(
-                                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                                  unicode: true),
-                            ),
-                          ],
                           onChanged: (value) {
                             // Validate the email here and update _isEmailValid
                             setState(() {
@@ -272,6 +254,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                       ],
                     ),
+
+                    //Loading
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                        child: Visibility(
+                          visible: isLoading,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              LoadingAnimationWidget.fourRotatingDots(
+                                color: AppColors.primaryColor,
+                                size: 40,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
                     SizedBox(height: 50),
                     InkWell(
                       onTap: () {
@@ -301,45 +305,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             color: AppColors.primaryColor,
                             borderRadius: BorderRadius.circular(10)),
                         child: Center(
-                          child: isLoading
-                              ? SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: TweenAnimationBuilder<double>(
-                                    tween: Tween<double>(begin: 0, end: 5),
-                                    duration: Duration(seconds: 2),
-                                    curve: Curves.linear,
-                                    builder: (context, value, child) {
-                                      return Transform.rotate(
-                                        angle: value *
-                                            2 *
-                                            3.1416, // Full rotation effect
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 4,
-                                          value: 0.20, // 1/5 of the circle
-                                          backgroundColor: const Color.fromARGB(
-                                              142,
-                                              234,
-                                              232,
-                                              232), // Grey stroke
-                                          valueColor: AlwaysStoppedAnimation<
-                                                  Color>(
-                                              Colors
-                                                  .white), // White rotating stroke
-                                        ),
-                                      );
-                                    },
-                                    onEnd: () =>
-                                        {}, // Ensures smooth infinite animation
-                                  ),
-                                )
-                              : Text(
-                                  'Send Code',
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                          child: Text(
+                            'Send Code',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
+
                     SizedBox(
                       height: 20,
                     ),

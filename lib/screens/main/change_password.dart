@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -122,11 +121,6 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff001B3E),
-      statusBarIconBrightness: Brightness.light,
-    ));
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -195,7 +189,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   TextField(
                     obscureText: old_passwordHide,
                     controller: old_passwordController,
-                    cursorColor: Color(0xff004C99),
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
@@ -209,21 +202,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? 'assets/images/ic_hide_password.svg'
                                 : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                        border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isOldPasswordValid
-                                  ? Color(0xffd9d9d9)
+                                  ? Colors.grey
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isOldPasswordValid
-                                  ? Color(0xff004C99)
+                                  ? Colors.blue
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -232,19 +222,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             : old_passwordErrorMessage, // Display error message if invalid
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(r'\s'),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(
-                            r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                            unicode: true),
-                      ),
-                    ],
                     onChanged: (val) {
                       setState(() {
                         _isOldPasswordValid = true;
@@ -264,7 +241,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   TextField(
                     obscureText: new_passwordHide,
                     controller: new_passwordController,
-                    cursorColor: Color(0xff004C99),
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
@@ -278,21 +254,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? 'assets/images/ic_hide_password.svg'
                                 : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                        border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isNewPasswordValid
-                                  ? Color(0xffd9d9d9)
+                                  ? Colors.grey
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isNewPasswordValid
-                                  ? Color(0xff004C99)
+                                  ? Colors.blue
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -301,19 +274,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             : new_passwordErrorMessage, // Display error message if invalid
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(r'\s'),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(
-                            r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                            unicode: true),
-                      ),
-                    ],
                     onChanged: (val) {
                       setState(() {
                         _isNewPasswordValid = true;
@@ -333,7 +293,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   TextField(
                     obscureText: confirm_passwordHide,
                     controller: confirm_passwordController,
-                    cursorColor: Color(0xff004C99),
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
@@ -347,21 +306,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? 'assets/images/ic_hide_password.svg'
                                 : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                        border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isConfirmPasswordValid
-                                  ? Color(0xffd9d9d9)
+                                  ? Colors.grey
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isConfirmPasswordValid
-                                  ? Color(0xff004C99)
+                                  ? Colors.blue
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -370,19 +326,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             : confirm_passwordErrorMessage, // Display error message if invalid
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(r'\s'),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(
-                            r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                            unicode: true),
-                      ),
-                    ],
                     onChanged: (val) {
                       setState(() {
                         _isConfirmPasswordValid = true;
@@ -391,6 +334,25 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   SizedBox(
                     height: 30,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Visibility(
+                        visible: isLoading,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 30,
+                            ),
+                            LoadingAnimationWidget.fourRotatingDots(
+                              color: AppColors.primaryColor,
+                              size: 40,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(height: 30),
                   InkWell(
@@ -480,38 +442,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                           color: AppColors.primaryColor,
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
-                        child: isLoading
-                            ? SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: TweenAnimationBuilder<double>(
-                                  tween: Tween<double>(begin: 0, end: 5),
-                                  duration: Duration(seconds: 2),
-                                  curve: Curves.linear,
-                                  builder: (context, value, child) {
-                                    return Transform.rotate(
-                                      angle: value *
-                                          2 *
-                                          3.1416, // Full rotation effect
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 4,
-                                        value: 0.20, // 1/5 of the circle
-                                        backgroundColor: const Color.fromARGB(
-                                            142, 234, 232, 232), // Grey stroke
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(Colors
-                                                .white), // White rotating stroke
-                                      ),
-                                    );
-                                  },
-                                  onEnd: () =>
-                                      {}, // Ensures smooth infinite animation
-                                ),
-                              )
-                            : Text(
-                                'Confirm',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                        child: Text(
+                          'Confirm',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),

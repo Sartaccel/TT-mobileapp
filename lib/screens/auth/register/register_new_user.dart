@@ -51,7 +51,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
   bool referralCodeEnabled = true;
 
   bool agreementAccepted = false;
-  bool _isAgreementError = false;
   bool confirmPasswordHide = true, passwordHide = true;
 
   String passwordErrorMSG = "Password cannot be empty";
@@ -504,11 +503,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0x04FCFCFC),
-      statusBarIconBrightness: Brightness.dark,
-    ));
     return Scaffold(
       body: Stack(
         children: [
@@ -580,13 +574,10 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       SizedBox(
                         height: 20,
                       ),
-                      Text('First Name',
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'Lato',
-                              color: _isFirstNameValid
-                                  ? Color(0xff333333)
-                                  : Color(0xffBA1A1A))),
+                      Text(
+                        'First Name',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
                       SizedBox(
                         height: 10,
                       ),
@@ -594,28 +585,21 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: fNameController,
-                          cursorColor: Color(0xff004C99),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Lato',
-                              color: Color(0xff545454)),
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               hintText: 'Enter your first name',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isFirstNameValid
-                                        ? Color(0xffd9d9d9)
+                                        ? Colors.grey
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isFirstNameValid
-                                        ? Color(0xff004C99)
+                                        ? Colors.blue
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -644,12 +628,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       ),
                       Text(
                         'Last Name',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isLastNameValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A)),
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                       ),
                       SizedBox(
                         height: 10,
@@ -658,32 +637,25 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: lNameController,
-                          cursorColor: Color(0xff004C99),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Lato',
-                              color: Color(0xff545454)),
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(
                                 r'[a-zA-Z\s]')), // Allow only letters and spaces
                           ],
                           decoration: InputDecoration(
                               hintText: 'Enter your last name',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isLastNameValid
-                                        ? Color(0xffd9d9d9)
+                                        ? Colors.grey
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isLastNameValid
-                                        ? Color(0xff004C99)
+                                        ? Colors.blue
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -708,12 +680,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       ),
                       Text(
                         'Email',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isEmailValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A)),
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                       ),
                       SizedBox(
                         height: 10,
@@ -722,28 +689,21 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: emailController,
-                          cursorColor: Color(0xff004C99),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Lato',
-                              color: Color(0xff545454)),
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               hintText: 'Enter your email address',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Color(0xffd9d9d9)
+                                        ? Colors.grey
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Color(0xff004C99)
+                                        ? Colors.blue
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -768,12 +728,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       ),
                       Text(
                         'Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A)),
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                       ),
                       SizedBox(
                         height: 10,
@@ -783,11 +738,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         child: TextField(
                           controller: passwordController,
                           obscureText: passwordHide,
-                          cursorColor: Color(0xff004C99),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Lato',
-                              color: Color(0xff545454)),
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
                                   onPressed: () {
@@ -800,21 +751,18 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Enter your password',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Color(0xffd9d9d9)
+                                        ? Colors.grey
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Color(0xff004C99)
+                                        ? Colors.blue
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -824,19 +772,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   : passwordErrorMSG, // Display error message if invalid
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10)),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                            ),
-                            FilteringTextInputFormatter.deny(
-                              RegExp(r'\s'),
-                            ),
-                            FilteringTextInputFormatter.deny(
-                              RegExp(
-                                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                                  unicode: true),
-                            ),
-                          ],
                           onChanged: (value) {
                             // Validate the email here and update _isEmailValid
                             setState(() {
@@ -852,12 +787,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       ),
                       Text(
                         'Re-enter Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isConfirmPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A)),
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                       ),
                       SizedBox(
                         height: 10,
@@ -866,7 +796,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: confirmPasswordController,
-                          cursorColor: Color(0xff004C99),
                           obscureText: confirmPasswordHide,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
@@ -882,24 +811,20 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Re-enter your password',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Color(0xffd9d9d9)
-                                        : Color(
-                                            0xffBA1A1A), // Default border color
+                                        ? Colors.grey
+                                        : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Color(0xff004C99)
-                                        : Color(
-                                            0xffBA1A1A), // Border color when focused
+                                        ? Colors.blue
+                                        : Colors
+                                            .red, // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isConfirmPasswordValid
@@ -907,19 +832,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   : confirm_passwordErrorMSG, // Display error message if invalid
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10)),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                            ),
-                            FilteringTextInputFormatter.deny(
-                              RegExp(r'\s'),
-                            ),
-                            FilteringTextInputFormatter.deny(
-                              RegExp(
-                                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                                  unicode: true),
-                            ),
-                          ],
                           onChanged: (value) {
                             // Validate the email here and update _isEmailValid
                             setState(() {
@@ -935,12 +847,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       ),
                       Text(
                         'Mobile Number',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isMobileNumberValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A)),
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                       ),
                       SizedBox(
                         height: 10,
@@ -960,9 +867,9 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       border: Border.all(
                                           width: 1,
                                           color: _isMobileNumberValid
-                                              ? Color(0xffd9d9d9)
-                                              : Color(0xffBA1A1A)),
-                                      borderRadius: BorderRadius.circular(8)),
+                                              ? Colors.grey
+                                              : Colors.red),
+                                      borderRadius: BorderRadius.circular(4)),
                                   padding: EdgeInsets.all(9),
                                   child: DropdownButton(
                                       value: _selectedCountryCode,
@@ -975,7 +882,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                                     fontSize: 14,
                                                     fontFamily: 'Lato',
                                                     color: const Color(
-                                                        0xff545454))));
+                                                        0xFF333333))));
                                       }).toList(),
                                       onChanged: (val) {
                                         setState(() {
@@ -994,37 +901,30 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                     maxLength: getValidLengthForCountry(
                                         _selectedCountryCode!),
                                     controller: mobileController,
-                                    cursorColor: Color(0xff004C99),
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontFamily: 'Lato',
                                         color: _isMobileNumberValid
-                                            ? Color(0xff545454)
+                                            ? Colors.grey
                                             : Colors.red),
                                     decoration: InputDecoration(
                                         counterText: '',
                                         hintText: 'Enter mobile number',
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
+                                        border: OutlineInputBorder(),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Color(0xffd9d9d9)
-                                                  : Color(
-                                                      0xffBA1A1A), // Default border color
+                                                  ? Colors.grey
+                                                  : Colors
+                                                      .red, // Default border color
                                               width: 1),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Color(0xff004C99)
-                                                  : Color(
-                                                      0xffBA1A1A), // Border color when focused
+                                                  ? Colors.blue
+                                                  : Colors
+                                                      .red, // Border color when focused
                                               width: 1),
                                         ),
                                         // errorText: _isMobileNumberValid
@@ -1090,62 +990,53 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
 
                       //CheckBox
                       SizedBox(height: 30),
-                      Center(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  agreementAccepted =
-                                      !agreementAccepted; // Toggle the checkbox state
-                                });
-                              },
-                              child: Container(
-                                width: 24, // Checkbox size
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: agreementAccepted
-                                        ? AppColors
-                                            .primaryColor // Default border color
-                                        : _isAgreementError
-                                            ? Color(
-                                                0xFFBA1A1A) // Error border when button clicked
-                                            : Color(0xff333333),
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: agreementAccepted
-                                      ? AppColors.primaryColor
-                                      : const Color(
-                                          0x00FFFFFF), // Fill when checked
-                                ),
-                                child: agreementAccepted
-                                    ? Icon(Icons.check,
-                                        size: 18,
-                                        color: Colors.white) // Show checkmark
-                                    : null, // Keep empty when unchecked
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            InkWell(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            checkColor: Colors.white,
+                            activeColor: AppColors.primaryColor,
+                            value: agreementAccepted,
+                            onChanged: (cState) {
+                              setState(() {
+                                agreementAccepted = cState!;
+                              });
+                            },
+                          ),
+                          InkWell(
                               onTap: () {
                                 _launchTermsURL();
                               },
                               child: Text(
-                                'I agree to the Terms of Service and Privacy Policy',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: 'Lato',
-                                  color:
-                                      (!agreementAccepted && _isAgreementError)
-                                          ? Color(0xFFBA1A1A)
-                                          : Color(0xff004C99),
+                                  'I agree to the Terms of Service and Privacy Policy',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: 'Lato',
+                                    color: AppColors.primaryColor,
+                                  )))
+                        ],
+                      ),
+
+                      //Loading
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Visibility(
+                            visible: isLoading,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 30,
                                 ),
-                              ),
-                            )
-                          ],
+                                LoadingAnimationWidget.fourRotatingDots(
+                                  color: AppColors.primaryColor,
+                                  size: 40,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
 
@@ -1161,10 +1052,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 'Referral Code: ${referralController.text ?? ''}');
                           }
                           if (!agreementAccepted) {
-                            setState(() {
-                              _isAgreementError =
-                                  true; // Show error when unchecked
-                            });
                             // Fluttertoast.showToast(
                             //     msg:
                             //         "You must agree to our Terms of service & our privacy policy",
@@ -1174,13 +1061,14 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                             //     backgroundColor: Colors.red,
                             //     textColor: Colors.white,
                             //     fontSize: 16.0);
-                            // IconSnackBar.show(
-                            //   context,
-                            //   label: 'Accept our Terms and Privacy Policy',
-                            //   snackBarType: SnackBarType.alert,
-                            //   backgroundColor: Color(0xFFBA1A1A),
-                            //   iconColor: Colors.white,
-                            // );
+                            IconSnackBar.show(
+                              context,
+                              label:
+                                  'You must agree to our Terms of service & our privacy policy',
+                              snackBarType: SnackBarType.alert,
+                              backgroundColor: Color(0xFFBA1A1A),
+                              iconColor: Colors.white,
+                            );
                           } else if (fNameController.text.trim().isEmpty ||
                               fNameController.text.trim().length < 3 ||
                               lNameController.text.trim().isEmpty ||
@@ -1302,43 +1190,15 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                           margin: EdgeInsets.symmetric(horizontal: 0),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
+                              color: agreementAccepted
+                                  ? AppColors.primaryColor
+                                  : AppColors.disabledColor,
                               borderRadius: BorderRadius.circular(10)),
                           child: Center(
-                            child: isLoading
-                                ? SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: TweenAnimationBuilder<double>(
-                                      tween: Tween<double>(begin: 0, end: 5),
-                                      duration: Duration(seconds: 2),
-                                      curve: Curves.linear,
-                                      builder: (context, value, child) {
-                                        return Transform.rotate(
-                                          angle: value *
-                                              2 *
-                                              3.1416, // Full rotation effect
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 4,
-                                            value: 0.20, // 1/5 of the circle
-                                            backgroundColor:
-                                                const Color.fromARGB(142, 234,
-                                                    232, 232), // Grey stroke
-                                            valueColor: AlwaysStoppedAnimation<
-                                                    Color>(
-                                                Colors
-                                                    .white), // White rotating stroke
-                                          ),
-                                        );
-                                      },
-                                      onEnd: () =>
-                                          {}, // Ensures smooth infinite animation
-                                    ),
-                                  )
-                                : Text(
-                                    'Create Profile',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                            child: Text(
+                              'Create Profile',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),

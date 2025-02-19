@@ -4,9 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -16,7 +14,6 @@ import 'package:talent_turbo_new/models/candidate_profile_model.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:talent_turbo_new/screens/main/personal_details.dart';
 
 class Addeducation extends StatefulWidget {
   final educationDetail;
@@ -27,6 +24,8 @@ class Addeducation extends StatefulWidget {
 }
 
 class _AddeducationState extends State<Addeducation> {
+
+
   bool isEdit = false;
 
   DateTime startDatems = DateTime.now();
@@ -42,25 +41,23 @@ class _AddeducationState extends State<Addeducation> {
 
   bool isStartDateValid = true;
   bool _startDateSelected = false;
-  String? startDateErrorMsg = 'Start date is required';
+  String? startDateErrorMsg = 'Start date cannot be empty';
   final TextEditingController _startDateController = TextEditingController();
 
   bool isEndDateValid = true;
-  String? endDateErrorMsg = 'End date is required';
+  String? endDateErrorMsg = 'End date cannot be empty';
   final TextEditingController _endDateController = TextEditingController();
 
   bool isQualificationValid = true;
-  String? qualificationErrorMsg = 'Qualification is required';
-  final TextEditingController txtQualificationController =
-      TextEditingController();
+  String? qualificationErrorMsg = 'Qualification cannot be empty';
+  final TextEditingController txtQualificationController = TextEditingController();
 
   bool isSpecializationValid = true;
-  String? specializationErrorMsg = 'Specialization is required';
-  final TextEditingController txtSpecializationController =
-      TextEditingController();
+  String? specializationErrorMsg = 'Specialization cannot be empty';
+  final TextEditingController txtSpecializationController = TextEditingController();
 
   bool isInstituteValid = true;
-  String? instituteErrorMsg = 'Institute is required';
+  String? instituteErrorMsg = 'Institute cannot be empty';
   final TextEditingController txtInstituteController = TextEditingController();
 
   bool isLoading = false;
@@ -81,9 +78,7 @@ class _AddeducationState extends State<Addeducation> {
 
     // If the year is in 2 digits, adjust it to a 4-digit year
     if (year < 100) {
-      year += (year < 70)
-          ? 2000
-          : 1900; // Assuming 00-69 is 21st century and 70-99 is 20th century
+      year += (year < 70) ? 2000 : 1900; // Assuming 00-69 is 21st century and 70-99 is 20th century
     }
 
     // Return the DateTime object
@@ -91,72 +86,65 @@ class _AddeducationState extends State<Addeducation> {
   }
 
   Future<void> updateEducation() async {
-    final url = Uri.parse(AppConstants.BASE_URL +
-        AppConstants.ADD_UPDATE_EDUCATION +
-        retrievedUserData!.profileId.toString() +
-        '/education');
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.ADD_UPDATE_EDUCATION + retrievedUserData!.profileId.toString() + '/education');
 
-    final bodyParams = isEdit
-        ? {
-            "candidateEducation": [
-              {
-                "id": widget.educationDetail['id'],
-                "schoolName": txtInstituteController.text,
-                "degree": txtQualificationController.text,
-                "city": selectedEducationType,
-                "stateName": "TN",
-                "year": endYear,
-                "countryId": "IN",
-                "percentage": 78,
-                "specialization": txtSpecializationController.text,
-                "graduatedFrom": _startDateController.text,
-                "graduatedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01'
-              }
-            ]
-          }
-        : {
-            "candidateEducation": [
-              {
-                //"id" : 2064,
-                "schoolName": txtInstituteController.text,
-                "degree": txtQualificationController.text,
-                "city": selectedEducationType,
-                "stateName": "TN",
-                "year": endYear,
-                "countryId": "IN",
-                "percentage": 78,
-                "specialization": txtSpecializationController.text,
-                "graduatedFrom": _startDateController.text,
-                "graduatedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01'
-              }
-            ]
-          };
+    final bodyParams =
+    isEdit ? {
+      "candidateEducation": [
+        {
+          "id" : widget.educationDetail['id'],
+          "schoolName": txtInstituteController.text,
+          "degree": txtQualificationController.text,
+          "city": selectedEducationType,
+          "stateName": "TN",
+          "year": endYear,
+          "countryId": "IN",
+          "percentage": 78,
+          "specialization": txtSpecializationController.text,
+          "graduatedFrom" : _startDateController.text,
+          "graduatedTo" : _selectedOption == 'No' ?  _endDateController.text : '1970-01-01'
+        }
+      ]
+    } :
+    {
+      "candidateEducation": [
+        {
+          //"id" : 2064,
+          "schoolName": txtInstituteController.text,
+          "degree": txtQualificationController.text,
+          "city": selectedEducationType,
+          "stateName": "TN",
+          "year": endYear,
+          "countryId": "IN",
+          "percentage": 78,
+          "specialization": txtSpecializationController.text,
+          "graduatedFrom" : _startDateController.text,
+          "graduatedTo" :_selectedOption == 'No' ?  _endDateController.text : '1970-01-01'
+        }
+      ]
+    };
 
-    try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult == ConnectivityResult.none) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
-        IconSnackBar.show(
+    try{
+ var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      // Fluttertoast.showToast(
+      //   msg: "No internet connection",
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 1,
+      //   backgroundColor: Color(0xff2D2D2D),
+      //   textColor: Colors.white,
+      //   fontSize: 16.0,
+      // );
+      IconSnackBar.show(
           context,
           label: 'No internet connection',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
-        return; // Exit the function if no internet
-      }
+      return;  // Exit the function if no internet
+    }
       setState(() {
         isLoading = true;
       });
@@ -171,19 +159,18 @@ class _AddeducationState extends State<Addeducation> {
       );
 
       if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
+        print('Response code ${response.statusCode} :: Response => ${response
+            .body}');
       }
 
-      if (response.statusCode == 200 || response.statusCode == 202) {
-        fetchCandidateProfileData(
-            retrievedUserData!.profileId, retrievedUserData!.token);
+      if(response.statusCode == 200 || response.statusCode == 202){
+        fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
       }
 
       /*setState(() {
         isLoading = false;
       });*/
-    } catch (e) {
+    }  catch(e){
       setState(() {
         if (kDebugMode) {
           print(e);
@@ -191,13 +178,15 @@ class _AddeducationState extends State<Addeducation> {
         isLoading = false;
       });
     }
+
+
   }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
-    final url = Uri.parse(AppConstants.BASE_URL +
-        AppConstants.CANDIDATE_PROFILE +
-        profileId.toString());
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.CANDIDATE_PROFILE + profileId.toString());
+
+
 
     try {
       setState(() {
@@ -209,23 +198,25 @@ class _AddeducationState extends State<Addeducation> {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
+      if(kDebugMode) {
+        print('Response code ${response.statusCode} :: Response => ${response
+            .body}');
       }
 
-      if (response.statusCode == 200) {
+      if(response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
 
-        if (statusMessage.toLowerCase().contains('success')) {
+        if(statusMessage.toLowerCase().contains('success')){
+
           final Map<String, dynamic> data = resOBJ['data'];
           //ReferralData referralData = ReferralData.fromJson(data);
-          CandidateProfileModel candidateData =
-              CandidateProfileModel.fromJson(data);
+          CandidateProfileModel candidateData = CandidateProfileModel.fromJson(data);
 
           await saveCandidateProfileData(candidateData);
+
+
 
           /*Navigator.pushAndRemoveUntil(
             context,
@@ -238,199 +229,133 @@ class _AddeducationState extends State<Addeducation> {
             isLoading = false;
           });
         }
-      } else {
+
+      } else{
         print(response);
         setState(() {
           isLoading = false;
         });
       }
-    } catch (e) {
+
+
+    }
+    catch(e){
       print(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff001B3E),
-      statusBarIconBrightness: Brightness.light,
-    ));
     return Scaffold(
       body: Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
             height: 40,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-          ),
+            decoration: BoxDecoration(color: Color(0xff001B3E)),),
           Container(
             width: MediaQuery.of(context).size.width,
             height: 60,
             decoration: BoxDecoration(color: Color(0xff001B3E)),
-            child: Row(
+            child:
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                              'Back',
-                              style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 16,
-                                  color: Colors.white),
-                            ))))
-                  ],
-                ),
+                Row( children: [ IconButton(icon:  Icon(Icons.arrow_back_ios_new, color: Colors.white,), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('Back', style: TextStyle(fontFamily: 'Lato', fontSize: 16, color: Colors.white),)))) ],),
                 //SizedBox(width: 80,)
-                Text(
-                  'Education',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                Text('Education', style: TextStyle(color: Colors.white, fontSize: 16),),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    '       ',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                  child: Text('       ', style: TextStyle(color: Colors.white, fontSize: 16),),
                 ),
               ],
             ),
+
+
           ),
-          Expanded(
-              child: SingleChildScrollView(
+
+          Expanded(child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.all(16),
-              color: Color(0xffFCFCFC),
+              padding: EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Text(
-                    'Qualification',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 25,),
+
+                  Text('Qualification', style: TextStyle(fontSize: 14, fontFamily: 'Lato', fontWeight: FontWeight.w500, color: Color(0xff333333)),),
+                  SizedBox(height: 10,),
                   Container(
                     width: (MediaQuery.of(context).size.width) - 20,
                     child: TextField(
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(
-                            r'[a-zA-Z\s]')), // Allow only letters and spaces
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')), // Allow only letters and spaces
                       ],
                       controller: txtQualificationController,
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Lato',
-                          color: Color(0xff7D7C7C)),
+                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                       decoration: InputDecoration(
                           hintText: 'Qualification',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                          border: OutlineInputBorder(),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
-                                color: isQualificationValid
-                                    ? Color(0xffd9d9d9)
-                                    : Colors.red, // Default border color
-                                width: 1),
+                                color: isQualificationValid ? Colors.grey : Colors.red, // Default border color
+                                width: 1
+                            ),
                           ),
+
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                                color: isQualificationValid
-                                    ? Color(0xff004C99)
-                                    : Colors.red, // Border color when focused
-                                width: 1),
+                                color: isQualificationValid ? Colors.blue : Colors.red, // Border color when focused
+                                width: 1
+                            ),
                           ),
-                          errorText: isQualificationValid
-                              ? null
-                              : qualificationErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10)),
+
+                          errorText: isQualificationValid ? null : qualificationErrorMsg, // Display error message if invalid
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                      ),
                       onChanged: (value) {
                         // Validate the email here and update _isEmailValid
                         setState(() {
+
                           isQualificationValid = true;
+
                         });
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Text(
-                    'Specialization',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+
+
+                  SizedBox(height: 25,),
+                  Text('Specialization', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
+                  SizedBox(height: 10,),
                   Container(
                     width: (MediaQuery.of(context).size.width) - 20,
                     child: TextField(
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(
-                            r'[a-zA-Z\s]')), // Allow only letters and spaces
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')), // Allow only letters and spaces
                       ],
                       controller: txtSpecializationController,
-                      cursorColor: Color(0xff004C99),
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Lato',
-                          color: Color(0xff7D7C7C)),
+                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                       decoration: InputDecoration(
                           hintText: 'Specialization',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                          border: OutlineInputBorder(),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
-                                color: isSpecializationValid
-                                    ? Color(0xffd9d9d9)
-                                    : Colors.red, // Default border color
-                                width: 1),
+                                color: isSpecializationValid ? Colors.grey : Colors.red, // Default border color
+                                width: 1
+                            ),
                           ),
+
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
-                                color: isSpecializationValid
-                                    ? Color(0xff004C99)
-                                    : Colors.red, // Border color when focused
-                                width: 1),
+                                color: isSpecializationValid ? Colors.blue : Colors.red, // Border color when focused
+                                width: 1
+                            ),
                           ),
-                          errorText: isSpecializationValid
-                              ? null
-                              : specializationErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10)),
+
+                          errorText: isSpecializationValid ? null : specializationErrorMsg, // Display error message if invalid
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                      ),
                       onChanged: (value) {
                         // Validate the email here and update _isEmailValid
                         setState(() {
@@ -439,57 +364,38 @@ class _AddeducationState extends State<Addeducation> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Text(
-                    'Institute name',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+
+                  SizedBox(height: 25,),
+                  Text('Institute name', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
+                  SizedBox(height: 10,),
                   Container(
                     width: (MediaQuery.of(context).size.width) - 20,
                     child: TextField(
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(
-                            r'[a-zA-Z\s]')), // Allow only letters and spaces
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')), // Allow only letters and spaces
                       ],
                       controller: txtInstituteController,
-                      cursorColor: Color(0xff004C99),
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Lato',
-                          color: Color(0xff7D7C7C)),
+                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                       decoration: InputDecoration(
                           hintText: 'Institute',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                          border: OutlineInputBorder(),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
-                                color: isInstituteValid
-                                    ? Color(0xffd9d9d9)
-                                    : Colors.red, // Default border color
-                                width: 1),
+                                color: isInstituteValid ? Colors.grey : Colors.red, // Default border color
+                                width: 1
+                            ),
                           ),
+
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide(
-                                color: isInstituteValid
-                                    ? Color(0xff004C99)
-                                    : Colors.red, // Border color when focused
-                                width: 1),
+                                color: isInstituteValid ? Colors.blue : Colors.red, // Border color when focused
+                                width: 1
+                            ),
                           ),
-                          errorText: isInstituteValid
-                              ? null
-                              : instituteErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10)),
+
+                          errorText: isInstituteValid ? null : instituteErrorMsg, // Display error message if invalid
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                      ),
                       onChanged: (value) {
                         // Validate the email here and update _isEmailValid
                         setState(() {
@@ -498,492 +404,334 @@ class _AddeducationState extends State<Addeducation> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
+
+                 SizedBox(height: 20,),
+Text('Are you currently studying here?', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
+SizedBox(height: 10,),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Radio<String>(
+          value: 'Yes',
+          groupValue: _selectedOption,
+          onChanged: (value) {
+            setState(() {
+              _selectedOption = value;
+              isEndDateValid = true;
+              _endDateController.text = ''; // Reset the end date field
+            });
+          },
+        ),
+        Text('Yes', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, fontFamily: 'Lato'),),
+      ],
+    ),
+    SizedBox(width: 20),
+    Row(
+      children: [
+        Radio<String>(
+          value: 'No',
+          groupValue: _selectedOption,
+          onChanged: (value) {
+            setState(() {
+              isEndDateValid = true;
+              _selectedOption = value;
+            });
+          },
+        ),
+        Text('No', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, fontFamily: 'Lato'),),
+      ],
+    ),
+    SizedBox(width: 80),
+  ],
+),
+
+SizedBox(height: 25,),
+Row(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Start Date', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
+          SizedBox(height: 10,),
+          TextField(
+            controller: _startDateController,
+            decoration: InputDecoration(
+               suffixIcon: Icon(Icons.calendar_today),
+                hintText: 'From',
+                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: isStartDateValid ? Colors.grey : Colors.red, // Default border color
+                      width: 1
                   ),
-                  Text(
-                    'Are you currently studying here?',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: isStartDateValid ? Colors.blue : Colors.red, // Border color when focused
+                      width: 1
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Transform.scale(
-                              scale: 1.5,
-                              child: Radio<String>(
-                                value: 'Yes',
-                                groupValue: _selectedOption,
-                                activeColor: Color(0xff415F91),
-                                visualDensity: VisualDensity.compact,
-                                fillColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                        (states) {
-                                  if (states.contains(WidgetState.selected)) {
-                                    return Color(0xff004C99);
-                                  }
-                                  return Color(0xffD1D1D6);
-                                }),
-                                overlayColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                  (states) => Colors.transparent,
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedOption = value;
-                                    _endDateController.text = '';
-                                    isEndDateValid = true;
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              'Yes',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Lato',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 5), // Space between Yes and No
-                      Expanded(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Transform.scale(
-                              scale: 1.5,
-                              child: Radio<String>(
-                                value: 'No',
-                                groupValue: _selectedOption,
-                                activeColor: Color(0xff415F91),
-                                visualDensity: VisualDensity.compact,
-                                fillColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                        (states) {
-                                  if (states.contains(WidgetState.selected)) {
-                                    return Color(0xff004C99);
-                                  }
-                                  return Color(0xffD1D1D6);
-                                }),
-                                overlayColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                  (states) => Colors.transparent,
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    isEndDateValid = true;
-                                    _selectedOption = value;
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              'No',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Lato',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Start Date',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff333333)),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextField(
-                              controller: _startDateController,
-                              cursorColor: Color(0xff004C99),
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0xFF505050)),
-                              decoration: InputDecoration(
-                                  suffixIcon: Padding(
-                                    padding: EdgeInsets.all(7),
-                                    child: SvgPicture.asset(
-                                      'assets/icon/Calendar.svg',
-                                      width: 24,
-                                      height: 24,
-                                    ),
-                                  ),
-                                  hintText: 'From',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: isStartDateValid
-                                            ? Color(0xffd9d9d9)
-                                            : Colors
-                                                .red, // Default border color
-                                        width: 1),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: isStartDateValid
-                                            ? Color(0xff004C99)
-                                            : Colors
-                                                .red, // Border color when focused
-                                        width: 1),
-                                  ),
-                                  errorText: isStartDateValid
-                                      ? null
-                                      : startDateErrorMsg, // Display error message if invalid
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10)),
-                              readOnly: true,
-                              onTap: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now()
-                                        .subtract(Duration(days: 1)),
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime.now()
-                                        .subtract(Duration(days: 1)),
-                                    initialDatePickerMode: DatePickerMode.year);
-                                if (pickedDate != null) {
-                                  setState(() {
-                                    startDatems = pickedDate;
-                                    isStartDateValid = true;
-                                    _startDateSelected = true;
-                                    _startDateController.text =
-                                        "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                                    startYear = pickedDate.year.toString();
-                                  });
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 10), // Space between the two fields
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'End Date',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff333333)),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TextField(
-                              controller: _endDateController,
-                              cursorColor: Color(0xff004C99),
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0xFF505050)),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 5),
-                                hintText:
-                                    'To', // Display 'To' as the placeholder
-                                suffixIcon: Padding(
-                                  padding: EdgeInsets.all(7),
-                                  child: SvgPicture.asset(
-                                    'assets/icon/Calendar.svg',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                    color: isEndDateValid
-                                        ? Color(0xffd9d9d9)
-                                        : Colors.red, // Default border color
-                                    width: 1,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                    color: isEndDateValid
-                                        ? Color(0xff004C99)
-                                        : Colors
-                                            .red, // Border color when focused
-                                    width: 1,
-                                  ),
-                                ),
-                                errorText: isEndDateValid
-                                    ? null
-                                    : endDateErrorMsg, // Show error if invalid
-                              ),
-                              readOnly: false, // Allow manual input
-                              onChanged: (text) {
-                                // Validate input as user types
-                                setState(() {
-                                  isEndDateValid = text
-                                      .isNotEmpty; // Add custom validation logic if needed
-                                });
-                              },
-                              onTap: () async {
-                                // Allow date picking regardless of option
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: startDatems,
-                                  firstDate: startDatems,
-                                  lastDate: DateTime.now(),
-                                  initialDatePickerMode: DatePickerMode.year,
-                                );
-                                if (pickedDate != null) {
-                                  setState(() {
-                                    isEndDateValid = true; // Mark date as valid
-                                    _endDateController.text =
-                                        "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}"; // Update field
-                                    endYear = pickedDate.year
-                                        .toString(); // Optionally store the year
-                                  });
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Text(
-                    'Education type',
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                ),
+                errorText: isStartDateValid ? null : startDateErrorMsg, // Display error message if invalid
+                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+            ),
+            readOnly: true,
+            onTap: () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now().subtract(Duration(days: 1)),
+                firstDate: DateTime(2000),
+                lastDate: DateTime.now().subtract(Duration(days: 1)),
+                initialDatePickerMode: DatePickerMode.year
+              );
+              if (pickedDate != null) {
+                setState(() {
+                  startDatems = pickedDate;
+                   isStartDateValid = true;
+                  _startDateSelected = true;
+                  _startDateController.text = "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                  startYear = pickedDate.year.toString();
+                }
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    ),
+    SizedBox(width: 10), // Space between the two fields
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('End Date', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
+          SizedBox(height: 10,),
+          TextField(
+  controller: _endDateController,
+  decoration: InputDecoration(
+    contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+    hintText: 'To', // Display 'To' as the placeholder
+    suffixIcon: Icon(Icons.calendar_today),
+    border: OutlineInputBorder(),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: isEndDateValid ? Colors.grey : Colors.red, // Default border color
+        width: 1,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: isEndDateValid ? Colors.blue : Colors.red, // Border color when focused
+        width: 1,
+      ),
+    ),
+    errorText: isEndDateValid ? null : endDateErrorMsg, // Show error if invalid
+  ),
+  readOnly: false, // Allow manual input
+  onChanged: (text) {
+    // Validate input as user types
+    setState(() {
+      isEndDateValid = text.isNotEmpty; // Add custom validation logic if needed
+    });
+  },
+  onTap: () async {
+    // Allow date picking regardless of option
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: startDatems,
+      firstDate: startDatems,
+      lastDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
+    );
+    if (pickedDate != null) {
+      setState(() {
+        isEndDateValid = true; // Mark date as valid
+        _endDateController.text = "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}"; // Update field
+        endYear = pickedDate.year.toString(); // Optionally store the year
+      });
+    }
+  },
+),
+
+
+        ],
+      ),
+    ),
+  ],
+),
+
+
+                  SizedBox(height: 25,),
+                  Text('Education type', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
+                  SizedBox(height: 10,),
                   Container(
                     height: 50,
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1,
-                            color: isEducationTypeValid
-                                ? Color(0xffd9d9d9)
-                                : Color(0xffBA1A1A)),
-                        borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(border: Border.all(width: 1, color: isEducationTypeValid? Color(0xffD9D9D9) : Colors.red),
+                      borderRadius: BorderRadius.circular(10)
+                    ),
                     width: (MediaQuery.of(context).size.width) - 20,
                     child: InkWell(
-                      onTap: () {
+                      onTap: (){
                         showMaterialModalBottomSheet(
                           isDismissible: true,
                           context: context,
-                          builder: (context) => Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 30, horizontal: 10),
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  //leading: Icon(Icons.visibility_outlined),
-                                  title: Text('Full time'),
-                                  onTap: () {
-                                    setState(() {
-                                      selectedEducationType = 'Full time';
-                                      isEducationTypeValid = true;
-                                    });
-                                    Navigator.pop(context);
-                                  },
+                          builder: (context) =>
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                                width: MediaQuery.of(context).size.width,
+                                child: Column(
+
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+
+                                    ListTile(
+                                      //leading: Icon(Icons.visibility_outlined),
+                                      title: Text('Full time'),
+                                      onTap: (){
+                                        setState(() {
+                                          selectedEducationType  = 'Full time';
+                                          isEducationTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      //leading: Icon(Icons.refresh),
+                                      title: Text('Part time'),
+                                      onTap: (){
+                                        setState(() {
+                                          selectedEducationType  = 'Part time';
+                                          isEducationTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      //leading: Icon(Icons.download),
+                                      title: Text('Correspondence'),
+                                      onTap: (){
+                                        setState(() {
+                                          selectedEducationType  = 'Correspondence';
+                                          isEducationTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+
+                                  ],
                                 ),
-                                ListTile(
-                                  //leading: Icon(Icons.refresh),
-                                  title: Text('Part time'),
-                                  onTap: () {
-                                    setState(() {
-                                      selectedEducationType = 'Part time';
-                                      isEducationTypeValid = true;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                ListTile(
-                                  //leading: Icon(Icons.download),
-                                  title: Text('Correspondence'),
-                                  onTap: () {
-                                    setState(() {
-                                      selectedEducationType = 'Correspondence';
-                                      isEducationTypeValid = true;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
+                              ),
                         );
                       },
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          selectedEducationType.isEmpty
-                              ? 'Select your education type'
-                              : selectedEducationType,
-                          style: TextStyle(color: Color(0xFF505050)),
-                        ),
+                        child: Text( selectedEducationType.isEmpty? 'Select your education type' : selectedEducationType, style: TextStyle(color: Color(0xff7D7C7C)),),
                       ),
                     ),
                   ),
+
                   Visibility(
                       visible: !isEducationTypeValid,
                       child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'Education type cannot be empty',
-                            style: TextStyle(
-                                color: Color(0xffBA1A1A), fontSize: 12),
-                          ),
-                        ],
-                      )),
-                  SizedBox(
-                    height: 25,
-                  ),
+                    children: [
+                      SizedBox(height: 10,),
+                      Text('        Education type cannot be empty', style: TextStyle(color: Colors.red, fontSize: 12),),
+                    ],
+                  )),
+
+                  isLoading? Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Visibility(
+                        visible: isLoading,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 30,),
+                            LoadingAnimationWidget.fourRotatingDots(
+                              color: AppColors.primaryColor,
+                              size: 40,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ) : Container(),
+
+                  SizedBox(height: 25,),
                   InkWell(
-                    onTap: () {
-                      if ((_selectedOption == 'No' &&
-                              _endDateController.text.isEmpty) ||
-                          txtQualificationController.text.isEmpty ||
-                          txtSpecializationController.text.isEmpty ||
-                          txtInstituteController.text.isEmpty ||
-                          _startDateController.text.isEmpty) {
-                        if (txtQualificationController.text.isEmpty) {
+                    onTap: (){
+
+                      if( (_selectedOption=='No' && _endDateController.text.isEmpty) || txtQualificationController.text.isEmpty || txtSpecializationController.text.isEmpty || txtInstituteController.text.isEmpty || _startDateController.text.isEmpty){
+
+                        if(txtQualificationController.text.isEmpty){
                           setState(() {
                             isQualificationValid = false;
                           });
                         }
 
-                        if (txtSpecializationController.text.isEmpty) {
+                        if(txtSpecializationController.text.isEmpty){
                           setState(() {
                             isSpecializationValid = false;
                           });
                         }
 
-                        if (txtInstituteController.text.isEmpty) {
+                        if(txtInstituteController.text.isEmpty){
                           setState(() {
                             isInstituteValid = false;
                           });
                         }
 
-                        if (_startDateController.text.isEmpty) {
+                        if(_startDateController.text.isEmpty){
                           setState(() {
                             isStartDateValid = false;
                           });
                         }
 
-                        if (_selectedOption == 'No' &&
-                            _endDateController.text.isEmpty) {
+                        if(_selectedOption=='No' && _endDateController.text.isEmpty){
                           setState(() {
                             isEndDateValid = false;
                           });
                         }
 
-                        if (selectedEducationType.isEmpty) {
+                        if(selectedEducationType.isEmpty){
                           setState(() {
                             isEducationTypeValid = false;
                           });
                         }
-                      } else {
-                        if (kDebugMode) {
+
+                      }
+                      else{
+                        if(kDebugMode){
                           print('Performing operation................');
+
                         }
 
-                        if (isLoading == false) {
+                        if(isLoading == false) {
                           updateEducation();
                         }
+
                       }
+
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       height: 44,
                       margin: EdgeInsets.symmetric(horizontal: 0),
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                        child: isLoading
-                            ? SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: TweenAnimationBuilder<double>(
-                                  tween: Tween<double>(begin: 0, end: 5),
-                                  duration: Duration(seconds: 2),
-                                  curve: Curves.linear,
-                                  builder: (context, value, child) {
-                                    return Transform.rotate(
-                                      angle: value *
-                                          2 *
-                                          3.1416, // Full rotation effect
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 4,
-                                        value: 0.20, // 1/5 of the circle
-                                        backgroundColor: const Color.fromARGB(
-                                            142, 234, 232, 232), // Grey stroke
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(Colors
-                                                .white), // White rotating stroke
-                                      ),
-                                    );
-                                  },
-                                  onEnd: () =>
-                                      {}, // Ensures smooth infinite animation
-                                ),
-                              )
-                            : Text(
-                                'Save',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                      ),
+                      decoration: BoxDecoration(color: AppColors.primaryColor ,borderRadius: BorderRadius.circular(10)),
+                      child: Center(child: Text('Save', style: TextStyle(color: Colors.white),),),
                     ),
                   )
                 ],
               ),
             ),
           ))
+
         ],
       ),
     );
@@ -995,30 +743,26 @@ class _AddeducationState extends State<Addeducation> {
     super.initState();
     fetchProfileFromPref();
 
-    if (widget.educationDetail != null) {
+    if(widget.educationDetail != null){
+
       setState(() {
         isEdit = true;
         txtQualificationController.text = widget.educationDetail['degree'];
-        txtSpecializationController.text =
-            widget.educationDetail['specialization'];
+        txtSpecializationController.text = widget.educationDetail['specialization'];
         txtInstituteController.text = widget.educationDetail['schoolName'];
-        _startDateController.text =
-            widget.educationDetail['graduatedFrom'] ?? '';
-        _selectedOption = widget.educationDetail['graduatedTo'] == '1970-01-01'
-            ? 'Yes'
-            : 'No';
-        _endDateController.text =
-            widget.educationDetail['graduatedTo'] == '1970-01-01'
-                ? ''
-                : widget.educationDetail['graduatedTo'] ?? '';
+        _startDateController.text = widget.educationDetail['graduatedFrom']?? '';
+        _selectedOption = widget.educationDetail['graduatedTo'] == '1970-01-01' ? 'Yes' : 'No';
+        _endDateController.text = widget.educationDetail['graduatedTo'] == '1970-01-01' ? '' : widget.educationDetail['graduatedTo'] ?? '';
         isStartDateValid = true;
         isEndDateValid = true;
         _startDateSelected = true;
-        startDatems =
-            parseDate(widget.educationDetail['graduatedFrom'] ?? '1970-01-01');
+        startDatems = parseDate(widget.educationDetail['graduatedFrom']?? '1970-01-01');
         selectedEducationType = widget.educationDetail['city'];
+
       });
+
     }
+
   }
 
   Future<void> fetchProfileFromPref() async {
@@ -1029,4 +773,5 @@ class _AddeducationState extends State<Addeducation> {
       retrievedUserData = _retrievedUserData;
     });
   }
+
 }

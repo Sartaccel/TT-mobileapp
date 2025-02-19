@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -221,11 +220,6 @@ class _CroppageState extends State<Croppage> {
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff001B3E),
-      statusBarIconBrightness: Brightness.light,
-    ));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF001B3E),

@@ -1,12 +1,12 @@
-import 'dart:io';
+import 'dart:async';
+
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:share_plus/share_plus.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/Utils.dart';
@@ -63,87 +63,99 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     }
   }
 
-  void showDeleteConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
-          actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-          contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
-          title: Text(
-            'Logout',
+ void showDeleteConfirmationDialog(BuildContext context, bool isConnectionAvailable) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+        contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
+        title: Text(
+          'Logout',
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xff333333)),
+        ),
+        content: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Text(
+            'Are you sure you want to log out?',
             style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+                height: 1.2,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
                 color: Color(0xff333333)),
           ),
-          content: Container(
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                'Are you sure you want to log out?',
-                style: TextStyle(
-                    height: 0.5,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff333333)),
-              )),
-          actions: [
-            InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(width: 1, color: AppColors.primaryColor),
-                    borderRadius: BorderRadius.circular(7)),
-                child: Center(
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: AppColors.primaryColor),
-                  ),
+        ),
+        actions: [
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              height: 40,
+              width: 100,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(width: 1, color: AppColors.primaryColor),
+                  borderRadius: BorderRadius.circular(7)),
+              child: Center(
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.primaryColor),
                 ),
               ),
             ),
-            InkWell(
-              onTap: () async {
-                UserCredentials credentials =
-                    UserCredentials(username: '', password: '');
-
-                await credentials.deleteCredentials();
-                await _googleAuthService.signOut();
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (Route<dynamic> route) => false, // This will keep Screen 1
-                );
-              },
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(7)),
-                child: Center(
-                  child: Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.white),
+          ),
+          InkWell(
+            onTap: () async {
+              if (!isConnectionAvailable) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('No internet connection. Please try again later.'),
+                    backgroundColor: Colors.red,
                   ),
+                );
+                return;
+              }
+
+              // Proceed with logout if connected
+              UserCredentials credentials = UserCredentials(username: '', password: '');
+              await credentials.deleteCredentials();
+              await _googleAuthService.signOut();
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (Route<dynamic> route) => false,
+              );
+            },
+            child: Container(
+              height: 40,
+              width: 100,
+              decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(7)),
+              child: Center(
+                child: Text(
+                  'Logout',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-            )
-          ],
-        );
-      },
-    );
-  }
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   final String appUrl =
       "https://play.google.com/store/apps/details?id=com.android.referral.talentturbo";
@@ -157,15 +169,8 @@ class _ProfileFragmentState extends State<ProfileFragment> {
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff001B3E),
-      statusBarIconBrightness:
-          Brightness.light, 
-    ));
     return RefreshIndicator(
       onRefresh: fetchProfileFromPref,
-      color: Color(0xffFCFCFC),
       child: Column(
         children: [
           Container(
@@ -178,7 +183,6 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                   children: [
                     Container(
                       height: 270,
-                      color: Color(0xffFCFCFC),
                       child: Stack(
                         children: [
                           Container(
@@ -187,8 +191,8 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             decoration: BoxDecoration(
                               color: Color(0xff001B3E),
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20),
                               ),
                             ),
                           ),
@@ -238,59 +242,54 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           Positioned(
                             left: (MediaQuery.of(context).size.width / 2) + 20,
                             top: 130,
-                            child: SvgPicture.asset('assets/icon/DpEdit.svg'),
+                            child:
+                                Image.asset('assets/images/pro_image_edit.png'),
                           ),
-                          Stack(
-                            children: [
-                              Positioned(
-                                top: 170,
-                                left: 0,
-                                right: 0,
-                                child: Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '${candidateProfileModel?.candidateName ?? 'N/A'}',
-                                        style: TextStyle(
-                                          fontFamily: 'NunitoSans',
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xff333333),
-                                          fontSize: 16,
+                          Positioned(
+                            top: 170,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      '${candidateProfileModel?.candidateName ?? 'N/A'}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xff333333),
+                                        fontSize: 16,
+                                      ),
+                                      overflow: TextOverflow.clip,
+                                      maxLines: 1,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.location_on_outlined,
+                                          size: 16,
                                         ),
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.clip,
-                                        maxLines: 1,
-                                      ),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.location_on,
-                                            size: 17,
+                                        Text(
+                                          '${candidateProfileModel?.location ?? 'Location not updated'}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xff333333),
+                                            fontSize: 14,
                                           ),
-                                          Text(
-                                            '${candidateProfileModel?.location ?? 'Location not updated'}',
-                                            style: TextStyle(
-                                              fontFamily: 'NunitoSans',
-                                              fontWeight: FontWeight.w400,
-                                              color: Color(0xff333333),
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      color: Color(0xffFCFCFC),
                       height: MediaQuery.of(context).size.height - 400,
                       child: SingleChildScrollView(
                         child: Column(
@@ -306,21 +305,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                 );
                                 fetchProfileFromPref();
                               },
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffF7F7F7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/icon/PDnotes.svg',
-                                    width: 28,
-                                    height: 28,
-                                  ),
-                                ),
-                              ),
+                              leading: Icon(Icons.person),
                               title: Text(
                                 'Personal Details',
                                 style: TextStyle(
@@ -329,11 +314,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: SvgPicture.asset(
-                                'assets/icon/ArrowRight.svg', // Update with your correct path
-                                width: 24, // Adjust size as needed
-                                height: 24,
-                              ),
+                              trailing: Icon(Icons.chevron_right),
                             ),
                             Divider(),
                             ListTile(
@@ -346,21 +327,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   ),
                                 );
                               },
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffF7F7F7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/icon/Setting.svg',
-                                    width: 26,
-                                    height: 26,
-                                  ),
-                                ),
-                              ),
+                              leading: Icon(Icons.settings),
                               title: Text(
                                 'Settings',
                                 style: TextStyle(
@@ -369,11 +336,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: SvgPicture.asset(
-                                'assets/icon/ArrowRight.svg', // Update with your correct path
-                                width: 24, // Adjust size as needed
-                                height: 24,
-                              ),
+                              trailing: Icon(Icons.chevron_right),
                             ),
                             Divider(),
                             ListTile(
@@ -386,21 +349,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   ),
                                 );
                               },
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffF7F7F7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/icon/gift.svg',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                ),
-                              ),
+                              leading: Icon(Icons.card_giftcard),
                               title: Text(
                                 'My Rewards',
                                 style: TextStyle(
@@ -409,11 +358,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: SvgPicture.asset(
-                                'assets/icon/ArrowRight.svg', // Update with your correct path
-                                width: 24, // Adjust size as needed
-                                height: 24,
-                              ),
+                              trailing: Icon(Icons.chevron_right),
                             ),
                             Divider(),
                             ListTile(
@@ -426,21 +371,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   ),
                                 );
                               },
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffF7F7F7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/icon/invite.svg',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                ),
-                              ),
+                              leading: Icon(Icons.group_add),
                               title: Text(
                                 'Invite & Earn',
                                 style: TextStyle(
@@ -449,30 +380,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: SvgPicture.asset(
-                                'assets/icon/ArrowRight.svg', // Update with your correct path
-                                width: 24, // Adjust size as needed
-                                height: 24,
-                              ),
+                              trailing: Icon(Icons.chevron_right),
                             ),
                             Divider(),
                             ListTile(
                               onTap: _launchTermsURL,
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffF7F7F7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/icon/notes.svg',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                ),
-                              ),
+                              leading: Icon(Icons.file_copy),
                               title: Text(
                                 'Terms & Conditions',
                                 style: TextStyle(
@@ -481,32 +394,15 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xff333333),
                                 ),
                               ),
-                              trailing: SvgPicture.asset(
-                                'assets/icon/ArrowRight.svg', // Update with your correct path
-                                width: 24, // Adjust size as needed
-                                height: 24,
-                              ),
+                              trailing: Icon(Icons.chevron_right),
                             ),
                             Divider(),
                             ListTile(
                               onTap: () {
-                                showDeleteConfirmationDialog(context);
+                                showDeleteConfirmationDialog(context,isConnectionAvailable);
                               },
-                              leading: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffF7F7F7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/icon/Logout.svg',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                ),
-                              ),
+                              leading:
+                                  Icon(Icons.logout, color: Color(0xffBA1A1A)),
                               title: Text(
                                 'Logout',
                                 style: TextStyle(
@@ -515,11 +411,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   color: Color(0xffBA1A1A),
                                 ),
                               ),
-                              trailing: SvgPicture.asset(
-                                'assets/icon/ArrowRight.svg', // Update with your correct path
-                                width: 24, // Adjust size as needed
-                                height: 24,
-                              ),
+                              trailing: Icon(Icons.chevron_right),
                             ),
                             Divider(),
                           ],
@@ -533,7 +425,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SvgPicture.asset('assets/icon/noInternet.svg'),
+                      SvgPicture.asset('no_internet_ic.svg'),
                       Text(
                         'No Internet connection',
                         style: TextStyle(
@@ -565,7 +457,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                               color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(10)),
                           child: Center(
                             child: Text(
                               'Try Again',
@@ -594,12 +486,38 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     });
   }
 
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchProfileFromPref();
-    checkInternetAvailability();
-  }
+late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+
+@override
+void initState() {
+  super.initState();
+  fetchProfileFromPref();
+  checkInternetAvailability();
+
+  _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+    setState(() {
+      isConnectionAvailable = results.contains(ConnectivityResult.mobile) || results.contains(ConnectivityResult.wifi);
+    });
+
+    if (!isConnectionAvailable) {
+      IconSnackBar.show(
+        context,
+        label: 'No internet connection',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
+    }
+  });
+}
+
+@override
+void dispose() {
+  _connectivitySubscription.cancel();
+  super.dispose();
+}
+
+
 
   Future<void> checkInternetAvailability() async {
     var connectivityResult = await Connectivity().checkConnectivity();

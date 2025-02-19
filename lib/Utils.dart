@@ -102,5 +102,12 @@ String processDate(String createdDate) {
     return DateFormat('yyyy-MM-dd').format(postDate);
   }
 }
+  Future<void> saveJobListLocally(List<dynamic> jobs) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jobListString = jsonEncode(jobs);
+    await prefs.setString('jobList', jobListString);
+  }
+
+ 
 
 

@@ -509,11 +509,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff001B3E),
-      statusBarIconBrightness: Brightness.light,
-    ));
     return Scaffold(
       body: Column(
         children: [
@@ -566,7 +561,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           Expanded(
               child: SingleChildScrollView(
                   child: Container(
-            color: Color(0xffFCFCFC),
             padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -585,28 +579,21 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     controller: fNameController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
+                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         hintText: 'Enter your first name',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                        border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isFirstNameValid
-                                  ? Color(0xffd9d9d9)
+                                  ? Colors.grey
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isFirstNameValid
-                                  ? Color(0xff004C99)
+                                  ? Colors.blue
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -615,11 +602,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                             : 'First name cannot be empty', // Display error message if invalid
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(
-                          r'[a-zA-Z\s]')), // Allow only letters and spaces
-                    ],
+                    keyboardType: TextInputType.emailAddress,
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
                       setState(() {
@@ -646,28 +629,21 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                           r'[a-zA-Z\s]')), // Allow only letters and spaces
                     ],
                     controller: lNameController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
+                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         hintText: 'Enter your last name',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                        border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLastNameValid
-                                  ? Color(0xffd9d9d9)
+                                  ? Colors.grey
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLastNameValid
-                                  ? Color(0xff004C99)
+                                  ? Colors.blue
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -701,20 +677,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                       width: (MediaQuery.of(context).size.width) - 100,
                       child: TextField(
                         controller: emailController,
-                        cursorColor: Color(0xff004C99),
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Lato',
-                            color: Color(0xff545454)),
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                         decoration: InputDecoration(
                             hintText: 'Enter your email',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                            border: OutlineInputBorder(),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
                                   color: _isEmailValid
-                                      ? Color(0xffd9d9d9)
+                                      ? Colors.grey
                                       : Colors.red, // Default border color
                                   width: 1),
                             ),
@@ -723,10 +693,9 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                     ? 'assets/images/verified_ic.svg'
                                     : 'assets/images/pending_ic.svg'),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
                                   color: _isEmailValid
-                                      ? Color(0xff004C99)
+                                      ? Colors.blue
                                       : Colors.red, // Border color when focused
                                   width: 1),
                             ),
@@ -804,9 +773,9 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                       border: Border.all(
                                           width: 1,
                                           color: _isMobileNumberValid
-                                              ? Color(0xffd9d9d9)
+                                              ? Colors.grey
                                               : Colors.red),
-                                      borderRadius: BorderRadius.circular(8)),
+                                      borderRadius: BorderRadius.circular(4)),
                                   padding: EdgeInsets.all(9),
                                   child: DropdownButton(
                                       underline: Container(),
@@ -818,7 +787,8 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontFamily: 'Lato',
-                                                    color: Color(0xff545454))));
+                                                    color: const Color(
+                                                        0xFF333333))));
                                       }).toList(),
                                       onChanged: (val) {
                                         setState(() {
@@ -833,11 +803,8 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                     maxLength: getValidLengthForCountry(
                                         _selectedCountryCode!),
                                     controller: mobileController,
-                                    cursorColor: Color(0xff004C99),
                                     style: TextStyle(
-                                        fontSize: 14,
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff545454)),
+                                        fontSize: 14, fontFamily: 'Lato'),
                                     decoration: InputDecoration(
                                         counterText: '',
                                         hintText: 'Enter mobile number',
@@ -847,25 +814,19 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                                     1
                                                 ? 'assets/images/verified_ic.svg'
                                                 : 'assets/images/pending_ic.svg'),
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
+                                        border: OutlineInputBorder(),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Color(0xffd9d9d9)
+                                                  ? Colors.grey
                                                   : Colors
                                                       .red, // Default border color
                                               width: 1),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
                                           borderSide: BorderSide(
                                               color: _isMobileNumberValid
-                                                  ? Color(0xff004C99)
+                                                  ? Colors.blue
                                                   : Colors
                                                       .red, // Border color when focused
                                               width: 1),
@@ -876,10 +837,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 10, horizontal: 10)),
                                     keyboardType: TextInputType.phone,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp(r'[0-9]')),
-                                    ],
                                     onChanged: (value) {
                                       // Validate the email here and update _isEmailValid
                                       setState(() {
@@ -955,28 +912,21 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     controller: locationController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
+                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         hintText: 'Enter your Location',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                        border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLocationValid
-                                  ? Color(0xffd9d9d9)
+                                  ? Colors.grey
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isLocationValid
-                                  ? Color(0xff004C99)
+                                  ? Colors.blue
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -986,10 +936,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z0-9\s]')),
-                    ],
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
                       setState(() {
@@ -1008,72 +954,53 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 10,
                 ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    child: TextField(
-                      controller: _startDateController,
-                      cursorColor: Color(0xff004C99),
-                      style: TextStyle(fontSize: 14, color: Color(0xff545454)),
-                      decoration: InputDecoration(
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.all(7),
-                            child: SvgPicture.asset(
-                              'assets/icon/Calendar.svg',
-                              width: 24,
-                              height: 24,
-                            ),
-                          ),
-                          hintText: 'Date of Birth',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                                color: isStartDateValid
-                                    ? Color(0xffd9d9d9)
-                                    : Colors.red, // Default border color
-                                width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                                color: isStartDateValid
-                                    ? Color(0xff004C99)
-                                    : Colors.red, // Border color when focused
-                                width: 1),
-                          ),
-                          errorText: isStartDateValid
-                              ? null
-                              : startDateErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10)),
-                      readOnly: true,
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate:
-                                DateTime.now().subtract(Duration(days: 1)),
-                            firstDate: DateTime(1970),
-                            //lastDate: DateTime(2101),
-                            lastDate:
-                                DateTime.now().subtract(Duration(days: 1)),
-                            initialDatePickerMode: DatePickerMode.year);
-                        if (pickedDate != null) {
-                          setState(() {
-                            isStartDateValid = true;
-                            _startDateSelected = true;
-                            //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                            // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                            _startDateController.text =
-                                "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
-                          });
-                        }
-                      },
-                    ),
-                  ),
+                TextField(
+                  controller: _startDateController,
+                  decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.calendar_today),
+                      hintText: 'Date of Birth',
+                      border: OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: isStartDateValid
+                                ? Colors.grey
+                                : Colors.red, // Default border color
+                            width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: isStartDateValid
+                                ? Colors.blue
+                                : Colors.red, // Border color when focused
+                            width: 1),
+                      ),
+                      errorText: isStartDateValid
+                          ? null
+                          : startDateErrorMsg, // Display error message if invalid
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now().subtract(const Duration(days: 1)),
+                        firstDate: DateTime(1970),
+                        //lastDate: DateTime(2101),
+                        lastDate: DateTime.now().subtract(const Duration(days: 1)),
+                        initialDatePickerMode: DatePickerMode.year);
+                    if (pickedDate != null) {
+                      setState(() {
+                        isStartDateValid = true;
+                        _startDateSelected = true;
+                        //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                        // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                        _startDateController.text =
+                            "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                      });
+                    }
+                  },
                 ),
+
                 /*SizedBox(height: 20,),
                 Text('Date of Birth', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
                 SizedBox(height: 10,),
@@ -1126,28 +1053,21 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     controller: currentPositionController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
+                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
                         hintText: 'Enter your position',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                        border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isPositionValid
-                                  ? Color(0xffd9d9d9)
+                                  ? Colors.grey
                                   : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                               color: _isPositionValid
-                                  ? Color(0xff004C99)
+                                  ? Colors.blue
                                   : Colors.red, // Border color when focused
                               width: 1),
                         ),
@@ -1157,10 +1077,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z0-9\s]')),
-                    ],
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
                       setState(() {
@@ -1173,58 +1089,115 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   height: 20,
                 ),
                 Text(
-                  'Total Experience in years',
+                  'Work Experience ',
                   style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    controller: experienceController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
-                    decoration: InputDecoration(
-                        hintText: 'Experience',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isExperienceValid
-                                  ? Color(0xffd9d9d9)
-                                  : Colors.red, // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isExperienceValid
-                                  ? Color(0xff004C99)
-                                  : Colors.red, // Border color when focused
-                              width: 1),
-                        ),
-                        errorText: _isExperienceValid
-                            ? null
-                            : 'Experience cannot be empty', // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                    ],
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isExperienceValid = true;
-                      });
-                    },
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    
+                    Container(
+                      width: 180,
+                      child: TextField(
+                        
+                        controller: experienceController,
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                        decoration: InputDecoration(
+                            hintText: 'Year',
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.grey
+                                      : Colors.red, // Default border color
+                                  width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.blue
+                                      : Colors.red, // Border color when focused
+                                  width: 1),
+                            ),
+                            errorText: _isExperienceValid
+                                ? null
+                                : 'Experience cannot be empty', // Display error message if invalid
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          // Validate the email here and update _isEmailValid
+                          setState(() {
+                            _isExperienceValid = true;
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 180,
+                     
+                      child: TextField(
+                        
+                        controller: experienceController,
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                        decoration: InputDecoration(
+                            hintText: 'Month',
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.grey
+                                      : Colors.red, // Default border color
+                                  width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.blue
+                                      : Colors.red, // Border color when focused
+                                  width: 1),
+                            ),
+                            errorText: _isExperienceValid
+                                ? null
+                                : 'Experience cannot be empty', // Display error message if invalid
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          // Validate the email here and update _isEmailValid
+                          setState(() {
+                            _isExperienceValid = true;
+                          });
+                        },
+                      ),
+                    ),
+                    
+                  ],
                 ),
+                isLoading
+                    ? Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Visibility(
+                            visible: isLoading,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                LoadingAnimationWidget.fourRotatingDots(
+                                  color: AppColors.primaryColor,
+                                  size: 40,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
                 SizedBox(
                   height: 20,
                 ),
@@ -1318,38 +1291,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
-                      child: isLoading
-                          ? SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: TweenAnimationBuilder<double>(
-                                tween: Tween<double>(begin: 0, end: 5),
-                                duration: Duration(seconds: 2),
-                                curve: Curves.linear,
-                                builder: (context, value, child) {
-                                  return Transform.rotate(
-                                    angle: value *
-                                        2 *
-                                        3.1416, // Full rotation effect
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 4,
-                                      value: 0.20, // 1/5 of the circle
-                                      backgroundColor: const Color.fromARGB(
-                                          142, 234, 232, 232), // Grey stroke
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors
-                                              .white), // White rotating stroke
-                                    ),
-                                  );
-                                },
-                                onEnd: () =>
-                                    {}, // Ensures smooth infinite animation
-                              ),
-                            )
-                          : Text(
-                              'Save',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                      child: Text(
+                        'Save',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 )

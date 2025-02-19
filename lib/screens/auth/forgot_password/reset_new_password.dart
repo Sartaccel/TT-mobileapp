@@ -154,9 +154,11 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   )),
+
                   SizedBox(
                     height: 40,
                   ),
+
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +177,6 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: passwordController,
-                          cursorColor: Color(0xff004C99),
                           obscureText: passwordHide,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
@@ -189,21 +190,18 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Enter password',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Color(0xffd9d9d9)
+                                        ? Colors.grey
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
-                                        ? Color(0xff004C99)
+                                        ? Colors.blue
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -243,7 +241,6 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
                           controller: confirmPasswordController,
-                          cursorColor: Color(0xff004C99),
                           obscureText: confirmPasswordHide,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
@@ -258,21 +255,18 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Re-enter your password',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                              border: OutlineInputBorder(),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Color(0xffd9d9d9)
+                                        ? Colors.grey
                                         : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
-                                        ? Color(0xff004C99)
+                                        ? Colors.blue
                                         : Colors
                                             .red, // Border color when focused
                                     width: 1),
@@ -292,6 +286,28 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                       ),
                     ],
                   ),
+
+                  //Loading
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: Visibility(
+                        visible: isLoading,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 30,
+                            ),
+                            LoadingAnimationWidget.fourRotatingDots(
+                              color: AppColors.primaryColor,
+                              size: 40,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
                   SizedBox(height: 50),
                   InkWell(
                     onTap: () {
@@ -306,38 +322,10 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                           color: AppColors.primaryColor,
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
-                        child: isLoading
-                            ? SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: TweenAnimationBuilder<double>(
-                                  tween: Tween<double>(begin: 0, end: 5),
-                                  duration: Duration(seconds: 2),
-                                  curve: Curves.linear,
-                                  builder: (context, value, child) {
-                                    return Transform.rotate(
-                                      angle: value *
-                                          2 *
-                                          3.1416, // Full rotation effect
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 4,
-                                        value: 0.20, // 1/5 of the circle
-                                        backgroundColor: const Color.fromARGB(
-                                            142, 234, 232, 232), // Grey stroke
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(Colors
-                                                .white), // White rotating stroke
-                                      ),
-                                    );
-                                  },
-                                  onEnd: () =>
-                                      {}, // Ensures smooth infinite animation
-                                ),
-                              )
-                            : Text(
-                                'Reset Password',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                        child: Text(
+                          'Reset Password',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
