@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -22,7 +23,6 @@ class EditPersonalDetails extends StatefulWidget {
 }
 
 class _EditPersonalDetailsState extends State<EditPersonalDetails> {
-
   bool isLoading = false;
   bool isStartDateValid = true;
   bool _startDateSelected = false;
@@ -54,52 +54,52 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   String? _selectedCountryCode = '+91';
   //final List<String> countryOptions = ['+91', '+92', '+93'];
   final List<String> countryOptions = [
-    '+1',   // USA, Canada, etc.
-    '+7',   // Russia, Kazakhstan
-    '+20',  // Egypt
-    '+27',  // South Africa
-    '+30',  // Greece
-    '+31',  // Netherlands
-    '+32',  // Belgium
-    '+33',  // France
-    '+34',  // Spain
-    '+36',  // Hungary
-    '+39',  // Italy
-    '+40',  // Romania
-    '+41',  // Switzerland
-    '+43',  // Austria
-    '+44',  // UK
-    '+45',  // Denmark
-    '+46',  // Sweden
-    '+47',  // Norway
-    '+48',  // Poland
-    '+49',  // Germany
-    '+51',  // Peru
-    '+52',  // Mexico
-    '+53',  // Cuba
-    '+54',  // Argentina
-    '+55',  // Brazil
-    '+56',  // Chile
-    '+57',  // Colombia
-    '+58',  // Venezuela
-    '+60',  // Malaysia
-    '+61',  // Australia
-    '+62',  // Indonesia
-    '+63',  // Philippines
-    '+64',  // New Zealand
-    '+65',  // Singapore
-    '+66',  // Thailand
-    '+81',  // Japan
-    '+82',  // South Korea
-    '+84',  // Vietnam
-    '+86',  // China
-    '+90',  // Turkey
-    '+91',  // India
-    '+92',  // Pakistan
-    '+93',  // Afghanistan
-    '+94',  // Sri Lanka
-    '+95',  // Myanmar
-    '+98',  // Iran
+    '+1', // USA, Canada, etc.
+    '+7', // Russia, Kazakhstan
+    '+20', // Egypt
+    '+27', // South Africa
+    '+30', // Greece
+    '+31', // Netherlands
+    '+32', // Belgium
+    '+33', // France
+    '+34', // Spain
+    '+36', // Hungary
+    '+39', // Italy
+    '+40', // Romania
+    '+41', // Switzerland
+    '+43', // Austria
+    '+44', // UK
+    '+45', // Denmark
+    '+46', // Sweden
+    '+47', // Norway
+    '+48', // Poland
+    '+49', // Germany
+    '+51', // Peru
+    '+52', // Mexico
+    '+53', // Cuba
+    '+54', // Argentina
+    '+55', // Brazil
+    '+56', // Chile
+    '+57', // Colombia
+    '+58', // Venezuela
+    '+60', // Malaysia
+    '+61', // Australia
+    '+62', // Indonesia
+    '+63', // Philippines
+    '+64', // New Zealand
+    '+65', // Singapore
+    '+66', // Thailand
+    '+81', // Japan
+    '+82', // South Korea
+    '+84', // Vietnam
+    '+86', // China
+    '+90', // Turkey
+    '+91', // India
+    '+92', // Pakistan
+    '+93', // Afghanistan
+    '+94', // Sri Lanka
+    '+95', // Myanmar
+    '+98', // Iran
     '+211', // South Sudan
     '+212', // Morocco
     '+213', // Algeria
@@ -261,7 +261,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
     '+998', // Uzbekistan
   ];
 
-
   String mobileErrorMsg = 'Enter a valid mobile number';
 
   void extractCountryCodeAndNumber(String fullMobile) {
@@ -287,26 +286,24 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         mobileController.text = mobileNumber;
         _selectedCountryCode = countryCode;
       });
-
     }
   }
-
-
 
   String extractDate(String dateTimeString) {
     // Parse the input datetime string
     DateTime dateTime = DateTime.parse(dateTimeString);
 
     // Extract the date in "YYYY-MM-DD" format
-    String formattedDate = "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+    String formattedDate =
+        "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
 
     return formattedDate;
   }
 
-
   Future<void> fetchProfileFromPref() async {
     //ReferralData? _referralData = await getReferralProfileData();
-    CandidateProfileModel? _candidateProfileModel = await getCandidateProfileData();
+    CandidateProfileModel? _candidateProfileModel =
+        await getCandidateProfileData();
     UserData? _retrievedUserData = await getUserData();
 
     extractCountryCodeAndNumber(_candidateProfileModel!.mobile!);
@@ -321,14 +318,15 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
       locationController.text = '${_candidateProfileModel!.location ?? ''}';
 
       String dob = '${_candidateProfileModel!.dateOfBirth ?? ''}';
-      if(dob.isEmpty) {
-        _startDateController.text ='';
-      } else{
+      if (dob.isEmpty) {
+        _startDateController.text = '';
+      } else {
         _startDateController.text = extractDate(dob);
       }
 
       currentPositionController.text = '${_candidateProfileModel!.position}';
-      experienceController.text = '${_candidateProfileModel!.experience?? '0'}';
+      experienceController.text =
+          '${_candidateProfileModel!.experience ?? '0'}';
 
       //mobileController.text = '${_candidateProfileModel!.mobile!.substring(3)}';
       //_selectedCountryCode = '${_candidateProfileModel!.mobile!.substring(0, 3)}';
@@ -337,9 +335,9 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.CANDIDATE_PROFILE + profileId.toString());
-
-
+    final url = Uri.parse(AppConstants.BASE_URL +
+        AppConstants.CANDIDATE_PROFILE +
+        profileId.toString());
 
     try {
       setState(() {
@@ -351,34 +349,39 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
 
-      if(kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
 
-        if(statusMessage.toLowerCase().contains('success')){
-
-          Fluttertoast.showToast(
-              msg: 'Personal details updated successfully',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color(0xff2D2D2D),
-              textColor: Colors.white,
-              fontSize: 16.0);
+        if (statusMessage.toLowerCase().contains('success')) {
+          // Fluttertoast.showToast(
+          //     msg: 'Personal details updated successfully',
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Color(0xff2D2D2D),
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: 'Personal details updated !',
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff2D2D2D),
+            iconColor: Colors.white,
+          );
 
           final Map<String, dynamic> data = resOBJ['data'];
           //ReferralData referralData = ReferralData.fromJson(data);
-          CandidateProfileModel candidateData = CandidateProfileModel.fromJson(data);
+          CandidateProfileModel candidateData =
+              CandidateProfileModel.fromJson(data);
 
           await saveCandidateProfileData(candidateData);
-
-
 
           /*Navigator.pushAndRemoveUntil(
             context,
@@ -387,47 +390,41 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           );*/
 
           // ignore: use_build_context_synchronously
-      
+
           setState(() {
             isLoading = false;
           });
         }
-
-      } else{
+      } else {
         print(response);
         setState(() {
           isLoading = false;
         });
       }
-
-
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
-
   Future<void> updateProfile() async {
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.UPDATE_CANDIDATE_PROFILE);
+    final url = Uri.parse(
+        AppConstants.BASE_URL + AppConstants.UPDATE_CANDIDATE_PROFILE);
 
     final bodyParams = {
       "id": retrievedUserData!.profileId,
-      "firstName" : fNameController.text,
-      "lastName" : lNameController.text,
-      "email" : emailController.text,
-      "mobile" : mobileController.text,
-      "countryCode" : _selectedCountryCode,
-      "experience" : experienceController.text,
+      "firstName": fNameController.text,
+      "lastName": lNameController.text,
+      "email": emailController.text,
+      "mobile": mobileController.text,
+      "countryCode": _selectedCountryCode,
+      "experience": experienceController.text,
       "location": locationController.text,
-      "gender" : "M",
-      "position" : currentPositionController.text,
-      "dateOfBirth" : _startDateController.text
-
+      "gender": "M",
+      "position": currentPositionController.text,
+      "dateOfBirth": _startDateController.text
     };
 
-    try{
-
+    try {
       setState(() {
         isLoading = true;
       });
@@ -442,51 +439,71 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
       );
 
       if (kDebugMode) {
-        print('Response code ${response.statusCode} :: Response => ${response
-            .body}');
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
       }
 
-      if(response.statusCode == 200 || response.statusCode == 202){
-        fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        fetchCandidateProfileData(
+            retrievedUserData!.profileId, retrievedUserData!.token);
       }
 
       setState(() {
         isLoading = false;
       });
-
-    }catch(e){
-      if(kDebugMode){
+    } catch (e) {
+      if (kDebugMode) {
         print(e);
       }
     }
-
   }
-
 
   int getValidLengthForCountry(String countryCode) {
     switch (countryCode) {
-      case '+93': return 9;  // Afghanistan
-      case '+61': return 9;  // Australia
-      case '+43': return 11; // Austria
-      case '+32': return 9;  // Belgium
-      case '+55': return 11; // Brazil
-      case '+1':  return 10;  // Canada & USA
-      case '+86': return 11; // China
-      case '+33': return 10; // France
-      case '+49': return 11; // Germany
-      case '+91': return 10; // India
-      case '+39': return 10; // Italy (average)
-      case '+81': return 10; // Japan
-      case '+52': return 10; // Mexico
-      case '+31': return 9;  // Netherlands
-      case '+64': return 9;  // New Zealand
-      case '+47': return 8;  // Norway
-      case '+27': return 10; // South Africa
-      case '+34': return 9;  // Spain
-      case '+46': return 10; // Sweden
-      case '+41': return 9;  // Switzerland
-      case '+44': return 10; // United Kingdom
-      default: return 10;    // Fallback length
+      case '+93':
+        return 9; // Afghanistan
+      case '+61':
+        return 9; // Australia
+      case '+43':
+        return 11; // Austria
+      case '+32':
+        return 9; // Belgium
+      case '+55':
+        return 11; // Brazil
+      case '+1':
+        return 10; // Canada & USA
+      case '+86':
+        return 11; // China
+      case '+33':
+        return 10; // France
+      case '+49':
+        return 11; // Germany
+      case '+91':
+        return 10; // India
+      case '+39':
+        return 10; // Italy (average)
+      case '+81':
+        return 10; // Japan
+      case '+52':
+        return 10; // Mexico
+      case '+31':
+        return 9; // Netherlands
+      case '+64':
+        return 9; // New Zealand
+      case '+47':
+        return 8; // Norway
+      case '+27':
+        return 10; // South Africa
+      case '+34':
+        return 9; // Spain
+      case '+46':
+        return 10; // Sweden
+      case '+41':
+        return 9; // Switzerland
+      case '+44':
+        return 10; // United Kingdom
+      default:
+        return 10; // Fallback length
     }
   }
 
@@ -541,19 +558,26 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               ],
             ),
           ),
-          Expanded(child: SingleChildScrollView(child: Container(
+          Expanded(
+              child: SingleChildScrollView(
+                  child: Container(
             padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                SizedBox(height: 20,),
-                Text('First Name', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'First Name',
+                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
-                    
                     controller: fNameController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
@@ -561,21 +585,23 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isFirstNameValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
+                              color: _isFirstNameValid
+                                  ? Colors.grey
+                                  : Colors.red, // Default border color
+                              width: 1),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isFirstNameValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
+                              color: _isFirstNameValid
+                                  ? Colors.blue
+                                  : Colors.red, // Border color when focused
+                              width: 1),
                         ),
-
-                        errorText: _isFirstNameValid ? null : 'First name cannot be empty', // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
+                        errorText: _isFirstNameValid
+                            ? null
+                            : 'First name cannot be empty', // Display error message if invalid
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
@@ -585,15 +611,22 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     },
                   ),
                 ),
-
-                SizedBox(height: 20,),
-                Text('Last Name', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Last Name',
+                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')), // Allow only letters and spaces
+                      FilteringTextInputFormatter.allow(RegExp(
+                          r'[a-zA-Z\s]')), // Allow only letters and spaces
                     ],
                     controller: lNameController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
@@ -602,21 +635,23 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isLastNameValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
+                              color: _isLastNameValid
+                                  ? Colors.grey
+                                  : Colors.red, // Default border color
+                              width: 1),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isLastNameValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
+                              color: _isLastNameValid
+                                  ? Colors.blue
+                                  : Colors.red, // Border color when focused
+                              width: 1),
                         ),
-
-                        errorText: _isLastNameValid ? null : 'Last name cannot be empty', // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
+                        errorText: _isLastNameValid
+                            ? null
+                            : 'Last name cannot be empty', // Display error message if invalid
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     keyboardType: TextInputType.text,
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
@@ -626,11 +661,16 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     },
                   ),
                 ),
-
-                SizedBox(height: 20,),
-                Text('Email', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
-
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Email',
+                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     Container(
@@ -643,21 +683,27 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                             border: OutlineInputBorder(),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                  color: _isEmailValid ? Colors.grey : Colors.red, // Default border color
-                                  width: 1
-                              ),
+                                  color: _isEmailValid
+                                      ? Colors.grey
+                                      : Colors.red, // Default border color
+                                  width: 1),
                             ),
-                            suffixIcon: SvgPicture.asset( candidateProfileModel!.isEmailVerified==1? 'assets/images/verified_ic.svg': 'assets/images/pending_ic.svg'),
+                            suffixIcon: SvgPicture.asset(
+                                candidateProfileModel!.isEmailVerified == 1
+                                    ? 'assets/images/verified_ic.svg'
+                                    : 'assets/images/pending_ic.svg'),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                  color: _isEmailValid ? Colors.blue : Colors.red, // Border color when focused
-                                  width: 1
-                              ),
+                                  color: _isEmailValid
+                                      ? Colors.blue
+                                      : Colors.red, // Border color when focused
+                                  width: 1),
                             ),
-
-                            errorText: _isEmailValid ? null : 'Email cannot be empty', // Display error message if invalid
-                            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                        ),
+                            errorText: _isEmailValid
+                                ? null
+                                : 'Email cannot be empty', // Display error message if invalid
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10)),
                         keyboardType: TextInputType.emailAddress,
                         onChanged: (value) {
                           // Validate the email here and update _isEmailValid
@@ -671,107 +717,200 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         width: 60,
                         child: InkWell(
                             onTap: () async {
-                              if(candidateProfileModel!.isEmailVerified !=1){
-                                await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SendVerificationCode(type: "email", mobile: candidateProfileModel!.mobile, email: candidateProfileModel!.email)));
-                                fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+                              if (candidateProfileModel!.isEmailVerified != 1) {
+                                await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            SendVerificationCode(
+                                                type: "email",
+                                                mobile: candidateProfileModel!
+                                                    .mobile,
+                                                email: candidateProfileModel!
+                                                    .email)));
+                                fetchCandidateProfileData(
+                                    retrievedUserData!.profileId,
+                                    retrievedUserData!.token);
                               }
                             },
-                            child: Center(child: Text(candidateProfileModel!.isEmailVerified ==1 ? 'Verified' : 'Verify', style: TextStyle(fontWeight: FontWeight.w500,color: Color(0xff004C99)),))))
+                            child: Center(
+                                child: Text(
+                              candidateProfileModel!.isEmailVerified == 1
+                                  ? 'Verified'
+                                  : 'Verify',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff004C99)),
+                            ))))
                   ],
                 ),
-
-                SizedBox(height: 20,),
-                Text('Mobile Number', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width - 100,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Mobile Number',
+                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width - 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
                           Container(
-                            height: 48,
-                            decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey), borderRadius: BorderRadius.circular(4)),
-                            padding: EdgeInsets.all(9),
-                            child: DropdownButton(
-                              underline: Container(),
-                                value: _selectedCountryCode,
-                                items: countryOptions.map((countryCode){
-                                  return DropdownMenuItem(
-                                      value: countryCode,
-                                      child: Text(countryCode));
-                                }).toList(), onChanged: (val){
-                                  setState(() {
-                                    _selectedCountryCode = val;
-                                  });
-                            }),
-                          ),
-
-                          Container(
-                            width: (MediaQuery.of(context).size.width) - 190,
-                            child: TextField(
-                              maxLength: getValidLengthForCountry(_selectedCountryCode!),
-                              controller: mobileController,
-                              style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                              decoration: InputDecoration(
-                                  counterText: '',
-                                  hintText: 'Enter mobile number',
-                                  suffixIcon: SvgPicture.asset(candidateProfileModel!.isPhoneVerified ==1 ? 'assets/images/verified_ic.svg' : 'assets/images/pending_ic.svg'),
-                                  border: OutlineInputBorder(),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: _isMobileNumberValid ? Colors.grey : Colors.red, // Default border color
-                                        width: 1
-                                    ),
+                            width: MediaQuery.of(context).size.width - 100,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1,
+                                          color: _isMobileNumberValid
+                                              ? Colors.grey
+                                              : Colors.red),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  padding: EdgeInsets.all(9),
+                                  child: DropdownButton(
+                                      underline: Container(),
+                                      value: _selectedCountryCode,
+                                      items: countryOptions.map((countryCode) {
+                                        return DropdownMenuItem(
+                                            value: countryCode,
+                                            child: Text(countryCode,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontFamily: 'Lato',
+                                                    color: const Color(
+                                                        0xFF333333))));
+                                      }).toList(),
+                                      onChanged: (val) {
+                                        setState(() {
+                                          _selectedCountryCode = val;
+                                        });
+                                      }),
+                                ),
+                                Container(
+                                  width:
+                                      (MediaQuery.of(context).size.width) - 200,
+                                  child: TextField(
+                                    maxLength: getValidLengthForCountry(
+                                        _selectedCountryCode!),
+                                    controller: mobileController,
+                                    style: TextStyle(
+                                        fontSize: 14, fontFamily: 'Lato'),
+                                    decoration: InputDecoration(
+                                        counterText: '',
+                                        hintText: 'Enter mobile number',
+                                        suffixIcon: SvgPicture.asset(
+                                            candidateProfileModel!
+                                                        .isPhoneVerified ==
+                                                    1
+                                                ? 'assets/images/verified_ic.svg'
+                                                : 'assets/images/pending_ic.svg'),
+                                        border: OutlineInputBorder(),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Colors.grey
+                                                  : Colors
+                                                      .red, // Default border color
+                                              width: 1),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Colors.blue
+                                                  : Colors
+                                                      .red, // Border color when focused
+                                              width: 1),
+                                        ),
+                                        // errorText: _isMobileNumberValid
+                                        //     ? null
+                                        //     : mobileErrorMsg, // Display error message if invalid
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10)),
+                                    keyboardType: TextInputType.phone,
+                                    onChanged: (value) {
+                                      // Validate the email here and update _isEmailValid
+                                      setState(() {
+                                        _isMobileNumberValid = true;
+                                      });
+                                    },
                                   ),
-
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: _isMobileNumberValid ? Colors.blue : Colors.red, // Border color when focused
-                                        width: 1
-                                    ),
-                                  ),
-
-                                  errorText: _isMobileNumberValid ? null : mobileErrorMsg, // Display error message if invalid
-                                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                              ),
-                              keyboardType: TextInputType.phone,
-                              onChanged: (value) {
-                                // Validate the email here and update _isEmailValid
-                                setState(() {
-                                  _isMobileNumberValid = true;
-                                });
-                              },
+                                ),
+                              ],
                             ),
                           ),
+                          SizedBox(
+                              width: 60,
+                              child: Center(
+                                  child: InkWell(
+                                      onTap: () async {
+                                        if (candidateProfileModel!
+                                                .isPhoneVerified !=
+                                            1) {
+                                          await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      SendVerificationCode(
+                                                          type: "phone",
+                                                          mobile:
+                                                              candidateProfileModel!
+                                                                  .mobile,
+                                                          email:
+                                                              candidateProfileModel!
+                                                                  .email)));
+                                          fetchCandidateProfileData(
+                                              retrievedUserData!.profileId,
+                                              retrievedUserData!.token);
+                                        }
+                                      },
+                                      child: Text(
+                                        candidateProfileModel!
+                                                    .isPhoneVerified ==
+                                                1
+                                            ? 'Verified'
+                                            : 'Verify',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Color(0xff004C99)),
+                                      ))))
                         ],
                       ),
-                    ),
-
-                    SizedBox(
-                        width: 60,
-                        child: Center(child: InkWell(
-
-                          onTap: () async {
-                            if(candidateProfileModel!.isPhoneVerified !=1){
-                              await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SendVerificationCode(type: "phone", mobile: candidateProfileModel!.mobile, email: candidateProfileModel!.email)));
-                              fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
-                            }
-                          },
-
-                            child: Text(candidateProfileModel!.isPhoneVerified ==1 ? 'Verified' : 'Verify', style: TextStyle(fontWeight: FontWeight.w500,color: Color(0xff004C99)),))))
-                  ],
+                      if (!_isMobileNumberValid)
+                        Padding(
+                          padding: EdgeInsets.only(top: 4, left: 10),
+                          child: Text(
+                            mobileErrorMsg ?? '',
+                            style: TextStyle(
+                                color: Color(0xFFBA1A1A), fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-
-                SizedBox(height: 20,),
-                Text('Location', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Location',
+                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
-                    
                     controller: locationController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
@@ -779,21 +918,23 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isLocationValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
+                              color: _isLocationValid
+                                  ? Colors.grey
+                                  : Colors.red, // Default border color
+                              width: 1),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isLocationValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
+                              color: _isLocationValid
+                                  ? Colors.blue
+                                  : Colors.red, // Border color when focused
+                              width: 1),
                         ),
-
-                        errorText: _isLocationValid ? null : 'Location cannot be empty', // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
+                        errorText: _isLocationValid
+                            ? null
+                            : 'Location cannot be empty', // Display error message if invalid
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     keyboardType: TextInputType.text,
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
@@ -803,10 +944,16 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     },
                   ),
                 ),
-
-                SizedBox(height: 20,),
-                Text('Date of Birth', style: TextStyle(fontSize: 14, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Date of Birth',
+                  style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 TextField(
                   controller: _startDateController,
                   decoration: InputDecoration(
@@ -815,41 +962,40 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                       border: OutlineInputBorder(),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                            color: isStartDateValid ? Colors.grey : Colors.red, // Default border color
-                            width: 1
-                        ),
+                            color: isStartDateValid
+                                ? Colors.grey
+                                : Colors.red, // Default border color
+                            width: 1),
                       ),
-
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                            color: isStartDateValid ? Colors.blue : Colors.red, // Border color when focused
-                            width: 1
-                        ),
+                            color: isStartDateValid
+                                ? Colors.blue
+                                : Colors.red, // Border color when focused
+                            width: 1),
                       ),
-
-                      errorText: isStartDateValid ? null : startDateErrorMsg, // Display error message if invalid
-                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                  ),
+                      errorText: isStartDateValid
+                          ? null
+                          : startDateErrorMsg, // Display error message if invalid
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                   readOnly: true,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                         context: context,
-                        initialDate: DateTime.now().subtract(Duration(days: 1)),
+                        initialDate: DateTime.now().subtract(const Duration(days: 1)),
                         firstDate: DateTime(1970),
                         //lastDate: DateTime(2101),
-                        lastDate: DateTime.now().subtract(Duration(days: 1)),
-                        initialDatePickerMode: DatePickerMode.year
-                    );
+                        lastDate: DateTime.now().subtract(const Duration(days: 1)),
+                        initialDatePickerMode: DatePickerMode.year);
                     if (pickedDate != null) {
                       setState(() {
                         isStartDateValid = true;
                         _startDateSelected = true;
                         //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                       // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                        // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                         _startDateController.text =
-    "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
-
-
+                            "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
                       });
                     }
                   },
@@ -893,13 +1039,19 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   ),
                 ),*/
 
-                SizedBox(height: 20,),
-                Text('Current Position', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Current Position',
+                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(
-                   
                     controller: currentPositionController,
                     style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                     decoration: InputDecoration(
@@ -907,21 +1059,23 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isPositionValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
+                              color: _isPositionValid
+                                  ? Colors.grey
+                                  : Colors.red, // Default border color
+                              width: 1),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: _isPositionValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
+                              color: _isPositionValid
+                                  ? Colors.blue
+                                  : Colors.red, // Border color when focused
+                              width: 1),
                         ),
-
-                        errorText: _isPositionValid ? null : 'Position cannot be empty', // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
+                        errorText: _isPositionValid
+                            ? null
+                            : 'Position cannot be empty', // Display error message if invalid
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     keyboardType: TextInputType.text,
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
@@ -931,162 +1085,219 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     },
                   ),
                 ),
-
-                SizedBox(height: 20,),
-                Text('Total Experience in years', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                SizedBox(height: 10,),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    
-                    controller: experienceController,
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                    decoration: InputDecoration(
-                        hintText: 'Experience',
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: _isExperienceValid ? Colors.grey : Colors.red, // Default border color
-                              width: 1
-                          ),
-                        ),
-
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: _isExperienceValid ? Colors.blue : Colors.red, // Border color when focused
-                              width: 1
-                          ),
-                        ),
-
-                        errorText: _isExperienceValid ? null : 'Experience cannot be empty', // Display error message if invalid
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    ),
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isExperienceValid = true;
-                      });
-                    },
-                  ),
+                SizedBox(
+                  height: 20,
                 ),
-
-                isLoading ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Center(
-                    child: Visibility(
-                      visible: isLoading,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 30,),
-                          LoadingAnimationWidget.fourRotatingDots(
-                            color: AppColors.primaryColor,
-                            size: 40,
+                Text(
+                  'Work Experience ',
+                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    
+                    Container(
+                      width: 180,
+                      child: TextField(
+                        
+                        controller: experienceController,
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                        decoration: InputDecoration(
+                            hintText: 'Year',
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.grey
+                                      : Colors.red, // Default border color
+                                  width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.blue
+                                      : Colors.red, // Border color when focused
+                                  width: 1),
+                            ),
+                            errorText: _isExperienceValid
+                                ? null
+                                : 'Experience cannot be empty', // Display error message if invalid
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          // Validate the email here and update _isEmailValid
+                          setState(() {
+                            _isExperienceValid = true;
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: 180,
+                     
+                      child: TextField(
+                        
+                        controller: experienceController,
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                        decoration: InputDecoration(
+                            hintText: 'Month',
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.grey
+                                      : Colors.red, // Default border color
+                                  width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: _isExperienceValid
+                                      ? Colors.blue
+                                      : Colors.red, // Border color when focused
+                                  width: 1),
+                            ),
+                            errorText: _isExperienceValid
+                                ? null
+                                : 'Experience cannot be empty', // Display error message if invalid
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          // Validate the email here and update _isEmailValid
+                          setState(() {
+                            _isExperienceValid = true;
+                          });
+                        },
+                      ),
+                    ),
+                    
+                  ],
+                ),
+                isLoading
+                    ? Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Visibility(
+                            visible: isLoading,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                LoadingAnimationWidget.fourRotatingDots(
+                                  color: AppColors.primaryColor,
+                                  size: 40,
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
+                        ),
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    int validLength =
+                        getValidLengthForCountry(_selectedCountryCode!);
+                    if (fNameController.text.isEmpty ||
+                        lNameController.text.isEmpty ||
+                        emailController.text.isEmpty ||
+                        mobileController.text.isEmpty ||
+                        mobileController.text.length < validLength ||
+                        mobileController.text.length > validLength ||
+                        locationController.text.isEmpty ||
+                        currentPositionController.text.isEmpty ||
+                        experienceController.text.isEmpty ||
+                        _startDateController.text.isEmpty) {
+                      if (fNameController.text.isEmpty) {
+                        setState(() {
+                          _isFirstNameValid = false;
+                        });
+                      }
+
+                      if (_startDateController.text.isEmpty) {
+                        setState(() {
+                          isStartDateValid = false;
+                        });
+                      }
+
+                      if (lNameController.text.isEmpty) {
+                        setState(() {
+                          _isLastNameValid = false;
+                        });
+                      }
+
+                      if (emailController.text.isEmpty) {
+                        setState(() {
+                          _isEmailValid = false;
+                        });
+                      }
+
+                      if (locationController.text.isEmpty) {
+                        setState(() {
+                          _isLocationValid = false;
+                        });
+                      }
+
+                      if (mobileController.text.isEmpty ||
+                          mobileController.text.length < validLength ||
+                          mobileController.text.length > validLength) {
+                        setState(() {
+                          _isMobileNumberValid = false;
+                          mobileErrorMsg =
+                              'Enter a valid $validLength digits mobile number';
+                        });
+                      }
+
+                      if (currentPositionController.text.isEmpty) {
+                        setState(() {
+                          _isPositionValid = false;
+                        });
+                      }
+
+                      if (experienceController.text.isEmpty) {
+                        setState(() {
+                          _isExperienceValid = false;
+                        });
+                      }
+                    } else {
+                      if (kDebugMode) {
+                        print('Processing........');
+                      }
+
+                      // Call your updateProfile function
+                      updateProfile().then((_) {
+                        // On successful profile update, navigate back to the previous screen
+                        Navigator.pop(context);
+                      }).catchError((error) {
+                        // Handle any errors that occur during the update
+                        print('Error updating profile: $error');
+                      });
+                    }
+                  },
+                  child: Container(
+                    width: (MediaQuery.of(context).size.width) - 20,
+                    height: 44,
+                    margin: EdgeInsets.symmetric(horizontal: 0),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Save',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
-                ) : Container(),
-                SizedBox(height: 20,),
-                InkWell(
-  onTap: () {
-    int validLength = getValidLengthForCountry(_selectedCountryCode!);
-    if (fNameController.text.isEmpty ||
-        lNameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        mobileController.text.isEmpty ||
-        mobileController.text.length < validLength ||
-        mobileController.text.length > validLength ||
-        locationController.text.isEmpty ||
-        currentPositionController.text.isEmpty ||
-        experienceController.text.isEmpty ||
-        _startDateController.text.isEmpty) {
-
-      if (fNameController.text.isEmpty) {
-        setState(() {
-          _isFirstNameValid = false;
-        });
-      }
-
-      if (_startDateController.text.isEmpty) {
-        setState(() {
-          isStartDateValid = false;
-        });
-      }
-
-      if (lNameController.text.isEmpty) {
-        setState(() {
-          _isLastNameValid = false;
-        });
-      }
-
-      if (emailController.text.isEmpty) {
-        setState(() {
-          _isEmailValid = false;
-        });
-      }
-
-      if (locationController.text.isEmpty) {
-        setState(() {
-          _isLocationValid = false;
-        });
-      }
-
-      if (mobileController.text.isEmpty ||
-          mobileController.text.length < validLength ||
-          mobileController.text.length > validLength) {
-        setState(() {
-          _isMobileNumberValid = false;
-          mobileErrorMsg = 'Enter a valid $validLength digits mobile number';
-        });
-      }
-
-      if (currentPositionController.text.isEmpty) {
-        setState(() {
-          _isPositionValid = false;
-        });
-      }
-
-      if (experienceController.text.isEmpty) {
-        setState(() {
-          _isExperienceValid = false;
-        });
-      }
-
-    } else {
-      if (kDebugMode) {
-        print('Processing........');
-      }
-
-      // Call your updateProfile function
-      updateProfile().then((_) {
-        // On successful profile update, navigate back to the previous screen
-        Navigator.pop(context);
-      }).catchError((error) {
-        // Handle any errors that occur during the update
-        print('Error updating profile: $error');
-      });
-    }
-  },
-  child: Container(
-    width: (MediaQuery.of(context).size.width) - 20,
-    height: 44,
-    margin: EdgeInsets.symmetric(horizontal: 0),
-    padding: EdgeInsets.symmetric(horizontal: 10),
-    decoration: BoxDecoration(
-      color: AppColors.primaryColor,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Center(
-      child: Text(
-        'Save',
-        style: TextStyle(color: Colors.white),
-      ),
-    ),
-  ),
-)
-
+                )
               ],
             ),
           )))

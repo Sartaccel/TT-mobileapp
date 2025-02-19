@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -22,7 +23,6 @@ class RegisterNewUser extends StatefulWidget {
 }
 
 class _RegisterNewUserState extends State<RegisterNewUser> {
-
   bool _isFirstNameValid = true;
   String? fNameErrorMsg = 'First name cannot be empty';
   TextEditingController fNameController = TextEditingController();
@@ -35,13 +35,11 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
   String? emailErrorMsg = 'Email cannot be empty';
   TextEditingController emailController = TextEditingController();
 
-
   bool _isMobileNumberValid = true;
   String? mobileErrorMsg = 'Mobile number cannot be empty';
   TextEditingController mobileController = TextEditingController();
 
   TextEditingController referralController = TextEditingController();
-
 
   bool _isPasswordValid = true;
   TextEditingController passwordController = TextEditingController();
@@ -52,7 +50,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
   bool isLoading = false;
   bool referralCodeEnabled = true;
 
-
   bool agreementAccepted = false;
   bool confirmPasswordHide = true, passwordHide = true;
 
@@ -62,52 +59,52 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
   String? _selectedCountryCode = '+91';
   //final List<String> countryOptions = ['+91', '+1', '+2'];
   final List<String> countryOptions = [
-    '+1',   // USA, Canada, etc.
-    '+7',   // Russia, Kazakhstan
-    '+20',  // Egypt
-    '+27',  // South Africa
-    '+30',  // Greece
-    '+31',  // Netherlands
-    '+32',  // Belgium
-    '+33',  // France
-    '+34',  // Spain
-    '+36',  // Hungary
-    '+39',  // Italy
-    '+40',  // Romania
-    '+41',  // Switzerland
-    '+43',  // Austria
-    '+44',  // UK
-    '+45',  // Denmark
-    '+46',  // Sweden
-    '+47',  // Norway
-    '+48',  // Poland
-    '+49',  // Germany
-    '+51',  // Peru
-    '+52',  // Mexico
-    '+53',  // Cuba
-    '+54',  // Argentina
-    '+55',  // Brazil
-    '+56',  // Chile
-    '+57',  // Colombia
-    '+58',  // Venezuela
-    '+60',  // Malaysia
-    '+61',  // Australia
-    '+62',  // Indonesia
-    '+63',  // Philippines
-    '+64',  // New Zealand
-    '+65',  // Singapore
-    '+66',  // Thailand
-    '+81',  // Japan
-    '+82',  // South Korea
-    '+84',  // Vietnam
-    '+86',  // China
-    '+90',  // Turkey
-    '+91',  // India
-    '+92',  // Pakistan
-    '+93',  // Afghanistan
-    '+94',  // Sri Lanka
-    '+95',  // Myanmar
-    '+98',  // Iran
+    '+1', // USA, Canada, etc.
+    '+7', // Russia, Kazakhstan
+    '+20', // Egypt
+    '+27', // South Africa
+    '+30', // Greece
+    '+31', // Netherlands
+    '+32', // Belgium
+    '+33', // France
+    '+34', // Spain
+    '+36', // Hungary
+    '+39', // Italy
+    '+40', // Romania
+    '+41', // Switzerland
+    '+43', // Austria
+    '+44', // UK
+    '+45', // Denmark
+    '+46', // Sweden
+    '+47', // Norway
+    '+48', // Poland
+    '+49', // Germany
+    '+51', // Peru
+    '+52', // Mexico
+    '+53', // Cuba
+    '+54', // Argentina
+    '+55', // Brazil
+    '+56', // Chile
+    '+57', // Colombia
+    '+58', // Venezuela
+    '+60', // Malaysia
+    '+61', // Australia
+    '+62', // Indonesia
+    '+63', // Philippines
+    '+64', // New Zealand
+    '+65', // Singapore
+    '+66', // Thailand
+    '+81', // Japan
+    '+82', // South Korea
+    '+84', // Vietnam
+    '+86', // China
+    '+90', // Turkey
+    '+91', // India
+    '+92', // Pakistan
+    '+93', // Afghanistan
+    '+94', // Sri Lanka
+    '+95', // Myanmar
+    '+98', // Iran
     '+211', // South Sudan
     '+212', // Morocco
     '+213', // Algeria
@@ -269,7 +266,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
     '+998', // Uzbekistan
   ];
 
-
   /*Future<void> _getReferralCode() async {
     try {
       // Fetch installation referrer data
@@ -312,154 +308,196 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
       //await launchUrlString(filePath, mode: LaunchMode.externalApplication);
       await launchUrl(Uri.parse(filePath));
       //await launch(filePath, forceSafariVC: false, forceWebView: false);
-    }else {
-      Fluttertoast.showToast(
-          msg: 'Could not launch ${filePath}',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
-      throw 'Could not launch ${filePath}';
+    } else {
+      // Fluttertoast.showToast(
+      //     msg: 'Could not launch ${filePath}',
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Color(0xff2D2D2D),
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+      // throw 'Could not launch ${filePath}';
+      IconSnackBar.show(
+        context,
+        label: 'Could not launch ${filePath}',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
     }
   }
 
   Future<void> registerUser() async {
+    if (kDebugMode) print('Registering...');
 
-    if(kDebugMode)
-      print('Registering...');
-
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER );
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER);
 
     final bodyParams = {
-      "firstName" : fNameController.text,
-      "lastName" : lNameController.text,
-      "email" : emailController.text,
-      "password" : passwordController.text,
-      "countryCode" : _selectedCountryCode,
-      "phoneNumber" : mobileController.text,
+      "firstName": fNameController.text,
+      "lastName": lNameController.text,
+      "email": emailController.text,
+      "password": passwordController.text,
+      "countryCode": _selectedCountryCode,
+      "phoneNumber": mobileController.text,
       //"referralCode" : referralController.text,
-      "priAccUserType" : "candidate"
+      "priAccUserType": "candidate"
     };
 
-    if(kDebugMode)
-      print(jsonEncode(bodyParams));
+    if (kDebugMode) print(jsonEncode(bodyParams));
 
-
-    try{
- var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult.contains(ConnectivityResult.none)) {
-      Fluttertoast.showToast(
-        msg: "No internet connection",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Color(0xff2D2D2D),
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-      return;  // Exit the function if no internet
-    }
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
+        return; // Exit the function if no internet
+      }
       setState(() {
         isLoading = true;
       });
-      final response = await http.post(
-          url,
+      final response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(bodyParams)
-      );
+          body: jsonEncode(bodyParams));
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
 
         String statusMessage = resOBJ['message'];
         //print(response.body);
 
-        if(statusMessage.toLowerCase().contains('email')){
+        if (statusMessage.toLowerCase().contains('email')) {
           setState(() {
             _isEmailValid = false;
             emailErrorMsg = statusMessage;
           });
-        } else if(statusMessage.toLowerCase().contains('phone') || statusMessage.toLowerCase().contains('mobile')){
+        } else if (statusMessage.toLowerCase().contains('phone') ||
+            statusMessage.toLowerCase().contains('mobile')) {
           _isMobileNumberValid = false;
           mobileErrorMsg = statusMessage;
-        } else if(statusMessage.toLowerCase().contains('successfully')){
-            Fluttertoast.showToast(
-                msg: statusMessage,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0);
+        } else if (statusMessage.toLowerCase().contains('successfully')) {
+          // Fluttertoast.showToast(
+          //     msg: statusMessage,
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.green,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: statusMessage,
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff4CAF50),
+            iconColor: Colors.white,
+          );
 
-            Navigator.pop(context);
-        } else{
-            Fluttertoast.showToast(
-              msg: statusMessage,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              fontSize: 16.0);
+          Navigator.pop(context);
+        } else {
+          // Fluttertoast.showToast(
+          //   msg: statusMessage,
+          //   toastLength: Toast.LENGTH_SHORT,
+          //   gravity: ToastGravity.BOTTOM,
+          //   timeInSecForIosWeb: 1,
+          //   backgroundColor: Colors.green,
+          //   textColor: Colors.white,
+          //   fontSize: 16.0);
+          IconSnackBar.show(
+            context,
+            label: statusMessage,
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff4CAF50),
+            iconColor: Colors.white,
+          );
         }
-
-      } else{
+      } else {
         var resOBJ = jsonDecode(response.body);
 
-        if(kDebugMode)
-          print(resOBJ);
+        if (kDebugMode) print(resOBJ);
 
         String statusMessage = resOBJ['message'];
-        if(statusMessage.toLowerCase().contains('email')){
+        if (statusMessage.toLowerCase().contains('email')) {
           setState(() {
             _isEmailValid = false;
             emailErrorMsg = statusMessage;
           });
-          } else if(statusMessage.toLowerCase().contains('phone') || statusMessage.toLowerCase().contains('mobile')) {
-            _isMobileNumberValid = false;
-            mobileErrorMsg = statusMessage;
-          }
+        } else if (statusMessage.toLowerCase().contains('phone') ||
+            statusMessage.toLowerCase().contains('mobile')) {
+          _isMobileNumberValid = false;
+          mobileErrorMsg = statusMessage;
+        }
 
         print('Error. errorcode: ${response.statusCode} => ${response.body}');
       }
-
-    }catch(e){
+    } catch (e) {
       print(e.toString());
-    } finally{
+    } finally {
       setState(() {
         isLoading = false;
       });
     }
-
   }
 
   int getValidLengthForCountry(String countryCode) {
     switch (countryCode) {
-      case '+93': return 9;  // Afghanistan
-      case '+61': return 9;  // Australia
-      case '+43': return 11; // Austria
-      case '+32': return 9;  // Belgium
-      case '+55': return 11; // Brazil
-      case '+1':  return 10;  // Canada & USA
-      case '+86': return 11; // China
-      case '+33': return 10; // France
-      case '+49': return 11; // Germany
-      case '+91': return 10; // India
-      case '+39': return 10; // Italy (average)
-      case '+81': return 10; // Japan
-      case '+52': return 10; // Mexico
-      case '+31': return 9;  // Netherlands
-      case '+64': return 9;  // New Zealand
-      case '+47': return 8;  // Norway
-      case '+27': return 10; // South Africa
-      case '+34': return 9;  // Spain
-      case '+46': return 10; // Sweden
-      case '+41': return 9;  // Switzerland
-      case '+44': return 10; // United Kingdom
-      default: return 10;    // Fallback length
+      case '+93':
+        return 9; // Afghanistan
+      case '+61':
+        return 9; // Australia
+      case '+43':
+        return 11; // Austria
+      case '+32':
+        return 9; // Belgium
+      case '+55':
+        return 11; // Brazil
+      case '+1':
+        return 10; // Canada & USA
+      case '+86':
+        return 11; // China
+      case '+33':
+        return 10; // France
+      case '+49':
+        return 11; // Germany
+      case '+91':
+        return 10; // India
+      case '+39':
+        return 10; // Italy (average)
+      case '+81':
+        return 10; // Japan
+      case '+52':
+        return 10; // Mexico
+      case '+31':
+        return 9; // Netherlands
+      case '+64':
+        return 9; // New Zealand
+      case '+47':
+        return 8; // Norway
+      case '+27':
+        return 10; // South Africa
+      case '+34':
+        return 9; // Spain
+      case '+46':
+        return 10; // Sweden
+      case '+41':
+        return 9; // Switzerland
+      case '+44':
+        return 10; // United Kingdom
+      default:
+        return 10; // Fallback length
     }
   }
 
@@ -468,312 +506,457 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(right: 0,child: Image.asset('assets/images/Ellipse 1.png'),),
-          Positioned(top: 61,left: 0,child: Image.asset('assets/images/Ellipse 2.png'),),
-          Positioned(top: 40,left: 0,child: Row( children: [ IconButton(icon:  Icon(Icons.arrow_back_ios_new), onPressed: (){Navigator.pop(context);},), InkWell(onTap: (){Navigator.pop(context);},child: Container(height: 50, child: Center(child: Text('Back', style: TextStyle(fontSize: 16),)))) ],)),
-          Positioned(top: 80,left: 0, bottom: 0,child: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          Positioned(
+            right: 0,
+            child: Image.asset('assets/images/Ellipse 1.png'),
+          ),
+          Positioned(
+            top: 61,
+            left: 0,
+            child: Image.asset('assets/images/Ellipse 2.png'),
+          ),
+          Positioned(
+              top: 40,
+              left: 0,
+              child: Row(
                 children: [
-
-                  InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> LoginScreen()));
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios_new),
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 20),
-                      width: MediaQuery.of(context).size.width,
-                        child: Text(textAlign: TextAlign.center,'Register your profile', style: TextStyle(fontFamily: 'Lato', fontSize: 20, fontWeight: FontWeight.w700,),)),
                   ),
-
-                  SizedBox(height: 20,),
-                  Text('First Name', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
-                  Container(
-                    width: (MediaQuery.of(context).size.width) - 20,
-                    child: TextField(
-                      controller: fNameController,
-                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                      decoration: InputDecoration(
-                          hintText: 'Enter your first name',
-                          border: OutlineInputBorder(),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isFirstNameValid ? Colors.grey : Colors.red, // Default border color
-                                width: 1
-                            ),
-                          ),
-
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isFirstNameValid ? Colors.blue : Colors.red, // Border color when focused
-                                width: 1
-                            ),
-                          ),
-
-                          errorText: _isFirstNameValid ? null : fNameErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')), // Allow only letters and spaces
-                      ],
-                      onChanged: (value) {
-                        // Validate the email here and update _isEmailValid
-                        setState(() {
-                          _isFirstNameValid = true;
-                        });
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
                       },
-                    ),
-                  ),
-
-                  SizedBox(height: 20,),
-                  Text('Last Name', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
-                  Container(
-                    width: (MediaQuery.of(context).size.width) - 20,
-                    child: TextField(
-                      controller: lNameController,
-                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')), // Allow only letters and spaces
-                      ],
-                      decoration: InputDecoration(
-                          hintText: 'Enter your last name',
-                          border: OutlineInputBorder(),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isLastNameValid ? Colors.grey : Colors.red, // Default border color
-                                width: 1
-                            ),
-                          ),
-
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isLastNameValid ? Colors.blue : Colors.red, // Border color when focused
-                                width: 1
-                            ),
-                          ),
-
-                          errorText: _isLastNameValid ? null : lNameErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                      child: Container(
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                            'Back',
+                            style: TextStyle(fontSize: 16),
+                          ))))
+                ],
+              )),
+          Positioned(
+              top: 80,
+              left: 0,
+              bottom: 0,
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      LoginScreen()));
+                        },
+                        child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 20),
+                            width: MediaQuery.of(context).size.width,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              'Register your profile',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            )),
                       ),
-                      keyboardType: TextInputType.text,
-                      onChanged: (value) {
-                        // Validate the email here and update _isEmailValid
-                        setState(() {
-                          _isLastNameValid = true;
-                        });
-                      },
-                    ),
-                  ),
 
-                  SizedBox(height: 20,),
-                  Text('Email', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
-                  Container(
-                    width: (MediaQuery.of(context).size.width) - 20,
-                    child: TextField(
-                      controller: emailController,
-                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                      decoration: InputDecoration(
-                          hintText: 'Enter your email address',
-                          border: OutlineInputBorder(),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isEmailValid ? Colors.grey : Colors.red, // Default border color
-                                width: 1
-                            ),
-                          ),
-
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isEmailValid ? Colors.blue : Colors.red, // Border color when focused
-                                width: 1
-                            ),
-                          ),
-
-                          errorText: _isEmailValid ? null : emailErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                      SizedBox(
+                        height: 20,
                       ),
-                      keyboardType: TextInputType.emailAddress,
-                      onChanged: (value) {
-                        // Validate the email here and update _isEmailValid
-                        setState(() {
-                          _isEmailValid = true;
-                        });
-                      },
-                    ),
-                  ),
-
-                  SizedBox(height: 20,),
-                  Text('Password', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
-                  Container(
-                    width: (MediaQuery.of(context).size.width) - 20,
-                    child: TextField(
-                      controller: passwordController,
-                      obscureText: passwordHide,
-                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                      decoration: InputDecoration(
-                          suffixIcon: IconButton( onPressed: (){
+                      Text(
+                        'First Name',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          controller: fNameController,
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          decoration: InputDecoration(
+                              hintText: 'Enter your first name',
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isFirstNameValid
+                                        ? Colors.grey
+                                        : Colors.red, // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isFirstNameValid
+                                        ? Colors.blue
+                                        : Colors
+                                            .red, // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isFirstNameValid
+                                  ? null
+                                  : fNameErrorMsg, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          keyboardType: TextInputType.emailAddress,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'[a-zA-Z\s]')), // Allow only letters and spaces
+                          ],
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
                             setState(() {
-                              passwordHide = !passwordHide;
+                              _isFirstNameValid = true;
                             });
-
                           },
-                              //icon: Icon( passwordHide?Icons.visibility :Icons.visibility_off)),
-                              icon: SvgPicture.asset( passwordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
-
-                          hintText: 'Enter your password',
-                          border: OutlineInputBorder(),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isPasswordValid ? Colors.grey : Colors.red, // Default border color
-                                width: 1
-                            ),
-                          ),
-
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isPasswordValid ? Colors.blue : Colors.red, // Border color when focused
-                                width: 1
-                            ),
-                          ),
-
-                          errorText: _isPasswordValid ? null : passwordErrorMSG, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                      ),
-                      onChanged: (value) {
-                        // Validate the email here and update _isEmailValid
-                        setState(() {
-                            _isPasswordValid = true;
-                            _isConfirmPasswordValid = true;
-                        });
-                      },
-                    ),
-                  ),
-
-                  SizedBox(height: 20,),
-                  Text('Re-enter Password', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
-                  Container(
-                    width: (MediaQuery.of(context).size.width) - 20,
-                    child: TextField(
-                      controller: confirmPasswordController,
-                      obscureText: confirmPasswordHide,
-                      style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                      decoration: InputDecoration(
-                          suffixIcon: IconButton( onPressed: (){
-                            setState(() {
-                              confirmPasswordHide = !confirmPasswordHide;
-                            });
-
-                          },
-                              //icon: Icon( confirmPasswordHide?Icons.visibility :Icons.visibility_off)),
-                              icon: SvgPicture.asset( confirmPasswordHide?'assets/images/ic_hide_password.svg' :'assets/images/ic_show_password.svg')),
-                          hintText: 'Re-enter your password',
-                          border: OutlineInputBorder(),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isConfirmPasswordValid ? Colors.grey : Colors.red, // Default border color
-                                width: 1
-                            ),
-                          ),
-
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _isConfirmPasswordValid ? Colors.blue : Colors.red, // Border color when focused
-                                width: 1
-                            ),
-                          ),
-
-                          errorText: _isConfirmPasswordValid ? null : confirm_passwordErrorMSG, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                      ),
-                      onChanged: (value) {
-                        // Validate the email here and update _isEmailValid
-                        setState(() {
-                          _isConfirmPasswordValid = true;
-                          _isPasswordValid = true;
-                        });
-                      },
-                    ),
-                  ),
-
-                  SizedBox(height: 20,),
-                  Text('Mobile Number', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
-                  SizedBox(height: 10,),
-                  Container(
-                    width: MediaQuery.of(context).size.width - 20,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          height: 48,
-                          decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey), borderRadius: BorderRadius.circular(4)),
-                          padding: EdgeInsets.all(9),
-                          child: DropdownButton(
-                              value: _selectedCountryCode,
-                              underline: Container(),
-                              items: countryOptions.map((countryCode){
-                            return DropdownMenuItem(
-                                value: countryCode,
-                                child: Text(countryCode));
-                          }).toList(), onChanged: (val){
-                           setState(() {
-                             _selectedCountryCode = val;
-                           });
-                          }),
                         ),
+                      ),
 
-                        Container(
-                          width: (MediaQuery.of(context).size.width) - 110,
-                          child: TextField(
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly, // This allows only digits
-                            ],
-                            maxLength: getValidLengthForCountry(_selectedCountryCode!),
-                            controller: mobileController,
-                            style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                            decoration: InputDecoration(
-                               counterText: '',
-                                hintText: 'Enter mobile number',
-                                border: OutlineInputBorder(),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: _isMobileNumberValid ? Colors.grey : Colors.red, // Default border color
-                                      width: 1
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Last Name',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          controller: lNameController,
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'[a-zA-Z\s]')), // Allow only letters and spaces
+                          ],
+                          decoration: InputDecoration(
+                              hintText: 'Enter your last name',
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isLastNameValid
+                                        ? Colors.grey
+                                        : Colors.red, // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isLastNameValid
+                                        ? Colors.blue
+                                        : Colors
+                                            .red, // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isLastNameValid
+                                  ? null
+                                  : lNameErrorMsg, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isLastNameValid = true;
+                            });
+                          },
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Email',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          controller: emailController,
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          decoration: InputDecoration(
+                              hintText: 'Enter your email address',
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isEmailValid
+                                        ? Colors.grey
+                                        : Colors.red, // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isEmailValid
+                                        ? Colors.blue
+                                        : Colors
+                                            .red, // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isEmailValid
+                                  ? null
+                                  : emailErrorMsg, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isEmailValid = true;
+                            });
+                          },
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Password',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          controller: passwordController,
+                          obscureText: passwordHide,
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordHide = !passwordHide;
+                                    });
+                                  },
+                                  //icon: Icon( passwordHide?Icons.visibility :Icons.visibility_off)),
+                                  icon: SvgPicture.asset(passwordHide
+                                      ? 'assets/images/ic_hide_password.svg'
+                                      : 'assets/images/ic_show_password.svg')),
+                              hintText: 'Enter your password',
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isPasswordValid
+                                        ? Colors.grey
+                                        : Colors.red, // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isPasswordValid
+                                        ? Colors.blue
+                                        : Colors
+                                            .red, // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isPasswordValid
+                                  ? null
+                                  : passwordErrorMSG, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isPasswordValid = true;
+                              _isConfirmPasswordValid = true;
+                            });
+                          },
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Re-enter Password',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          controller: confirmPasswordController,
+                          obscureText: confirmPasswordHide,
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      confirmPasswordHide =
+                                          !confirmPasswordHide;
+                                    });
+                                  },
+                                  //icon: Icon( confirmPasswordHide?Icons.visibility :Icons.visibility_off)),
+                                  icon: SvgPicture.asset(confirmPasswordHide
+                                      ? 'assets/images/ic_hide_password.svg'
+                                      : 'assets/images/ic_show_password.svg')),
+                              hintText: 'Re-enter your password',
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isConfirmPasswordValid
+                                        ? Colors.grey
+                                        : Colors.red, // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: _isConfirmPasswordValid
+                                        ? Colors.blue
+                                        : Colors
+                                            .red, // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isConfirmPasswordValid
+                                  ? null
+                                  : confirm_passwordErrorMSG, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isConfirmPasswordValid = true;
+                              _isPasswordValid = true;
+                            });
+                          },
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Mobile Number',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width - 20,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1,
+                                          color: _isMobileNumberValid
+                                              ? Colors.grey
+                                              : Colors.red),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  padding: EdgeInsets.all(9),
+                                  child: DropdownButton(
+                                      value: _selectedCountryCode,
+                                      underline: Container(),
+                                      items: countryOptions.map((countryCode) {
+                                        return DropdownMenuItem(
+                                            value: countryCode,
+                                            child: Text(countryCode,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontFamily: 'Lato',
+                                                    color: const Color(
+                                                        0xFF333333))));
+                                      }).toList(),
+                                      onChanged: (val) {
+                                        setState(() {
+                                          _selectedCountryCode = val;
+                                        });
+                                      }),
+                                ),
+                                Container(
+                                  width:
+                                      (MediaQuery.of(context).size.width) - 120,
+                                  child: TextField(
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter
+                                          .digitsOnly, // This allows only digits
+                                    ],
+                                    maxLength: getValidLengthForCountry(
+                                        _selectedCountryCode!),
+                                    controller: mobileController,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Lato',
+                                        color: _isMobileNumberValid
+                                            ? Colors.grey
+                                            : Colors.red),
+                                    decoration: InputDecoration(
+                                        counterText: '',
+                                        hintText: 'Enter mobile number',
+                                        border: OutlineInputBorder(),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Colors.grey
+                                                  : Colors
+                                                      .red, // Default border color
+                                              width: 1),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Colors.blue
+                                                  : Colors
+                                                      .red, // Border color when focused
+                                              width: 1),
+                                        ),
+                                        // errorText: _isMobileNumberValid
+                                        //     ? null
+                                        //     : mobileErrorMsg, // Display error message if invalid
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10)),
+                                    keyboardType: TextInputType.phone,
+                                    onChanged: (value) {
+                                      // Validate the email here and update _isEmailValid
+                                      setState(() {
+                                        _isMobileNumberValid = true;
+                                      });
+                                    },
                                   ),
                                 ),
-
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: _isMobileNumberValid ? Colors.blue : Colors.red, // Border color when focused
-                                      width: 1
-                                  ),
-                                ),
-
-                                errorText: _isMobileNumberValid ? null : mobileErrorMsg, // Display error message if invalid
-                                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                              ],
                             ),
-                            keyboardType: TextInputType.phone,
-                            onChanged: (value) {
-                              // Validate the email here and update _isEmailValid
-                              setState(() {
-                                _isMobileNumberValid = true;
-                              });
-                            },
-                          ),
+                            if (!_isMobileNumberValid)
+                              Padding(
+                                padding: EdgeInsets.only(top: 4, left: 10),
+                                child: Text(
+                                  mobileErrorMsg ?? '',
+                                  style: TextStyle(
+                                      color: Color(0xFFBA1A1A), fontSize: 12),
+                                ),
+                              ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
 
-                 /* SizedBox(height: 20,),
+                      /* SizedBox(height: 20,),
                   Text('Having Referral Code? (Optional)', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
                   SizedBox(height: 10,),
                   Container(
@@ -805,197 +988,237 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                     ),
                   ),*/
 
-                  //CheckBox
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Checkbox(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        checkColor: Colors.white,
-                        activeColor: AppColors.primaryColor,
-                        value: agreementAccepted,
-                        onChanged: (cState){
-                        setState(() {
-                            agreementAccepted = cState!;
-                          });
-                      }, ),
-                      InkWell(
-                          onTap: (){
-                            _launchTermsURL();
-                          },
-                          child: Text('I agree to the Terms of Service and Privacy Policy', style: TextStyle(fontSize: 14, fontFamily: 'Lato', color: AppColors.primaryColor,)))
-                    ],
-                  ),
+                      //CheckBox
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            checkColor: Colors.white,
+                            activeColor: AppColors.primaryColor,
+                            value: agreementAccepted,
+                            onChanged: (cState) {
+                              setState(() {
+                                agreementAccepted = cState!;
+                              });
+                            },
+                          ),
+                          InkWell(
+                              onTap: () {
+                                _launchTermsURL();
+                              },
+                              child: Text(
+                                  'I agree to the Terms of Service and Privacy Policy',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: 'Lato',
+                                    color: AppColors.primaryColor,
+                                  )))
+                        ],
+                      ),
 
-                  //Loading
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
-                      child: Visibility(
-                        visible: isLoading,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 30,),
-                            LoadingAnimationWidget.fourRotatingDots(
-                              color: AppColors.primaryColor,
-                              size: 40,
+                      //Loading
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Visibility(
+                            visible: isLoading,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                LoadingAnimationWidget.fourRotatingDots(
+                                  color: AppColors.primaryColor,
+                                  size: 40,
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
 
-                  //Button
-                  SizedBox(height: 30),
-                  InkWell(
-                    onTap: (){
+                      //Button
+                      SizedBox(height: 30),
+                      InkWell(
+                        onTap: () {
+                          int validLength =
+                              getValidLengthForCountry(_selectedCountryCode!);
 
-                      int validLength = getValidLengthForCountry(_selectedCountryCode!);
-
-                      if(kDebugMode){
-                        print('Referral Code: ${referralController.text?? ''}');
-                      }
-                      if(!agreementAccepted){
-                            Fluttertoast.showToast(
-                                msg:
-                                    "You must agree to our Terms of service & our privacy policy",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
+                          if (kDebugMode) {
+                            print(
+                                'Referral Code: ${referralController.text ?? ''}');
                           }
-                      else if(fNameController.text.trim().isEmpty || fNameController.text.trim().length<3 || lNameController.text.trim().isEmpty ||emailController.text.trim().isEmpty || !validateEmail(emailController.text) || passwordController.text.trim().isEmpty || confirmPasswordController.text.trim().isEmpty || mobileController.text.trim().isEmpty || mobileController.text.length < validLength || mobileController.text.length > validLength){
-                          if(fNameController.text.trim().isEmpty){
-                            setState(() {
-                              _isFirstNameValid = false;
-                              fNameErrorMsg = 'First name cannot be empty';
-                            });
-                          } else if(fNameController.text.trim().length<3){
-                            setState(() {
-                              fNameErrorMsg = 'First name must at least be 3 characters';
-                              _isFirstNameValid = false;
+                          if (!agreementAccepted) {
+                            // Fluttertoast.showToast(
+                            //     msg:
+                            //         "You must agree to our Terms of service & our privacy policy",
+                            //     toastLength: Toast.LENGTH_SHORT,
+                            //     gravity: ToastGravity.BOTTOM,
+                            //     timeInSecForIosWeb: 1,
+                            //     backgroundColor: Colors.red,
+                            //     textColor: Colors.white,
+                            //     fontSize: 16.0);
+                            IconSnackBar.show(
+                              context,
+                              label:
+                                  'You must agree to our Terms of service & our privacy policy',
+                              snackBarType: SnackBarType.alert,
+                              backgroundColor: Color(0xFFBA1A1A),
+                              iconColor: Colors.white,
+                            );
+                          } else if (fNameController.text.trim().isEmpty ||
+                              fNameController.text.trim().length < 3 ||
+                              lNameController.text.trim().isEmpty ||
+                              emailController.text.trim().isEmpty ||
+                              !validateEmail(emailController.text) ||
+                              passwordController.text.trim().isEmpty ||
+                              confirmPasswordController.text.trim().isEmpty ||
+                              mobileController.text.trim().isEmpty ||
+                              mobileController.text.length < validLength ||
+                              mobileController.text.length > validLength) {
+                            if (fNameController.text.trim().isEmpty) {
+                              setState(() {
+                                _isFirstNameValid = false;
+                                fNameErrorMsg = 'First name cannot be empty';
+                              });
+                            } else if (fNameController.text.trim().length < 3) {
+                              setState(() {
+                                fNameErrorMsg =
+                                    'First name must at least be 3 characters';
+                                _isFirstNameValid = false;
+                              });
+                            }
 
-                            });
-                          }
+                            if (lNameController.text.trim().isEmpty) {
+                              setState(() {
+                                _isLastNameValid = false;
+                              });
+                            }
 
-                          if(lNameController.text.trim().isEmpty){
-                            setState(() {
-                              _isLastNameValid = false;
-                            });
-                          }
+                            if (emailController.text.trim().isEmpty) {
+                              setState(() {
+                                _isEmailValid = false;
+                                emailErrorMsg = 'Email cannot be empty';
+                              });
+                            } else if (!validateEmail(emailController.text)) {
+                              setState(() {
+                                _isEmailValid = false;
+                                emailErrorMsg = 'Enter a valid email address';
+                              });
+                            }
 
-                          if(emailController.text.trim().isEmpty){
-                            setState(() {
-                              _isEmailValid = false;
-                              emailErrorMsg = 'Email cannot be empty';
-                            });
-                          } else if(!validateEmail(emailController.text)){
-                            setState(() {
-                              _isEmailValid = false;
-                              emailErrorMsg = 'Enter a valid email address';
-                            });
-                          }
+                            if (passwordController.text.trim().isEmpty) {
+                              setState(() {
+                                _isPasswordValid = false;
+                                passwordErrorMSG = 'Password cannot be empty';
+                              });
+                            }
 
-                          if(passwordController.text.trim().isEmpty){
+                            if (confirmPasswordController.text.trim().isEmpty) {
+                              setState(() {
+                                _isConfirmPasswordValid = false;
+                                confirm_passwordErrorMSG =
+                                    'Please re-enter your password';
+                              });
+                            }
+
+                            if (passwordController.text !=
+                                confirmPasswordController.text) {
+                              setState(() {
+                                _isPasswordValid = false;
+                                _isConfirmPasswordValid = false;
+
+                                confirm_passwordErrorMSG =
+                                    'Passwords do not match';
+                                passwordErrorMSG = 'Passwords do not match';
+                              });
+                            }
+
+                            if (confirmPasswordController.text.trim().isEmpty) {
+                              setState(() {
+                                _isConfirmPasswordValid = false;
+                                confirm_passwordErrorMSG =
+                                    'Please re-enter your password';
+                              });
+                            }
+
+                            if (mobileController.text.trim().isEmpty) {
+                              setState(() {
+                                _isMobileNumberValid = false;
+                                mobileErrorMsg =
+                                    'Mobile number cannot be empty';
+                              });
+                            } else if (mobileController.text.length <
+                                    validLength ||
+                                mobileController.text.length > validLength) {
+                              setState(() {
+                                _isMobileNumberValid = false;
+                                mobileErrorMsg =
+                                    'Please enter a valid $validLength digit mobile number';
+                              });
+                            } else {
+                              setState(() {
+                                _isMobileNumberValid = true;
+                                mobileErrorMsg = '';
+                              });
+                            }
+                          } else if (passwordController.text.length < 8) {
                             setState(() {
                               _isPasswordValid = false;
-                              passwordErrorMSG = 'Password cannot be empty';
+                              passwordErrorMSG =
+                                  'Password must be at least 8 characters';
                             });
-                          }
-
-                          if(confirmPasswordController.text.trim().isEmpty){
-                            setState(() {
-                              _isConfirmPasswordValid = false;
-                              confirm_passwordErrorMSG = 'Please re-enter your password';
-                            });
-                          }
-
-                          if(passwordController.text != confirmPasswordController.text){
+                          } else if (passwordController.text !=
+                              confirmPasswordController.text) {
                             setState(() {
                               _isPasswordValid = false;
+                              passwordErrorMSG = 'Passwords don\'t match';
                               _isConfirmPasswordValid = false;
-
-                              confirm_passwordErrorMSG = 'Passwords do not match';
-                              passwordErrorMSG = 'Passwords do not match';
+                              confirm_passwordErrorMSG =
+                                  'Passwords don\'t match';
                             });
+                          } else {
+                            registerUser();
                           }
-
-                          if(confirmPasswordController.text.trim().isEmpty){
-                            setState(() {
-                              _isConfirmPasswordValid = false;
-                              confirm_passwordErrorMSG = 'Please re-enter your password';
-                            });
-                          }
-
-                          if(mobileController.text.trim().isEmpty){
-                            setState(() {
-                              _isMobileNumberValid = false;
-                              mobileErrorMsg = 'Mobile number cannot be empty';
-                            });
-                          } else if(mobileController.text.length < validLength || mobileController.text.length > validLength){
-                            setState(() {
-                              _isMobileNumberValid = false;
-                              mobileErrorMsg = 'Please enter a valid $validLength digit mobile number';
-                            });
-                          } else{
-                            setState(() {
-                              _isMobileNumberValid = true;
-                              mobileErrorMsg = '';
-                            });
-                          }
-                      }
-                      else if(passwordController.text.length < 8){
-                        setState(() {
-                          _isPasswordValid = false;
-                          passwordErrorMSG = 'Password must be at least 8 characters';
-                        });
-                      }
-                      else if(passwordController.text != confirmPasswordController.text){
-                        setState(() {
-                          _isPasswordValid = false;
-                          passwordErrorMSG = 'Passwords don\'t match';
-                          _isConfirmPasswordValid = false;
-                          confirm_passwordErrorMSG = 'Passwords don\'t match';
-                        });
-                      }
-                      else{
-                        registerUser();
-                      }
                         },
-                    child: Container(
-                      width: (MediaQuery.of(context).size.width) - 20,
-                      height: 44,
-                      margin: EdgeInsets.symmetric(horizontal: 0),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(color: agreementAccepted?AppColors.primaryColor : AppColors.disabledColor,borderRadius: BorderRadius.circular(10)),
-                      child: Center(child: Text('Create Profile', style: TextStyle(color: Colors.white),),),
-                    ),
+                        child: Container(
+                          width: (MediaQuery.of(context).size.width) - 20,
+                          height: 44,
+                          margin: EdgeInsets.symmetric(horizontal: 0),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                              color: agreementAccepted
+                                  ? AppColors.primaryColor
+                                  : AppColors.disabledColor,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                            child: Text(
+                              'Create Profile',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 30,
+                      )
+                    ],
                   ),
-
-
-
-
-                  SizedBox(height: 30,)
-                ],
-              ),
-            ),
-          )),
+                ),
+              )),
         ],
       ),
     );
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    
-
   }
 
   @override
@@ -1007,8 +1230,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
     mobileController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
-
-
 
     super.dispose();
   }

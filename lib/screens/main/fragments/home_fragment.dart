@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -52,6 +53,18 @@ class _HomeFragmentState extends State<HomeFragment> {
 
   List<Job> parseJobs(List<dynamic> jsonList) {
     return jsonList.map((json) => Job.fromJson(json)).toList();
+  }
+  Future<void> loadCachedJobs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jobListString = prefs.getString('jobList');
+
+    if (jobListString != null) {
+      List<dynamic> cachedJobs = jsonDecode(jobListString);
+      setState(() {
+        jobList = cachedJobs;
+        isLoading = false;
+      });
+    }
   }
 
 
@@ -255,23 +268,21 @@ class _HomeFragmentState extends State<HomeFragment> {
                                     });
                                     //await saveStringToPreferences("search", "");
                                   } ,
-                                  child: Expanded(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(Icons.search, color: Color(0xff818385),),
-                                        SizedBox(width: 10,),
-                                        Flexible(
-                                          child: Text(
-                                            jobSearchTerm.isEmpty ? 'Search for jobs or skills' : jobSearchTerm,
-                                            style: TextStyle(color: Color(0xff7D7C7C)),
-                                            overflow: TextOverflow.ellipsis, // Add this line to handle overflow
-                                            maxLines: 1, // Optional: Limits text to a single line
-                                          ),
-                                        )
-                                    
-                                      ],
-                                    ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.search, color: Color(0xff818385),),
+                                      SizedBox(width: 10,),
+                                      Flexible(
+                                        child: Text(
+                                          jobSearchTerm.isEmpty ? 'Search for jobs or skills' : jobSearchTerm,
+                                          style: TextStyle(color: Color(0xff7D7C7C)),
+                                          overflow: TextOverflow.ellipsis, // Add this line to handle overflow
+                                          maxLines: 1, // Optional: Limits text to a single line
+                                        ),
+                                      )
+                                  
+                                    ],
                                   ),
                                 ),
                               ),
@@ -474,7 +485,8 @@ class _HomeFragmentState extends State<HomeFragment> {
                                             (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
                                       );
 
-                                      fetchAllJobs();
+                                    //  fetchAllJobs();
+                                      loadCachedJobs();
                                     },
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,

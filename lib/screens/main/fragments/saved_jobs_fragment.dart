@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -139,7 +137,6 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
         print(
             'Response code ${response.statusCode} :: Response => ${response.body}');
       }
-
       if (response.statusCode == 200 || response.statusCode == 202) {
         Fluttertoast.showToast(
             msg: 'Removed successfully',
@@ -189,7 +186,8 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-    ? Expanded(
+    ? SizedBox(
+      height: MediaQuery.of(context).size.height,
         child: Shimmer.fromColors(
           baseColor: Colors.grey[300]!, // Base color for the shimmer
           highlightColor: Colors.grey[100]!, // Highlight color for the shimmer
