@@ -9,11 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:talent_turbo_new/main.dart';
+import 'package:talent_turbo_new/screens/onboarding/onboarding_container.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MyApp(initialScreen: OnboardingContainer(),));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

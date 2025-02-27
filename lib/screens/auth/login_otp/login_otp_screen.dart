@@ -410,7 +410,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                                   style: TextStyle(
                                       fontFamily: 'Lato',
                                       fontSize: 12,
-                                      color: Colors.red),
+                                      color: Color(0xffBA1A1A)),
                                 ),
                               ),
                             ],

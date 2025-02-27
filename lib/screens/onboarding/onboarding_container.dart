@@ -31,11 +31,12 @@ class _OnboardingContainerState extends State<OnboardingContainer> {
     );*/
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
             child: Image.asset('assets/images/tt_logo_full_1.png',
                 width: MediaQuery.of(context).size.width * 0.6,
                 height: MediaQuery.of(context).size.height * 0.25,
@@ -92,7 +93,7 @@ class _OnboardingContainerState extends State<OnboardingContainer> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         ],
       ),
-    );
+    ),);
   }
 
   @override

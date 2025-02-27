@@ -73,8 +73,7 @@ dependencies:
   flutter_icon_snackbar: ^1.2.1
   shimmer: ^3.0.0
   timeline_tile: ^2.0.0
-
-
+  lottie: ^3.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -110,6 +109,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icon/
+    - assets/images/Animation - 1722592346112.lottie
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

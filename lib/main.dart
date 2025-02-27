@@ -1,54 +1,50 @@
+import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:talent_turbo_new/auto_login_swwitcher.dart';
-import 'package:talent_turbo_new/screens/auth/forgot_password/forgot_password_otp_screen.dart';
-import 'package:talent_turbo_new/screens/auth/forgot_password/forgot_password_screen.dart';
-import 'package:talent_turbo_new/screens/auth/login/login_screen.dart';
-import 'package:talent_turbo_new/screens/auth/login/login_with_mobile_screen.dart';
-import 'package:talent_turbo_new/screens/auth/login_otp/login_otp_screen.dart';
-import 'package:talent_turbo_new/screens/auth/register/register_new_user.dart';
-import 'package:talent_turbo_new/screens/jobDetails/JobDetails.dart';
-import 'package:talent_turbo_new/screens/jobDetails/companyDetails.dart';
-import 'package:talent_turbo_new/screens/jobDetails/job_apply.dart';
-import 'package:talent_turbo_new/screens/jobDetails/job_status.dart';
-import 'package:talent_turbo_new/screens/jobDetails/postSubmission.dart';
-import 'package:talent_turbo_new/screens/main/AccountSettings.dart';
-import 'package:talent_turbo_new/screens/main/AddDeleteSkills.dart';
-import 'package:talent_turbo_new/screens/main/AddEducation.dart';
-import 'package:talent_turbo_new/screens/main/AddEmployment.dart';
-import 'package:talent_turbo_new/screens/main/SearchAndFilter.dart';
-import 'package:talent_turbo_new/screens/main/edit_personal_details.dart';
-import 'package:talent_turbo_new/screens/main/fragments/profile_fragment.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talent_turbo_new/screens/main/fragments/success_animation.dart';
 import 'package:talent_turbo_new/screens/main/home_container.dart';
-import 'package:talent_turbo_new/screens/main/notification_settings.dart';
-import 'package:talent_turbo_new/screens/main/personal_details.dart';
-import 'package:talent_turbo_new/screens/main/rewards.dart';
 import 'package:talent_turbo_new/screens/onboarding/onboarding_container.dart';
-import 'package:talent_turbo_new/test_screens/otp_test_screen.dart';
-
 import 'firebase_options.dart';
+import 'models/user_data_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  // Check user session before launching the app
+  Widget initialScreen = await getInitialScreen();
+
+  runApp(MyApp(initialScreen: initialScreen));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<Widget> getInitialScreen() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userDataJson = prefs.getString('userData');
 
-  // This widget is the root of your application.
+  if (userDataJson != null) {
+    return HomeContainer(); // If user is logged in, go to home screen
+  } else {
+    return OnboardingContainer(); // Otherwise, go to onboarding screen
+  }
+}
+
+class MyApp extends StatefulWidget {
+  final Widget initialScreen;
+  const MyApp({super.key, required this.initialScreen});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'TalentTurbo',
-
-      //home: const MyHomePage(title: 'Flutter Demo Home Page3'),
-      home: AutoLoginSwitcher(),
-      //home: ForgotPasswordOTPScreen(email: 'dsds'),
+    return MaterialApp(
+      title: 'Talent Turbo',
+      home: widget.initialScreen,
       debugShowCheckedModeBanner: false,
     );
   }

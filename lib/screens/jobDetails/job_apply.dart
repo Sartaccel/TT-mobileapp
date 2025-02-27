@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -614,46 +612,43 @@ class _JobApplyState extends State<JobApply> {
   File? selectedFile;
 
   Future<void> uploadPDF(File file) async {
-    Dio dio = Dio();
+  Dio dio = Dio();
 
-    String url =
-        'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
+  String url =
+      'https://mobileapi.talentturbo.us/api/v1/resumeresource/uploadresume';
 
-    FormData formData = FormData.fromMap({
-      "id": retrievedUserData!.profileId.toString(), // Your id
-      "file": await MultipartFile.fromFile(
-        file.path,
-        filename: file.path.split('/').last,
-      ),
+  // Prepare the form data for the file upload
+  FormData formData = FormData.fromMap({
+    "id": retrievedUserData!.profileId.toString(), // Your id
+    "file": await MultipartFile.fromFile(
+      file.path,
+      filename: file.path.split('/').last,
+    ),
+  });
+
+  String token = retrievedUserData!.token;
+  try {
+    setState(() {
+      isLoading = true;
     });
 
-    String token = retrievedUserData!.token;
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      Response response = await dio.post(
-        url,
-        data: formData,
-        options: Options(
-          headers: {
-            'Authorization': token, // Authorization Header
-            'Content-Type':
-                'multipart/form-data', // Content-Type for file uploads
-          },
-        ),
-      );
+    // Sending the request to upload the file
+    Response response = await dio.post(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': token, // Authorization Header
+          'Content-Type': 'multipart/form-data', // Content-Type for file uploads
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
       print('Upload success: ${response.statusCode}');
       setUpdatedTimeInRTDB();
-
-      // Fluttertoast.showToast(
-      //     msg: 'Successfully uploaded',
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
+      
+      // Success feedback using Snackbar
       IconSnackBar.show(
         context,
         label: 'Successfully uploaded',
@@ -661,46 +656,54 @@ class _JobApplyState extends State<JobApply> {
         backgroundColor: Color(0xff4CAF50),
         iconColor: Colors.white,
       );
-
+      
       fetchCandidateProfileData(retrievedUserData!.profileId, token);
-      //Navigator.pop(context);
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      print('Upload failed: $e');
-
-      // Fluttertoast.showToast(
-      //     msg: e.toString(),
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
-      IconSnackBar.show(
-        context,
-        label: e.toString(),
-        snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
-      );
+    } else {
+      // Handle case where upload wasn't successful
+      throw Exception('Upload failed with status: ${response.statusCode}');
     }
-  }
+  } catch (e) {
+    setState(() {
+      isLoading = false;
+    });
 
-  Future<void> pickAndUploadPDF() async {
-    File? file = await pickPDF();
-    if (file != null) {
-      setState(() {
-        selectedFile = file;
-      });
-      await uploadPDF(file);
-    }
+    print('Upload failed: $e');
+    
+    // Error feedback using Snackbar
+    IconSnackBar.show(
+      context,
+      label: e.toString(),
+      snackBarType: SnackBarType.alert,
+      backgroundColor: Color(0xff2D2D2D),
+      iconColor: Colors.white,
+    );
   }
+}
+
+Future<void> pickAndUploadPDF() async {
+  // Pick a file
+  File? file = await pickPDF();
+  if (file != null) {
+    setState(() {
+      selectedFile = file;
+    });
+
+    // Upload the file
+    await uploadPDF(file);
+  } else {
+    // Provide feedback if no file was selected
+    IconSnackBar.show(
+      context,
+      label: 'No file selected',
+      snackBarType: SnackBarType.alert,
+      backgroundColor: Color(0xff2D2D2D),
+      iconColor: Colors.white,
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
@@ -806,14 +809,21 @@ class _JobApplyState extends State<JobApply> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                widget.jobData['jobTitle'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Lato',
-                                    fontSize: 20,
-                                    color: Color(0xff333333)),
-                              ),
+                            Container(
+  width: 280, // Example fixed width
+  child: Text(
+    widget.jobData['jobTitle'] ?? 'Default Title',
+    overflow: TextOverflow.ellipsis,
+    maxLines: 1,
+    style: TextStyle(
+      fontWeight: FontWeight.w700,
+      fontFamily: 'Lato',
+      fontSize: 20,
+      color: Color(0xff333333),
+    ),
+  ),
+)
+,
                               SizedBox(
                                 height: 3,
                               ),

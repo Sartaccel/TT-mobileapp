@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,9 +8,7 @@ import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
-import 'package:talent_turbo_new/screens/main/home_container.dart';
 import 'package:http/http.dart' as http;
-
 class JobStatus extends StatefulWidget {
   final jobData;
   const JobStatus({super.key, required this.jobData});
@@ -372,31 +369,10 @@ class _JobStatusState extends State<JobStatus> {
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 0,
-                            ),
-                            Container(
-                                height: 20,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 0),
-                                decoration: BoxDecoration(
-                                    color: status
-                                            .toLowerCase()
-                                            .contains('rejected')
-                                        ? Color(0xffFBE2E0)
-                                        : Color(0xffE0EDFB),
-                                    borderRadius: BorderRadius.circular(3)),
-                                child: Text(
-                                  status,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: status
-                                              .toLowerCase()
-                                              .contains('rejected')
-                                          ? Color(0xffBA1A1A)
-                                          : Color(0xff004C99)),
-                                ))
+
+                           
+                           
+                            
                           ],
                         ),
 
@@ -407,80 +383,139 @@ class _JobStatusState extends State<JobStatus> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 0,
-                  ),
+
+                  SizedBox(height: 0,),
+                  Container(width:MediaQuery.of(context).size.width ,height: 1, color: Color(0xffE6E6E6),),
+
+                  SizedBox(height: 30,),
+
+                 _isLoading ?
+                      Center(
+                   child: Container(
+                     width: MediaQuery.of(context).size.width,
+                     child: Center(
+                       child: Column(
+                         children: [
+                           SizedBox(height: 30,),
+                           LoadingAnimationWidget.fourRotatingDots(
+                             color: AppColors.primaryColor,
+                             size: 40,
+                           ),
+                         ],
+                       ),
+                     ),
+                   ),
+                 )
+                     : Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          child: Text('Status', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xff333333)),)),
+
+                      SizedBox(height: 0,),
+              Padding(
+  padding: const EdgeInsets.all(16.0),
+  child: ListView.builder(
+    physics: NeverScrollableScrollPhysics(),
+    shrinkWrap: true,
+    itemCount: 4, // Ensure exactly 4 steps
+    itemBuilder: (context, index) {
+      Map<String, String> statusMapping = {
+        "Talent Identified": "Applied",
+        "Shortlisted": "Shortlisted",
+        "Interview Completed": "Interview",
+        "Offer Given": "Selection"
+      };
+
+      List<Map<String, String>> timelineSteps = [
+        {"statusName": "Applied", "createdAt": ""},
+        {"statusName": "Shortlisted", "createdAt": ""},
+        {"statusName": "Interview", "createdAt": ""},
+        {"statusName": "Selection", "createdAt": ""},
+      ];
+
+      bool isActive = index == 0; // "Applied" is always active
+
+      // Update from API statusList if available
+      if (statusList.isNotEmpty) {
+        for (var status in statusList) {
+          if (statusMapping.containsKey(status['statusName'])) {
+            int stepIndex = timelineSteps.indexWhere(
+                (step) => step['statusName'] == statusMapping[status['statusName']]);
+            if (stepIndex != -1) {
+              timelineSteps[stepIndex]["createdAt"] = status['createdAt'] ?? "";
+              if (index == stepIndex) {
+                isActive = true; // Mark as active if present in API
+              }
+            }
+          }
+        }
+      }
+
+      return Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  // Timeline Status Circle
                   Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 1,
-                    color: Color(0xffE6E6E6),
+                    width: 15,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isActive ? const Color(0XFF004C99) : Colors.grey[400]!,
+                        width: 2,
+                      ),
+                      color: Colors.transparent, // Transparent fill color for all circles
+                    ),
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  _isLoading
-                      ? Center(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Center(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  LoadingAnimationWidget.fourRotatingDots(
-                                    color: AppColors.primaryColor,
-                                    size: 40,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                                margin: EdgeInsets.symmetric(horizontal: 15),
-                                child: Text(
-                                  'Status:',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xff333333)),
-                                )),
-                            SizedBox(
-                              height: 0,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: statusList.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          buildTimelineRow(
-                                            statusList[index]['statusName'],
-                                            statusList[index]['createdAt'] ??
-                                                '',
-                                            true, // Active stage
-                                          ),
-                                          index == statusList.length - 1
-                                              ? Container()
-                                              : buildVerticalLine(true),
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          ],
-                        ),
+                  // Vertical Line (except last item)
+                  if (index != 3)
+                    Container(
+                      width: 3, // Thicker line
+                      height: 77,
+                      color: isActive ? Color(0XFF004C99) : Colors.grey[300],
+                    ),
                 ],
+              ),
+              SizedBox(width: 15),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    timelineSteps[index]['statusName']!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isActive ? Color(0XFF004C99) : Colors.grey[600],
+                    ),
+                  ),
+                  if (timelineSteps[index]['createdAt']!.isNotEmpty)
+                    Text(
+                      timelineSteps[index]['createdAt']!,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+    
+        ],
+      );
+    },
+  ),
+),
+
+],
+ ),
+],
               ),
             ),
           )),

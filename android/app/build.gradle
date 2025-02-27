@@ -12,7 +12,7 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '2').toInteger() + 3 // Automatically increment version code
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '2').toInteger() + 7 // Automatically increment version code
 def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0.1')
 
 def keystoreProperties = new Properties()

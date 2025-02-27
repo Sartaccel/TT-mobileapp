@@ -16,7 +16,6 @@ import 'package:talent_turbo_new/models/candidate_profile_model.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:talent_turbo_new/screens/main/personal_details.dart';
 
 class Addeducation extends StatefulWidget {
   final educationDetail;
@@ -155,8 +154,8 @@ class _AddeducationState extends State<Addeducation> {
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
-        return; // Exit the function if no internet
-      }
+      return;  // Exit the function if no internet
+    }
       setState(() {
         isLoading = true;
       });

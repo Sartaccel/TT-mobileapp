@@ -4,8 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:otp_pin_field/otp_pin_field.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -118,6 +116,7 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
       });
     }
   }
+  
 
   Future<void> sendPasswordRestOTP() async {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD);

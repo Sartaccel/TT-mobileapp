@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talent_turbo_new/models/candidate_profile_model.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
@@ -102,5 +101,19 @@ String processDate(String createdDate) {
     return DateFormat('yyyy-MM-dd').format(postDate);
   }
 }
+  Future<void> saveJobListLocally(List<dynamic> jobs) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jobListString = jsonEncode(jobs);
+    await prefs.setString('jobList', jobListString);
+  }
+  
+  Future<void> clearCredentials() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('username');
+  await prefs.remove('password');
+}
+
+
+ 
 
 

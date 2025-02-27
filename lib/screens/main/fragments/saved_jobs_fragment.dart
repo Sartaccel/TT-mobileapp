@@ -1,13 +1,10 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -122,158 +119,149 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
   }
 
   Future<void> removeJob(int jobId) async {
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV);
-    final url =
-        Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
+  if (retrievedUserData == null) {
+    if (kDebugMode) print("Error: User data is null.");
+    return;
+  }
 
-    final bodyParams = {"jobId": jobId, "isSaved": 0};
-
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': retrievedUserData!.token
-        },
-        body: jsonEncode(bodyParams),
+  // Check internet connection before making the API call
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult.contains(ConnectivityResult.none)) {
+    if (mounted) {
+      IconSnackBar.show(
+        context,
+        label: 'No internet connection',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
       );
+    }
+    return; // Exit function if no internet
+  }
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
-      }
+  final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
+  final bodyParams = {"jobId": jobId, "isFavorite": 0};
 
-      if (response.statusCode == 200 || response.statusCode == 202) {
-        // Fluttertoast.showToast(
-        //     msg: 'Removed successfully',
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.BOTTOM,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Color(0xff2D2D2D),
-        //     textColor: Colors.white,
-        //     fontSize: 16.0);
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': retrievedUserData!.token
+      },
+      body: jsonEncode(bodyParams),
+    );
+
+    if (kDebugMode) {
+      print('Response code ${response.statusCode} :: Response => ${response.body}');
+    }
+
+    if (response.statusCode == 200 || response.statusCode == 202) {
+      if (mounted) {
         IconSnackBar.show(
           context,
           label: 'Removed successfully',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
+          snackBarType: SnackBarType.success,
+          backgroundColor: Colors.green,
           iconColor: Colors.white,
         );
-
-        getAppliedJobsList();
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
+      // Optionally refresh job list
+      // getAppliedJobsList();
+    } else {
+      if (mounted) {
         IconSnackBar.show(
           context,
-          label: 'No internet connection',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
+          label: 'Failed to remove. Please try again.',
+          snackBarType: SnackBarType.fail,
+          backgroundColor: Colors.red,
           iconColor: Colors.white,
         );
-
-        setState(() {
-          isConnectionAvailable = false;
-        });
-
-        //return;  // Exit the function if no internet
-      } else {
-        setState(() {
-          isConnectionAvailable = true;
-        });
       }
     }
+  } catch (e) {
+    if (kDebugMode) print("Error: $e");
+
+    if (mounted) {
+      IconSnackBar.show(
+        context,
+        label: 'Network error. Please try again.',
+        snackBarType: SnackBarType.fail,
+        backgroundColor: Colors.red,
+        iconColor: Colors.white,
+      );
+    }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
     return isLoading
-        ? Expanded(
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!, // Base color for the shimmer
-              highlightColor:
-                  Colors.grey[100]!, // Highlight color for the shimmer
-              child: ListView.builder(
-                itemCount: 5, // Number of skeleton items to show
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.2, color: Colors.grey),
-                      color: Colors.white,
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    height: 160,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    ? SizedBox(
+      height: MediaQuery.of(context).size.height,
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300]!, // Base color for the shimmer
+          highlightColor: Colors.grey[100]!, // Highlight color for the shimmer
+          child: ListView.builder(
+            itemCount: 5, // Number of skeleton items to show
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.2, color: Colors.grey),
+                  color: Colors.white,
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 160,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Shimmer placeholder for job title
-                            Container(
-                              width: 200,
-                              height: 20,
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 10),
-                            // Shimmer placeholder for company name
-                            Container(
-                              width: 150,
-                              height: 15,
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 10),
-                            // Shimmer placeholder for location
-                            Container(
-                              width: 100,
-                              height: 15,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                        // Shimmer placeholder for other widgets (e.g., icons)
+                        // Shimmer placeholder for job title
                         Container(
-                          width: 40,
-                          height: 40,
+                          width: 200,
+                          height: 20,
+                          color: Colors.white,
+                        ),
+                        SizedBox(height: 10),
+                        // Shimmer placeholder for company name
+                        Container(
+                          width: 150,
+                          height: 15,
+                          color: Colors.white,
+                        ),
+                        SizedBox(height: 10),
+                        // Shimmer placeholder for location
+                        Container(
+                          width: 100,
+                          height: 15,
                           color: Colors.white,
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
-            ),
-          )
-        : (jobList.length > 0
+                    // Shimmer placeholder for other widgets (e.g., icons)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      )
+    : (jobList.length > 0
             ? RefreshIndicator(
                 onRefresh: getAppliedJobsList,
                 child: ListView.builder(
@@ -487,15 +475,34 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                   )
                                 ],
                               ),
-                              InkWell(
-                                  onTap: () {
-                                    removeJob(jobList[index]['jobId']);
-                                  },
-                                  child: Icon(
-                                    Icons.bookmark,
-                                    color: Color(0xff004C99),
-                                    size: 25,
-                                  ))
+                             InkWell(
+  onTap: () {
+    var jobData = jobList[index]; // Get job data safely
+    int? jobId = jobData.containsKey('jobId') ? jobData['jobId'] : jobData['id']; // Try alternative keys
+
+    if (jobId == null) {
+      if (kDebugMode) print("Error: jobId is null at index $index. Job Data: $jobData");
+      return; // Exit function
+    }
+
+    // Remove from UI instantly
+    setState(() {
+      jobList.removeAt(index);
+    });
+
+    // Call API to remove job
+    removeJob(jobId);
+  },
+  child: Icon(
+    Icons.bookmark,
+    color: Color(0xff004C99),
+    size: 25,
+  ),
+),
+
+
+
+
                             ],
                           ),
                         ),
