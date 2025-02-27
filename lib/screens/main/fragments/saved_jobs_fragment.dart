@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -120,88 +119,81 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
   }
 
   Future<void> removeJob(int jobId) async {
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV);
-    final url =
-        Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
+  if (retrievedUserData == null) {
+    if (kDebugMode) print("Error: User data is null.");
+    return;
+  }
 
-    final bodyParams = {"jobId": jobId, "isSaved": 0};
-
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': retrievedUserData!.token
-        },
-        body: jsonEncode(bodyParams),
+  // Check internet connection before making the API call
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult.contains(ConnectivityResult.none)) {
+    if (mounted) {
+      IconSnackBar.show(
+        context,
+        label: 'No internet connection',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
       );
+    }
+    return; // Exit function if no internet
+  }
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
-      }
-      if (response.statusCode == 200 || response.statusCode == 202) {
-        // Fluttertoast.showToast(
-        //     msg: 'Removed successfully',
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.BOTTOM,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Color(0xff2D2D2D),
-        //     textColor: Colors.white,
-        //     fontSize: 16.0);
+  final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
+  final bodyParams = {"jobId": jobId, "isFavorite": 0};
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': retrievedUserData!.token
+      },
+      body: jsonEncode(bodyParams),
+    );
+
+    if (kDebugMode) {
+      print('Response code ${response.statusCode} :: Response => ${response.body}');
+    }
+
+    if (response.statusCode == 200 || response.statusCode == 202) {
+      if (mounted) {
         IconSnackBar.show(
           context,
           label: 'Removed successfully',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
+          snackBarType: SnackBarType.success,
+          backgroundColor: Colors.green,
           iconColor: Colors.white,
         );
-
-        getAppliedJobsList();
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
+      // Optionally refresh job list
+      // getAppliedJobsList();
+    } else {
+      if (mounted) {
         IconSnackBar.show(
           context,
-          label: 'No internet connection',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
+          label: 'Failed to remove. Please try again.',
+          snackBarType: SnackBarType.fail,
+          backgroundColor: Colors.red,
           iconColor: Colors.white,
         );
-
-        setState(() {
-          isConnectionAvailable = false;
-        });
-
-        //return;  // Exit the function if no internet
-      } else {
-        setState(() {
-          isConnectionAvailable = true;
-        });
       }
     }
+  } catch (e) {
+    if (kDebugMode) print("Error: $e");
+
+    if (mounted) {
+      IconSnackBar.show(
+        context,
+        label: 'Network error. Please try again.',
+        snackBarType: SnackBarType.fail,
+        backgroundColor: Colors.red,
+        iconColor: Colors.white,
+      );
+    }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -484,14 +476,33 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                   )
                                 ],
                               ),
-                              InkWell(
-                                  onTap: () {
-                                    removeJob(jobList[index]['jobId']);
-                                  },
-                                  child: Icon(
-                                    Icons.bookmark,
-                                    size: 25,
-                                  ))
+                             InkWell(
+  onTap: () {
+    var jobData = jobList[index]; // Get job data safely
+    int? jobId = jobData.containsKey('jobId') ? jobData['jobId'] : jobData['id']; // Try alternative keys
+
+    if (jobId == null) {
+      if (kDebugMode) print("Error: jobId is null at index $index. Job Data: $jobData");
+      return; // Exit function
+    }
+
+    // Remove from UI instantly
+    setState(() {
+      jobList.removeAt(index);
+    });
+
+    // Call API to remove job
+    removeJob(jobId);
+  },
+  child: Icon(
+    Icons.bookmark,
+    size: 25,
+  ),
+),
+
+
+
+
                             ],
                           ),
                         ),

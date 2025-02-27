@@ -324,8 +324,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: Image.asset(
                 'assets/images/tt_logo_full_1.png',
-                width: 260,
-                height: 216,
+                width: 220,
+                height: 100,
               ),
             ),
             
@@ -496,19 +496,19 @@ class _LoginScreenState extends State<LoginScreen> {
             if (emailController.text.trim().isEmpty) {
               setState(() {
                 _isEmailValid = false;
-                emailErrorMessage = 'Email address cannot be empty';
+                emailErrorMessage = 'Email ID is Required';
               });
             } else if (!validateEmail(emailController.text)) {
               setState(() {
                 _isEmailValid = false;
-                emailErrorMessage = 'Enter a valid email address';
+                emailErrorMessage = 'Email ID is Required';
               });
             }
 
             if (passwordController.text.trim().isEmpty) {
               setState(() {
                 _isPasswordValid = false;
-                passwordErrorMessage = 'Password cannot be empty';
+                passwordErrorMessage = 'Password is Required';
               });
             }
           } else {
@@ -557,6 +557,32 @@ class _LoginScreenState extends State<LoginScreen> {
   ),
 ),
 
+SizedBox(height: 20),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext con) =>
+                                    MobileNumberLogin()));
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 44,
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.primaryColor),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                          child: Text(
+                            'Login with OTP',
+                            style: TextStyle(color: AppColors.primaryColor),
+                          ),
+                        ),
+                      ),
+                    ),
               
                   //  Container( width: MediaQuery.of(context).size.width,child: Text('Or Log in with your', style: TextStyle(color: AppColors.tertiaryColor), textAlign: TextAlign.center,)),
               

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
+import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/Utils.dart';
 
 class Searchandfilter extends StatefulWidget {
@@ -12,7 +13,7 @@ class Searchandfilter extends StatefulWidget {
 }
 
 class _SearchandfilterState extends State<Searchandfilter> {
- final List<String> jobSuggestions = [
+  final List<String> jobSuggestions = [
   // Software Development
   "Software Developer",
   "Software Engineer",
@@ -314,7 +315,6 @@ class _SearchandfilterState extends State<Searchandfilter> {
   "Funeral Director"
 ];
 
-
   String selectedJob = '', searchedJob = '';
 
   @override
@@ -383,77 +383,117 @@ class _SearchandfilterState extends State<Searchandfilter> {
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-            padding: EdgeInsets.all(20),
-            child: Container(
-              width: MediaQuery.of(context).size.width - 50,
-              height: 40,
-              padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.white,
-              ),
-              child: Center(
-                child: Autocomplete<String>(
-                  optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) {
-                      return const Iterable<String>.empty();
-                    }
-                    return jobSuggestions.where((String option) {
-                      return option
-                          .toLowerCase()
-                          .contains(textEditingValue.text.toLowerCase());
-                    });
-                  },
-                  onSelected: (String selection) {
-                    // Update the text field and save to preferences but don't navigate
-
-                    setState(() {
-                      selectedJob = selection;
-                      searchedJob = selection;
-                    });
-                    saveStringToPreferences("search", selection);
-                  },
-                  fieldViewBuilder: (context, textEditingController, focusNode,
-                      onFieldSubmitted) {
-                    return TextField(
-                      textAlign: TextAlign.start,
-                      controller: textEditingController,
-                      focusNode: focusNode,
-                      onChanged: (s) {
-                        setState(() {
-                          searchedJob = s;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: SvgPicture.asset(
-                            'assets/icon/Search.svg',
-                            width: 22,
-                            height: 22,
-                          ),
-                        ),
-                        hintText: 'Search for job or skills',
-                        hintStyle: TextStyle(
-                          color: Color(0xFF818385),
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 5),
+  width: MediaQuery.of(context).size.width,
+  decoration: BoxDecoration(color: Color(0xff001B3E)),
+  padding: EdgeInsets.all(20),
+  child: SizedBox(
+    width: MediaQuery.of(context).size.width - 50,
+    height: 40,
+    child: Autocomplete<String>(
+      optionsViewBuilder: (context, onSelected, options) {
+        return Padding( 
+          padding: EdgeInsets.only(top: 10), // ✅ Creates gap outside the box
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Material(
+              elevation: 5,
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                width: MediaQuery.of(context).size.width - 50,
+                constraints: BoxConstraints(maxHeight: 200),
+                child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: options.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final String option = options.elementAt(index);
+                    return ListTile(
+                      leading: SvgPicture.asset( 
+                        'assets/icon/Search.svg',
+                        width: 18,
+                        height: 18,
+                        color: Color(0xFF818385),
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z0-9\s#+.\-]'),
-                        ),
-                      ],
-                      onSubmitted: (value) {},
+                      title: Text(option),
+                      onTap: () {
+                        onSelected(option);
+                      },
                     );
                   },
                 ),
               ),
             ),
           ),
+        );
+      },
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        if (textEditingValue.text.isEmpty) {
+          return const Iterable<String>.empty();
+        }
+        List<String> filteredList = jobSuggestions
+            .where((String option) =>
+                option.toLowerCase().contains(textEditingValue.text.toLowerCase()))
+            .toList();
+
+        filteredList.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+
+        return filteredList;
+      },
+      onSelected: (String selection) {
+        setState(() {
+          selectedJob = selection;
+          searchedJob = selection;
+        });
+        saveStringToPreferences("search", selection);
+      },
+      fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+        return Container(
+          width: MediaQuery.of(context).size.width - 50,
+          height: 40,
+          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            color: Colors.white,
+          ),
+          child: TextField(
+            textAlign: TextAlign.start,
+            controller: textEditingController,
+            focusNode: focusNode,
+            onChanged: (s) {
+              setState(() {
+                searchedJob = s;
+              });
+            },
+            decoration: InputDecoration(
+              prefixIcon: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SvgPicture.asset(
+                  'assets/icon/Search.svg',
+                  width: 22,
+                  height: 22,
+                ),
+              ),
+              hintText: 'Search for job or skills',
+              hintStyle: TextStyle(
+                color: Color(0xFF818385),
+              ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 5),
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'[a-zA-Z0-9\s#+.\-]'),
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  ),
+),
+
+
+
           SizedBox(
             height: 20,
           ),

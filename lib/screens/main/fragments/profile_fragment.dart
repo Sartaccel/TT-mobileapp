@@ -9,6 +9,7 @@ import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/candidate_profile_model.dart';
@@ -126,10 +127,13 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                 return;
               }
 
-              // Proceed with logout if connected
-              UserCredentials credentials = UserCredentials(username: '', password: '');
-              await credentials.deleteCredentials();
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.clear();  // Clears all stored data
+
               await _googleAuthService.signOut();
+
+              // Ensure UI updates before navigating
+              (context as Element).markNeedsBuild();
 
               Navigator.pushAndRemoveUntil(
                 context,
@@ -156,6 +160,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     },
   );
 }
+
 
 
   final String appUrl =

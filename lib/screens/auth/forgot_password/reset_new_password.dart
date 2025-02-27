@@ -9,6 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:http/http.dart' as http;
+import 'package:talent_turbo_new/screens/main/fragments/success_animation.dart';
 
 class ResetNewPassword extends StatefulWidget {
   final id;
@@ -31,78 +32,66 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
   String passwordErrorMSG = "Password cannot be empty";
 
   Future<void> setNewPassword() async {
-    final url = Uri.parse(
-        AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD_UPDATE_PASSWORD);
+  final url = Uri.parse(
+      AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD_UPDATE_PASSWORD);
 
-    final bodyParams = {"id": widget.id, "password": passwordController.text};
+  final bodyParams = {"id": widget.id, "password": passwordController.text};
 
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      final response = await http.post(url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(bodyParams));
+  try {
+    setState(() {
+      isLoading = true;
+    });
 
-      setState(() {
-        isLoading = false;
-      });
+    final response = await http.post(url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(bodyParams));
 
-      if (response.statusCode == 200 || response.statusCode == 202) {
-        var resOBJ = jsonDecode(response.body);
+    setState(() {
+      isLoading = false;
+    });
 
-        // String statusMessage = resOBJ["status"];
-        String statusMessage = resOBJ["message"];
+    if (response.statusCode == 200 || response.statusCode == 202) {
+      var resOBJ = jsonDecode(response.body);
+      String statusMessage = resOBJ["message"];
 
-        if (statusMessage.toLowerCase().contains('success')) {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.green,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff4CAF50),
-            iconColor: Colors.white,
-          );
+      if (statusMessage.toLowerCase().contains('success')) {
+        IconSnackBar.show(
+          context,
+          label: statusMessage,
+          snackBarType: SnackBarType.success,
+          backgroundColor: Color(0xff4CAF50),
+          iconColor: Colors.white,
+        );
 
-          Navigator.pop(context);
-        } else {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.red,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.alert,
-            backgroundColor: Color(0xFFBA1A1A),
-            iconColor: Colors.white,
-          );
-        }
+        // Navigate to success animation page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SuccessAnimation()),
+        );
       } else {
-        if (kDebugMode) {
-          print('${response.statusCode} :: ${response.body}');
-        }
+        IconSnackBar.show(
+          context,
+          label: statusMessage,
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xFFBA1A1A),
+          iconColor: Colors.white,
+        );
       }
-    } catch (e) {
-      setState(() {
-        isLoading = true;
-      });
+    } else {
       if (kDebugMode) {
-        print(e.toString());
+        print('${response.statusCode} :: ${response.body}');
       }
     }
+  } catch (e) {
+    setState(() {
+      isLoading = false;
+    });
+    if (kDebugMode) {
+      print(e.toString());
+    }
   }
+}
+
 
   void validatePassword() {
     if (passwordController.text.length < 8) {

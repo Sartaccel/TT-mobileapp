@@ -810,14 +810,21 @@ Future<void> pickAndUploadPDF() async {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                widget.jobData['jobTitle'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Lato',
-                                    fontSize: 18,
-                                    color: Color(0xff333333)),
-                              ),
+                            Container(
+  width: 280, // Example fixed width
+  child: Text(
+    widget.jobData['jobTitle'] ?? 'Default Title',
+    overflow: TextOverflow.ellipsis,
+    maxLines: 1,
+    style: TextStyle(
+      fontWeight: FontWeight.w700,
+      fontFamily: 'Lato',
+      fontSize: 20,
+      color: Color(0xff333333),
+    ),
+  ),
+)
+,
                               SizedBox(
                                 height: 3,
                               ),

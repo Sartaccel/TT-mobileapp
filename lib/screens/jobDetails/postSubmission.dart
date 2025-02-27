@@ -685,7 +685,7 @@ class _PostJobApplicationSubmissionState
                                         jobList[index]['id'],
                                         (jobList[index]['isSaved'] ?? 0) == 1 ? 0 : 1
                                     );*/
-                                              },
+                                                      },
                                               child: Icon(
                                                 (jobList[index]['isFavorite'] ??
                                                             "0") ==
@@ -764,10 +764,10 @@ class _PostJobApplicationSubmissionState
                             ],
                           ),
                         ))
-        ],
-      ),
-    );
-  }
+                       ],
+                       ),
+                       );
+                        }
 
   @override
   void initState() {

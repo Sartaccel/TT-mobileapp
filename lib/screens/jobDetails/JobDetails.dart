@@ -141,7 +141,7 @@ class _JobdetailsState extends State<Jobdetails> {
     final url =
         Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
 
-    final bodyParams = {"jobId": jobId, "isSaved": status};
+    final bodyParams = {"jobId": jobId, "isFavorite": status};
 
     try {
       setState(() {
@@ -192,16 +192,23 @@ class _JobdetailsState extends State<Jobdetails> {
     }
   }
 
-  bool checkExpiry(String dateString) {
-    // Parse the date string
-    DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
+ 
 
-    // Get the current date
-    DateTime currentDate = DateTime.now();
+bool checkExpiry(String dateString) {
+  // Parse the date string
+  DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
 
-    // Compare the dates
-    return (providedDate.isBefore(currentDate));
-  }
+  // Get the current date at midnight
+  DateTime currentDate = DateTime.now();
+  currentDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+
+  // Reset providedDate to midnight as well
+  providedDate = DateTime(providedDate.year, providedDate.month, providedDate.day);
+
+  // Compare the dates
+  return providedDate.isBefore(currentDate);
+}
+
 
   Future<void> getRefCode(int jobId) async {
     final url =
@@ -593,15 +600,17 @@ class _JobdetailsState extends State<Jobdetails> {
                                                 SizedBox(
                                                   height: 3,
                                                 ),
-                                                Text(
-                                                  '${rawJobData['data']['experience'] ?? '1'} years',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
+                                               Text(
+  '${(rawJobData['data']['experience'] ?? 1).toInt()}+ years',
+  style: TextStyle(
+    fontFamily: 'Lato',
+    color: Color(0xff333333),
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+  ),
+),
+
+
                                               ],
                                             ),
                                           ),
@@ -1220,21 +1229,25 @@ class _JobdetailsState extends State<Jobdetails> {
                                       ),
                                       SizedBox(width: 8),
                                       Expanded(
-                                        child: RichText(
-                                            text: TextSpan(children: [
-                                          TextSpan(
-                                            text: widget.jobData['dueDate'] ??
-                                                'Expired',
-                                            style: TextStyle(
-                                              height: 1.5,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(
-                                                  0xff333333), // Make sure to set color when using TextSpan
-                                            ),
-                                          ),
-                                        ])),
-                                      )
+  child: RichText(
+    text: TextSpan(
+      children: [
+        TextSpan(
+          text: checkExpiry(widget.jobData['dueDate'] ?? '1990-01-01') 
+              ? 'Expired' 
+              : formatDate(widget.jobData['dueDate'] ?? '1990-01-01'),
+          style: TextStyle(
+            height: 1.5,
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            color: Color(0xff333333), // Ensure color is set
+          ),
+        ),
+      ],
+    ),
+  ),
+)
+
                                     ],
                                   ),
 
@@ -1285,7 +1298,7 @@ class _JobdetailsState extends State<Jobdetails> {
                                                 color: checkExpiry(
                                                         widget.jobData[
                                                                 'dueDate'] ??
-                                                            '1990-01-01')
+                                                            '01-01-1990')
                                                     ? Colors.redAccent
                                                     : AppColors.primaryColor,
                                                 borderRadius:
@@ -1294,7 +1307,7 @@ class _JobdetailsState extends State<Jobdetails> {
                                               child: Text(
                                                 checkExpiry(widget.jobData[
                                                             'dueDate'] ??
-                                                        '1990-01-01')
+                                                        '01-01-1990')
                                                     ? 'Expired'
                                                     : 'Apply',
                                                 style: TextStyle(
@@ -1449,5 +1462,13 @@ class _JobdetailsState extends State<Jobdetails> {
 
       getJobData();
     });
+  }
+}
+String formatDate(String dateString) {
+  try {
+    DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(dateString);
+    return DateFormat("dd-MM-yyyy").format(parsedDate);
+  } catch (e) {
+    return 'Invalid Date'; // Handle invalid input gracefully
   }
 }
