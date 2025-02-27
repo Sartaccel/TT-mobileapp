@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -31,7 +32,7 @@ class _AddemploymentState extends State<Addemployment> {
   final databaseRef =
       FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
 
-  final int maxLength = 2000;
+  final int maxLength = 50;
 
   bool isLoading = false;
   bool isEdit = false;
@@ -46,24 +47,24 @@ class _AddemploymentState extends State<Addemployment> {
 
   bool _isDesignationValid = true;
   TextEditingController txtDesignationController = TextEditingController();
-  String designationErrorMsg = 'Designation cannot be empty';
+  String designationErrorMsg = 'Designation is required';
 
   bool _isCompanyNameValid = true;
   TextEditingController txtComanyNameController = TextEditingController();
-  String companyNameErrorMsg = 'Company name cannot be empty';
+  String companyNameErrorMsg = 'Company name is required';
 
   bool isStartDateValid = true;
   bool _startDateSelected = false;
 
-  String? startDateErrorMsg = 'Start date cannot be empty';
+  String? startDateErrorMsg = 'Start date is required';
   final TextEditingController _startDateController = TextEditingController();
 
   bool isEndDateValid = true;
-  String? endDateErrorMsg = 'End date cannot be empty';
+  String? endDateErrorMsg = 'End date is required';
   final TextEditingController _endDateController = TextEditingController();
 
   bool _isDescriptionValid = true;
-  String? descriptionErrorMsg = 'Description cannot be empty';
+  String? descriptionErrorMsg = 'Description is required';
   final TextEditingController txtDescriptionController =
       TextEditingController();
 
@@ -279,6 +280,11 @@ class _AddemploymentState extends State<Addemployment> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: Column(
         children: [
@@ -340,20 +346,26 @@ class _AddemploymentState extends State<Addemployment> {
           Expanded(
               child: SingleChildScrollView(
                   child: Container(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(16),
+                      color: Color(0xffFCFCFC),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
                               height: 25,
                             ),
-                            Text(
-                              'Current Designation',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff333333)),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.015,
+                              ),
+                              child: Text(
+                                'Current Designation',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff333333)),
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -362,25 +374,31 @@ class _AddemploymentState extends State<Addemployment> {
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: TextField(
                                 controller: txtDesignationController,
-                                style:
-                                    TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                                cursorColor: Color(0xff004C99),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff7D7C7C)),
                                 decoration: InputDecoration(
                                     hintText: 'Designation',
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
                                     enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
                                           color: _isDesignationValid
-                                              ? Colors.grey
-                                              : Colors
-                                                  .red, // Default border color
+                                              ? Color(0xffd9d9d9d9)
+                                              : Color(
+                                                  0xffBA1A1A), // Default border color
                                           width: 1),
                                     ),
                                     focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
                                           color: _isDesignationValid
-                                              ? Colors.blue
-                                              : Colors
-                                                  .red, // Border color when focused
+                                              ? Color(0xff004C99)
+                                              : Color(
+                                                  0xffBA1A1A), // Border color when focused
                                           width: 1),
                                     ),
                                     errorText: _isDesignationValid
@@ -389,6 +407,10 @@ class _AddemploymentState extends State<Addemployment> {
                                     // Display error message if invalid
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
                                 onChanged: (value) {
                                   // Validate the email here and update _isEmailValid
                                   setState(() {
@@ -400,13 +422,18 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Text(
-                              'Company Name',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff333333)),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.015,
+                              ),
+                              child: Text(
+                                'Company Name',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff333333)),
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -415,25 +442,31 @@ class _AddemploymentState extends State<Addemployment> {
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: TextField(
                                 controller: txtComanyNameController,
-                                style:
-                                    TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                                cursorColor: Color(0xff004C99),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff7D7C7C)),
                                 decoration: InputDecoration(
                                     hintText: 'Company',
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
                                     enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
                                           color: _isCompanyNameValid
-                                              ? Colors.grey
-                                              : Colors
-                                                  .red, // Default border color
+                                              ? Color(0xffd9d9d9)
+                                              : Color(
+                                                  0xffBA1A1A), // Default border color
                                           width: 1),
                                     ),
                                     focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
                                           color: _isCompanyNameValid
-                                              ? Colors.blue
-                                              : Colors
-                                                  .red, // Border color when focused
+                                              ? Color(0xff004C99)
+                                              : Color(
+                                                  0xffBA1A1A), // Border color when focused
                                           width: 1),
                                     ),
                                     errorText: _isCompanyNameValid
@@ -442,6 +475,10 @@ class _AddemploymentState extends State<Addemployment> {
                                     // Display error message if invalid
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
                                 onChanged: (value) {
                                   // Validate the email here and update _isEmailValid
                                   setState(() {
@@ -455,8 +492,10 @@ class _AddemploymentState extends State<Addemployment> {
                             ),
                             Text(
                               'Is this your current company?',
-                              style:
-                                  TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff333333)),
                             ),
                             SizedBox(
                               height: 10,
@@ -464,52 +503,94 @@ class _AddemploymentState extends State<Addemployment> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Radio<String>(
-                                      value: 'Yes',
-                                      groupValue: _selectedOption,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _selectedOption = value;
-                                          _endDateController.text = '';
-                                          isEndDateValid = true;
-                                        });
-                                      },
-                                    ),
-                                    Text(
-                                      'Yes',
-                                      style: TextStyle(
+                                Expanded(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Transform.scale(
+                                        scale: 1.5,
+                                        child: Radio<String>(
+                                          value: 'Yes',
+                                          groupValue: _selectedOption,
+                                          activeColor: Color(0xff415F91),
+                                          visualDensity: VisualDensity.compact,
+                                          fillColor: WidgetStateProperty
+                                              .resolveWith<Color>((states) {
+                                            if (states.contains(
+                                                WidgetState.selected)) {
+                                              return Color(0xff004C99);
+                                            }
+                                            return Color(0xffD1D1D6);
+                                          }),
+                                          overlayColor: WidgetStateProperty
+                                              .resolveWith<Color>(
+                                            (states) => Colors.transparent,
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedOption = value;
+                                              _endDateController.text = '';
+                                              isEndDateValid = true;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'Yes',
+                                        style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: 'Lato'),
-                                    ),
-                                  ],
+                                          fontFamily: 'Lato',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(width: 20),
-                                Row(
-                                  children: [
-                                    Radio<String>(
-                                      value: 'No',
-                                      groupValue: _selectedOption,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isEndDateValid = true;
-                                          _selectedOption = value;
-                                        });
-                                      },
-                                    ),
-                                    Text(
-                                      'No',
-                                      style: TextStyle(
+                                SizedBox(width: 5), // Space between Yes and No
+                                Expanded(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Transform.scale(
+                                        scale: 1.5,
+                                        child: Radio<String>(
+                                          value: 'No',
+                                          groupValue: _selectedOption,
+                                          activeColor: Color(0xff415F91),
+                                          visualDensity: VisualDensity.compact,
+                                          fillColor: WidgetStateProperty
+                                              .resolveWith<Color>((states) {
+                                            if (states.contains(
+                                                WidgetState.selected)) {
+                                              return Color(0xff004C99);
+                                            }
+                                            return Color(0xffD1D1D6);
+                                          }),
+                                          overlayColor: WidgetStateProperty
+                                              .resolveWith<Color>(
+                                            (states) => Colors.transparent,
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isEndDateValid = true;
+                                              _selectedOption = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'No',
+                                        style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: 'Lato'),
-                                    ),
-                                  ],
+                                          fontFamily: 'Lato',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(width: 80),
                               ],
                             ),
                             SizedBox(
@@ -523,35 +604,60 @@ class _AddemploymentState extends State<Addemployment> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'Start Date',
-                                        style: TextStyle(
-                                            fontSize: 14, fontFamily: 'Lato'),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.015,
+                                        ),
+                                        child: Text(
+                                          'Start Date',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'Lato',
+                                              color: Color(0xff333333)),
+                                        ),
                                       ),
                                       SizedBox(
                                         height: 10,
                                       ),
                                       TextField(
                                         controller: _startDateController,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF505050)),
                                         decoration: InputDecoration(
-                                            suffixIcon:
-                                                Icon(Icons.calendar_today),
+                                            suffixIcon: Padding(
+                                              padding: EdgeInsets.all(7),
+                                              child: SvgPicture.asset(
+                                                'assets/icon/Calendar.svg',
+                                                width: 24,
+                                                height: 24,
+                                              ),
+                                            ),
                                             hintText: 'From',
-                                            border: OutlineInputBorder(),
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
                                             enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                               borderSide: BorderSide(
                                                   color: isStartDateValid
-                                                      ? Colors.grey
-                                                      : Colors
-                                                          .red, // Default border color
+                                                      ? Color(0xffd9d9d9)
+                                                      : Color(
+                                                          0xffBA1A1A), // Default border color
                                                   width: 1),
                                             ),
                                             focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                               borderSide: BorderSide(
                                                   color: isStartDateValid
-                                                      ? Colors.blue
-                                                      : Colors
-                                                          .red, // Border color when focused
+                                                      ? Color(0xff004C99)
+                                                      : Color(
+                                                          0xffBA1A1A), // Border color when focused
                                                   width: 1),
                                             ),
                                             errorText: isStartDateValid
@@ -593,46 +699,68 @@ class _AddemploymentState extends State<Addemployment> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
-                                    width: 10), // Space between the two fields
+                                SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'End Date',
-                                        style: TextStyle(
-                                            fontSize: 14, fontFamily: 'Lato'),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.015,
+                                        ),
+                                        child: Text(
+                                          'End Date',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'Lato',
+                                              color: Color(0xff333333)),
+                                        ),
                                       ),
                                       SizedBox(
                                         height: 10,
                                       ),
                                       TextField(
                                         controller: _endDateController,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF505050)),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.symmetric(
                                               vertical: 5, horizontal: 5),
                                           hintText: _selectedOption == 'No'
                                               ? 'To'
                                               : 'Present',
-                                          suffixIcon:
-                                              Icon(Icons.calendar_today),
-                                          border: OutlineInputBorder(),
+                                          suffixIcon: Padding(
+                                            padding: EdgeInsets.all(7),
+                                            child: SvgPicture.asset(
+                                              'assets/icon/Calendar.svg',
+                                              width: 24,
+                                              height: 24,
+                                            ),
+                                          ),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
                                           enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                             borderSide: BorderSide(
                                                 color: isEndDateValid
-                                                    ? Colors.grey
-                                                    : Colors
-                                                        .red, // Default border color
+                                                    ? Color(0xffd9d9d9)
+                                                    : Color(0xffBA1A1A),
                                                 width: 1),
                                           ),
                                           focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                             borderSide: BorderSide(
                                                 color: isEndDateValid
-                                                    ? Colors.blue
-                                                    : Colors
-                                                        .red, // Border color when focused
+                                                    ? Color(0xff004C99)
+                                                    : Color(0xffBA1A1A),
                                                 width: 1),
                                           ),
                                           errorText: isEndDateValid
@@ -693,10 +821,17 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Text(
-                              'Work type',
-                              style:
-                                  TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.015,
+                              ),
+                              child: Text(
+                                'Work type',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff333333)),
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -708,22 +843,44 @@ class _AddemploymentState extends State<Addemployment> {
                                   border: Border.all(
                                       width: 1,
                                       color: isWorkTypeValid
-                                          ? Colors.grey
-                                          : Colors.red),
+                                          ? Color(0xffD9D9D9)
+                                          : Color(0xffBA1A1A)),
                                   borderRadius: BorderRadius.circular(10)),
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: InkWell(
                                 onTap: () {
                                   showMaterialModalBottomSheet(
+                                    backgroundColor: Color(0x00000000),
                                     isDismissible: true,
                                     context: context,
                                     builder: (context) => Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 30, horizontal: 10),
+                                      color: Color(0xffFCFCFC),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffFCFCFC),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(25),
+                                          topRight: Radius.circular(25),
+                                        ),
+                                      ),
                                       width: MediaQuery.of(context).size.width,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.25,
+                                            height: 5,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black, // Adjust color
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
                                           ListTile(
                                             //leading: Icon(Icons.visibility_outlined),
                                             title: Text('On Site'),
@@ -769,7 +926,7 @@ class _AddemploymentState extends State<Addemployment> {
                                     selectedWorkType.isEmpty
                                         ? 'Select your work type'
                                         : selectedWorkType,
-                                    style: TextStyle(color:Colors.grey),
+                                    style: TextStyle(color: Color(0xFF505050)),
                                   ),
                                 ),
                               ),
@@ -777,10 +934,17 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Text(
-                              'Employment Type',
-                              style:
-                                  TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.015,
+                              ),
+                              child: Text(
+                                'Employment Type',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff333333)),
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -792,8 +956,8 @@ class _AddemploymentState extends State<Addemployment> {
                                   border: Border.all(
                                       width: 1,
                                       color: isWorkTypeValid
-                                          ?Colors.grey
-                                          : Colors.red),
+                                          ? Color(0xffD9D9D9)
+                                          : Color(0xffBA1A1A)),
                                   borderRadius: BorderRadius.circular(10)),
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: InkWell(
@@ -801,15 +965,37 @@ class _AddemploymentState extends State<Addemployment> {
                                   showMaterialModalBottomSheet(
                                     isDismissible: true,
                                     context: context,
+                                    backgroundColor: Colors
+                                        .transparent, // Fix: Removes default background
                                     builder: (context) => Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffFCFCFC),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(
+                                              20), // Top-left corner
+                                          topRight: Radius.circular(
+                                              20), // Top-right corner
+                                        ),
+                                      ),
                                       padding: EdgeInsets.symmetric(
                                           vertical: 30, horizontal: 10),
                                       width: MediaQuery.of(context).size.width,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.25,
+                                            height: 5,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
                                           ListTile(
-                                            //leading: Icon(Icons.visibility_outlined),
                                             title: Text('Full time'),
                                             onTap: () {
                                               setState(() {
@@ -821,7 +1007,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.refresh),
                                             title: Text('Part time'),
                                             onTap: () {
                                               setState(() {
@@ -833,7 +1018,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.download),
                                             title: Text('Internship'),
                                             onTap: () {
                                               setState(() {
@@ -845,7 +1029,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.download),
                                             title: Text('Freelance'),
                                             onTap: () {
                                               setState(() {
@@ -857,7 +1040,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.download),
                                             title: Text('Self-employed'),
                                             onTap: () {
                                               setState(() {
@@ -879,7 +1061,7 @@ class _AddemploymentState extends State<Addemployment> {
                                     selectedEmploymentType.isEmpty
                                         ? 'Select your employment type'
                                         : selectedEmploymentType,
-                                    style: TextStyle(color: Color(0xff7D7C7C)),
+                                    style: TextStyle(color: Color(0xFF505050)),
                                   ),
                                 ),
                               ),
@@ -887,13 +1069,18 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Text(
-                              'Description',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff333333)),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.015,
+                              ),
+                              child: Text(
+                                'Description',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff333333)),
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -904,25 +1091,32 @@ class _AddemploymentState extends State<Addemployment> {
                                 maxLines: 4,
                                 maxLength: maxLength,
                                 controller: txtDescriptionController,
-                                style:
-                                    TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                                cursorColor: Color(0xff004C99),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff7D7C7C)),
                                 decoration: InputDecoration(
                                     hintText: 'Your work experience',
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
                                     enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
                                           color: _isDescriptionValid
-                                              ? Colors.grey
-                                              : Colors
-                                                  .red, // Default border color
+                                              ? Color(0xffd9d9d9)
+                                              : Color(
+                                                  0xffBA1A1A), // Default border color
                                           width: 1),
                                     ),
                                     focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
                                           color: _isDescriptionValid
-                                              ? Colors.blue
-                                              : Colors
-                                                  .red, // Border color when focused
+                                              ? Color(0xff004C99)
+                                              : Color(
+                                                  0xffBA1A1A), // Border color when focused
                                           width: 1),
                                     ),
                                     errorText: _isDescriptionValid
@@ -931,6 +1125,10 @@ class _AddemploymentState extends State<Addemployment> {
                                     // Display error message if invalid
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
                                 onChanged: (value) {
                                   // Validate the email here and update _isEmailValid
                                   setState(() {
@@ -939,28 +1137,6 @@ class _AddemploymentState extends State<Addemployment> {
                                 },
                               ),
                             ),
-                            isLoading
-                                ? Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Center(
-                                      child: Visibility(
-                                        visible: isLoading,
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              height: 30,
-                                            ),
-                                            LoadingAnimationWidget
-                                                .fourRotatingDots(
-                                              color: AppColors.primaryColor,
-                                              size: 40,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Container(),
                             SizedBox(
                               height: 25,
                             ),
@@ -1036,10 +1212,47 @@ class _AddemploymentState extends State<Addemployment> {
                                     color: AppColors.primaryColor,
                                     borderRadius: BorderRadius.circular(10)),
                                 child: Center(
-                                  child: Text(
-                                    'Save',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                                  child: isLoading
+                                      ? SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: TweenAnimationBuilder<double>(
+                                            tween:
+                                                Tween<double>(begin: 0, end: 5),
+                                            duration: Duration(seconds: 2),
+                                            curve: Curves.linear,
+                                            builder: (context, value, child) {
+                                              return Transform.rotate(
+                                                angle: value *
+                                                    2 *
+                                                    3.1416, // Full rotation effect
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 4,
+                                                  value:
+                                                      0.20, // 1/5 of the circle
+                                                  backgroundColor:
+                                                      const Color.fromARGB(
+                                                          142,
+                                                          234,
+                                                          232,
+                                                          232), // Grey stroke
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          Colors
+                                                              .white), // White rotating stroke
+                                                ),
+                                              );
+                                            },
+                                            onEnd: () =>
+                                                {}, // Ensures smooth infinite animation
+                                          ),
+                                        )
+                                      : Text(
+                                          'Save',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                 ),
                               ),
                             )

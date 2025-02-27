@@ -28,7 +28,6 @@ import 'package:talent_turbo_new/test_screens/otp_test_screen.dart';
 
 import 'firebase_options.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -36,7 +35,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -46,8 +44,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Talent Turbo',
-    
+      title: 'TalentTurbo',
+
       //home: const MyHomePage(title: 'Flutter Demo Home Page3'),
       home: AutoLoginSwitcher(),
       //home: ForgotPasswordOTPScreen(email: 'dsds'),
@@ -55,4 +53,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

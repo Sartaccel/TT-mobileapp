@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -194,7 +195,13 @@ class _PostJobApplicationSubmissionState
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
+      backgroundColor: Color(0xffF7F7F7),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -241,7 +248,7 @@ class _PostJobApplicationSubmissionState
                 Text(
                   'Application',
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xffFCFCFC),
                       fontFamily: 'Lato',
                       fontWeight: FontWeight.w400,
                       fontSize: 16),
@@ -268,7 +275,8 @@ class _PostJobApplicationSubmissionState
                   SizedBox(
                     width: 20,
                   ),
-                  Image.asset('assets/images/img_tic_success.png'),
+                  SvgPicture.asset('assets/icon/success.svg',
+                      width: 45, height: 45),
                   SizedBox(
                     width: 20,
                   ),
@@ -278,8 +286,8 @@ class _PostJobApplicationSubmissionState
                       Text(
                         'Application submitted',
                         style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                             fontFamily: 'Lato',
                             color: Color(0xff333333)),
                       ),

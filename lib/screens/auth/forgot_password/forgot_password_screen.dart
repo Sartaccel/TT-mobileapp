@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -151,7 +153,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0x04FCFCFC),
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return Scaffold(
+      backgroundColor: Color(0xFFFCFCFC),
       body: Stack(
         children: [
           Positioned(
@@ -174,77 +181,117 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset('assets/images/forgot_password.png'),
-
                     SizedBox(
-                      height: 80,
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: FittedBox(
+                        child: SvgPicture.asset(
+                            'assets/images/forgot_password.svg'),
+                        fit: BoxFit.contain,
+                      ),
                     ),
+                      SizedBox(
+                        height: 20,
+                      ),
                     Text(
                       'Reset Your Password',
                       style: TextStyle(
+                          color: Color(0xff333333),
                           fontFamily: 'Lato',
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700),
                     ),
-
                     SizedBox(
-                      height: 40,
+                      height: 20,
                     ),
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 40),
-                        child: Text(
-                          'Please enter the address associated with your account',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xff545454),
-                              fontSize: 14,
-                              fontFamily: 'Lato'),
-                        )),
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [Color(0xff545454), Color(0xff004C99)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ).createShader(
+                          Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                      blendMode: BlendMode.srcIn,
+                      child: Text(
+                        'Please enter the address associated with your account',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff545454),
+                            fontSize: 14,
+                            fontFamily: 'Lato'),
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
-
                     SizedBox(
                       height: 50,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Email',
-                          style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.015,
+                          ),
+                          child: Text(
+                            'Email',
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: 'Lato',
+                                color: _isEmailValid
+                                    ? Color(0xff333333)
+                                    : Color(0xffBA1A1A)),
+                          ),
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         TextField(
                           controller: emailController,
-                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          cursorColor: Color(0xff004C99),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              color: Color(0xff545454)),
                           decoration: InputDecoration(
                               hintText: 'Enter your email',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Colors.grey
-                                        : Colors.red, // Default border color
+                                        ? Color(0xffd9d9d9)
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     color: _isEmailValid
-                                        ? Colors.blue
-                                        : Colors
-                                            .red, // Border color when focused
+                                        ? Color(0xff004C99)
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
                                     width: 1),
                               ),
-                              errorText: _isEmailValid
-                                  ? null
-                                  : emailErrorMessage, // Display error message if invalid
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10)),
                           keyboardType: TextInputType.emailAddress,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
+                            ),
+                            FilteringTextInputFormatter.deny(
+                              RegExp(r'\s'),
+                            ),
+                            FilteringTextInputFormatter.deny(
+                              RegExp(
+                                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                                  unicode: true),
+                            ),
+                          ],
                           onChanged: (value) {
                             // Validate the email here and update _isEmailValid
                             setState(() {
@@ -252,30 +299,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             });
                           },
                         ),
+                        if (!_isEmailValid)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 0,
+                            ),
+                            child: Text(
+                              emailErrorMessage ?? '',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xffBA1A1A),
+                                fontFamily: 'Lato',
+                              ),
+                            ),
+                          ),
                       ],
                     ),
-
-                    //Loading
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Center(
-                        child: Visibility(
-                          visible: isLoading,
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 30,
-                              ),
-                              LoadingAnimationWidget.fourRotatingDots(
-                                color: AppColors.primaryColor,
-                                size: 40,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
                     SizedBox(height: 50),
                     InkWell(
                       onTap: () {
@@ -305,16 +344,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             color: AppColors.primaryColor,
                             borderRadius: BorderRadius.circular(10)),
                         child: Center(
-                          child: Text(
-                            'Send Code',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          child: isLoading
+                              ? SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: TweenAnimationBuilder<double>(
+                                    tween: Tween<double>(begin: 0, end: 5),
+                                    duration: Duration(seconds: 2),
+                                    curve: Curves.linear,
+                                    builder: (context, value, child) {
+                                      return Transform.rotate(
+                                        angle: value *
+                                            2 *
+                                            3.1416, // Full rotation effect
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 4,
+                                          value: 0.20, // 1/5 of the circle
+                                          backgroundColor: const Color.fromARGB(
+                                              142,
+                                              234,
+                                              232,
+                                              232), // Grey stroke
+                                          valueColor: AlwaysStoppedAnimation<
+                                                  Color>(
+                                              Colors
+                                                  .white), // White rotating stroke
+                                        ),
+                                      );
+                                    },
+                                    onEnd: () =>
+                                        {}, // Ensures smooth infinite animation
+                                  ),
+                                )
+                              : Text(
+                                  'Send Code',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         ),
                       ),
                     ),
-
                     SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
                     InkWell(
                       onTap: () {

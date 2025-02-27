@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -49,6 +50,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
     }
 
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -109,7 +111,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -221,15 +223,36 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                   child: InkWell(
                     onTap: () {
                       showMaterialModalBottomSheet(
+                        backgroundColor: Color(0x00000000),
                         isDismissible: true,
                         context: context,
                         builder: (context) => Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 30, horizontal: 10),
+                          height: MediaQuery.of(context).size.height * 0.365,
+                          padding: EdgeInsets.only(
+                            top: 30,
+                            bottom: 0,
+                            left: 10,
+                            right: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Color(0xffFCFCFC),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              topRight: Radius.circular(25),
+                            ),
+                          ),
                           width: MediaQuery.of(context).size.width,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                  color: Colors.black, // Adjust color
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
                               ListTile(
                                 //leading: Icon(Icons.visibility_outlined),
                                 title: Text('Fresher'),
@@ -351,30 +374,26 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                         ),
                       );
                     },
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        selectedExpType.isEmpty
-                            ? 'Choose Experience'
-                            : selectedExpType == "0"
-                                ? "Fresher"
-                                : '${selectedExpType}',
-                        style: TextStyle(color: Color(0xff7D7C7C)),
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          selectedExpType.isEmpty
+                              ? 'Choose Experience'
+                              : selectedExpType == "0"
+                                  ? "Fresher"
+                                  : '${selectedExpType}',
+                          style: TextStyle(color: Color(0xff545454)),
+                        ),
+                        SvgPicture.asset('assets/icon/ArrowDown.svg',
+                            height: 10, width: 10),
+                      ],
                     ),
                   ),
                 ),
                 SizedBox(
                   height: 30,
                 ),
-                _isLoading
-                    ? Center(
-                        child: LoadingAnimationWidget.fourRotatingDots(
-                          color: AppColors.primaryColor,
-                          size: 40,
-                        ),
-                      )
-                    : Container(),
                 SizedBox(
                   height: 30,
                 ),
@@ -391,10 +410,38 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                         color: AppColors.primaryColor,
                         borderRadius: BorderRadius.circular(10)),
                     child: Center(
-                      child: Text(
-                        'Filter',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child: _isLoading
+                          ? SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: TweenAnimationBuilder<double>(
+                                tween: Tween<double>(begin: 0, end: 5),
+                                duration: Duration(seconds: 2),
+                                curve: Curves.linear,
+                                builder: (context, value, child) {
+                                  return Transform.rotate(
+                                    angle: value *
+                                        2 *
+                                        3.1416, // Full rotation effect
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 4,
+                                      value: 0.20, // 1/5 of the circle
+                                      backgroundColor: const Color.fromARGB(
+                                          142, 234, 232, 232), // Grey stroke
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors
+                                              .white), // White rotating stroke
+                                    ),
+                                  );
+                                },
+                                onEnd: () =>
+                                    {}, // Ensures smooth infinite animation
+                              ),
+                            )
+                          : Text(
+                              'Filter',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
                 )

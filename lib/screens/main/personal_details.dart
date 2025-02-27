@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -783,6 +784,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
@@ -790,7 +796,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
               retrievedUserData!.profileId, retrievedUserData!.token, 0);
         },
         child: Container(
-          color: Colors.white,
+          color: Color(0xffF7F7F7),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -835,7 +841,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       ],
                     ),
                     SizedBox(
-                      width: 80,
+                      width: 40,
                     )
                   ],
                 ),
@@ -846,11 +852,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                     children: [
                       PhysicalModel(
                         elevation: 0.5,
-                        color: Colors.white,
+                        color: Color(0xffFCFCFC),
                         child: Column(
                           children: [
                             Container(
-                              height: 270,
+                              height: 250,
                               child: Stack(
                                 children: [
                                   Container(
@@ -859,11 +865,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                     decoration: BoxDecoration(
                                         color: Color(0xff001B3E),
                                         borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20))),
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10))),
                                   ),
                                   Positioned(
-                                      top: 70,
+                                      top: 65,
                                       left:
                                           ((MediaQuery.of(context).size.width) /
                                                   2) -
@@ -917,8 +923,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                   2) +
                                               20,
                                       top: 140,
-                                      child: Image.asset(
-                                          'assets/images/pro_image_edit.png')),
+                                      child: SvgPicture.asset(
+                                          'assets/icon/DpEdit.svg')),
                                   Positioned(
                                       right: 20,
                                       top: 140,
@@ -934,7 +940,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         },
                                         child: Row(
                                           children: [
-                                            Icon(Icons.edit_outlined),
+                                            SvgPicture.asset(
+                                              'assets/icon/edit.svg',
+                                              width: 25,
+                                              height: 25,
+                                            ),
+                                            const SizedBox(width: 3),
                                             Text(
                                               'Edit',
                                               style: TextStyle(
@@ -944,9 +955,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         ),
                                       )),
                                   Positioned(
-                                    top: 190,
-                                    left: 0,
-                                    right: 0,
+                                    top: 175,
+                                    left: 10,
+                                    right: 10,
                                     child: Center(
                                       child: Column(
                                         children: [
@@ -967,7 +978,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                             '${candidateProfileModel!.position ?? 'Designation not updated'}',
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
-                                                color: Color(0xff333333),
+                                                color: Color(0xff545454),
                                                 fontSize: 14),
                                           ),
                                         ],
@@ -978,14 +989,18 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                               ),
                             ),
                             SizedBox(
-                              height: 0,
+                              height: 15,
                             ),
                             Container(
                               child: Column(
                                 children: [
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.location_on_outlined),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/location.svg',
+                                      width: 26,
+                                      height: 30,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       '${candidateProfileModel?.location ?? 'Location not updated'}',
@@ -998,7 +1013,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                   //ListTile(dense: true, leading: Icon(Icons.work_outline_rounded), minLeadingWidth: 10, title: Text('${candidateProfileModel!.experience} Years', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ,color: Color(0xff333333)),),),
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.work_outline_rounded),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/newJob.svg',
+                                      width: 26,
+                                      height: 26,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       candidateProfileModel!.experience != null
@@ -1012,7 +1031,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                   ),
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.call),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/phone.svg',
+                                      width: 28,
+                                      height: 28,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       '${candidateProfileModel!.mobile}',
@@ -1024,7 +1047,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                   ),
                                   ListTile(
                                     dense: true,
-                                    leading: Icon(Icons.email_outlined),
+                                    leading: SvgPicture.asset(
+                                      'assets/icon/mail.svg',
+                                      width: 28,
+                                      height: 28,
+                                    ),
                                     minLeadingWidth: 10,
                                     title: Text(
                                       '${candidateProfileModel!.email}',
@@ -1065,24 +1092,26 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                             )
                           : Container(),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
+                        width: 550,
                         decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 0.3, color: Colors.grey)),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                            color: Color(0xffFCFCFC),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2))),
+                        padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(0),
                               child: Text(
                                 'Resume',
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w500,
                                     color: Color(0xff333333)),
                               ),
                             ),
@@ -1118,12 +1147,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                 'File types: pdf, .doc, .docx  Max file size: 5MB',
                                                 style: TextStyle(
                                                     color: Color(0xff7D7C7C),
-                                                    fontSize: 14),
+                                                    fontSize: 12),
                                               )
                                             ],
                                           ),
                                           SvgPicture.asset(
-                                              'assets/images/mage_upload.svg')
+                                              'assets/images/mage_upload.svg',
+                                              width: 30,
+                                              height: 30)
                                         ],
                                       ),
                                     ),
@@ -1228,7 +1259,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                       )
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.all(20),
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(12),
@@ -1236,7 +1267,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
@@ -1245,7 +1276,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                 MainAxisAlignment.start,
                                             children: [
                                               Image.asset(
-                                                  'assets/images/ic_curriculum.png'),
+                                                  'assets/images/ic_curriculum.png',
+                                                  width: 55,
+                                                  height: 55),
                                               SizedBox(
                                                 width: 10,
                                               ),
@@ -1270,6 +1303,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                           style: TextStyle(
                                                               color: Color(
                                                                   0xff004C99),
+                                                              fontSize: 14,
                                                               fontFamily:
                                                                   'NunitoSans',
                                                               fontWeight:
@@ -1281,7 +1315,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                       'Last updated ${formatResumeDate(candidateProfileModel!.lastResumeUpdatedDate)}',
                                                       style: TextStyle(
                                                           color:
-                                                              Color(0xff004C99),
+                                                              Color(0xff545454),
+                                                          fontSize: 12,
                                                           fontFamily:
                                                               'NunitoSans',
                                                           fontWeight: FontWeight
@@ -1290,10 +1325,16 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                   ],
                                                 ),
                                               ),
+                                              SizedBox(
+                                                height: 56,
+                                                child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: SvgPicture.asset(
+                                                      'assets/icon/moreDot.svg'),
+                                                ),
+                                              )
                                             ],
                                           ),
-                                          Image.asset(
-                                              'assets/images/ic_more.png')
                                         ],
                                       ),
                                     ),
@@ -1302,13 +1343,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2)),
+                            color: Color(0xffFCFCFC)),
                         child: Column(
                           children: [
                             SizedBox(
@@ -1320,23 +1362,36 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Text(
                                   'Work Experience',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff333333)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff333333),
+                                  ),
                                 ),
                                 InkWell(
-                                    onTap: () async {
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Addemployment(
-                                                    emplomentData: null,
-                                                  )));
-                                      fetchProfileFromPref();
-                                    },
-                                    child: Image.asset(
-                                        'assets/images/ic_add_round.png'))
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Addemployment(
+                                          emplomentData: null,
+                                        ),
+                                      ),
+                                    );
+                                    fetchProfileFromPref();
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/icon/add.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             workList.length == 0
@@ -1370,10 +1425,22 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                               showMaterialModalBottomSheet(
                                                 isDismissible: true,
                                                 context: context,
+                                                backgroundColor:
+                                                    Color(0x00000000),
                                                 builder: (context) => Container(
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 30,
                                                       horizontal: 10),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffFCFCFC),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(25),
+                                                      topRight:
+                                                          Radius.circular(25),
+                                                    ),
+                                                  ),
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
@@ -1381,6 +1448,22 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.25,
+                                                        height: 5,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .black, // Adjust color
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                      ),
                                                       ListTile(
                                                         leading: SvgPicture.asset(
                                                             'assets/images/tabler_edit.svg'),
@@ -1500,8 +1583,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     ),
                                                   ],
                                                 ),
-                                                Image.asset(
-                                                    'assets/images/ic_more.png')
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    right:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.02,
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                      'assets/icon/moreDot.svg'),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -1515,13 +1607,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2)),
+                            color: Color(0xffFCFCFC)),
                         child: Column(
                           children: [
                             SizedBox(
@@ -1533,23 +1626,36 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Text(
                                   'Educational Details',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff333333)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff333333),
+                                  ),
                                 ),
                                 InkWell(
-                                    onTap: () async {
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Addeducation(
-                                                    educationDetail: null,
-                                                  )));
-                                      fetchProfileFromPref();
-                                    },
-                                    child: Image.asset(
-                                        'assets/images/ic_add_round.png'))
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Addeducation(
+                                          educationDetail: null,
+                                        ),
+                                      ),
+                                    );
+                                    fetchProfileFromPref();
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/icon/add.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             educationList.length == 0
@@ -1581,12 +1687,24 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                           InkWell(
                                             onTap: () {
                                               showMaterialModalBottomSheet(
+                                                backgroundColor:
+                                                    Color(0x00000000),
                                                 isDismissible: true,
                                                 context: context,
                                                 builder: (context) => Container(
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 30,
                                                       horizontal: 10),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffFCFCFC),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(25),
+                                                      topRight:
+                                                          Radius.circular(25),
+                                                    ),
+                                                  ),
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
@@ -1594,6 +1712,22 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.25,
+                                                        height: 5,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .black, // Adjust color
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                      ),
                                                       ListTile(
                                                         leading: SvgPicture.asset(
                                                             'assets/images/tabler_edit.svg'),
@@ -1713,8 +1847,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     ),
                                                   ],
                                                 ),
-                                                Image.asset(
-                                                    'assets/images/ic_more.png')
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    right:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.02,
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                      'assets/icon/moreDot.svg'),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -1728,13 +1871,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2)),
+                            color: Color(0xffFCFCFC)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1747,20 +1891,33 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Text(
                                   'Skills',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xff333333)),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff333333),
+                                  ),
                                 ),
                                 InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Adddeleteskills()));
-                                    },
-                                    child: Image.asset(
-                                        'assets/images/ic_add_round.png'))
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Adddeleteskills(),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/icon/add.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             userSkills.length == 0

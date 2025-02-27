@@ -1,9 +1,13 @@
 import 'dart:convert';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:share_plus/share_plus.dart';
@@ -44,6 +48,8 @@ class _JobdetailsState extends State<Jobdetails> {
       subject: 'Try this awesome app!',
     );
   }
+
+  bool isConnectionAvailable = true;
 
   var rawJobData = null;
 
@@ -97,7 +103,35 @@ class _JobdetailsState extends State<Jobdetails> {
       setState(() {
         isLoading = false;
       });
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        // Fluttertoast.showToast(
+        //   msg: "No internet connection",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 1,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   textColor: Colors.white,
+        //   fontSize: 16.0,
+        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
 
+        setState(() {
+          isConnectionAvailable = false;
+        });
+
+        //return;  // Exit the function if no internet
+      } else {
+        setState(() {
+          isConnectionAvailable = true;
+        });
+      }
       print(e.toString());
     }
   }
@@ -233,7 +267,12 @@ class _JobdetailsState extends State<Jobdetails> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xff001B3E),
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         children: [
           Container(
@@ -313,460 +352,491 @@ class _JobdetailsState extends State<Jobdetails> {
                   ),
                 )
               : rawJobData != null
-                  ? Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                  ? isConnectionAvailable
+                      ? Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(15),
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          //Image.asset('assets/images/bmw_logo.png', height: 41, width: 41, ),
-                                          Image(
-                                            image: widget.jobData['logo'] !=
-                                                        null &&
-                                                    widget.jobData['logo']
-                                                        .isNotEmpty
-                                                ? NetworkImage(
-                                                    widget.jobData['logo'],
-                                                  ) as ImageProvider<Object>
-                                                : const AssetImage(
-                                                    'assets/images/tt_logo_resized.png'),
-                                            height: 40,
-                                            width: 40,
-                                            fit: BoxFit.contain,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              // Fallback to asset if network image fails
-                                              return Image.asset(
-                                                  'assets/images/tt_logo_resized.png',
-                                                  height: 40,
-                                                  width: 40);
-                                            },
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.min,
+                                          Row(
                                             children: [
-                                              Flexible(
-                                                fit: FlexFit.loose,
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width -
-                                                      150,
-                                                  child: Text(
-                                                    rawJobData['data']
-                                                            ['jobTitle'] ??
-                                                        '',
-                                                    //'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontFamily: 'Lato',
-                                                        fontSize: 20,
-                                                        color:
-                                                            Color(0xff333333)),
-                                                  ),
-                                                ),
+                                              //Image.asset('assets/images/bmw_logo.png', height: 41, width: 41, ),
+                                              Image(
+                                                image: widget.jobData['logo'] !=
+                                                            null &&
+                                                        widget.jobData['logo']
+                                                            .isNotEmpty
+                                                    ? NetworkImage(
+                                                        widget.jobData['logo'],
+                                                      ) as ImageProvider<Object>
+                                                    : const AssetImage(
+                                                        'assets/images/tt_logo_resized.png'),
+                                                height: 40,
+                                                width: 40,
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  // Fallback to asset if network image fails
+                                                  return Image.asset(
+                                                      'assets/images/tt_logo_resized.png',
+                                                      height: 40,
+                                                      width: 40);
+                                                },
                                               ),
                                               SizedBox(
-                                                height: 3,
+                                                width: 20,
                                               ),
-                                              Text(
-                                                widget.jobData['companyName'] ==
-                                                        null
-                                                    ? ''
-                                                    : widget
-                                                        .jobData['companyName'],
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontFamily: 'Lato',
-                                                    fontSize: 14,
-                                                    color: Color(0xff545454)),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Flexible(
+                                                    fit: FlexFit.loose,
+                                                    child: Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width -
+                                                              150,
+                                                      child: Text(
+                                                        rawJobData['data']
+                                                                ['jobTitle'] ??
+                                                            '',
+                                                        //'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontFamily: 'Lato',
+                                                            fontSize: 20,
+                                                            color: Color(
+                                                                0xff333333)),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 3,
+                                                  ),
+                                                  Text(
+                                                    widget.jobData[
+                                                                'companyName'] ==
+                                                            null
+                                                        ? ''
+                                                        : widget.jobData[
+                                                            'companyName'],
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontFamily: 'Lato',
+                                                        fontSize: 14,
+                                                        color:
+                                                            Color(0xff545454)),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
-                                      //Icon( rawJobData['data']['isFavorite'] ==1? Icons.bookmark : Icons.bookmark_border_rounded, size: 25,)
-                                      InkWell(
-                                          onTap: () {
-                                            //saveJob(jobList[index]['id'], jobList[index]['isSaved'] ? 0 : 1);
-                                            if (kDebugMode) {
-                                              print('Status: ${isSaved}');
-                                              print(
-                                                  'id: ${widget.jobData['id']}');
-                                              print(
-                                                  'jobId: ${widget.jobData['jobId']}');
-                                            }
-                                            saveJob(
-                                                widget.jobData['id'] ??
-                                                    widget.jobData['jobId'],
-                                                isSaved ? 0 : 1);
-                                            /* saveJob(
+                                          //Icon( rawJobData['data']['isFavorite'] ==1? Icons.bookmark : Icons.bookmark_border_rounded, size: 25,)
+                                          InkWell(
+                                              onTap: () {
+                                                //saveJob(jobList[index]['id'], jobList[index]['isSaved'] ? 0 : 1);
+
+                                                if (kDebugMode) {
+                                                  print('Status: ${isSaved}');
+                                                  print(
+                                                      'id: ${widget.jobData['id']}');
+                                                  print(
+                                                      'jobId: ${widget.jobData['jobId']}');
+                                                }
+                                                saveJob(
+                                                    widget.jobData['id'] ??
+                                                        widget.jobData['jobId'],
+                                                    isSaved ? 0 : 1);
+                                                /* saveJob(
                                       jobList[index]['id'],
                                       (jobList[index]['isSaved'] ?? 0) == 1 ? 0 : 1
                                   );*/
-                                          },
-                                          child: Icon(
-                                            //(widget.jobData['isFavorite'] == "1")
-                                            isSaved
-                                                ? Icons.bookmark
-                                                : Icons.bookmark_border_rounded,
-                                            size: 25,
-                                          ))
-                                    ],
-                                  ),
+                                              },
+                                              child: Icon(
+                                                //(widget.jobData['isFavorite'] == "1")
+                                                isSaved
+                                                    ? Icons.bookmark
+                                                    : Icons
+                                                        .bookmark_border_rounded,
+                                                size: 25,
+                                              ))
+                                        ],
+                                      ),
 
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(60, 15, 0, 0),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(5)),
-                                          child: Text(
-                                            widget.jobData['jobCode'] ??
-                                                'TT-JB-9571',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff545454),
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(5)),
-                                          child: Text(
-                                            'Posted ${processDate(widget.jobData['dueDate'])}',
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff545454)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_worktype.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Employment type',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  widget.jobData['workType'],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
+                                      Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(60, 15, 0, 0),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5, vertical: 8),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Text(
+                                                widget.jobData['jobCode'] ??
+                                                    'TT-JB-9571',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xff545454),
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
                                             ),
-                                          ),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5, vertical: 8),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Text(
+                                                'Posted ${processDate(widget.jobData['dueDate'])}',
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xff545454)),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_experience.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Experience',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  '${rawJobData['data']['experience'] ?? '1'} years',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_onsite.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Work type',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  rawJobData['data']
-                                                      ['workType'],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_job_location.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Location',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  widget.jobData['location'] ??
-                                                      'N/A',
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 40,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Skills required:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Wrap(
-                                      spacing:
-                                          8.0, // Horizontal space between boxes
-                                      runSpacing:
-                                          12.0, // Vertical space between rows
-                                      children: List.generate(
-                                          technologyList.length, (i) {
-                                        return technologyList[i]
-                                                    ['technologyName'] ==
-                                                null
-                                            ? Container()
-                                            : Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 8),
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xffF0F6FF)),
-                                                child: Row(
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Container(
+                                              width: 157,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(9)),
+                                              child: Center(
+                                                child: Column(
                                                   mainAxisSize:
                                                       MainAxisSize.min,
                                                   children: [
-                                                    Image.asset(
-                                                      'assets/images/ic_tick.png',
-                                                      height: 8,
-                                                      width: 12,
-                                                    ),
+                                                    SvgPicture.asset(
+                                                        'assets/images/ic_worktype.svg'),
                                                     SizedBox(
-                                                      width: 10,
+                                                      height: 3,
                                                     ),
                                                     Text(
-                                                      technologyList[i]
-                                                          ['technologyName'],
+                                                      'Employment type',
                                                       style: TextStyle(
-                                                          fontSize: 12,
                                                           fontFamily: 'Lato',
-                                                          color: Color(
-                                                              0xff004C99)),
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      widget
+                                                          .jobData['workType'],
+                                                      style: TextStyle(
+                                                          fontFamily: 'Lato',
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400),
                                                     ),
                                                   ],
                                                 ),
-                                              );
-                                      }),
-                                    ),
-                                  ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 157,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(9)),
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        'assets/images/ic_experience.svg'),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      'Experience',
+                                                      style: TextStyle(
+                                                          fontFamily: 'Lato',
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      '${rawJobData['data']['experience'] ?? '1'} years',
+                                                      style: TextStyle(
+                                                          fontFamily: 'Lato',
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Container(
+                                              width: 157,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(9)),
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        'assets/images/ic_onsite.svg'),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      'Work type',
+                                                      style: TextStyle(
+                                                          fontFamily: 'Lato',
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      rawJobData['data']
+                                                          ['workType'],
+                                                      style: TextStyle(
+                                                          fontFamily: 'Lato',
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 157,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(9)),
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        'assets/images/ic_job_location.svg'),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      'Location',
+                                                      style: TextStyle(
+                                                          fontFamily: 'Lato',
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      widget.jobData[
+                                                              'location'] ??
+                                                          'N/A',
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontFamily: 'Lato',
+                                                          color:
+                                                              Color(0xff333333),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Job description',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
+                                      SizedBox(
+                                        height: 40,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
 
-                                  //Job Description
-                                  /* Container(
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Skills required:',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Wrap(
+                                          spacing:
+                                              8.0, // Horizontal space between boxes
+                                          runSpacing:
+                                              12.0, // Vertical space between rows
+                                          children: List.generate(
+                                              technologyList.length, (i) {
+                                            return technologyList[i]
+                                                        ['technologyName'] ==
+                                                    null
+                                                ? Container()
+                                                : Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 8),
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xffF0F6FF)),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/images/ic_tick.png',
+                                                          height: 8,
+                                                          width: 12,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                          technologyList[i][
+                                                              'technologyName'],
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontFamily:
+                                                                  'Lato',
+                                                              color: Color(
+                                                                  0xff004C99)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                          }),
+                                        ),
+                                      ),
+
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
+
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Job description',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+
+                                      //Job Description
+                                      /* Container(
                           width: MediaQuery.of(context).size.width,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -924,421 +994,444 @@ class _JobdetailsState extends State<Jobdetails> {
                           ),
                         ),*/
 
-                                  widget.jobData['jobDescription']
-                                          .toString()
-                                          .trim()
-                                          .isEmpty
-                                      ? Text("No description available")
-                                      : Html(
-                                          data: widget.jobData['jobDescription']
-                                                  ?.toString()
-                                                  .trim() ??
-                                              'No description available',
-                                          style: {
-                                            "p": Style(
-                                              fontSize: FontSize(18.0),
-                                              textAlign: TextAlign.justify,
-                                              color: Color(0xff333333),
+                                      widget.jobData['jobDescription']
+                                              .toString()
+                                              .trim()
+                                              .isEmpty
+                                          ? Text("No description available")
+                                          : Html(
+                                              data: widget
+                                                      .jobData['jobDescription']
+                                                      ?.toString()
+                                                      .trim() ??
+                                                  'No description available',
+                                              style: {
+                                                "p": Style(
+                                                  fontSize: FontSize(18.0),
+                                                  textAlign: TextAlign.justify,
+                                                  color: Color(0xff333333),
+                                                ),
+                                              },
                                             ),
-                                          },
-                                        ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Qualifications: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Qualifications: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top:
-                                                      10.0), // Adjust padding if needed
-                                              child: Icon(
-                                                Icons
-                                                    .brightness_1, // You can use any icon you prefer for the bullet
-                                                size:
-                                                    8, // Small size for the bullet
-                                                color: Colors
-                                                    .black, // Adjust color if necessary
-                                              ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .only(
+                                                      top:
+                                                          10.0), // Adjust padding if needed
+                                                  child: Icon(
+                                                    Icons
+                                                        .brightness_1, // You can use any icon you prefer for the bullet
+                                                    size:
+                                                        8, // Small size for the bullet
+                                                    color: Colors
+                                                        .black, // Adjust color if necessary
+                                                  ),
+                                                ),
+                                                SizedBox(width: 8),
+                                                Expanded(
+                                                  child: RichText(
+                                                      text: TextSpan(children: [
+                                                    TextSpan(
+                                                      text: 'Experience: ',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Color(
+                                                            0xff333333), // Make sure to set color when using TextSpan
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text:
+                                                          '${rawJobData['data']['experience']} ${rawJobData['data']['expType']}',
+                                                      style: TextStyle(
+                                                        height: 1.5,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        color: Color(
+                                                            0xff333333), // Make sure to set color when using TextSpan
+                                                      ),
+                                                    ),
+                                                  ])),
+                                                )
+                                              ],
                                             ),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: RichText(
-                                                  text: TextSpan(children: [
-                                                TextSpan(
-                                                  text: 'Experience: ',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                      '${rawJobData['data']['experience']} ${rawJobData['data']['expType']}',
-                                                  style: TextStyle(
-                                                    height: 1.5,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
-                                                  ),
-                                                ),
-                                              ])),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top:
-                                                      10.0), // Adjust padding if needed
-                                              child: Icon(
-                                                Icons
-                                                    .brightness_1, // You can use any icon you prefer for the bullet
-                                                size:
-                                                    8, // Small size for the bullet
-                                                color: Colors
-                                                    .black, // Adjust color if necessary
-                                              ),
+                                            SizedBox(
+                                              height: 15,
                                             ),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: RichText(
-                                                  text: TextSpan(children: [
-                                                TextSpan(
-                                                  text: 'Education: ',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .only(
+                                                      top:
+                                                          10.0), // Adjust padding if needed
+                                                  child: Icon(
+                                                    Icons
+                                                        .brightness_1, // You can use any icon you prefer for the bullet
+                                                    size:
+                                                        8, // Small size for the bullet
+                                                    color: Colors
+                                                        .black, // Adjust color if necessary
                                                   ),
                                                 ),
-                                                TextSpan(
-                                                  text:
-                                                      eligibilityList.length > 0
+                                                SizedBox(width: 8),
+                                                Expanded(
+                                                  child: RichText(
+                                                      text: TextSpan(children: [
+                                                    TextSpan(
+                                                      text: 'Education: ',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Color(
+                                                            0xff333333), // Make sure to set color when using TextSpan
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: eligibilityList
+                                                                  .length >
+                                                              0
                                                           ? eligibilityList[0]
                                                               ['dataName']
                                                           : ' - ',
-                                                  style: TextStyle(
-                                                    height: 1.5,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
-                                                  ),
-                                                ),
-                                              ])),
-                                            )
+                                                      style: TextStyle(
+                                                        height: 1.5,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        color: Color(
+                                                            0xff333333), // Make sure to set color when using TextSpan
+                                                      ),
+                                                    ),
+                                                  ])),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 15,
+                                            ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
-                                  Text(
-                                    'Salary: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top:
-                                                10.0), // Adjust padding if needed
-                                        child: Icon(
-                                          Icons
-                                              .brightness_1, // You can use any icon you prefer for the bullet
-                                          size: 8, // Small size for the bullet
-                                          color: Colors
-                                              .black, // Adjust color if necessary
-                                        ),
                                       ),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: RichText(
-                                            text: TextSpan(children: [
-                                          TextSpan(
-                                            text: 'EST. ',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(
-                                                  0xff333333), // Make sure to set color when using TextSpan
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                ' ${rawJobData['data']['currency']} ${widget.jobData['salary']} ${rawJobData['data']['payFrequency']}',
-                                            style: TextStyle(
-                                              height: 1.5,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(
-                                                  0xff333333), // Make sure to set color when using TextSpan
-                                            ),
-                                          ),
-                                        ])),
-                                      )
-                                    ],
-                                  ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Valid till: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top:
-                                                8.0), // Adjust padding if needed
-                                        child: Icon(
-                                          Icons
-                                              .calendar_month, // You can use any icon you prefer for the bullet
-                                          size: 12, // Small size for the bullet
-                                          color: Colors
-                                              .black, // Adjust color if necessary
-                                        ),
+                                      SizedBox(
+                                        height: 20,
                                       ),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: RichText(
-                                            text: TextSpan(children: [
-                                          TextSpan(
-                                            text: widget.jobData['dueDate'] ??
-                                                'Expired',
-                                            style: TextStyle(
-                                              height: 1.5,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(
-                                                  0xff333333), // Make sure to set color when using TextSpan
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
+                                      Text(
+                                        'Salary: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top:
+                                                    10.0), // Adjust padding if needed
+                                            child: Icon(
+                                              Icons
+                                                  .brightness_1, // You can use any icon you prefer for the bullet
+                                              size:
+                                                  8, // Small size for the bullet
+                                              color: Colors
+                                                  .black, // Adjust color if necessary
                                             ),
                                           ),
-                                        ])),
-                                      )
-                                    ],
-                                  ),
+                                          SizedBox(width: 8),
+                                          Expanded(
+                                            child: RichText(
+                                                text: TextSpan(children: [
+                                              TextSpan(
+                                                text: 'EST. ',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(
+                                                      0xff333333), // Make sure to set color when using TextSpan
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' ${rawJobData['data']['currency']} ${widget.jobData['salary']} ${rawJobData['data']['payFrequency']}',
+                                                style: TextStyle(
+                                                  height: 1.5,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Color(
+                                                      0xff333333), // Make sure to set color when using TextSpan
+                                                ),
+                                              ),
+                                            ])),
+                                          )
+                                        ],
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Valid till: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
 
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 20),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            if (!checkExpiry(
-                                                widget.jobData['dueDate'])) {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          JobApply(
-                                                            jobData:
-                                                                widget.jobData,
-                                                          )));
-                                            }
-                                          },
-                                          child: Container(
-                                            width: ((MediaQuery.of(context)
-                                                        .size
-                                                        .width) /
-                                                    2) -
-                                                30,
-                                            height: 44,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 0),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            decoration: BoxDecoration(
-                                                color: checkExpiry(
-                                                        widget.jobData[
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top:
+                                                    8.0), // Adjust padding if needed
+                                            child: Icon(
+                                              Icons
+                                                  .calendar_month, // You can use any icon you prefer for the bullet
+                                              size:
+                                                  12, // Small size for the bullet
+                                              color: Colors
+                                                  .black, // Adjust color if necessary
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Expanded(
+                                            child: RichText(
+                                                text: TextSpan(children: [
+                                              TextSpan(
+                                                text:
+                                                    widget.jobData['dueDate'] ??
+                                                        'Expired',
+                                                style: TextStyle(
+                                                  height: 1.5,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Color(
+                                                      0xff333333), // Make sure to set color when using TextSpan
+                                                ),
+                                              ),
+                                            ])),
+                                          )
+                                        ],
+                                      ),
+
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
+
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                if (!checkExpiry(widget
+                                                    .jobData['dueDate'])) {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              JobApply(
+                                                                jobData: widget
+                                                                    .jobData,
+                                                              )));
+                                                }
+                                              },
+                                              child: Container(
+                                                width: ((MediaQuery.of(context)
+                                                            .size
+                                                            .width) /
+                                                        2) -
+                                                    30,
+                                                height: 44,
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 0),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                decoration: BoxDecoration(
+                                                    color: checkExpiry(widget
+                                                                    .jobData[
                                                                 'dueDate'] ??
                                                             '1990-01-01')
-                                                    ? Colors.redAccent
-                                                    : AppColors.primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Center(
-                                              child: Text(
+                                                        ? Color(0xffBA1A1A)
+                                                        : AppColors
+                                                            .primaryColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Center(
+                                                  child: Text(
+                                                    checkExpiry(widget.jobData[
+                                                                'dueDate'] ??
+                                                            '1990-01-01')
+                                                        ? 'Expired'
+                                                        : 'Apply',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                //_shareApp();
                                                 checkExpiry(widget.jobData[
                                                             'dueDate'] ??
                                                         '1990-01-01')
-                                                    ? 'Expired'
-                                                    : 'Apply',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            //_shareApp();
-                                            checkExpiry(
-                                                    widget.jobData['dueDate'] ??
-                                                        '1990-01-01')
-                                                ?
+                                                    ?
 
-                                                // Fluttertoast.showToast(
-                                                //     msg: 'Cannot share an expired job !!!',
-                                                //     toastLength: Toast.LENGTH_SHORT,
-                                                //     gravity: ToastGravity.BOTTOM,
-                                                //     timeInSecForIosWeb: 1,
-                                                //     backgroundColor: Color(0xff2D2D2D),
-                                                //     textColor: Colors.white,
-                                                //     fontSize: 16.0)
-                                                IconSnackBar.show(
-                                                    context,
-                                                    label:
-                                                        'Cannot share an expired job !!!',
-                                                    snackBarType:
-                                                        SnackBarType.alert,
-                                                    backgroundColor:
-                                                        Color(0xff2D2D2D),
-                                                    iconColor: Colors.white,
-                                                  )
-                                                : getRefCode(widget.isFromSaved
-                                                    ? widget.jobData['jobId']
-                                                    : widget.jobData['id']);
-                                          },
-                                          child: Container(
-                                            width: ((MediaQuery.of(context)
-                                                        .size
-                                                        .width) /
-                                                    2) -
-                                                30,
-                                            height: 44,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 0),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color:
-                                                        AppColors.primaryColor),
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Center(
-                                              child: Text(
-                                                'Refer',
-                                                style: TextStyle(
-                                                    color:
-                                                        AppColors.primaryColor),
+                                                    // Fluttertoast.showToast(
+                                                    //     msg: 'Cannot share an expired job !!!',
+                                                    //     toastLength: Toast.LENGTH_SHORT,
+                                                    //     gravity: ToastGravity.BOTTOM,
+                                                    //     timeInSecForIosWeb: 1,
+                                                    //     backgroundColor: Color(0xff2D2D2D),
+                                                    //     textColor: Colors.white,
+                                                    //     fontSize: 16.0)
+                                                    IconSnackBar.show(
+                                                        context,
+                                                        label:
+                                                            'Cannot share an expired job !!!',
+                                                        snackBarType:
+                                                            SnackBarType.alert,
+                                                        backgroundColor:
+                                                            Color(0xff2D2D2D),
+                                                        iconColor: Colors.white,
+                                                      )
+                                                    : getRefCode(widget
+                                                            .isFromSaved
+                                                        ? widget
+                                                            .jobData['jobId']
+                                                        : widget.jobData['id']);
+                                              },
+                                              child: Container(
+                                                width: ((MediaQuery.of(context)
+                                                            .size
+                                                            .width) /
+                                                        2) -
+                                                    30,
+                                                height: 44,
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 0),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: AppColors
+                                                            .primaryColor),
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Center(
+                                                  child: Text(
+                                                    'Refer',
+                                                    style: TextStyle(
+                                                        color: AppColors
+                                                            .primaryColor),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    )
+                          ),
+                        )
+                      : Center(
+                          child: Text('No data to show here.'),
+                        )
                   : Expanded(
                       child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          SvgPicture.asset('no_internet_ic.svg'),
+                          SvgPicture.asset('assets/icon/noInternet.svg'),
                           Text(
                             'No Internet connection',
                             style: TextStyle(
@@ -1347,9 +1440,7 @@ class _JobdetailsState extends State<Jobdetails> {
                                 fontSize: 18,
                                 color: Color(0xff333333)),
                           ),
-                          SizedBox(
-                            height: 15,
-                          ),
+                          SizedBox(height: 15),
                           Text(
                             'Connect to Wi-Fi or cellular data and try again.',
                             style: TextStyle(
