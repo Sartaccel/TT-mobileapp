@@ -58,99 +58,98 @@ class _LoginScreenState extends State<LoginScreen> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<void> emailSignIn() async {
-  final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
 
-  final bodyParams = {
-    "email": emailController.text,
-    "password": passwordController.text
-  };
+    final bodyParams = {
+      "email": emailController.text,
+      "password": passwordController.text
+    };
 
-  try {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      IconSnackBar.show(
-        context,
-        label: 'No internet connection',
-        snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
-      );
-      return; // Exit the function if no internet
-    }
-    setState(() {
-      isLoading = true;
-    });
-
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(bodyParams),
-    );
-
-    if (kDebugMode) {
-      print(
-          'Response code ${response.statusCode} :: Response => ${response.body}');
-    }
-
-    if (response.statusCode == 200) {
-      var resOBJ = jsonDecode(response.body);
-
-      String statusMessage = resOBJ['message'];
-
-      if (!resOBJ['result']) {
-        if (statusMessage.toLowerCase().contains('exists')) {
-          setState(() {
-            _isEmailValid = false;
-            emailErrorMessage = 'User doesn\'t exist';
-          });
-        } else if (statusMessage.toLowerCase().contains('passwo')) {
-          setState(() {
-            _isPasswordValid = false;
-            passwordErrorMessage = 'Invalid password';
-          });
-        } else {
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.alert,
-            backgroundColor: Color(0xffBA1A1A),
-            iconColor: Colors.white,
-          );
-        }
-      } else {
-        print(resOBJ.toString());
-
-        final Map<String, dynamic> data = resOBJ['data'];
-        UserData userData = UserData.fromJson(data);
-
-        UserCredentials credentials = UserCredentials(
-            username: emailController.text,
-            password: passwordController.text);
-        await credentials.saveCredentials();
-
-        await saveUserData(userData);
-
-        UserData? retrievedUserData = await getUserData();
-
-        if (kDebugMode) {
-          print('Saved Successfully');
-          print('User Name: ${retrievedUserData!.name}');
-        }
-
-        fetchCandidateProfileData(
-            retrievedUserData!.profileId, retrievedUserData!.token);
-        Navigator.pushReplacementNamed(context, '/home');
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectivityResult.none) {
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
+        return; // Exit the function if no internet
       }
-    }
-  } catch (e) {
-    print(e.toString());
-  } finally {
-    setState(() {
-      isLoading = false;
-    });
-  }
-}
+      setState(() {
+        isLoading = true;
+      });
 
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(bodyParams),
+      );
+
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
+      }
+
+      if (response.statusCode == 200) {
+        var resOBJ = jsonDecode(response.body);
+
+        String statusMessage = resOBJ['message'];
+
+        if (!resOBJ['result']) {
+          if (statusMessage.toLowerCase().contains('exists')) {
+            setState(() {
+              _isEmailValid = false;
+              emailErrorMessage = 'User doesn\'t exist';
+            });
+          } else if (statusMessage.toLowerCase().contains('passwo')) {
+            setState(() {
+              _isPasswordValid = false;
+              passwordErrorMessage = 'Invalid password';
+            });
+          } else {
+            IconSnackBar.show(
+              context,
+              label: statusMessage,
+              snackBarType: SnackBarType.alert,
+              backgroundColor: Color(0xffBA1A1A),
+              iconColor: Colors.white,
+            );
+          }
+        } else {
+          print(resOBJ.toString());
+
+          final Map<String, dynamic> data = resOBJ['data'];
+          UserData userData = UserData.fromJson(data);
+
+          UserCredentials credentials = UserCredentials(
+              username: emailController.text,
+              password: passwordController.text);
+          await credentials.saveCredentials();
+
+          await saveUserData(userData);
+
+          UserData? retrievedUserData = await getUserData();
+
+          if (kDebugMode) {
+            print('Saved Successfully');
+            print('User Name: ${retrievedUserData!.name}');
+          }
+
+          fetchCandidateProfileData(
+              retrievedUserData!.profileId, retrievedUserData!.token);
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   Future<void> socialGoogleSignin(
       String email, String fn, String ln, String mobile) async {
@@ -317,16 +316,17 @@ class _LoginScreenState extends State<LoginScreen> {
             left: 0,
             child: Image.asset('assets/images/Ellipse 2.png'),
           ),
-          Positioned(
-            top: 31,
-            left: 0,
-            right: 0,
-            child: Center(
-                child: Image.asset('assets/images/tt_logo_full_1.png',
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    fit: BoxFit.contain)),
-          ),
+          Positioned.fill(
+              child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(children: [
+              Center(
+                  child: Image.asset('assets/images/tt_logo_full_1.png',
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      fit: BoxFit.contain)),
+            ]),
+          )),
           Positioned(
               top: MediaQuery.of(context).size.height * 0.26,
               left: 15,
@@ -560,27 +560,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    //Loading
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Center(
-                        child: Visibility(
-                          visible: isLoading,
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 30,
-                              ),
-                              LoadingAnimationWidget.fourRotatingDots(
-                                color: AppColors.primaryColor,
-                                size: 40,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
                     //Button
                     SizedBox(height: 30),
                     InkWell(
@@ -592,68 +571,81 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               _isEmailValid = false;
                               emailErrorMessage =
-                                  'Email address cannot be empty';
+                                  'Email ID is required';
                             });
                           } else if (!validateEmail(emailController.text)) {
                             setState(() {
                               _isEmailValid = false;
-                              emailErrorMessage = 'Enter a valid email address';
+                              emailErrorMessage = 'Email ID is required';
                             });
                           }
 
-            if (passwordController.text.trim().isEmpty) {
-              setState(() {
-                _isPasswordValid = false;
-                passwordErrorMessage = 'Password is Required';
-              });
-            }
-          } else {
-            setState(() => isLoading = true);
-            emailSignIn().then((_) {
-              setState(() => isLoading = false);
-            });
-          }
-        },
-  child: Container(
-    width: MediaQuery.of(context).size.width,
-    height: 44,
-    margin: EdgeInsets.symmetric(horizontal: 0),
-    padding: EdgeInsets.symmetric(horizontal: 10),
-    decoration: BoxDecoration(
-      color: AppColors.primaryColor,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Center(
-      child: isLoading
-          ? SizedBox(
-  height: 24,
-  width: 24,
-  child: TweenAnimationBuilder<double>(
-    tween: Tween<double>(begin: 0, end: 5),
-    duration: Duration(seconds: 2), // Faster rotation (Reduced duration)
-    curve: Curves.linear,
-    builder: (context, value, child) {
-      return Transform.rotate(
-        angle: value * 2 * 3.1416, // Full rotation effect
-        child: CircularProgressIndicator(
-          strokeWidth: 4,
-          value: 0.20, // 1/5 of the circle
-          backgroundColor: const Color.fromARGB(142, 234, 232, 232), // Grey stroke
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white), // White rotating stroke
-        ),
-      );
-    },
-    onEnd: () => {}, // Ensures smooth infinite animation
-  ),
-) : Text(
-              'Login',
-              style: TextStyle(color: Colors.white),
-            ),
-    ),
-  ),
-),
+                          if (passwordController.text.trim().isEmpty) {
+                            setState(() {
+                              _isPasswordValid = false;
+                              passwordErrorMessage = 'Password is Required';
+                            });
+                          }
+                        } else {
+                          setState(() => isLoading = true);
+                          emailSignIn().then((_) {
+                            setState(() => isLoading = false);
+                          });
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 44,
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: isLoading
+                              ? SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: TweenAnimationBuilder<double>(
+                                    tween: Tween<double>(begin: 0, end: 5),
+                                    duration: Duration(
+                                        seconds:
+                                            2), 
+                                    curve: Curves.linear,
+                                    builder: (context, value, child) {
+                                      return Transform.rotate(
+                                        angle: value *
+                                            2 *
+                                            3.1416, 
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 4,
+                                          value: 0.20, 
+                                          backgroundColor: const Color.fromARGB(
+                                              142,
+                                              234,
+                                              232,
+                                              232), 
+                                          valueColor: AlwaysStoppedAnimation<
+                                                  Color>(
+                                              Colors
+                                                  .white), 
+                                        ),
+                                      );
+                                    },
+                                    onEnd: () =>
+                                        {}, 
+                                  ),
+                                )
+                              : Text(
+                                  'Login',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                        ),
+                      ),
+                    ),
 
-SizedBox(height: 20),
+                    SizedBox(height: 20),
                     InkWell(
                       onTap: () {
                         Navigator.push(
@@ -815,7 +807,6 @@ SizedBox(height: 20),
 
   @override
   void initState() {
-  
     //emailController.text = 'gayathrikabi15@gmail.com';
     //passwordController.text='changeme';
 

@@ -612,95 +612,96 @@ class _JobApplyState extends State<JobApply> {
   File? selectedFile;
 
   Future<void> uploadPDF(File file) async {
-  Dio dio = Dio();
+    Dio dio = Dio();
 
-  String url =
-      'https://mobileapi.talentturbo.us/api/v1/resumeresource/uploadresume';
+    String url =
+        'https://mobileapi.talentturbo.us/api/v1/resumeresource/uploadresume';
 
-  // Prepare the form data for the file upload
-  FormData formData = FormData.fromMap({
-    "id": retrievedUserData!.profileId.toString(), // Your id
-    "file": await MultipartFile.fromFile(
-      file.path,
-      filename: file.path.split('/').last,
-    ),
-  });
-
-  String token = retrievedUserData!.token;
-  try {
-    setState(() {
-      isLoading = true;
+    // Prepare the form data for the file upload
+    FormData formData = FormData.fromMap({
+      "id": retrievedUserData!.profileId.toString(), // Your id
+      "file": await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+      ),
     });
 
-    // Sending the request to upload the file
-    Response response = await dio.post(
-      url,
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': token, // Authorization Header
-          'Content-Type': 'multipart/form-data', // Content-Type for file uploads
-        },
-      ),
-    );
+    String token = retrievedUserData!.token;
+    try {
+      setState(() {
+        isLoading = true;
+      });
 
-    if (response.statusCode == 200) {
-      print('Upload success: ${response.statusCode}');
-      setUpdatedTimeInRTDB();
-      
-      // Success feedback using Snackbar
+      // Sending the request to upload the file
+      Response response = await dio.post(
+        url,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': token, // Authorization Header
+            'Content-Type':
+                'multipart/form-data', // Content-Type for file uploads
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('Upload success: ${response.statusCode}');
+        setUpdatedTimeInRTDB();
+
+        // Success feedback using Snackbar
+        IconSnackBar.show(
+          context,
+          label: 'Successfully uploaded',
+          snackBarType: SnackBarType.success,
+          backgroundColor: Color(0xff4CAF50),
+          iconColor: Colors.white,
+        );
+
+        fetchCandidateProfileData(retrievedUserData!.profileId, token);
+      } else {
+        // Handle case where upload wasn't successful
+        throw Exception('Upload failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+
+      print('Upload failed: $e');
+
+      // Error feedback using Snackbar
       IconSnackBar.show(
         context,
-        label: 'Successfully uploaded',
-        snackBarType: SnackBarType.success,
-        backgroundColor: Color(0xff4CAF50),
+        label: e.toString(),
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
       );
-      
-      fetchCandidateProfileData(retrievedUserData!.profileId, token);
-    } else {
-      // Handle case where upload wasn't successful
-      throw Exception('Upload failed with status: ${response.statusCode}');
     }
-  } catch (e) {
-    setState(() {
-      isLoading = false;
-    });
-
-    print('Upload failed: $e');
-    
-    // Error feedback using Snackbar
-    IconSnackBar.show(
-      context,
-      label: e.toString(),
-      snackBarType: SnackBarType.alert,
-      backgroundColor: Color(0xff2D2D2D),
-      iconColor: Colors.white,
-    );
   }
-}
 
-Future<void> pickAndUploadPDF() async {
-  // Pick a file
-  File? file = await pickPDF();
-  if (file != null) {
-    setState(() {
-      selectedFile = file;
-    });
+  Future<void> pickAndUploadPDF() async {
+    // Pick a file
+    File? file = await pickPDF();
+    if (file != null) {
+      setState(() {
+        selectedFile = file;
+      });
 
-    // Upload the file
-    await uploadPDF(file);
-  } else {
-    // Provide feedback if no file was selected
-    IconSnackBar.show(
-      context,
-      label: 'No file selected',
-      snackBarType: SnackBarType.alert,
-      backgroundColor: Color(0xff2D2D2D),
-      iconColor: Colors.white,
-    );
+      // Upload the file
+      await uploadPDF(file);
+    } else {
+      // Provide feedback if no file was selected
+      IconSnackBar.show(
+        context,
+        label: 'No file selected',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -809,21 +810,20 @@ Future<void> pickAndUploadPDF() async {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                            Container(
-  width: 280, // Example fixed width
-  child: Text(
-    widget.jobData['jobTitle'] ?? 'Default Title',
-    overflow: TextOverflow.ellipsis,
-    maxLines: 1,
-    style: TextStyle(
-      fontWeight: FontWeight.w700,
-      fontFamily: 'Lato',
-      fontSize: 20,
-      color: Color(0xff333333),
-    ),
-  ),
-)
-,
+                              Container(
+                                width: 280, // Example fixed width
+                                child: Text(
+                                  widget.jobData['jobTitle'] ?? 'Default Title',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Lato',
+                                    fontSize: 20,
+                                    color: Color(0xff333333),
+                                  ),
+                                ),
+                              ),
                               SizedBox(
                                 height: 3,
                               ),
@@ -1204,7 +1204,7 @@ Future<void> pickAndUploadPDF() async {
                                               MainAxisAlignment.start,
                                           children: [
                                             SvgPicture.asset(
-                                                'assets/images/ic_curriculum.png',
+                                                'assets/images/resume.svg',
                                                 width: 55,
                                                 height: 55),
                                             SizedBox(
@@ -1273,8 +1273,17 @@ Future<void> pickAndUploadPDF() async {
                   ),
                   InkWell(
                     onTap: () {
-                      //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> Companydetails()));
-                      applyJob();
+                      if (candidateProfileModel?.fileName == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Please upload your resume before applying.'),
+                            backgroundColor: Color(0xffBA1A1A),
+                          ),
+                        );
+                      } else {
+                        applyJob();
+                      }
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,

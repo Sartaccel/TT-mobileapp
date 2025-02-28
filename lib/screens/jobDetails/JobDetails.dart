@@ -192,23 +192,22 @@ class _JobdetailsState extends State<Jobdetails> {
     }
   }
 
- 
+  bool checkExpiry(String dateString) {
+    // Parse the date string
+    DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
 
-bool checkExpiry(String dateString) {
-  // Parse the date string
-  DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
+    // Get the current date at midnight
+    DateTime currentDate = DateTime.now();
+    currentDate =
+        DateTime(currentDate.year, currentDate.month, currentDate.day);
 
-  // Get the current date at midnight
-  DateTime currentDate = DateTime.now();
-  currentDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+    // Reset providedDate to midnight as well
+    providedDate =
+        DateTime(providedDate.year, providedDate.month, providedDate.day);
 
-  // Reset providedDate to midnight as well
-  providedDate = DateTime(providedDate.year, providedDate.month, providedDate.day);
-
-  // Compare the dates
-  return providedDate.isBefore(currentDate);
-}
-
+    // Compare the dates
+    return providedDate.isBefore(currentDate);
+  }
 
   Future<void> getRefCode(int jobId) async {
     final url =
@@ -473,10 +472,12 @@ bool checkExpiry(String dateString) {
                                   );*/
                                           },
                                           child: Icon(
-                                            //(widget.jobData['isFavorite'] == "1")
                                             isSaved
                                                 ? Icons.bookmark
                                                 : Icons.bookmark_border_rounded,
+                                            color: isSaved
+                                                ? Color(0xff004C99)
+                                                : null,
                                             size: 25,
                                           ))
                                     ],
@@ -600,17 +601,15 @@ bool checkExpiry(String dateString) {
                                                 SizedBox(
                                                   height: 3,
                                                 ),
-                                               Text(
-  '${(rawJobData['data']['experience'] ?? 1).toInt()}+ years',
-  style: TextStyle(
-    fontFamily: 'Lato',
-    color: Color(0xff333333),
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-  ),
-),
-
-
+                                                Text(
+                                                  '${(rawJobData['data']['experience'] ?? 1).toInt()}+ years',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Lato',
+                                                    color: Color(0xff333333),
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -1229,25 +1228,30 @@ bool checkExpiry(String dateString) {
                                       ),
                                       SizedBox(width: 8),
                                       Expanded(
-  child: RichText(
-    text: TextSpan(
-      children: [
-        TextSpan(
-          text: checkExpiry(widget.jobData['dueDate'] ?? '1990-01-01') 
-              ? 'Expired' 
-              : formatDate(widget.jobData['dueDate'] ?? '1990-01-01'),
-          style: TextStyle(
-            height: 1.5,
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
-            color: Color(0xff333333), // Ensure color is set
-          ),
-        ),
-      ],
-    ),
-  ),
-)
-
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: checkExpiry(
+                                                        widget.jobData[
+                                                                'dueDate'] ??
+                                                            '1990-01-01')
+                                                    ? 'Expired'
+                                                    : formatDate(widget.jobData[
+                                                            'dueDate'] ??
+                                                        '1990-01-01'),
+                                                style: TextStyle(
+                                                  height: 1.5,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Color(
+                                                      0xff333333), // Ensure color is set
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
 
@@ -1389,7 +1393,7 @@ bool checkExpiry(String dateString) {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          SvgPicture.asset('no_internet_ic.svg'),
+                          SvgPicture.asset('assets/icon/noInternet.svg'),
                           Text(
                             'No Internet connection',
                             style: TextStyle(
@@ -1464,6 +1468,7 @@ bool checkExpiry(String dateString) {
     });
   }
 }
+
 String formatDate(String dateString) {
   try {
     DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(dateString);

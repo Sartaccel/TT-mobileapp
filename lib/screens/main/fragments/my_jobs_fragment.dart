@@ -68,31 +68,18 @@ class _MyJobsFragmentState extends State<MyJobsFragment> {
                           ))))
                 ],
               ),
-              Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      'My Jobs',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16),
-                    ),
-                  ),
-                  Positioned(
-                    right: 16,
-                    top: 15,
-                    child: SvgPicture.asset(
-                      'assets/icon/Notifi.svg',
-                      width: 30,
-                      height: 30,
-                    ),
-                  ),
-                ],
+              Center(
+                child: Text(
+                  'My Jobs',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16),
+                ),
               ),
               SizedBox(
-                width: 10,
+                width: MediaQuery.of(context).size.width * 0.08,
               )
             ],
           ),
@@ -103,7 +90,7 @@ class _MyJobsFragmentState extends State<MyJobsFragment> {
           right: 0,
           bottom: MediaQuery.of(context).size.height * 0.07,
           child: Container(
-            color: Color(0xffFCFCFC),
+            color: Color(0xffF7f7f7),
             child: DefaultTabController(
                 length: 2,
                 child: Column(
