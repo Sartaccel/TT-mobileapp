@@ -64,7 +64,7 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
                     fontSize: 16),
               ),
               SizedBox(
-                width: 80,
+                width: MediaQuery.of(context).size.width * 0.08,
               )
             ],
           ),

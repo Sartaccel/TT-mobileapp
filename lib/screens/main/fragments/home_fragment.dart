@@ -53,6 +53,7 @@ class _HomeFragmentState extends State<HomeFragment>
   List<Job> parseJobs(List<dynamic> jsonList) {
     return jsonList.map((json) => Job.fromJson(json)).toList();
   }
+
   Future<void> loadCachedJobs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jobListString = prefs.getString('jobList');
@@ -67,63 +68,63 @@ class _HomeFragmentState extends State<HomeFragment>
   }
 
 // 🔹 Helper function for showing snack bars
-void _showSnackBar(BuildContext context, String message, Color color) {
-  IconSnackBar.show(
-    context,
-    label: message,
-    snackBarType: color == Colors.green ? SnackBarType.success : SnackBarType.fail,
-    backgroundColor: color,
-    iconColor: Colors.white,
-  );
-}
-
-Future<bool> saveJob(int jobId, int status) async {
-  final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
-  final bodyParams = {"jobId": jobId, "isFavorite": status};
-
-  try {
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': retrievedUserData?.token ?? '',
-      },
-      body: jsonEncode(bodyParams),
+  void _showSnackBar(BuildContext context, String message, Color color) {
+    IconSnackBar.show(
+      context,
+      label: message,
+      snackBarType:
+          color == Colors.green ? SnackBarType.success : SnackBarType.fail,
+      backgroundColor: color,
+      iconColor: Colors.white,
     );
+  }
 
-    if (kDebugMode) {
-      print('Response code: ${response.statusCode} :: Response => ${response.body}');
-    }
+  Future<bool> saveJob(int jobId, int status) async {
+    final url =
+        Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
+    final bodyParams = {"jobId": jobId, "isFavorite": status};
 
-    if (response.statusCode == 200 || response.statusCode == 202) {
-      if (mounted) {
-        _showSnackBar(
-          context,
-          status == 1 ? 'Saved successfully' : 'Removed successfully',
-          Colors.green,
-        );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': retrievedUserData?.token ?? '',
+        },
+        body: jsonEncode(bodyParams),
+      );
+
+      if (kDebugMode) {
+        print(
+            'Response code: ${response.statusCode} :: Response => ${response.body}');
       }
-      return true; // ✅ Return success
-    } else {
+
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        if (mounted) {
+          _showSnackBar(
+            context,
+            status == 1 ? 'Saved successfully' : 'Removed successfully',
+            Colors.green,
+          );
+        }
+        return true; // ✅ Return success
+      } else {
+        if (mounted) {
+          _showSnackBar(context, 'Something went wrong. Please try again.',
+              Color(0xffBA1A1A));
+        }
+        return false; // ❌ Return failure
+      }
+    } catch (e) {
+      if (kDebugMode) print("Error: $e");
+
       if (mounted) {
-        _showSnackBar(context, 'Something went wrong. Please try again.', Colors.red);
+        _showSnackBar(context, 'Network error. Please check your connection.',
+            Color(0xffBA1A1A));
       }
       return false; // ❌ Return failure
     }
-  } catch (e) {
-    if (kDebugMode) print("Error: $e");
-
-    if (mounted) {
-      _showSnackBar(context, 'Network error. Please check your connection.', Colors.red);
-    }
-    return false; // ❌ Return failure
   }
-}
-
-
-
-
-
 
   Future<void> fetchAllJobs() async {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.ALL_JOBS_LIST);
@@ -251,7 +252,7 @@ Future<bool> saveJob(int jobId, int status) async {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.77,
                           height: 40,
                           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           decoration: BoxDecoration(
@@ -323,7 +324,6 @@ Future<bool> saveJob(int jobId, int status) async {
                             ),
                           ),
                         ),
-                        
                         InkWell(
                           onTap: () {
                             Navigator.push(
@@ -412,7 +412,7 @@ Future<bool> saveJob(int jobId, int status) async {
             top: 120,
             left: 0,
             right: 0,
-            bottom: 80,
+            bottom: MediaQuery.of(context).size.height * 0.07,
             child: Container(
               width: MediaQuery.of(context).size.width,
               child: Column(
@@ -442,7 +442,7 @@ Future<bool> saveJob(int jobId, int status) async {
                                   width: 200,
                                   child: Flexible(fit: FlexFit.loose ,child: Text(maxLines: 1, overflow: TextOverflow.ellipsis, jobSearchTerm.isEmpty?'Recent job list' : 'Search results for ${jobSearchTerm}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xff333333)),))
                               ),*/
-                      
+
                               Flexible(
                                   fit: FlexFit.loose,
                                   child: Text(
@@ -462,7 +462,7 @@ Future<bool> saveJob(int jobId, int status) async {
                       ),
                     ),
                   ),
-                  isLoading 
+                  isLoading
                       ? Expanded(
                           child: Shimmer.fromColors(
                             baseColor:
@@ -539,8 +539,9 @@ Future<bool> saveJob(int jobId, int status) async {
                                     padding: EdgeInsets.all(15),
                                     decoration: BoxDecoration(
                                         border: Border.all(
-                                            width: 0.2, color: Colors.grey),
-                                        color: Colors.white),
+                                            width: 0.2,
+                                            color: Color(0xffE6E6E6)),
+                                        color: Color(0xffFCFCFC)),
                                     width: MediaQuery.of(context).size.width,
                                     height: 160,
                                     child: Row(
@@ -565,9 +566,8 @@ Future<bool> saveJob(int jobId, int status) async {
                                                   .isFirst, // This will keep Screen 1
                                             );
 
-                                           // fetchAllJobs();
+                                            // fetchAllJobs();
                                             loadCachedJobs();
-
                                           },
                                           child: Row(
                                             crossAxisAlignment:
@@ -805,52 +805,81 @@ Future<bool> saveJob(int jobId, int status) async {
                                           ),
                                         ),
                                         InkWell(
- onTap: () async {
-  bool isSaved = (jobList[index]['isFavorite'] == "1"); // Convert to boolean
-  int? jobId = jobList[index]['jobId'] ?? jobList[index]['id']; // Get job ID
+                                          onTap: () async {
+                                            bool isSaved = (jobList[index]
+                                                    ['isFavorite'] ==
+                                                "1"); // Convert to boolean
+                                            int? jobId = jobList[index]
+                                                    ['jobId'] ??
+                                                jobList[index]
+                                                    ['id']; // Get job ID
 
-  if (kDebugMode) {
-    print('Status before tap: $isSaved');
-  }
+                                            if (kDebugMode) {
+                                              print(
+                                                  'Status before tap: $isSaved');
+                                            }
 
-  if (jobId != null) {
-    setState(() {
-      jobList[index]['isFavorite'] = isSaved ? "0" : "1"; // Optimistic UI update
-    });
+                                            if (jobId != null) {
+                                              setState(() {
+                                                jobList[index]['isFavorite'] =
+                                                    isSaved
+                                                        ? "0"
+                                                        : "1"; // Optimistic UI update
+                                              });
 
-    bool success = await saveJob(jobId, isSaved ? 0 : 1); // API call
+                                              bool success = await saveJob(
+                                                  jobId,
+                                                  isSaved ? 0 : 1); // API call
 
-    if (!success) {
-      // Revert UI if API call fails
-      setState(() {
-        jobList[index]['isFavorite'] = isSaved ? "1" : "0";
-      });
-    }
-  } else {
-    if (kDebugMode) {
-      print("Error: Job ID is null");
-    }
-  }
-},
-
-  child: Icon(
-    (jobList[index]['isFavorite'] == "1") ? Icons.bookmark : Icons.bookmark_border_rounded,
-    size: 25,
-  ),
-),
-
-
-           
+                                              if (!success) {
+                                                // Revert UI if API call fails
+                                                setState(() {
+                                                  jobList[index]['isFavorite'] =
+                                                      isSaved ? "1" : "0";
+                                                });
+                                              }
+                                            } else {
+                                              if (kDebugMode) {
+                                                print("Error: Job ID is null");
+                                              }
+                                            }
+                                          },
+                                          child: Icon(
+                                            (jobList[index]['isFavorite'] ==
+                                                    "1")
+                                                ? Icons.bookmark
+                                                : Icons.bookmark_border_rounded,
+                                            color: jobList[index]
+                                                        ['isFavorite'] ==
+                                                    "1"
+                                                ? Color(0xff004C99)
+                                                : null,
+                                            size: 25,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   );
                                 },
                               ),
-                            )
-                            ): Expanded(
-                              
+                            ))
+                          : isConnectionAvailable
+                              ? SizedBox(
+                                  height: 500,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Center(
+                                      child: Text(
+                                        'No Jobs Here ${jobSearchTerm}',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Expanded(
                                   child: Center(
-                                    
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -913,26 +942,26 @@ Future<bool> saveJob(int jobId, int status) async {
     );
   }
 
-  
   @override
-void initState() {
-  super.initState();
-  fetchUserDataFromPref();
+  void initState() {
+    super.initState();
+    fetchUserDataFromPref();
+  }
+
+  Future<void> fetchUserDataFromPref() async {
+    UserData? _retrievedUserData = await getUserData();
+    CandidateProfileModel? _candidateProfileModel =
+        await getCandidateProfileData();
+
+    setState(() {
+      retrievedUserData = _retrievedUserData;
+      candidateProfileModel = _candidateProfileModel;
+
+      if (kDebugMode) {
+        print("User Email: ${retrievedUserData?.email}");
+      }
+
+      fetchAllJobs(); // Fetch jobs after retrieving user data
+    });
+  }
 }
-
-Future<void> fetchUserDataFromPref() async {
-  UserData? _retrievedUserData = await getUserData();
-  CandidateProfileModel? _candidateProfileModel = await getCandidateProfileData();
-
-  setState(() {
-    retrievedUserData = _retrievedUserData;
-    candidateProfileModel = _candidateProfileModel;
-    
-    if (kDebugMode) {
-      print("User Email: ${retrievedUserData?.email}");
-    }
-
-    fetchAllJobs(); // Fetch jobs after retrieving user data
-  });
-}
-    }

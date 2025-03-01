@@ -69,6 +69,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
+      backgroundColor: Color(0xFFFCFCFC),
       body: Column(
         children: [
           Container(
@@ -133,7 +134,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                       style: TextStyle(
                           fontFamily: 'NunitoSans',
                           fontSize: 14,
-                          fontWeight: FontWeight.w700),
+                          fontWeight: FontWeight.w600),
                     ),
                     Text(
                       'Job alerts, referral updates, messages',
@@ -146,6 +147,13 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 ),
                 Switch(
                     value: pushNotification,
+                    activeTrackColor: Color(0xFF2563EB),
+                    inactiveTrackColor: Color(0xFFD2D5DA),
+                    activeColor: Colors.white,
+                    inactiveThumbColor: Colors.white,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    trackOutlineColor:
+                        WidgetStateProperty.all(Colors.transparent),
                     onChanged: (value) {
                       setState(() {
                         pushNotification = value;
@@ -156,7 +164,11 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               ],
             ),
           ),
-          Divider(),
+          Divider(
+            color: Color(0xffD9D9D9),
+            indent: 15,
+            endIndent: 15,
+          ),
           ListTile(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,7 +182,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                       style: TextStyle(
                           fontFamily: 'NunitoSans',
                           fontSize: 14,
-                          fontWeight: FontWeight.w700),
+                          fontWeight: FontWeight.w600),
                     ),
                     Text(
                       'Job alerts, referral updates, messages',
@@ -183,17 +195,27 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                 ),
                 Switch(
                     value: emailNotification,
+                    activeTrackColor: Color(0xFF2563EB),
+                    inactiveTrackColor: Color(0xFFD2D5DA),
+                    activeColor: Colors.white,
+                    inactiveThumbColor: Colors.white,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    trackOutlineColor:
+                        WidgetStateProperty.all(Colors.transparent),
                     onChanged: (value) {
                       setState(() {
                         emailNotification = value;
-
                         updatePushNotificationDb();
                       });
                     })
               ],
             ),
           ),
-          Divider(),
+          Divider(
+            color: Color(0xffD9D9D9),
+            indent: 15,
+            endIndent: 15,
+          ),
           Container(
             width: MediaQuery.of(context).size.width,
             child: Center(

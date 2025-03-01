@@ -1,0 +1,2 @@
+C:/talent turbo projects/TT_mobile_app/android/app/.cxx/RelWithDebInfo/50t6r5v4/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/talent turbo projects/TT_mobile_app/android/app/.cxx/RelWithDebInfo/50t6r5v4/arm64-v8a/CMakeFiles/rebuild_cache.dir

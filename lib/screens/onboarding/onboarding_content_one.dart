@@ -15,12 +15,35 @@ class _OnboardingContentOneState extends State<OnboardingContentOne> {
     return Container(
       child: Column(
         children: [
-          //Image.asset('assets/images/onboarding_one_.png', height: 220),
-          SvgPicture.asset('assets/images/slider1.svg', height: 220),
-          SizedBox(height: 30,),
-          Text('Your Path to Dream Jobs', style: TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: 'Lato'),),
-          SizedBox(height: 20,),
-          Center(child: Text('Find jobs that match your skills and experience\nwith our smart technology' ,textAlign: TextAlign.center,style: TextStyle(fontSize: 14,color: AppColors.textColor, height: 1.5 ,fontWeight: FontWeight.w400),)),
+          Center(
+              //Image.asset('assets/images/onboarding_one_.png', height: 220),
+              child: SvgPicture.asset('assets/images/slider1.svg',
+                  height: MediaQuery.of(context).size.height * 0.25)),
+          SizedBox(
+            height: 30,
+          ),
+          Text(
+            'Your Path to Dream Jobs',
+            style: TextStyle(
+                color: const Color(0xFF333333),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                fontFamily: 'Lato'),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Center(
+              child: Text(
+            'Find jobs that match your skills and experience\nwith our smart technology',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textColor,
+                height: 1.5,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Lato'),
+          )),
         ],
       ),
     );

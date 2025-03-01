@@ -17,7 +17,6 @@ class OnboardingContainer extends StatefulWidget {
 }
 
 class _OnboardingContainerState extends State<OnboardingContainer> {
-
   final PageController _controller = PageController();
   Timer? _timer;
 
@@ -37,57 +36,64 @@ class _OnboardingContainerState extends State<OnboardingContainer> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 80),
-            Image.asset('assets/images/tt_logo_full_1.png', width: 200,),
-            SizedBox(height: 40,),
-            SizedBox(
-              height: 400,
-              child: PageView(
-                controller: _controller,
-                children: [
-                  OnboardingContentOne(),
-                  OnboardingContentTwo(),
-                  OnboardingContentThree(),
-                ],
-              ),
-            ),
-            Column(
+            Center(
+            child: Image.asset('assets/images/tt_logo_full_1.png',
+                width: MediaQuery.of(context).size.width * 0.6,
+                height: MediaQuery.of(context).size.height * 0.25,
+                fit: BoxFit.contain),
+          ),
+          SizedBox(
+            height: 400,
+            child: PageView(
+              controller: _controller,
               children: [
-                SmoothPageIndicator(
-        
-                  controller: _controller,
-                  count: 3,
-                  effect: ExpandingDotsEffect(
-                    dotHeight: 5,
-                      activeDotColor: Color(0xff004C99)
-        
-                  ), // You can customize the indicator style
-                ),
-                SizedBox(height: 80),
-                InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> LoginScreen()));
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 44,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(color: AppColors.primaryColor,borderRadius: BorderRadius.circular(10)),
-                    child: Center(child: Text('Get Started', style: TextStyle(color: Colors.white),),),
-                  ),
-                ),
+                OnboardingContentOne(),
+                OnboardingContentTwo(),
+                OnboardingContentThree(),
               ],
             ),
-        
-        
-        
-        
-            SizedBox(height: 20),
-          ],
-        ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+          Column(
+            children: [
+              SmoothPageIndicator(
+                controller: _controller,
+                count: 3,
+                effect: ExpandingDotsEffect(
+                    dotHeight: 5,
+                    activeDotColor: Color(
+                        0xff004C99)), // You can customize the indicator style
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => LoginScreen()));
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 44,
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: Text(
+                      'Get Started',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+        ],
       ),
-    );
+    ),);
   }
 
   @override

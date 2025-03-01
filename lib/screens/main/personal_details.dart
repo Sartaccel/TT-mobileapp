@@ -796,7 +796,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
               retrievedUserData!.profileId, retrievedUserData!.token, 0);
         },
         child: Container(
-          color: Colors.white,
+          color: Color(0xffF7F7F7),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -841,7 +841,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       ],
                     ),
                     SizedBox(
-                      width: 80,
+                      width: 40,
                     )
                   ],
                 ),
@@ -856,7 +856,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         child: Column(
                           children: [
                             Container(
-                              height: 270,
+                              height: 250,
                               child: Stack(
                                 children: [
                                   Container(
@@ -869,7 +869,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                             bottomRight: Radius.circular(10))),
                                   ),
                                   Positioned(
-                                      top: 70,
+                                      top: 65,
                                       left:
                                           ((MediaQuery.of(context).size.width) /
                                                   2) -
@@ -923,8 +923,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                   2) +
                                               20,
                                       top: 140,
-                                      child: Image.asset(
-                                          'assets/images/pro_image_edit.png')),
+                                      child: SvgPicture.asset(
+                                          'assets/icon/DpEdit.svg')),
                                   Positioned(
                                       right: 20,
                                       top: 140,
@@ -955,7 +955,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                         ),
                                       )),
                                   Positioned(
-                                    top: 190,
+                                    top: 175,
                                     left: 10,
                                     right: 10,
                                     child: Center(
@@ -989,7 +989,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                               ),
                             ),
                             SizedBox(
-                              height: 0,
+                              height: 15,
                             ),
                             Container(
                               child: Column(
@@ -1092,18 +1092,20 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                             )
                           : Container(),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
+                        width: 550,
                         decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 0.3, color: Colors.grey)),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                            color: Color(0xffFCFCFC),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2))),
+                        padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(0),
                               child: Text(
                                 'Resume',
                                 style: TextStyle(
@@ -1257,7 +1259,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                       )
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.all(20),
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(12),
@@ -1274,7 +1276,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                 MainAxisAlignment.start,
                                             children: [
                                               Image.asset(
-                                                  'assets/images/ic_curriculum.png'),
+                                                  'assets/images/ic_curriculum.png',
+                                                  width: 55,
+                                                  height: 55),
                                               SizedBox(
                                                 width: 10,
                                               ),
@@ -1299,6 +1303,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                           style: TextStyle(
                                                               color: Color(
                                                                   0xff004C99),
+                                                              fontSize: 14,
                                                               fontFamily:
                                                                   'NunitoSans',
                                                               fontWeight:
@@ -1310,7 +1315,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                       'Last updated ${formatResumeDate(candidateProfileModel!.lastResumeUpdatedDate)}',
                                                       style: TextStyle(
                                                           color:
-                                                              Color(0xff004C99),
+                                                              Color(0xff545454),
+                                                          fontSize: 12,
                                                           fontFamily:
                                                               'NunitoSans',
                                                           fontWeight: FontWeight
@@ -1319,10 +1325,16 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                   ],
                                                 ),
                                               ),
+                                              SizedBox(
+                                                height: 56,
+                                                child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: SvgPicture.asset(
+                                                      'assets/icon/moreDot.svg'),
+                                                ),
+                                              )
                                             ],
                                           ),
-                                          SvgPicture.asset(
-                                              'assets/icon/moreDot.svg')
                                         ],
                                       ),
                                     ),
@@ -1331,13 +1343,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2)),
+                            color: Color(0xffFCFCFC)),
                         child: Column(
                           children: [
                             SizedBox(
@@ -1367,15 +1380,16 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                     );
                                     fetchProfileFromPref();
                                   },
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icon/add.svg',
-                                        width: 30,
-                                        height: 30,
-                                      ),
-                                      SizedBox(width: 8),
-                                    ],
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/icon/add.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -1411,10 +1425,22 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                               showMaterialModalBottomSheet(
                                                 isDismissible: true,
                                                 context: context,
+                                                backgroundColor:
+                                                    Color(0x00000000),
                                                 builder: (context) => Container(
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 30,
                                                       horizontal: 10),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffFCFCFC),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(25),
+                                                      topRight:
+                                                          Radius.circular(25),
+                                                    ),
+                                                  ),
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
@@ -1422,6 +1448,22 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.25,
+                                                        height: 5,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .black, // Adjust color
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                      ),
                                                       ListTile(
                                                         leading: SvgPicture.asset(
                                                             'assets/images/tabler_edit.svg'),
@@ -1541,8 +1583,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     ),
                                                   ],
                                                 ),
-                                                SvgPicture.asset(
-                                                    'assets/icon/moreDot.svg')
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    right:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.02,
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                      'assets/icon/moreDot.svg'),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -1556,13 +1607,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2)),
+                            color: Color(0xffFCFCFC)),
                         child: Column(
                           children: [
                             SizedBox(
@@ -1592,15 +1644,16 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                     );
                                     fetchProfileFromPref();
                                   },
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icon/add.svg',
-                                        width: 30,
-                                        height: 30,
-                                      ),
-                                      SizedBox(width: 8),
-                                    ],
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/icon/add.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -1634,12 +1687,24 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                           InkWell(
                                             onTap: () {
                                               showMaterialModalBottomSheet(
+                                                backgroundColor:
+                                                    Color(0x00000000),
                                                 isDismissible: true,
                                                 context: context,
                                                 builder: (context) => Container(
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 30,
                                                       horizontal: 10),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffFCFCFC),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(25),
+                                                      topRight:
+                                                          Radius.circular(25),
+                                                    ),
+                                                  ),
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
@@ -1647,6 +1712,22 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.25,
+                                                        height: 5,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .black, // Adjust color
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                      ),
                                                       ListTile(
                                                         leading: SvgPicture.asset(
                                                             'assets/images/tabler_edit.svg'),
@@ -1766,8 +1847,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     ),
                                                   ],
                                                 ),
-                                                SvgPicture.asset(
-                                                    'assets/icon/moreDot.svg')
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    right:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.02,
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                      'assets/icon/moreDot.svg'),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -1781,13 +1871,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            border: Border.all(width: 0.3, color: Colors.grey),
-                            color: Colors.white),
+                            border: Border.all(
+                                width: 0.3, color: Color(0xffD2D2D2)),
+                            color: Color(0xffFCFCFC)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1815,15 +1906,16 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                       ),
                                     );
                                   },
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icon/add.svg',
-                                        width: 30,
-                                        height: 30,
-                                      ),
-                                      SizedBox(width: 8),
-                                    ],
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/icon/add.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
                                   ),
                                 ),
                               ],
