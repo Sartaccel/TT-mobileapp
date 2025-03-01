@@ -1,2 +1,0 @@
-C:/talent turbo projects/TT_mobile_app/android/app/.cxx/Debug/1k6f1x1m/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/talent turbo projects/TT_mobile_app/android/app/.cxx/Debug/1k6f1x1m/armeabi-v7a/CMakeFiles/rebuild_cache.dir

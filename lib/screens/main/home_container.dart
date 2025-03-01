@@ -48,7 +48,6 @@ class _HomeContainerState extends State<HomeContainer> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        backgroundColor: Color(0xffF7F7F7),
         body: Stack(
           children: [
             scr == 0
@@ -67,22 +66,15 @@ class _HomeContainerState extends State<HomeContainer> {
                       topLeft: Radius.circular(24),
                       topRight: Radius.circular(24)),
                   elevation: 10,
-                  color: const Color(0xFFFFFFFF),
+                  color: Colors.white,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    height: MediaQuery.of(context).size.height * 0.075,
+                    height: 70,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24)),
-                      border: Border(
-                        top: BorderSide(
-                          color: Color(0xffDBDBDB), // Only top border color
-                          width: 1.0, // You can adjust the width if needed
-                        ),
-                      ),
-                    ),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24))),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,

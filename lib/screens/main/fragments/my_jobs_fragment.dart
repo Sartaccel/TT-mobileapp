@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
@@ -68,61 +67,49 @@ class _MyJobsFragmentState extends State<MyJobsFragment> {
                           ))))
                 ],
               ),
-              Center(
-                child: Text(
-                  'My Jobs',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Lato',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16),
-                ),
+              Text(
+                'My Jobs',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16),
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.08,
+                width: 80,
               )
             ],
           ),
         ),
-        Positioned(
-          top: 20,
-          left: 0,
-          right: 0,
-          bottom: MediaQuery.of(context).size.height * 0.07,
-          child: Container(
-            color: Color(0xffF7f7f7),
-            child: DefaultTabController(
-                length: 2,
-                child: Column(
-                  children: [
-                    TabBar(
-                        indicatorColor: Color(0xff004C99),
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        unselectedLabelColor: Color(0xff333333),
-                        labelStyle: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Lato',
-                            fontSize: 16),
-                        labelColor: Color(0xff004C99),
-                        tabs: [
-                          Tab(
-                            text: 'Saved',
-                          ),
-                          Tab(
-                            text: 'Applied',
-                          ),
-                        ]),
-                    Container(
-                      height: (MediaQuery.of(context).size.height) - 230,
-                      child: TabBarView(children: [
-                        SavedJobsFragment(),
-                        AppliedJobsFragment(),
-                      ]),
-                    )
-                  ],
-                )),
-          ),
-        ),
+        DefaultTabController(
+            length: 2,
+            child: Column(
+              children: [
+                TabBar(
+                    indicatorColor: Colors.blue,
+                    unselectedLabelColor: Color(0xff333333),
+                    labelStyle: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Lato',
+                        fontSize: 16),
+                    labelColor: Color(0xff004C99),
+                    tabs: [
+                      Tab(
+                        text: 'Saved',
+                      ),
+                      Tab(
+                        text: 'Applied',
+                      ),
+                    ]),
+                Container(
+                  height: (MediaQuery.of(context).size.height) - 230,
+                  child: TabBarView(children: [
+                    SavedJobsFragment(),
+                    AppliedJobsFragment(),
+                  ]),
+                )
+              ],
+            )),
       ],
     );
   }

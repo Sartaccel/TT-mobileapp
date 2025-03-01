@@ -137,7 +137,6 @@ class _InviteAndEarnState extends State<InviteAndEarn> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         children: [
           Container(

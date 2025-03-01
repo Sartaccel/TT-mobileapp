@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:otp_pin_field/otp_pin_field.dart';
@@ -296,13 +295,15 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      child: FittedBox(
-                        child: SvgPicture.asset('assets/images/otp_img.svg'),
-                        fit: BoxFit.contain,
-                      ),
+                    Image.asset(
+                      'assets/images/tt_logo_resized.png',
+                      width: MediaQuery.of(context).size.width,
+                      height: 60,
                     ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Image.asset('assets/images/otp_img.png'),
                     Center(
                         child: InkWell(
                             onTap: () {
@@ -312,7 +313,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                               'Login with OTP',
                               style: TextStyle(
                                   fontFamily: 'Lato',
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold),
                             ))),
                     SizedBox(
@@ -337,8 +338,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                         SizedBox(
                           width: 10,
                         ),
-                        SvgPicture.asset('assets/icon/OTPedit.svg',
-                            width: 20, height: 20),
+                        Image.asset('assets/images/basil_edit-outline.png'),
                       ],
                     ),
                     SizedBox(

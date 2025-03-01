@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -153,12 +152,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0x04FCFCFC),
-      statusBarIconBrightness: Brightness.dark,
-    ));
     return Scaffold(
-      backgroundColor: Color(0xFFFCFCFC),
       body: Stack(
         children: [
           Positioned(
@@ -181,46 +175,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Image.asset('assets/images/forgot_password.png'),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      child: FittedBox(
-                        child: SvgPicture.asset(
-                            'assets/images/forgot_password.svg'),
-                        fit: BoxFit.contain,
-                      ),
+                      height: 80,
                     ),
-                      SizedBox(
-                        height: 20,
-                      ),
                     Text(
                       'Reset Your Password',
                       style: TextStyle(
-                          color: Color(0xff333333),
                           fontFamily: 'Lato',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 40,
                     ),
-                    ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
-                        colors: [Color(0xff545454), Color(0xff004C99)],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ).createShader(
-                          Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                      blendMode: BlendMode.srcIn,
-                      child: Text(
-                        'Please enter the address associated with your account',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff545454),
-                            fontSize: 14,
-                            fontFamily: 'Lato'),
-                      ),
-                    ),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        child: Text(
+                          'Please enter the address associated with your account',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff545454),
+                              fontSize: 14,
+                              fontFamily: 'Lato'),
+                        )),
                     SizedBox(
                       height: 10,
                     ),
@@ -230,19 +209,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.015,
-                          ),
-                          child: Text(
-                            'Email',
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: 'Lato',
-                                color: _isEmailValid
-                                    ? Color(0xff333333)
-                                    : Color(0xffBA1A1A)),
-                          ),
+                        Text(
+                          'Email',
+                          style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                         ),
                         SizedBox(
                           height: 10,
@@ -263,8 +232,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 borderSide: BorderSide(
                                     color: _isEmailValid
                                         ? Color(0xffd9d9d9)
-                                        : Color(
-                                            0xffBA1A1A), // Default border color
+                                        : Colors.red, // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -272,10 +240,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 borderSide: BorderSide(
                                     color: _isEmailValid
                                         ? Color(0xff004C99)
-                                        : Color(
-                                            0xffBA1A1A), // Border color when focused
+                                        : Colors
+                                            .red, // Border color when focused
                                     width: 1),
                               ),
+                              errorText: _isEmailValid
+                                  ? null
+                                  : emailErrorMessage, // Display error message if invalid
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10)),
                           keyboardType: TextInputType.emailAddress,
@@ -299,20 +270,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             });
                           },
                         ),
-                        if (!_isEmailValid)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 0,
-                            ),
-                            child: Text(
-                              emailErrorMessage ?? '',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xffBA1A1A),
-                                fontFamily: 'Lato',
-                              ),
-                            ),
-                          ),
                       ],
                     ),
                     SizedBox(height: 50),
@@ -384,7 +341,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     InkWell(
                       onTap: () {

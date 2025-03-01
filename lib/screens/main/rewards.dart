@@ -24,7 +24,6 @@ class _MyRewardsState extends State<MyRewards> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         children: [
           Container(

@@ -192,22 +192,23 @@ class _JobdetailsState extends State<Jobdetails> {
     }
   }
 
-  bool checkExpiry(String dateString) {
-    // Parse the date string
-    DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
+ 
 
-    // Get the current date at midnight
-    DateTime currentDate = DateTime.now();
-    currentDate =
-        DateTime(currentDate.year, currentDate.month, currentDate.day);
+bool checkExpiry(String dateString) {
+  // Parse the date string
+  DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
 
-    // Reset providedDate to midnight as well
-    providedDate =
-        DateTime(providedDate.year, providedDate.month, providedDate.day);
+  // Get the current date at midnight
+  DateTime currentDate = DateTime.now();
+  currentDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
 
-    // Compare the dates
-    return providedDate.isBefore(currentDate);
-  }
+  // Reset providedDate to midnight as well
+  providedDate = DateTime(providedDate.year, providedDate.month, providedDate.day);
+
+  // Compare the dates
+  return providedDate.isBefore(currentDate);
+}
+
 
   Future<void> getRefCode(int jobId) async {
     final url =
@@ -272,12 +273,12 @@ class _JobdetailsState extends State<Jobdetails> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         children: [
           Container(
@@ -472,12 +473,10 @@ class _JobdetailsState extends State<Jobdetails> {
                                   );*/
                                           },
                                           child: Icon(
+                                            //(widget.jobData['isFavorite'] == "1")
                                             isSaved
                                                 ? Icons.bookmark
                                                 : Icons.bookmark_border_rounded,
-                                            color: isSaved
-                                                ? Color(0xff004C99)
-                                                : null,
                                             size: 25,
                                           ))
                                     ],
@@ -601,15 +600,17 @@ class _JobdetailsState extends State<Jobdetails> {
                                                 SizedBox(
                                                   height: 3,
                                                 ),
-                                                Text(
-                                                  '${(rawJobData['data']['experience'] ?? 1).toInt()}+ years',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Lato',
-                                                    color: Color(0xff333333),
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
+                                               Text(
+  '${(rawJobData['data']['experience'] ?? 1).toInt()}+ years',
+  style: TextStyle(
+    fontFamily: 'Lato',
+    color: Color(0xff333333),
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+  ),
+),
+
+
                                               ],
                                             ),
                                           ),
@@ -1228,30 +1229,25 @@ class _JobdetailsState extends State<Jobdetails> {
                                       ),
                                       SizedBox(width: 8),
                                       Expanded(
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: checkExpiry(
-                                                        widget.jobData[
-                                                                'dueDate'] ??
-                                                            '1990-01-01')
-                                                    ? 'Expired'
-                                                    : formatDate(widget.jobData[
-                                                            'dueDate'] ??
-                                                        '1990-01-01'),
-                                                style: TextStyle(
-                                                  height: 1.5,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Color(
-                                                      0xff333333), // Ensure color is set
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
+  child: RichText(
+    text: TextSpan(
+      children: [
+        TextSpan(
+          text: checkExpiry(widget.jobData['dueDate'] ?? '1990-01-01') 
+              ? 'Expired' 
+              : formatDate(widget.jobData['dueDate'] ?? '1990-01-01'),
+          style: TextStyle(
+            height: 1.5,
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            color: Color(0xff333333), // Ensure color is set
+          ),
+        ),
+      ],
+    ),
+  ),
+)
+
                                     ],
                                   ),
 
@@ -1393,7 +1389,7 @@ class _JobdetailsState extends State<Jobdetails> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          SvgPicture.asset('assets/icon/noInternet.svg'),
+                          SvgPicture.asset('no_internet_ic.svg'),
                           Text(
                             'No Internet connection',
                             style: TextStyle(
@@ -1468,7 +1464,6 @@ class _JobdetailsState extends State<Jobdetails> {
     });
   }
 }
-
 String formatDate(String dateString) {
   try {
     DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(dateString);

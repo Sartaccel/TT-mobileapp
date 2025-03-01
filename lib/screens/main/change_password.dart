@@ -128,7 +128,6 @@ class _ChangePasswordState extends State<ChangePassword> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      backgroundColor: Color(0xffFCFCFC),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -186,17 +185,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                   SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.015,
-                    ),
-                    child: Text('Old Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isOldPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A))),
+                  Text(
+                    'Old Password',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                   ),
                   SizedBox(
                     height: 10,
@@ -225,7 +216,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           borderSide: BorderSide(
                               color: _isOldPasswordValid
                                   ? Color(0xffd9d9d9)
-                                  : Color(0xffBA1A1A), // Default border color
+                                  : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -233,10 +224,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                           borderSide: BorderSide(
                               color: _isOldPasswordValid
                                   ? Color(0xff004C99)
-                                  : Color(
-                                      0xffBA1A1A), // Border color when focused
+                                  : Colors.red, // Border color when focused
                               width: 1),
                         ),
+                        errorText: _isOldPasswordValid
+                            ? null
+                            : old_passwordErrorMessage, // Display error message if invalid
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     inputFormatters: [
@@ -258,34 +251,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                     },
                   ),
-                  if (!_isOldPasswordValid)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 0,
-                      ),
-                      child: Text(
-                        old_passwordErrorMessage ?? '',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xffBA1A1A),
-                          fontFamily: 'Lato',
-                        ),
-                      ),
-                    ),
                   SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.015,
-                    ),
-                    child: Text('New Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isNewPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A))),
+                  Text(
+                    'New Password',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                   ),
                   SizedBox(
                     height: 10,
@@ -314,7 +285,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           borderSide: BorderSide(
                               color: _isNewPasswordValid
                                   ? Color(0xffd9d9d9)
-                                  : Color(0xffBA1A1A), // Default border color
+                                  : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -322,10 +293,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                           borderSide: BorderSide(
                               color: _isNewPasswordValid
                                   ? Color(0xff004C99)
-                                  : Color(
-                                      0xffBA1A1A), // Border color when focused
+                                  : Colors.red, // Border color when focused
                               width: 1),
                         ),
+                        errorText: _isNewPasswordValid
+                            ? null
+                            : new_passwordErrorMessage, // Display error message if invalid
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     inputFormatters: [
@@ -347,34 +320,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                     },
                   ),
-                  if (!_isNewPasswordValid)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 0,
-                      ),
-                      child: Text(
-                        new_passwordErrorMessage ?? '',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xffBA1A1A),
-                          fontFamily: 'Lato',
-                        ),
-                      ),
-                    ),
                   SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.015,
-                    ),
-                    child: Text('Confirm New Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isConfirmPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A))),
+                  Text(
+                    'Confirm New Password',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                   ),
                   SizedBox(
                     height: 10,
@@ -403,7 +354,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           borderSide: BorderSide(
                               color: _isConfirmPasswordValid
                                   ? Color(0xffd9d9d9)
-                                  : Color(0xffBA1A1A), // Default border color
+                                  : Colors.red, // Default border color
                               width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -411,10 +362,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                           borderSide: BorderSide(
                               color: _isConfirmPasswordValid
                                   ? Color(0xff004C99)
-                                  : Color(
-                                      0xffBA1A1A), // Border color when focused
+                                  : Colors.red, // Border color when focused
                               width: 1),
                         ),
+                        errorText: _isConfirmPasswordValid
+                            ? null
+                            : confirm_passwordErrorMessage, // Display error message if invalid
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     inputFormatters: [
@@ -436,20 +389,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                     },
                   ),
-                  if (!_isConfirmPasswordValid)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 0,
-                      ),
-                      child: Text(
-                        confirm_passwordErrorMessage ?? '',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xffBA1A1A),
-                          fontFamily: 'Lato',
-                        ),
-                      ),
-                    ),
                   SizedBox(
                     height: 30,
                   ),

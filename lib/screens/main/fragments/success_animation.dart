@@ -12,7 +12,7 @@ class SuccessAnimation extends StatefulWidget {
 }
 
 class _SuccessAnimationState extends State<SuccessAnimation> {
-  bool isLoading = false;
+   bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,65 +33,58 @@ class _SuccessAnimationState extends State<SuccessAnimation> {
               mainAxisSize: MainAxisSize.min, // Keeps the column compact
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Lottie.asset('assets/images/Animation - 1722592346112.json',
-                    width: 100, fit: BoxFit.contain, repeat: false),
+                Lottie.asset(
+                  'assets/images/Animation - 1722592346112.json',
+                  width: 100, 
+                  fit: BoxFit.contain,
+                  repeat: false
+                ),
                 const SizedBox(height: 20),
-                ShaderMask(
-                  shaderCallback: (bounds) => LinearGradient(
-                    colors: [Color(0xff545454), Color(0xff004C99)],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ).createShader(
-                      Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                  blendMode: BlendMode.srcIn,
-                  child: Text(
-                    "Password reset successful",
-                    style: GoogleFonts.lato(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff004C99),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
+               Text(
+  "Password reset successful",
+  style: GoogleFonts.lato(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Color(0xff004C99),
+  ),
+),
+SizedBox(height: 50,),
+               InkWell(
+  onTap: () {
+    Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => LoginScreen()),
+);
 // Replace with actual route
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: isLoading
-                            ? SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 4,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              )
-                            : const Text(
-                                'Continue',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                      ),
-                    ),
-                  ),
+  },
+  child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      height: 44,
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: isLoading
+            ? SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 4,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
+              )
+            : const Text(
+                'Continue',
+                style: TextStyle(color: Colors.white),
+              ),
+      ),
+    ),
+  ),
+),
+
               ],
             ),
           ),

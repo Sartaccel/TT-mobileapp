@@ -354,18 +354,13 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Current Designation',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff333333)),
-                              ),
+                            Text(
+                              'Current Designation',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff333333)),
                             ),
                             SizedBox(
                               height: 10,
@@ -388,8 +383,8 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderSide: BorderSide(
                                           color: _isDesignationValid
                                               ? Color(0xffd9d9d9d9)
-                                              : Color(
-                                                  0xffBA1A1A), // Default border color
+                                              : Colors
+                                                  .red, // Default border color
                                           width: 1),
                                     ),
                                     focusedBorder: OutlineInputBorder(
@@ -397,8 +392,8 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderSide: BorderSide(
                                           color: _isDesignationValid
                                               ? Color(0xff004C99)
-                                              : Color(
-                                                  0xffBA1A1A), // Border color when focused
+                                              : Colors
+                                                  .red, // Border color when focused
                                           width: 1),
                                     ),
                                     errorText: _isDesignationValid
@@ -422,18 +417,13 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Company Name',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff333333)),
-                              ),
+                            Text(
+                              'Company Name',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff333333)),
                             ),
                             SizedBox(
                               height: 10,
@@ -456,8 +446,8 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderSide: BorderSide(
                                           color: _isCompanyNameValid
                                               ? Color(0xffd9d9d9)
-                                              : Color(
-                                                  0xffBA1A1A), // Default border color
+                                              : Colors
+                                                  .red, // Default border color
                                           width: 1),
                                     ),
                                     focusedBorder: OutlineInputBorder(
@@ -465,8 +455,8 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderSide: BorderSide(
                                           color: _isCompanyNameValid
                                               ? Color(0xff004C99)
-                                              : Color(
-                                                  0xffBA1A1A), // Border color when focused
+                                              : Colors
+                                                  .red, // Border color when focused
                                           width: 1),
                                     ),
                                     errorText: _isCompanyNameValid
@@ -604,20 +594,12 @@ class _AddemploymentState extends State<Addemployment> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          left: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.015,
-                                        ),
-                                        child: Text(
-                                          'Start Date',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontFamily: 'Lato',
-                                              color: Color(0xff333333)),
-                                        ),
+                                      Text(
+                                        'Start Date',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'Lato',
+                                            color: Color(0xff333333)),
                                       ),
                                       SizedBox(
                                         height: 10,
@@ -646,8 +628,8 @@ class _AddemploymentState extends State<Addemployment> {
                                               borderSide: BorderSide(
                                                   color: isStartDateValid
                                                       ? Color(0xffd9d9d9)
-                                                      : Color(
-                                                          0xffBA1A1A), // Default border color
+                                                      : Colors
+                                                          .red, // Default border color
                                                   width: 1),
                                             ),
                                             focusedBorder: OutlineInputBorder(
@@ -656,8 +638,8 @@ class _AddemploymentState extends State<Addemployment> {
                                               borderSide: BorderSide(
                                                   color: isStartDateValid
                                                       ? Color(0xff004C99)
-                                                      : Color(
-                                                          0xffBA1A1A), // Border color when focused
+                                                      : Colors
+                                                          .red, // Border color when focused
                                                   width: 1),
                                             ),
                                             errorText: isStartDateValid
@@ -705,20 +687,12 @@ class _AddemploymentState extends State<Addemployment> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          left: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.015,
-                                        ),
-                                        child: Text(
-                                          'End Date',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontFamily: 'Lato',
-                                              color: Color(0xff333333)),
-                                        ),
+                                      Text(
+                                        'End Date',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'Lato',
+                                            color: Color(0xff333333)),
                                       ),
                                       SizedBox(
                                         height: 10,
@@ -751,7 +725,7 @@ class _AddemploymentState extends State<Addemployment> {
                                             borderSide: BorderSide(
                                                 color: isEndDateValid
                                                     ? Color(0xffd9d9d9)
-                                                    : Color(0xffBA1A1A),
+                                                    : Colors.red,
                                                 width: 1),
                                           ),
                                           focusedBorder: OutlineInputBorder(
@@ -760,7 +734,7 @@ class _AddemploymentState extends State<Addemployment> {
                                             borderSide: BorderSide(
                                                 color: isEndDateValid
                                                     ? Color(0xff004C99)
-                                                    : Color(0xffBA1A1A),
+                                                    : Colors.red,
                                                 width: 1),
                                           ),
                                           errorText: isEndDateValid
@@ -821,17 +795,12 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Work type',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff333333)),
-                              ),
+                            Text(
+                              'Work type',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff333333)),
                             ),
                             SizedBox(
                               height: 10,
@@ -844,43 +813,22 @@ class _AddemploymentState extends State<Addemployment> {
                                       width: 1,
                                       color: isWorkTypeValid
                                           ? Color(0xffD9D9D9)
-                                          : Color(0xffBA1A1A)),
+                                          : Colors.red),
                                   borderRadius: BorderRadius.circular(10)),
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: InkWell(
                                 onTap: () {
                                   showMaterialModalBottomSheet(
-                                    backgroundColor: Color(0x00000000),
                                     isDismissible: true,
                                     context: context,
                                     builder: (context) => Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 30, horizontal: 10),
                                       color: Color(0xffFCFCFC),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xffFCFCFC),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(25),
-                                          topRight: Radius.circular(25),
-                                        ),
-                                      ),
                                       width: MediaQuery.of(context).size.width,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.25,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Colors.black, // Adjust color
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
                                           ListTile(
                                             //leading: Icon(Icons.visibility_outlined),
                                             title: Text('On Site'),
@@ -934,17 +882,12 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Employment Type',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff333333)),
-                              ),
+                            Text(
+                              'Employment Type',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff333333)),
                             ),
                             SizedBox(
                               height: 10,
@@ -957,7 +900,7 @@ class _AddemploymentState extends State<Addemployment> {
                                       width: 1,
                                       color: isWorkTypeValid
                                           ? Color(0xffD9D9D9)
-                                          : Color(0xffBA1A1A)),
+                                          : Colors.red),
                                   borderRadius: BorderRadius.circular(10)),
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: InkWell(
@@ -983,18 +926,6 @@ class _AddemploymentState extends State<Addemployment> {
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.25,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color: Colors.black,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
                                           ListTile(
                                             title: Text('Full time'),
                                             onTap: () {
@@ -1069,18 +1000,13 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(
                               height: 25,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Description',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff333333)),
-                              ),
+                            Text(
+                              'Description',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff333333)),
                             ),
                             SizedBox(
                               height: 10,
@@ -1106,8 +1032,8 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderSide: BorderSide(
                                           color: _isDescriptionValid
                                               ? Color(0xffd9d9d9)
-                                              : Color(
-                                                  0xffBA1A1A), // Default border color
+                                              : Colors
+                                                  .red, // Default border color
                                           width: 1),
                                     ),
                                     focusedBorder: OutlineInputBorder(
@@ -1115,8 +1041,8 @@ class _AddemploymentState extends State<Addemployment> {
                                       borderSide: BorderSide(
                                           color: _isDescriptionValid
                                               ? Color(0xff004C99)
-                                              : Color(
-                                                  0xffBA1A1A), // Border color when focused
+                                              : Colors
+                                                  .red, // Border color when focused
                                           width: 1),
                                     ),
                                     errorText: _isDescriptionValid

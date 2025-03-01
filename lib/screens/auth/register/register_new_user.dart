@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,19 +24,19 @@ class RegisterNewUser extends StatefulWidget {
 
 class _RegisterNewUserState extends State<RegisterNewUser> {
   bool _isFirstNameValid = true;
-  String? fNameErrorMsg = 'First name is required';
+  String? fNameErrorMsg = 'First name cannot be empty';
   TextEditingController fNameController = TextEditingController();
 
   bool _isLastNameValid = true;
-  String? lNameErrorMsg = 'Last name is required';
+  String? lNameErrorMsg = 'Last name cannot be empty';
   TextEditingController lNameController = TextEditingController();
 
   bool _isEmailValid = true;
-  String? emailErrorMsg = 'Email ID is required';
+  String? emailErrorMsg = 'Email cannot be empty';
   TextEditingController emailController = TextEditingController();
 
   bool _isMobileNumberValid = true;
-  String? mobileErrorMsg = 'Mobile number is required';
+  String? mobileErrorMsg = 'Mobile number cannot be empty';
   TextEditingController mobileController = TextEditingController();
 
   TextEditingController referralController = TextEditingController();
@@ -51,11 +52,10 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
 
   bool agreementAccepted = false;
   bool _isAgreementError = false;
-  bool isHovered = false;
   bool confirmPasswordHide = true, passwordHide = true;
 
-  String passwordErrorMSG = "Password is required";
-  String confirm_passwordErrorMSG = "Password is required";
+  String passwordErrorMSG = "Password cannot be empty";
+  String confirm_passwordErrorMSG = "Password cannot be empty";
 
   String? _selectedCountryCode = '+91';
   //final List<String> countryOptions = ['+91', '+1', '+2'];
@@ -504,17 +504,22 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
 
   @override
   Widget build(BuildContext context) {
+    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0x04FCFCFC),
       statusBarIconBrightness: Brightness.dark,
     ));
     return Scaffold(
-      backgroundColor: Color(0xFFFCFCFC),
       body: Stack(
         children: [
           Positioned(
             right: 0,
             child: Image.asset('assets/images/Ellipse 1.png'),
+          ),
+          Positioned(
+            top: 61,
+            left: 0,
+            child: Image.asset('assets/images/Ellipse 2.png'),
           ),
           Positioned(
               top: 40,
@@ -575,472 +580,371 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       SizedBox(
                         height: 20,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.015,
-                        ),
-                        child: Text('First Name',
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: 'Lato',
-                                color: _isFirstNameValid
-                                    ? Color(0xff333333)
-                                    : Color(0xffBA1A1A))),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: (MediaQuery.of(context).size.width) - 20,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextField(
-                                controller: fNameController,
-                                cursorColor: Color(0xff004C99),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff545454)),
-                                decoration: InputDecoration(
-                                  hintText: 'Enter your first name',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isFirstNameValid
-                                            ? Color(0xffd9d9d9)
-                                            : Color(
-                                                0xffBA1A1A), // Default border color
-                                        width: 1),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isFirstNameValid
-                                            ? Color(0xff004C99)
-                                            : Color(
-                                                0xffBA1A1A), // Border color when focused
-                                        width: 1),
-                                  ),
-                                  // Display error message if invalid
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-
-                                  errorStyle: TextStyle(
-                                      fontSize: 12, color: Color(0xffBA1A1A)),
-                                ),
-                                keyboardType: TextInputType.emailAddress,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(RegExp(
-                                      r'[a-zA-Z\s]')), // Allow only letters and spaces
-                                ],
-                                onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
-                                  setState(() {
-                                    _isFirstNameValid = true;
-                                  });
-                                },
-                              ),
-                              if (!_isFirstNameValid)
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    fNameErrorMsg ?? '',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xffBA1A1A),
-                                      fontFamily: 'Lato',
-                                    ),
-                                  ),
-                                ),
-                            ]),
-                      ),
-
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.015,
-                        ),
-                        child: Text(
-                          'Last Name',
+                      Text('First Name',
                           style: TextStyle(
                               fontSize: 13,
                               fontFamily: 'Lato',
-                              color: _isLastNameValid
+                              color: _isFirstNameValid
                                   ? Color(0xff333333)
-                                  : Color(0xffBA1A1A)),
-                        ),
-                      ),
+                                  : Color(0xffBA1A1A))),
                       SizedBox(
                         height: 10,
                       ),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextField(
-                              controller: lNameController,
-                              cursorColor: Color(0xff004C99),
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff545454)),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(
-                                    r'[a-zA-Z\s]')), // Allow only letters and spaces
-                              ],
-                              decoration: InputDecoration(
-                                  hintText: 'Enter your last name',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isLastNameValid
-                                            ? Color(0xffd9d9d9)
-                                            : Color(
-                                                0xffBA1A1A), // Default border color
-                                        width: 1),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isLastNameValid
-                                            ? Color(0xff004C99)
-                                            : Color(
-                                                0xffBA1A1A), // Border color when focused
-                                        width: 1),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10)),
-                              keyboardType: TextInputType.text,
-                              onChanged: (value) {
-                                // Validate the email here and update _isEmailValid
-                                setState(() {
-                                  _isFirstNameValid = true;
-                                });
-                              },
-                            ),
-                            if (!_isLastNameValid)
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  lNameErrorMsg ?? '',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xffBA1A1A),
-                                    fontFamily: 'Lato',
-                                  ),
-                                ),
+                        child: TextField(
+                          controller: fNameController,
+                          cursorColor: Color(0xff004C99),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              color: Color(0xff545454)),
+                          decoration: InputDecoration(
+                              hintText: 'Enter your first name',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isFirstNameValid
+                                        ? Color(0xffd9d9d9)
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
+                                    width: 1),
                               ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isFirstNameValid
+                                        ? Color(0xff004C99)
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isFirstNameValid
+                                  ? null
+                                  : fNameErrorMsg, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          keyboardType: TextInputType.emailAddress,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'[a-zA-Z\s]')), // Allow only letters and spaces
                           ],
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isFirstNameValid = true;
+                            });
+                          },
                         ),
                       ),
 
                       SizedBox(
                         height: 20,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.015,
-                        ),
-                        child: Text(
-                          'Email',
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'Lato',
-                              color: _isEmailValid
-                                  ? Color(0xff333333)
-                                  : Color(0xffBA1A1A)),
-                        ),
+                      Text(
+                        'Last Name',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: 'Lato',
+                            color: _isLastNameValid
+                                ? Color(0xff333333)
+                                : Color(0xffBA1A1A)),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
-                        child: Column(
-                          children: [
-                            TextField(
-                              controller: emailController,
-                              cursorColor: Color(0xff004C99),
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff545454)),
-                              decoration: InputDecoration(
-                                  hintText: 'Enter your email address',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isEmailValid
-                                            ? Color(0xffd9d9d9)
-                                            : Color(
-                                                0xffBA1A1A), // Default border color
-                                        width: 1),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isEmailValid
-                                            ? Color(0xff004C99)
-                                            : Color(
-                                                0xffBA1A1A), // Border color when focused
-                                        width: 1),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10)),
-                              keyboardType: TextInputType.emailAddress,
-                              onChanged: (value) {
-                                // Validate the email here and update _isEmailValid
-                                setState(() {
-                                  _isEmailValid = true;
-                                });
-                              },
-                            ),
-                            if (!_isEmailValid)
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  emailErrorMsg ?? '',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xffBA1A1A),
-                                    fontFamily: 'Lato',
-                                  ),
-                                ),
-                              ),
+                        child: TextField(
+                          controller: lNameController,
+                          cursorColor: Color(0xff004C99),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              color: Color(0xff545454)),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'[a-zA-Z\s]')), // Allow only letters and spaces
                           ],
-                        ),
-                      ),
-
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.015,
-                        ),
-                        child: Text(
-                          'Password',
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'Lato',
-                              color: _isPasswordValid
-                                  ? Color(0xff333333)
-                                  : Color(0xffBA1A1A)),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                          width: (MediaQuery.of(context).size.width) - 20,
-                          child: Column(children: [
-                            TextField(
-                              controller: passwordController,
-                              obscureText: passwordHide,
-                              cursorColor: Color(0xff004C99),
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff545454)),
-                              decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          passwordHide = !passwordHide;
-                                        });
-                                      },
-                                      //icon: Icon( passwordHide?Icons.visibility :Icons.visibility_off)),
-                                      icon: SvgPicture.asset(passwordHide
-                                          ? 'assets/images/ic_hide_password.svg'
-                                          : 'assets/images/ic_show_password.svg')),
-                                  hintText: 'Enter your password',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isPasswordValid
-                                            ? Color(0xffd9d9d9)
-                                            : Color(
-                                                0xffBA1A1A), // Default border color
-                                        width: 1),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isPasswordValid
-                                            ? Color(0xff004C99)
-                                            : Color(
-                                                0xffBA1A1A), // Border color when focused
-                                        width: 1),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10)),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'[\p{L}\p{N}\p{P}\p{S}]',
-                                      unicode: true),
-                                ),
-                                FilteringTextInputFormatter.deny(
-                                  RegExp(r'\s'),
-                                ),
-                                FilteringTextInputFormatter.deny(
-                                  RegExp(
-                                      r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                                      unicode: true),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                // Validate the email here and update _isEmailValid
-                                setState(() {
-                                  _isPasswordValid = true;
-                                  _isConfirmPasswordValid = true;
-                                });
-                              },
-                            ),
-                            if (!_isPasswordValid)
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  passwordErrorMSG ?? '',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xffBA1A1A),
-                                    fontFamily: 'Lato',
-                                  ),
-                                ),
+                          decoration: InputDecoration(
+                              hintText: 'Enter your last name',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isLastNameValid
+                                        ? Color(0xffd9d9d9)
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
+                                    width: 1),
                               ),
-                          ])),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isLastNameValid
+                                        ? Color(0xff004C99)
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isLastNameValid
+                                  ? null
+                                  : lNameErrorMsg, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          keyboardType: TextInputType.text,
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isLastNameValid = true;
+                            });
+                          },
+                        ),
+                      ),
 
                       SizedBox(
                         height: 20,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.015,
-                        ),
-                        child: Text(
-                          'Re-enter Password',
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'Lato',
-                              color: _isConfirmPasswordValid
-                                  ? Color(0xff333333)
-                                  : Color(0xffBA1A1A)),
-                        ),
+                      Text(
+                        'Email',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: 'Lato',
+                            color: _isEmailValid
+                                ? Color(0xff333333)
+                                : Color(0xffBA1A1A)),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
-                        child: Column(
-                          children: [
-                            TextField(
-                              controller: confirmPasswordController,
-                              cursorColor: Color(0xff004C99),
-                              obscureText: confirmPasswordHide,
-                              style:
-                                  TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                              decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          confirmPasswordHide =
-                                              !confirmPasswordHide;
-                                        });
-                                      },
-                                      //icon: Icon( confirmPasswordHide?Icons.visibility :Icons.visibility_off)),
-                                      icon: SvgPicture.asset(confirmPasswordHide
-                                          ? 'assets/images/ic_hide_password.svg'
-                                          : 'assets/images/ic_show_password.svg')),
-                                  hintText: 'Re-enter your password',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isConfirmPasswordValid
-                                            ? Color(0xffd9d9d9)
-                                            : Color(
-                                                0xffBA1A1A), // Default border color
-                                        width: 1),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isConfirmPasswordValid
-                                            ? Color(0xff004C99)
-                                            : Color(
-                                                0xffBA1A1A), // Border color when focused
-                                        width: 1),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10)),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'[\p{L}\p{N}\p{P}\p{S}]',
-                                      unicode: true),
-                                ),
-                                FilteringTextInputFormatter.deny(
-                                  RegExp(r'\s'),
-                                ),
-                                FilteringTextInputFormatter.deny(
-                                  RegExp(
-                                      r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                                      unicode: true),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                // Validate the email here and update _isEmailValid
-                                setState(() {
-                                  _isConfirmPasswordValid = true;
-                                  _isPasswordValid = true;
-                                });
-                              },
-                            ),
-                            if (!_isConfirmPasswordValid)
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  confirm_passwordErrorMSG ?? '',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xffBA1A1A),
-                                    fontFamily: 'Lato',
-                                  ),
-                                ),
+                        child: TextField(
+                          controller: emailController,
+                          cursorColor: Color(0xff004C99),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              color: Color(0xff545454)),
+                          decoration: InputDecoration(
+                              hintText: 'Enter your email address',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isEmailValid
+                                        ? Color(0xffd9d9d9)
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
+                                    width: 1),
                               ),
-                          ],
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isEmailValid
+                                        ? Color(0xff004C99)
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isEmailValid
+                                  ? null
+                                  : emailErrorMsg, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isEmailValid = true;
+                            });
+                          },
                         ),
                       ),
 
                       SizedBox(
                         height: 20,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.015,
-                        ),
-                        child: Text(
-                          'Mobile Number',
+                      Text(
+                        'Password',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: 'Lato',
+                            color: _isPasswordValid
+                                ? Color(0xff333333)
+                                : Color(0xffBA1A1A)),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          controller: passwordController,
+                          obscureText: passwordHide,
+                          cursorColor: Color(0xff004C99),
                           style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 14,
                               fontFamily: 'Lato',
-                              color: _isMobileNumberValid
-                                  ? Color(0xff333333)
-                                  : Color(0xffBA1A1A)),
+                              color: Color(0xff545454)),
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordHide = !passwordHide;
+                                    });
+                                  },
+                                  //icon: Icon( passwordHide?Icons.visibility :Icons.visibility_off)),
+                                  icon: SvgPicture.asset(passwordHide
+                                      ? 'assets/images/ic_hide_password.svg'
+                                      : 'assets/images/ic_show_password.svg')),
+                              hintText: 'Enter your password',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isPasswordValid
+                                        ? Color(0xffd9d9d9)
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isPasswordValid
+                                        ? Color(0xff004C99)
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isPasswordValid
+                                  ? null
+                                  : passwordErrorMSG, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
+                            ),
+                            FilteringTextInputFormatter.deny(
+                              RegExp(r'\s'),
+                            ),
+                            FilteringTextInputFormatter.deny(
+                              RegExp(
+                                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                                  unicode: true),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isPasswordValid = true;
+                              _isConfirmPasswordValid = true;
+                            });
+                          },
                         ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Re-enter Password',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: 'Lato',
+                            color: _isConfirmPasswordValid
+                                ? Color(0xff333333)
+                                : Color(0xffBA1A1A)),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          controller: confirmPasswordController,
+                          cursorColor: Color(0xff004C99),
+                          obscureText: confirmPasswordHide,
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      confirmPasswordHide =
+                                          !confirmPasswordHide;
+                                    });
+                                  },
+                                  //icon: Icon( confirmPasswordHide?Icons.visibility :Icons.visibility_off)),
+                                  icon: SvgPicture.asset(confirmPasswordHide
+                                      ? 'assets/images/ic_hide_password.svg'
+                                      : 'assets/images/ic_show_password.svg')),
+                              hintText: 'Re-enter your password',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isConfirmPasswordValid
+                                        ? Color(0xffd9d9d9)
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isConfirmPasswordValid
+                                        ? Color(0xff004C99)
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isConfirmPasswordValid
+                                  ? null
+                                  : confirm_passwordErrorMSG, // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
+                            ),
+                            FilteringTextInputFormatter.deny(
+                              RegExp(r'\s'),
+                            ),
+                            FilteringTextInputFormatter.deny(
+                              RegExp(
+                                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                                  unicode: true),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isConfirmPasswordValid = true;
+                              _isPasswordValid = true;
+                            });
+                          },
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Mobile Number',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: 'Lato',
+                            color: _isMobileNumberValid
+                                ? Color(0xff333333)
+                                : Color(0xffBA1A1A)),
                       ),
                       SizedBox(
                         height: 10,
@@ -1067,11 +971,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   child: DropdownButton(
                                       value: _selectedCountryCode,
                                       underline: Container(),
-                                      icon: SvgPicture.asset(
-                                        'assets/icon/ArrowDown.svg',
-                                        height: 10,
-                                        width: 10,
-                                      ),
                                       items: countryOptions.map((countryCode) {
                                         return DropdownMenuItem(
                                             value: countryCode,
@@ -1088,81 +987,73 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                         });
                                       }),
                                 ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01),
-                                Expanded(
-                                  child: Container(
-                                    width: (MediaQuery.of(context).size.width) -
-                                        120,
-                                    child: TextField(
-                                      inputFormatters: <TextInputFormatter>[
-                                        FilteringTextInputFormatter
-                                            .digitsOnly, // This allows only digits
-                                      ],
-                                      maxLength: getValidLengthForCountry(
-                                          _selectedCountryCode!),
-                                      controller: mobileController,
-                                      cursorColor: Color(0xff004C99),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: 'Lato',
-                                          color: _isMobileNumberValid
-                                              ? Color(0xff545454)
-                                              : Color(0xffBA1A1A)),
-                                      decoration: InputDecoration(
-                                          counterText: '',
-                                          hintText: 'Enter mobile number',
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          enabledBorder: OutlineInputBorder(
+                                Container(
+                                  width:
+                                      (MediaQuery.of(context).size.width) - 120,
+                                  child: TextField(
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter
+                                          .digitsOnly, // This allows only digits
+                                    ],
+                                    maxLength: getValidLengthForCountry(
+                                        _selectedCountryCode!),
+                                    controller: mobileController,
+                                    cursorColor: Color(0xff004C99),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Lato',
+                                        color: _isMobileNumberValid
+                                            ? Color(0xff545454)
+                                            : Color(0xffBA1A1A)),
+                                    decoration: InputDecoration(
+                                        counterText: '',
+                                        hintText: 'Enter mobile number',
+                                        border: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isMobileNumberValid
-                                                    ? Color(0xffd9d9d9)
-                                                    : Color(
-                                                        0xffBA1A1A), // Default border color
-                                                width: 1),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isMobileNumberValid
-                                                    ? Color(0xff004C99)
-                                                    : Color(
-                                                        0xffBA1A1A), // Border color when focused
-                                                width: 1),
-                                          ),
-                                          // errorText: _isMobileNumberValid
-                                          //     ? null
-                                          //     : mobileErrorMsg, // Display error message if invalid
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10)),
-                                      keyboardType: TextInputType.phone,
-                                      onChanged: (value) {
-                                        // Validate the email here and update _isEmailValid
-                                        setState(() {
-                                          _isMobileNumberValid = true;
-                                        });
-                                      },
-                                    ),
+                                                BorderRadius.circular(8)),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Color(0xffd9d9d9)
+                                                  : Color(
+                                                      0xffBA1A1A), // Default border color
+                                              width: 1),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          borderSide: BorderSide(
+                                              color: _isMobileNumberValid
+                                                  ? Color(0xff004C99)
+                                                  : Color(
+                                                      0xffBA1A1A), // Border color when focused
+                                              width: 1),
+                                        ),
+                                        // errorText: _isMobileNumberValid
+                                        //     ? null
+                                        //     : mobileErrorMsg, // Display error message if invalid
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10)),
+                                    keyboardType: TextInputType.phone,
+                                    onChanged: (value) {
+                                      // Validate the email here and update _isEmailValid
+                                      setState(() {
+                                        _isMobileNumberValid = true;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],
                             ),
                             if (!_isMobileNumberValid)
                               Padding(
-                                padding: EdgeInsets.only(top: 4, left: 0),
+                                padding: EdgeInsets.only(top: 4, left: 10),
                                 child: Text(
                                   mobileErrorMsg ?? '',
                                   style: TextStyle(
-                                    color: Color(0xFFBA1A1A),
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                  ),
+                                      color: Color(0xFFBA1A1A), fontSize: 12),
                                 ),
                               ),
                           ],
@@ -1202,7 +1093,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                   ),*/
 
                       //CheckBox
-                      SizedBox(height: 40),
+                      SizedBox(height: 30),
                       Center(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1225,7 +1116,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                         : _isAgreementError
                                             ? Color(
                                                 0xFFBA1A1A) // Error border when button clicked
-                                            : Color(0xffd9d9d9),
+                                            : Color(0xff333333),
                                     width: 1,
                                   ),
                                   borderRadius: BorderRadius.circular(5),

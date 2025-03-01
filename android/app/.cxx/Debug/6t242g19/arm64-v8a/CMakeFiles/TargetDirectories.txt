@@ -1,2 +1,0 @@
-D:/ENTERKEY Solution(IT)/PROJECTS/TalentTurbo/TT_mobile_app/android/app/.cxx/Debug/6t242g19/arm64-v8a/CMakeFiles/edit_cache.dir
-D:/ENTERKEY Solution(IT)/PROJECTS/TalentTurbo/TT_mobile_app/android/app/.cxx/Debug/6t242g19/arm64-v8a/CMakeFiles/rebuild_cache.dir
