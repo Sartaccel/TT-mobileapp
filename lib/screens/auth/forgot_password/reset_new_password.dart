@@ -32,66 +32,65 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
   String passwordErrorMSG = "Password cannot be empty";
 
   Future<void> setNewPassword() async {
-  final url = Uri.parse(
-      AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD_UPDATE_PASSWORD);
+    final url = Uri.parse(
+        AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD_UPDATE_PASSWORD);
 
-  final bodyParams = {"id": widget.id, "password": passwordController.text};
+    final bodyParams = {"id": widget.id, "password": passwordController.text};
 
-  try {
-    setState(() {
-      isLoading = true;
-    });
+    try {
+      setState(() {
+        isLoading = true;
+      });
 
-    final response = await http.post(url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(bodyParams));
+      final response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(bodyParams));
 
-    setState(() {
-      isLoading = false;
-    });
+      setState(() {
+        isLoading = false;
+      });
 
-    if (response.statusCode == 200 || response.statusCode == 202) {
-      var resOBJ = jsonDecode(response.body);
-      String statusMessage = resOBJ["message"];
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        var resOBJ = jsonDecode(response.body);
+        String statusMessage = resOBJ["message"];
 
-      if (statusMessage.toLowerCase().contains('success')) {
-        IconSnackBar.show(
-          context,
-          label: statusMessage,
-          snackBarType: SnackBarType.success,
-          backgroundColor: Color(0xff4CAF50),
-          iconColor: Colors.white,
-        );
+        if (statusMessage.toLowerCase().contains('success')) {
+          IconSnackBar.show(
+            context,
+            label: statusMessage,
+            snackBarType: SnackBarType.success,
+            backgroundColor: Color(0xff4CAF50),
+            iconColor: Colors.white,
+          );
 
-        // Navigate to success animation page
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SuccessAnimation()),
-        );
+          // Navigate to success animation page
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SuccessAnimation()),
+          );
+        } else {
+          IconSnackBar.show(
+            context,
+            label: statusMessage,
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xFFBA1A1A),
+            iconColor: Colors.white,
+          );
+        }
       } else {
-        IconSnackBar.show(
-          context,
-          label: statusMessage,
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xFFBA1A1A),
-          iconColor: Colors.white,
-        );
+        if (kDebugMode) {
+          print('${response.statusCode} :: ${response.body}');
+        }
       }
-    } else {
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       if (kDebugMode) {
-        print('${response.statusCode} :: ${response.body}');
+        print(e.toString());
       }
-    }
-  } catch (e) {
-    setState(() {
-      isLoading = false;
-    });
-    if (kDebugMode) {
-      print(e.toString());
     }
   }
-}
-
 
   void validatePassword() {
     if (passwordController.text.length < 8) {
