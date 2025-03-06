@@ -197,7 +197,6 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
@@ -284,11 +283,11 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                           margin: EdgeInsets.symmetric(vertical: 5),
                           padding: EdgeInsets.all(15),
                           decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 0.2, color: Colors.grey),
-                              color: Colors.white),
+                              border: Border.all(
+                                  width: 0.2, color: Color(0xffE6E6E6)),
+                              color: Color(0xffFCFCFC)),
                           width: MediaQuery.of(context).size.width,
-                          height: 170,
+                          height: 160,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -496,6 +495,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
   },
   child: Icon(
     Icons.bookmark,
+    color: Color(0xff004C99),
     size: 25,
   ),
 ),

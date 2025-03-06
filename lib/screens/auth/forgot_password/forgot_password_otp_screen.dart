@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:otp_pin_field/otp_pin_field.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -116,7 +117,6 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
       });
     }
   }
-  
 
   Future<void> sendPasswordRestOTP() async {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD);
@@ -213,6 +213,7 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Stack(
         children: [
           Positioned(
@@ -233,33 +234,48 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset('assets/images/otp_img.png'),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: FittedBox(
+                      child: SvgPicture.asset('assets/images/otp_img.svg'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                   Center(
                       child: Text(
                     'Enter OTP',
                     style: TextStyle(
+                        color: Color(0xff333333),
                         fontFamily: 'Lato',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700),
                   )),
-
                   SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      colors: [Color(0xff545454), Color(0xff004C99)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ).createShader(
+                        Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                    blendMode: BlendMode.srcIn,
                     child: Text(
-                      'Please enter the OTP send to your mobile number and email address',
+                      'Please enter the OTP send to your mobile and email',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
+                          color: Color(0xff545454),
                           fontSize: 14,
                           fontFamily: 'Lato'),
                     ),
                   ),
-
                   SizedBox(
-                    height: 40,
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 50,
                   ),
                   /* Container(
                     width: MediaQuery.of(context).size.width - 20,
@@ -301,12 +317,11 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                     otpPinFieldStyle: OtpPinFieldStyle(
                       activeFieldBorderColor: AppColors.primaryColor,
                       defaultFieldBorderColor:
-                          inValidOTP ? Colors.red : Color(0xff333333),
+                          inValidOTP ? Color(0xffBA1A1A) : Color(0xff333333),
                     ),
                     otpPinFieldDecoration:
                         OtpPinFieldDecoration.underlinedPinBoxDecoration,
                   ),
-
                   inValidOTP
                       ? Row(
                           children: [
@@ -315,37 +330,48 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                               child: Text(
                                 otpErrorMsg,
                                 style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    fontSize: 12,
-                                    color: Colors.red),
+                                  fontFamily: 'Lato',
+                                  fontSize: 12,
+                                  color: Color(0xffBA1A1A),
+                                ),
                               ),
                             ),
                           ],
                         )
                       : Container(),
-
-                  //Loading
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
-                      child: Visibility(
-                        visible: isLoading,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 30,
-                            ),
-                            LoadingAnimationWidget.fourRotatingDots(
-                              color: AppColors.primaryColor,
-                              size: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
                   SizedBox(height: 50),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Didn\'t receive the code?',
+                        style: TextStyle(
+                            color: Color(0xff333333),
+                            fontFamily: 'Lato',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                          onTap: () {
+                            sendPasswordRestOTP();
+                          },
+                          child: Text(
+                            'Resend',
+                            style: TextStyle(
+                                color: Color(0xff004C99),
+                                fontFamily: 'Lato',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600),
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   InkWell(
                     onTap: () {
                       //validateOTP(finOTP);
@@ -353,8 +379,7 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                       if (enteredOTP.length < 6) {
                         setState(() {
                           inValidOTP = true;
-                          otpErrorMsg =
-                              'Enter valid OTP before clicking verify';
+                          otpErrorMsg = 'Enter OTP';
                         });
                       } else {
                         validateOTP(enteredOTP);
@@ -369,79 +394,43 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                           color: AppColors.primaryColor,
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
-                        child: Text(
-                          'Verify',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        child: isLoading
+                            ? SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: TweenAnimationBuilder<double>(
+                                  tween: Tween<double>(begin: 0, end: 5),
+                                  duration: Duration(seconds: 2),
+                                  curve: Curves.linear,
+                                  builder: (context, value, child) {
+                                    return Transform.rotate(
+                                      angle: value *
+                                          2 *
+                                          3.1416, // Full rotation effect
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 4,
+                                        value: 0.20, // 1/5 of the circle
+                                        backgroundColor: const Color.fromARGB(
+                                            142, 234, 232, 232), // Grey stroke
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(Colors
+                                                .white), // White rotating stroke
+                                      ),
+                                    );
+                                  },
+                                  onEnd: () =>
+                                      {}, // Ensures smooth infinite animation
+                                ),
+                              )
+                            : Text(
+                                'Verify',
+                                style: TextStyle(color: Colors.white),
+                              ),
                       ),
                     ),
                   ),
-
                   SizedBox(
                     height: 60,
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Didn\'t receive the code?',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                          onTap: () {
-                            sendPasswordRestOTP();
-                          },
-                          child: Text(
-                            'Click to resend',
-                            style: TextStyle(
-                                color: Color(0xff004C99),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700),
-                          )),
-                    ],
-                  ),
-
-                  SizedBox(
-                    height: 30,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => LoginScreen()),
-                          (Route<dynamic> route) => false);
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Go back to',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Login',
-                          style: TextStyle(
-                              color: Color(0xff004C99),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700),
-                        ),
-                      ],
-                    ),
                   ),
                 ],
               ),

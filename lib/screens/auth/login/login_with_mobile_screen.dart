@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -321,7 +322,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
           // );
           IconSnackBar.show(
             context,
-            label: 'Invalid user !',
+            label: 'User not found!',
             snackBarType: SnackBarType.alert,
             backgroundColor: Color(0xFFBA1A1A),
             iconColor: Colors.white,
@@ -345,6 +346,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
       statusBarIconBrightness: Brightness.dark,
     ));
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Stack(
         children: [
           Positioned(
@@ -359,14 +361,15 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
           Positioned(
             top: 31,
             left: 0,
-            child: Image.asset(
-              'assets/images/tt_logo_resized.png',
-              width: MediaQuery.of(context).size.width,
-              height: 216,
-            ),
+            right: 0,
+            child: Center(
+                child: Image.asset('assets/images/tt_logo_full_1.png',
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    fit: BoxFit.contain)),
           ),
           Positioned(
-            top: 200,
+            top: MediaQuery.of(context).size.height * 0.22,
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(10),
@@ -389,14 +392,19 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                   SizedBox(
                     height: 50,
                   ),
-                  Text(
-                    'Mobile Number',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontFamily: 'Lato',
-                      color: _isMobileNumberValid
-                          ? const Color(0xFF333333)
-                          : const Color(0xFFBA1A1A),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.015,
+                    ),
+                    child: Text(
+                      'Mobile Number',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontFamily: 'Lato',
+                        color: _isMobileNumberValid
+                            ? const Color(0xFF333333)
+                            : const Color(0xFFBA1A1A),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -427,6 +435,11 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                               child: DropdownButton<String>(
                                 value: _selectedCountryCode,
                                 underline: SizedBox(),
+                                icon: SvgPicture.asset(
+                                  'assets/icon/ArrowDown.svg',
+                                  height: 10,
+                                  width: 10,
+                                ),
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
@@ -448,60 +461,66 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                 },
                               ),
                             ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.01),
                             // Mobile Number TextField
-                            Container(
-                              height: 48,
-                              width: (MediaQuery.of(context).size.width) - 120,
-                              child: TextField(
-                                maxLength: 10,
-                                controller: mobileController,
-                                cursorColor: Color(0xff004C99),
-                                style:
-                                    TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                                decoration: InputDecoration(
-                                    counterText: '',
-                                    hintText: 'Enter mobile number',
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: _isMobileNumberValid
-                                            ? Color(0xffD9D9D9)
-                                            : const Color(0xFFBA1A1A),
-                                        width: 1,
+                            Expanded(
+                              child: Container(
+                                height: 48,
+                                width:
+                                    (MediaQuery.of(context).size.width) - 120,
+                                child: TextField(
+                                  maxLength: 10,
+                                  controller: mobileController,
+                                  cursorColor: Color(0xff004C99),
+                                  style: TextStyle(
+                                      fontSize: 14, fontFamily: 'Lato'),
+                                  decoration: InputDecoration(
+                                      counterText: '',
+                                      hintText: 'Enter mobile number',
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: _isMobileNumberValid
+                                              ? Color(0xffD9D9D9)
+                                              : const Color(0xFFBA1A1A),
+                                          width: 1,
+                                        ),
                                       ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: _isMobileNumberValid
-                                            ? Color(0xff004C99)
-                                            : const Color(0xFFBA1A1A),
-                                        width: 1,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: _isMobileNumberValid
+                                              ? Color(0xff004C99)
+                                              : const Color(0xFFBA1A1A),
+                                          width: 1,
+                                        ),
                                       ),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10)),
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isMobileNumberValid = true;
-                                  });
-                                },
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10)),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _isMobileNumberValid = true;
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
+                            )
                           ],
                         ),
 
                         // Single Error Message for Both Fields
                         if (!_isMobileNumberValid)
                           Padding(
-                            padding: EdgeInsets.only(top: 4, left: 4),
+                            padding: EdgeInsets.only(top: 4, left: 0),
                             child: Text(
                               mobileErrorMsg ?? '',
                               style: TextStyle(

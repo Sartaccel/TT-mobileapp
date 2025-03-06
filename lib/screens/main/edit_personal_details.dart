@@ -558,7 +558,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   ],
                 ),
                 SizedBox(
-                  width: 80,
+                  width: 40,
                 )
               ],
             ),
@@ -567,16 +567,19 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               child: SingleChildScrollView(
                   child: Container(
             color: Color(0xffFCFCFC),
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'First Name',
-                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text('First Name',
+                      style: TextStyle(fontSize: 13, fontFamily: 'Lato')),
                 ),
                 SizedBox(
                   height: 10,
@@ -631,9 +634,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Last Name',
-                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text(
+                    'Last Name',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -688,9 +696,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Email',
-                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text(
+                    'Email',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -778,9 +791,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Mobile Number',
-                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text(
+                    'Mobile Number',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -826,68 +844,73 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                         });
                                       }),
                                 ),
-                                Container(
-                                  width:
-                                      (MediaQuery.of(context).size.width) - 200,
-                                  child: TextField(
-                                    maxLength: getValidLengthForCountry(
-                                        _selectedCountryCode!),
-                                    controller: mobileController,
-                                    cursorColor: Color(0xff004C99),
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff545454)),
-                                    decoration: InputDecoration(
-                                        counterText: '',
-                                        hintText: 'Enter mobile number',
-                                        suffixIcon: SvgPicture.asset(
-                                            candidateProfileModel!
-                                                        .isPhoneVerified ==
-                                                    1
-                                                ? 'assets/images/verified_ic.svg'
-                                                : 'assets/images/pending_ic.svg'),
-                                        border: OutlineInputBorder(
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.01),
+                                Expanded(
+                                  child: Container(
+                                    width: (MediaQuery.of(context).size.width) -
+                                        200,
+                                    child: TextField(
+                                      maxLength: getValidLengthForCountry(
+                                          _selectedCountryCode!),
+                                      controller: mobileController,
+                                      cursorColor: Color(0xff004C99),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff545454)),
+                                      decoration: InputDecoration(
+                                          counterText: '',
+                                          hintText: 'Enter mobile number',
+                                          suffixIcon: SvgPicture.asset(
+                                              candidateProfileModel!
+                                                          .isPhoneVerified ==
+                                                      1
+                                                  ? 'assets/images/verified_ic.svg'
+                                                  : 'assets/images/pending_ic.svg'),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                          enabledBorder: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(8)),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          borderSide: BorderSide(
-                                              color: _isMobileNumberValid
-                                                  ? Color(0xffd9d9d9)
-                                                  : Colors
-                                                      .red, // Default border color
-                                              width: 1),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          borderSide: BorderSide(
-                                              color: _isMobileNumberValid
-                                                  ? Color(0xff004C99)
-                                                  : Colors
-                                                      .red, // Border color when focused
-                                              width: 1),
-                                        ),
-                                        // errorText: _isMobileNumberValid
-                                        //     ? null
-                                        //     : mobileErrorMsg, // Display error message if invalid
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 10)),
-                                    keyboardType: TextInputType.phone,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp(r'[0-9]')),
-                                    ],
-                                    onChanged: (value) {
-                                      // Validate the email here and update _isEmailValid
-                                      setState(() {
-                                        _isMobileNumberValid = true;
-                                      });
-                                    },
+                                                BorderRadius.circular(8),
+                                            borderSide: BorderSide(
+                                                color: _isMobileNumberValid
+                                                    ? Color(0xffd9d9d9)
+                                                    : Colors
+                                                        .red, // Default border color
+                                                width: 1),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            borderSide: BorderSide(
+                                                color: _isMobileNumberValid
+                                                    ? Color(0xff004C99)
+                                                    : Colors
+                                                        .red, // Border color when focused
+                                                width: 1),
+                                          ),
+                                          // errorText: _isMobileNumberValid
+                                          //     ? null
+                                          //     : mobileErrorMsg, // Display error message if invalid
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10)),
+                                      keyboardType: TextInputType.phone,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[0-9]')),
+                                      ],
+                                      onChanged: (value) {
+                                        // Validate the email here and update _isEmailValid
+                                        setState(() {
+                                          _isMobileNumberValid = true;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                ),
+                                )
                               ],
                             ),
                           ),
@@ -944,9 +967,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Location',
-                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text(
+                    'Location',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -1001,9 +1029,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Date of Birth',
-                  style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text(
+                    'Date of Birth',
+                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -1115,9 +1148,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Current Position',
-                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text(
+                    'Current Position',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -1172,9 +1210,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'Total Experience in years',
-                  style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.015,
+                  ),
+                  child: Text(
+                    'Total Experience in years',
+                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                  ),
                 ),
                 SizedBox(
                   height: 10,

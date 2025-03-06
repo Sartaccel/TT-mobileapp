@@ -57,5 +57,7 @@ class AppConstants {
   static String VERIFY_EMAIL_PHONE =
       "/api/v1/userresource/send/verificationcode";
   static String VALIDATE_VERIFY_OTP =
-      "/api/v1/userresource/verify/verificationcode";
+      "/api/v1/userresource/verify/verificationcode"; 
+      
+      static String SEARCH_LIST = "/api/v1/jobresource/get/job/titles";
 }

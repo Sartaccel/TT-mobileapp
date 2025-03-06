@@ -21,6 +21,7 @@ class _AccountsettingsState extends State<Accountsettings> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         children: [
           Container(

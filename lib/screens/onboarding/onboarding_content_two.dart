@@ -13,14 +13,35 @@ class _OnboardingContentTwoState extends State<OnboardingContentTwo> {
   @override
   Widget build(BuildContext context) {
     return Container(
-
       child: Column(
         children: [
-          SvgPicture.asset('assets/images/slider2.svg', height: 220,),
-          SizedBox(height: 30,),
-          Text('Refer & Earn', style: TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: 'Lato'),),
-          SizedBox(height: 20,),
-          Center(child: Text('Help friends land dream jobs and earn referral\nbonuses!' ,textAlign: TextAlign.center,style: TextStyle(fontSize: 14,color: AppColors.textColor, height: 1.5 ,fontWeight: FontWeight.w400),)),
+          SvgPicture.asset('assets/images/slider2.svg',
+              height: MediaQuery.of(context).size.height * 0.25),
+          SizedBox(
+            height: 30,
+          ),
+          Text(
+            'Refer & Earn',
+            style: TextStyle(
+                color: const Color(0xFF333333),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                fontFamily: 'Lato'),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Center(
+              child: Text(
+            'Help friends land dream jobs and earn referral\nbonuses!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textColor,
+                height: 1.5,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Lato'),
+          )),
         ],
       ),
     );

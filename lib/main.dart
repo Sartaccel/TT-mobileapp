@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:talent_turbo_new/screens/main/fragments/success_animation.dart';
 import 'package:talent_turbo_new/screens/main/home_container.dart';
 import 'package:talent_turbo_new/screens/onboarding/onboarding_container.dart';
 import 'firebase_options.dart';
-import 'models/user_data_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

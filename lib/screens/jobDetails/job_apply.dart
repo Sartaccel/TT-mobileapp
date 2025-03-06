@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-
+import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -10,9 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -613,104 +610,105 @@ class _JobApplyState extends State<JobApply> {
   File? selectedFile;
 
   Future<void> uploadPDF(File file) async {
-  Dio dio = Dio();
+    Dio dio = Dio();
 
-  String url =
-      'https://mobileapi.talentturbo.us/api/v1/resumeresource/uploadresume';
+    String url =
+        'https://mobileapi.talentturbo.us/api/v1/resumeresource/uploadresume';
 
-  // Prepare the form data for the file upload
-  FormData formData = FormData.fromMap({
-    "id": retrievedUserData!.profileId.toString(), // Your id
-    "file": await MultipartFile.fromFile(
-      file.path,
-      filename: file.path.split('/').last,
-    ),
-  });
-
-  String token = retrievedUserData!.token;
-  try {
-    setState(() {
-      isLoading = true;
+    // Prepare the form data for the file upload
+    FormData formData = FormData.fromMap({
+      "id": retrievedUserData!.profileId.toString(), // Your id
+      "file": await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+      ),
     });
 
-    // Sending the request to upload the file
-    Response response = await dio.post(
-      url,
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': token, // Authorization Header
-          'Content-Type': 'multipart/form-data', // Content-Type for file uploads
-        },
-      ),
-    );
+    String token = retrievedUserData!.token;
+    try {
+      setState(() {
+        isLoading = true;
+      });
 
-    if (response.statusCode == 200) {
-      print('Upload success: ${response.statusCode}');
-      setUpdatedTimeInRTDB();
-      
-      // Success feedback using Snackbar
+      // Sending the request to upload the file
+      Response response = await dio.post(
+        url,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': token, // Authorization Header
+            'Content-Type':
+                'multipart/form-data', // Content-Type for file uploads
+          },
+        ),
+      );
+
+      if (response.statusCode == 200||response.statusCode == 202) {
+        print('Upload success: ${response.statusCode}');
+        setUpdatedTimeInRTDB();
+
+        // Success feedback using Snackbar
+        IconSnackBar.show(
+          context,
+          label: 'Successfully uploaded',
+          snackBarType: SnackBarType.success,
+          backgroundColor: Color(0xff4CAF50),
+          iconColor: Colors.white,
+        );
+
+        fetchCandidateProfileData(retrievedUserData!.profileId, token);
+      } else {
+        // Handle case where upload wasn't successful
+        throw Exception('Upload failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+
+      print('Upload failed: $e');
+
+      // Error feedback using Snackbar
       IconSnackBar.show(
         context,
-        label: 'Successfully uploaded',
-        snackBarType: SnackBarType.success,
-        backgroundColor: Color(0xff4CAF50),
+        label: e.toString(),
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
       );
-      
-      fetchCandidateProfileData(retrievedUserData!.profileId, token);
-    } else {
-      // Handle case where upload wasn't successful
-      throw Exception('Upload failed with status: ${response.statusCode}');
     }
-  } catch (e) {
-    setState(() {
-      isLoading = false;
-    });
-
-    print('Upload failed: $e');
-    
-    // Error feedback using Snackbar
-    IconSnackBar.show(
-      context,
-      label: e.toString(),
-      snackBarType: SnackBarType.alert,
-      backgroundColor: Color(0xff2D2D2D),
-      iconColor: Colors.white,
-    );
   }
-}
 
-Future<void> pickAndUploadPDF() async {
-  // Pick a file
-  File? file = await pickPDF();
-  if (file != null) {
-    setState(() {
-      selectedFile = file;
-    });
+  Future<void> pickAndUploadPDF() async {
+    // Pick a file
+    File? file = await pickPDF();
+    if (file != null) {
+      setState(() {
+        selectedFile = file;
+      });
 
-    // Upload the file
-    await uploadPDF(file);
-  } else {
-    // Provide feedback if no file was selected
-    IconSnackBar.show(
-      context,
-      label: 'No file selected',
-      snackBarType: SnackBarType.alert,
-      backgroundColor: Color(0xff2D2D2D),
-      iconColor: Colors.white,
-    );
+      // Upload the file
+      await uploadPDF(file);
+    } else {
+      // Provide feedback if no file was selected
+      IconSnackBar.show(
+        context,
+        label: 'No file selected',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         children: [
           Container(
@@ -810,21 +808,20 @@ Future<void> pickAndUploadPDF() async {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                            Container(
-  width: 280, // Example fixed width
-  child: Text(
-    widget.jobData['jobTitle'] ?? 'Default Title',
-    overflow: TextOverflow.ellipsis,
-    maxLines: 1,
-    style: TextStyle(
-      fontWeight: FontWeight.w700,
-      fontFamily: 'Lato',
-      fontSize: 20,
-      color: Color(0xff333333),
-    ),
-  ),
-)
-,
+                              Container(
+                                width: 280, // Example fixed width
+                                child: Text(
+                                  widget.jobData['jobTitle'] ?? 'Default Title',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Lato',
+                                    fontSize: 20,
+                                    color: Color(0xff333333),
+                                  ),
+                                ),
+                              ),
                               SizedBox(
                                 height: 3,
                               ),
@@ -844,7 +841,6 @@ Future<void> pickAndUploadPDF() async {
                       ),
                     ],
                   ),
-
                   SizedBox(
                     height: 30,
                   ),
@@ -853,14 +849,13 @@ Future<void> pickAndUploadPDF() async {
                     height: 1,
                     color: Color(0xffE6E6E6),
                   ),
-
                   SizedBox(
                     height: 30,
                   ),
                   Text(
                     'Confirm your application',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                         fontSize: 18,
                         fontFamily: 'Lato',
                         color: Color(0xff333333)),
@@ -876,17 +871,21 @@ Future<void> pickAndUploadPDF() async {
                         fontFamily: 'Lato',
                         color: Color(0xff333333)),
                   ),
-
                   SizedBox(
                     height: 40,
                   ),
-                  Text(
-                    'Email',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff333333)),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.015,
+                    ),
+                    child: Text(
+                      'Email',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff333333)),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
@@ -895,7 +894,10 @@ Future<void> pickAndUploadPDF() async {
                     readOnly: true,
                     controller: emailController,
                     cursorColor: Color(0xff004C99),
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xFF545454)),
                     decoration: InputDecoration(
                         hintText: 'Enter your email',
                         border: OutlineInputBorder(
@@ -913,7 +915,8 @@ Future<void> pickAndUploadPDF() async {
                           borderSide: BorderSide(
                               color: _isEmailValid
                                   ? Color(0xff004C99)
-                                  : Color(0xffBA1A1A), // Border color when focused
+                                  : Color(
+                                      0xffBA1A1A), // Border color when focused
                               width: 1),
                         ),
                         errorText: _isEmailValid
@@ -929,17 +932,21 @@ Future<void> pickAndUploadPDF() async {
                       });
                     },
                   ),
-
                   SizedBox(
                     height: 40,
                   ),
-                  Text(
-                    'Mobile Number',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff333333)),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.015,
+                    ),
+                    child: Text(
+                      'Mobile Number',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff333333)),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
@@ -951,12 +958,18 @@ Future<void> pickAndUploadPDF() async {
                       Container(
                         height: 48,
                         decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey),
-                            borderRadius: BorderRadius.circular(4)),
+                            border:
+                                Border.all(width: 1, color: Color(0xffD9D9D9)),
+                            borderRadius: BorderRadius.circular(8)),
                         padding: EdgeInsets.all(9),
                         child: DropdownButton(
                             underline: Container(),
                             value: _selectedCountryCode,
+                            icon: SvgPicture.asset(
+                              'assets/icon/ArrowDown.svg',
+                              height: 10,
+                              width: 10,
+                            ),
                             items: countryOptions.map((countryCode) {
                               return DropdownMenuItem(
                                   value: countryCode,
@@ -964,58 +977,65 @@ Future<void> pickAndUploadPDF() async {
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontFamily: 'Lato',
-                                          color: const Color(0xFF333333))));
+                                          color: const Color(0xFF545454))));
                             }).toList(),
                             onChanged: (val) {}),
                       ),
-                      Container(
-                        width: (MediaQuery.of(context).size.width) - 130,
-                        child: TextField(
-                          readOnly: true,
-                          maxLength: 10,
-                          controller: mobileController,
-                          cursorColor: Color(0xff004C99),
-                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                          decoration: InputDecoration(
-                              counterText: '',
-                              hintText: 'Enter mobile number',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                    color: _isMobileNumberValid
-                                        ? Color(0xffd9d9d9)
-                                        : Color(0xffBA1A1A), // Default border color
-                                    width: 1),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                    color: _isMobileNumberValid
-                                        ? Color(0xff004C99)
-                                        : Color(0xffBA1A1A), // Border color when focused
-                                    width: 1),
-                              ),
-                              errorText: _isMobileNumberValid
-                                  ? null
-                                  : mobileErrorMsg, // Display error message if invalid
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10)),
-                          keyboardType: TextInputType.phone,
-                          onChanged: (value) {
-                            // Validate the email here and update _isEmailValid
-                            setState(() {
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                      Expanded(
+                        child: Container(
+                          width: (MediaQuery.of(context).size.width) - 130,
+                          child: TextField(
+                            readOnly: true,
+                            maxLength: 10,
+                            controller: mobileController,
+                            cursorColor: Color(0xff004C99),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Lato',
+                                color: Color(0xFF545454)),
+                            decoration: InputDecoration(
+                                counterText: '',
+                                hintText: 'Enter mobile number',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      color: _isMobileNumberValid
+                                          ? Color(0xffd9d9d9)
+                                          : Color(
+                                              0xffBA1A1A), // Default border color
+                                      width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      color: _isMobileNumberValid
+                                          ? Color(0xff004C99)
+                                          : Color(
+                                              0xffBA1A1A), // Border color when focused
+                                      width: 1),
+                                ),
+                                errorText: _isMobileNumberValid
+                                    ? null
+                                    : mobileErrorMsg, // Display error message if invalid
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10)),
+                            keyboardType: TextInputType.phone,
+                            onChanged: (value) {
+                              // Validate the email here and update _isEmailValid
                               setState(() {
-                                _isMobileNumberValid = true;
+                                setState(() {
+                                  _isMobileNumberValid = true;
+                                });
                               });
-                            });
-                          },
+                            },
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   ),
-
                   SizedBox(
                     height: 40,
                   ),
@@ -1030,251 +1050,281 @@ Future<void> pickAndUploadPDF() async {
                   SizedBox(
                     height: 10,
                   ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 0.3, color: Colors.grey)),
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Resume',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xff333333)),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        candidateProfileModel!.fileName == null
-                            ? InkWell(
-                                onTap: () {
-                                  pickAndUploadPDF();
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Upload file',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xff004C99)),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                         Container(
-  width: MediaQuery.of(context).size.width - 100,
-  child: Text(
-    'File types: pdf, .doc, .docx  Max file size: 5MB',
-    overflow: TextOverflow.ellipsis,
-    maxLines: 1,
-    style: TextStyle(
-        color: Color(0xff7D7C7C),
-        fontSize: 14),
-                ),
-          )
-
-                                        ],
-                                      ),
-                                      SvgPicture.asset(
-                                          'assets/images/mage_upload.svg')
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : InkWell(
-                                onTap: () => {
-                                  showMaterialModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 30, horizontal: 10),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          ListTile(
-                                            onTap: () {
-                                              final String? filePath =
-                                                  candidateProfileModel
-                                                      ?.filePath;
-                                              if (filePath != null) {
-                                                Navigator.pop(context);
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DocViewerPage(
-                                                            url: filePath),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            leading:
-                                                Icon(Icons.visibility_outlined),
-                                            title: Text('View Resume'),
-                                          ),
-                                          ListTile(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              pickAndUploadPDF();
-                                            },
-                                            leading: Icon(Icons.refresh),
-                                            title: Text('Replace Resume'),
-                                          ),
-                                          ListTile(
-                                            onTap: () {
-                                              _launchURL();
-                                            },
-                                            leading: Icon(Icons.download),
-                                            title: Text('Download'),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Color(0xafFAFCFF)),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Image.asset(
-                                              'assets/images/ic_curriculum.png'),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                180,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Flexible(
-                                                    fit: FlexFit.loose,
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      '${candidateProfileModel!.fileName}',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xff004C99),
-                                                          fontFamily:
-                                                              'NunitoSans',
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    )),
-                                                Text(
-                                                  'Last updated $resumeUpdatedDate',
-                                                  style: TextStyle(
-                                                      color: Color(0xff004C99),
-                                                      fontFamily: 'NunitoSans',
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                                ),
-                                              ],
+                  DottedBorder(
+                    borderType: BorderType.RRect,
+                    radius: Radius.circular(12),
+                    dashPattern: [10, 5],
+                    color: Color(0xff000000),
+                    strokeWidth: 1.5,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          candidateProfileModel!.fileName == null
+                              ? InkWell(
+                                  onTap: () {
+                                    pickAndUploadPDF();
+                                  },
+                                  child: Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Upload file',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xff004C99)),
                                             ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  100,
+                                              child: Text(
+                                                'File types: pdf, .doc, .docx  Max file size: 5MB',
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    color: Color(0xff7D7C7C),
+                                                    fontSize: 14),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        SvgPicture.asset(
+                                            'assets/images/mage_upload.svg')
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () => {
+                                    showMaterialModalBottomSheet(
+                                      backgroundColor: Color(0x00000000),
+                                      context: context,
+                                      builder: (context) => Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 30, horizontal: 10),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffFCFCFC),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(25),
+                                            topRight: Radius.circular(25),
                                           ),
-                                        ],
+                                        ),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.25,
+                                              height: 5,
+                                              decoration: BoxDecoration(
+                                                color: Colors
+                                                    .black, // Adjust color
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            ListTile(
+                                              onTap: () {
+                                                final String? filePath =
+                                                    candidateProfileModel
+                                                        ?.filePath;
+                                                if (filePath != null) {
+                                                  Navigator.pop(context);
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DocViewerPage(
+                                                              url: filePath),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              leading: Icon(
+                                                  Icons.visibility_outlined),
+                                              title: Text('View Resume'),
+                                            ),
+                                            ListTile(
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                pickAndUploadPDF();
+                                              },
+                                              leading: Icon(Icons.refresh),
+                                              title: Text('Replace Resume'),
+                                            ),
+                                            ListTile(
+                                              onTap: () {
+                                                _launchURL();
+                                              },
+                                              leading: Icon(Icons.download),
+                                              title: Text('Download'),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Image.asset('assets/images/ic_more.png')
-                                    ],
+                                    )
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Color(0xafFAFCFF)),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            SvgPicture.asset(
+                                                'assets/images/resume.svg',
+                                                width: 55,
+                                                height: 55),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  150,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Flexible(
+                                                      fit: FlexFit.loose,
+                                                      child: Text(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        '${candidateProfileModel!.fileName}',
+                                                        style: TextStyle(
+                                                            color: Color(
+                                                                0xff004C99),
+                                                            fontSize: 14,
+                                                            fontFamily:
+                                                                'NunitoSans',
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                      )),
+                                                  Text(
+                                                    'Last updated $resumeUpdatedDate',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xff545454),
+                                                        fontSize: 12,
+                                                        fontFamily:
+                                                            'NunitoSans',
+                                                        fontWeight:
+                                                            FontWeight.normal),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 56,
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: SvgPicture.asset(
+                                                'assets/icon/moreDot.svg'),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-
-                  //Loading
-                 
-
                   SizedBox(
                     height: 50,
                   ),
-                 InkWell(
-  onTap: () {
-    if (candidateProfileModel?.fileName == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please upload your resume before applying.'),
-          backgroundColor: Color(0xffBA1A1A),
-        ),
-      );
-    } else {
-      applyJob();
-    }
-  },
-  child: Container(
-    width: MediaQuery.of(context).size.width,
-    height: 50,
-    margin: EdgeInsets.symmetric(horizontal: 0),
-    padding: EdgeInsets.symmetric(horizontal: 10),
-    decoration: BoxDecoration(
-        color: AppColors.primaryColor,
-        borderRadius: BorderRadius.circular(10)),
-    child: Center(
-      child: isLoading
-          ? SizedBox(
-  height: 24,
-  width: 24,
-  child: TweenAnimationBuilder<double>(
-    tween: Tween<double>(begin: 0, end: 5),
-    duration: Duration(seconds: 2), // Faster rotation (Reduced duration)
-    curve: Curves.linear,
-    builder: (context, value, child) {
-      return Transform.rotate(
-        angle: value * 2 * 3.1416, // Full rotation effect
-        child: CircularProgressIndicator(
-          strokeWidth: 4,
-          value: 0.20, // 1/5 of the circle
-          backgroundColor: const Color.fromARGB(142, 234, 232, 232), // Grey stroke
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white), // White rotating stroke
-        ),
-      );
-    },
-    onEnd: () => {}, // Ensures smooth infinite animation
-  ),
-) : Text(
-              'Apply',
-              style: TextStyle(color: Colors.white),
-            ),
-    ),
-  ),
-),
-],
+                  InkWell(
+                    onTap: () {
+                      if (candidateProfileModel?.fileName == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Please upload your resume before applying.'),
+                            backgroundColor: Color(0xffBA1A1A),
+                          ),
+                        );
+                      } else {
+                        applyJob();
+                      }
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      margin: EdgeInsets.symmetric(horizontal: 0),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: isLoading
+                            ? SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: TweenAnimationBuilder<double>(
+                                  tween: Tween<double>(begin: 0, end: 5),
+                                  duration: Duration(seconds: 2),
+                                  curve: Curves.linear,
+                                  builder: (context, value, child) {
+                                    return Transform.rotate(
+                                      angle: value *
+                                          2 *
+                                          3.1416, // Full rotation effect
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 4,
+                                        value: 0.20, // 1/5 of the circle
+                                        backgroundColor: const Color.fromARGB(
+                                            142, 234, 232, 232), // Grey stroke
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(Colors
+                                                .white), // White rotating stroke
+                                      ),
+                                    );
+                                  },
+                                  onEnd: () =>
+                                      {}, // Ensures smooth infinite animation
+                                ),
+                              )
+                            : Text(
+                                'Apply',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ))
@@ -1304,7 +1354,7 @@ Future<void> pickAndUploadPDF() async {
 
       email = retrievedUserData!.email;
       emailController.text = _candidateProfileModel!.email!;
-      mobileController.text = _candidateProfileModel!.mobile!.substring(3);
+      mobileController.text = _candidateProfileModel.mobile!.substring(3);
 
       fetchAndFormatUpdatedTime();
     });

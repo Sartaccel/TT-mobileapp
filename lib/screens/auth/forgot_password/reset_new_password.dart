@@ -28,8 +28,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
   bool _isConfirmPasswordValid = true;
   TextEditingController confirmPasswordController = TextEditingController();
   bool confirmPasswordHide = true, passwordHide = true;
-  String confirm_passwordErrorMSG = "Password cannot be empty";
-  String passwordErrorMSG = "Password cannot be empty";
+  String confirm_passwordErrorMSG = "Password is required";
+  String passwordErrorMSG = "Password is required";
 
   Future<void> setNewPassword() async {
     final url = Uri.parse(
@@ -114,6 +114,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Stack(
         children: [
           Positioned(
@@ -125,7 +126,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
             bottom: 0,
             child: Image.asset('assets/images/ellipse_bottom.png'),
           ),
-          Center(
+          Positioned(
+            top: 120,
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(10),
@@ -133,17 +135,24 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset('assets/images/otp_img.png'),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: FittedBox(
+                      child: SvgPicture.asset('assets/images/otp_img.svg'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                   Center(
                       child: Text(
                     'Create new password',
                     style: TextStyle(
+                        color: Color(0xff333333),
                         fontFamily: 'Lato',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700),
                   )),
                   SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -152,9 +161,14 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                       SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        'New Password',
-                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        child: Text(
+                          'New Password',
+                          style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                        ),
                       ),
                       SizedBox(
                         height: 10,
@@ -184,7 +198,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
                                         ? Color(0xffd9d9d9)
-                                        : Colors.red, // Default border color
+                                        : Color(
+                                            0xffBA1a1a), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -192,8 +207,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
                                         ? Color(0xff004C99)
-                                        : Colors
-                                            .red, // Border color when focused
+                                        : Color(
+                                            0xffBA1a1a), // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isPasswordValid
@@ -206,8 +221,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                             if (value.length < 8) {
                               setState(() {
                                 _isPasswordValid = false;
-                                passwordErrorMSG =
-                                    'Password must be at-least 8 characters';
+                                passwordErrorMSG = 'Password is required';
                               });
                             } else {
                               setState(() {
@@ -220,9 +234,14 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                       SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        'Re-enter Password',
-                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        child: Text(
+                          'Re-enter Password',
+                          style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                        ),
                       ),
                       SizedBox(
                         height: 10,
@@ -253,7 +272,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
                                         ? Color(0xffd9d9d9)
-                                        : Colors.red, // Default border color
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -261,8 +281,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                 borderSide: BorderSide(
                                     color: _isConfirmPasswordValid
                                         ? Color(0xff004C99)
-                                        : Colors
-                                            .red, // Border color when focused
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
                                     width: 1),
                               ),
                               errorText: _isConfirmPasswordValid

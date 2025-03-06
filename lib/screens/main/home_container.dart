@@ -40,6 +40,10 @@ class _HomeContainerState extends State<HomeContainer> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the screen size using MediaQuery
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
@@ -48,6 +52,7 @@ class _HomeContainerState extends State<HomeContainer> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        backgroundColor: Color(0xffF7F7F7),
         body: Stack(
           children: [
             scr == 0
@@ -66,15 +71,22 @@ class _HomeContainerState extends State<HomeContainer> {
                       topLeft: Radius.circular(24),
                       topRight: Radius.circular(24)),
                   elevation: 10,
-                  color: Colors.white,
+                  color: const Color(0xFFFFFFFF),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    height: 70,
-                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, ),
+                    height: screenHeight * 0.075,
+                    width: screenWidth,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(24),
-                            topRight: Radius.circular(24))),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24)),
+                      border: Border(
+                        top: BorderSide(
+                          color: Color(0xffDBDBDB), // Only top border color
+                          width: 1.0, // You can adjust the width if needed
+                        ),
+                      ),
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -96,14 +108,14 @@ class _HomeContainerState extends State<HomeContainer> {
                                   : SvgPicture.asset(
                                       'assets/images/ic_home.svg'),
                               SizedBox(
-                                height: 5,
+                                height: screenHeight * 0.005,
                               ),
                               Text(
                                 'Home',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'NunitoSans',
-                                    fontSize: 12,
+                                    fontSize: screenWidth * 0.03,
                                     color: AppColors.textColor),
                               )
                             ],
@@ -126,27 +138,19 @@ class _HomeContainerState extends State<HomeContainer> {
                                   : SvgPicture.asset(
                                       'assets/images/ic_jobs.svg'),
                               SizedBox(
-                                height: 5,
+                                height: screenHeight * 0.005,
                               ),
                               Text(
                                 'My Jobs',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'NunitoSans',
-                                    fontSize: 12,
+                                    fontSize: screenWidth * 0.03,
                                     color: AppColors.textColor),
                               )
                             ],
                           ),
                         ),
-                        /* Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                            Image.asset('assets/images/ic_groups.png'),
-                            SizedBox(height: 5,),
-                            Text('Group', style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'NunitoSans', fontSize: 12, color: AppColors.textColor),)
-                        ],
-                      ),*/
                         InkWell(
                           onTap: () {
                             setState(() {
@@ -164,14 +168,14 @@ class _HomeContainerState extends State<HomeContainer> {
                                   : SvgPicture.asset(
                                       'assets/images/ic_referrals.svg'),
                               SizedBox(
-                                height: 5,
+                                height: screenHeight * 0.005,
                               ),
                               Text(
                                 'My Referrals',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'NunitoSans',
-                                    fontSize: 12,
+                                    fontSize: screenWidth * 0.03,
                                     color: AppColors.textColor),
                               )
                             ],
@@ -194,14 +198,14 @@ class _HomeContainerState extends State<HomeContainer> {
                                   : SvgPicture.asset(
                                       'assets/images/ic_profile.svg'),
                               SizedBox(
-                                height: 5,
+                                height: screenHeight * 0.005,
                               ),
-                              const Text(
+                              Text(
                                 'Profile',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'NunitoSans',
-                                    fontSize: 12,
+                                    fontSize: screenWidth * 0.03,
                                     color: AppColors.textColor),
                               )
                             ],

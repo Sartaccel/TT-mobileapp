@@ -200,9 +200,9 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
                           margin: EdgeInsets.symmetric(vertical: 5),
                           padding: EdgeInsets.all(15),
                           decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 0.2, color: Colors.grey),
-                              color: Colors.white),
+                              border: Border.all(
+                                  width: 0.2, color: Color(0xffE6E6E6)),
+                              color: Color(0xffFCFCFC)),
                           width: MediaQuery.of(context).size.width,
                           height: 170,
                           child: Row(
