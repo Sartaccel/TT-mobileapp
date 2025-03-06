@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -88,10 +89,13 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
     } else {
       // Add the skill as a list entry in Firebase
       try {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Adding skill: $skill')),
+        IconSnackBar.show(
+          context,
+          label: 'Adding skill: $skill',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
         );
-
         // Add the skill to Firebase
         await skillRef.push().set(skill);
 
@@ -114,8 +118,12 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
     final String sanitizedEmail = email.replaceAll('.', ',');
     final String? skillKey = skillKeys[skill]; // Find the skill's key
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Deleting skilll')),
+    IconSnackBar.show(
+      context,
+      label: 'Deleting Skill',
+      snackBarType: SnackBarType.alert,
+      backgroundColor: Color(0xff2D2D2D),
+      iconColor: Colors.white,
     );
 
     if (skillKey != null) {
@@ -175,6 +183,7 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
+      backgroundColor: const Color(0xfff7f7f7),
       body: Column(
         children: [
           Container(
@@ -298,6 +307,7 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
                   'Add skill',
                   style: const TextStyle(
                       fontSize: 13,
+                      fontWeight: FontWeight.w500,
                       fontFamily: 'Lato',
                       color: Color(0xff333333)),
                 ),
@@ -444,6 +454,7 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
                             Text(
                               userSkills[i],
                               style: TextStyle(
+                                  fontFamily: 'Lato',
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),

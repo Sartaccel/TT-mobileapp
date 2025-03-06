@@ -189,9 +189,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         fit: BoxFit.contain,
                       ),
                     ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text(
                       'Reset Your Password',
                       style: TextStyle(
@@ -323,7 +323,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           if (emailController.text.trim().isEmpty) {
                             setState(() {
                               _isEmailValid = false;
-                              emailErrorMessage = 'Email cannot be empty';
+                              emailErrorMessage = 'Email ID is Required';
                             });
                           } else if (!validateEmail(emailController.text)) {
                             setState(() {

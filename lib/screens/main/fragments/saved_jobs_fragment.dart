@@ -119,81 +119,82 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
   }
 
   Future<void> removeJob(int jobId) async {
-  if (retrievedUserData == null) {
-    if (kDebugMode) print("Error: User data is null.");
-    return;
-  }
-
-  // Check internet connection before making the API call
-  var connectivityResult = await Connectivity().checkConnectivity();
-  if (connectivityResult.contains(ConnectivityResult.none)) {
-    if (mounted) {
-      IconSnackBar.show(
-        context,
-        label: 'No internet connection',
-        snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
-      );
-    }
-    return; // Exit function if no internet
-  }
-
-  final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
-  final bodyParams = {"jobId": jobId, "isFavorite": 0};
-
-  try {
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': retrievedUserData!.token
-      },
-      body: jsonEncode(bodyParams),
-    );
-
-    if (kDebugMode) {
-      print('Response code ${response.statusCode} :: Response => ${response.body}');
+    if (retrievedUserData == null) {
+      if (kDebugMode) print("Error: User data is null.");
+      return;
     }
 
-    if (response.statusCode == 200 || response.statusCode == 202) {
+    // Check internet connection before making the API call
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.none)) {
       if (mounted) {
         IconSnackBar.show(
           context,
-          label: 'Removed successfully',
-          snackBarType: SnackBarType.success,
-          backgroundColor: Colors.green,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
       }
-      // Optionally refresh job list
-      // getAppliedJobsList();
-    } else {
+      return; // Exit function if no internet
+    }
+
+    final url =
+        Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
+    final bodyParams = {"jobId": jobId, "isFavorite": 0};
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': retrievedUserData!.token
+        },
+        body: jsonEncode(bodyParams),
+      );
+
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        if (mounted) {
+          IconSnackBar.show(
+            context,
+            label: 'Removed successfully',
+            snackBarType: SnackBarType.success,
+            backgroundColor: Colors.green,
+            iconColor: Colors.white,
+          );
+        }
+        // Optionally refresh job list
+        // getAppliedJobsList();
+      } else {
+        if (mounted) {
+          IconSnackBar.show(
+            context,
+            label: 'Failed to remove. Please try again.',
+            snackBarType: SnackBarType.fail,
+            backgroundColor: Colors.red,
+            iconColor: Colors.white,
+          );
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) print("Error: $e");
+
       if (mounted) {
         IconSnackBar.show(
           context,
-          label: 'Failed to remove. Please try again.',
+          label: 'Network error. Please try again.',
           snackBarType: SnackBarType.fail,
           backgroundColor: Colors.red,
           iconColor: Colors.white,
         );
       }
     }
-  } catch (e) {
-    if (kDebugMode) print("Error: $e");
-
-    if (mounted) {
-      IconSnackBar.show(
-        context,
-        label: 'Network error. Please try again.',
-        snackBarType: SnackBarType.fail,
-        backgroundColor: Colors.red,
-        iconColor: Colors.white,
-      );
-    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -202,66 +203,128 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       statusBarIconBrightness: Brightness.light,
     ));
     return isLoading
-    ? SizedBox(
-      height: MediaQuery.of(context).size.height,
-        child: Shimmer.fromColors(
-          baseColor: Colors.grey[300]!, // Base color for the shimmer
-          highlightColor: Colors.grey[100]!, // Highlight color for the shimmer
-          child: ListView.builder(
-            itemCount: 5, // Number of skeleton items to show
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.2, color: Colors.grey),
-                  color: Colors.white,
-                ),
-                width: MediaQuery.of(context).size.width,
-                height: 160,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
+        ? Expanded(
+            child: Shimmer.fromColors(
+              baseColor: Color(0xffE6E6E6),
+              highlightColor: Color(0xffF2F2F2),
+              child: ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Shimmer placeholder for job title
-                        Container(
-                          width: 200,
-                          height: 20,
-                          color: Colors.white,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                color: Color(0xffE6E6E6),
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 10),
-                        // Shimmer placeholder for company name
-                        Container(
-                          width: 150,
-                          height: 15,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 10),
-                        // Shimmer placeholder for location
-                        Container(
-                          width: 100,
-                          height: 15,
-                          color: Colors.white,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.11,
+                              height: MediaQuery.of(context).size.width * 0.11,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.62,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.70,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.33,
+                                      height: 15,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffE6E6E6),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.33,
+                                      height: 15,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffE6E6E6),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.27,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    // Shimmer placeholder for other widgets (e.g., icons)
-                    Container(
-                      width: 40,
-                      height: 40,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      )
-    : (jobList.length > 0
+                  );
+                },
+              ),
+            ),
+          )
+        : (jobList.length > 0
             ? RefreshIndicator(
                 onRefresh: getAppliedJobsList,
                 child: ListView.builder(
@@ -475,34 +538,35 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                   )
                                 ],
                               ),
-                             InkWell(
-  onTap: () {
-    var jobData = jobList[index]; // Get job data safely
-    int? jobId = jobData.containsKey('jobId') ? jobData['jobId'] : jobData['id']; // Try alternative keys
+                              InkWell(
+                                onTap: () {
+                                  var jobData =
+                                      jobList[index]; // Get job data safely
+                                  int? jobId = jobData.containsKey('jobId')
+                                      ? jobData['jobId']
+                                      : jobData['id']; // Try alternative keys
 
-    if (jobId == null) {
-      if (kDebugMode) print("Error: jobId is null at index $index. Job Data: $jobData");
-      return; // Exit function
-    }
+                                  if (jobId == null) {
+                                    if (kDebugMode)
+                                      print(
+                                          "Error: jobId is null at index $index. Job Data: $jobData");
+                                    return; // Exit function
+                                  }
 
-    // Remove from UI instantly
-    setState(() {
-      jobList.removeAt(index);
-    });
+                                  // Remove from UI instantly
+                                  setState(() {
+                                    jobList.removeAt(index);
+                                  });
 
-    // Call API to remove job
-    removeJob(jobId);
-  },
-  child: Icon(
-    Icons.bookmark,
-    color: Color(0xff004C99),
-    size: 25,
-  ),
-),
-
-
-
-
+                                  // Call API to remove job
+                                  removeJob(jobId);
+                                },
+                                child: Icon(
+                                  Icons.bookmark,
+                                  color: Color(0xff004C99),
+                                  size: 25,
+                                ),
+                              ),
                             ],
                           ),
                         ),

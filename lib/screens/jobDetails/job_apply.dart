@@ -645,7 +645,7 @@ class _JobApplyState extends State<JobApply> {
         ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 202) {
         print('Upload success: ${response.statusCode}');
         setUpdatedTimeInRTDB();
 
@@ -811,7 +811,8 @@ class _JobApplyState extends State<JobApply> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: 280, // Example fixed width
+                                width: MediaQuery.of(context).size.width * 0.75,
+                                constraints: BoxConstraints(maxWidth: 310),
                                 child: Text(
                                   widget.jobData['jobTitle'] ?? 'Default Title',
                                   overflow: TextOverflow.ellipsis,
@@ -1093,17 +1094,13 @@ class _JobApplyState extends State<JobApply> {
                                                       .size
                                                       .width -
                                                   100,
-                                              child: Flexible(
-                                                fit: FlexFit.loose,
-                                                child: Text(
-                                                  'File types: pdf, .doc, .docx  Max file size: 5MB',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                      color: Color(0xff7D7C7C),
-                                                      fontSize: 14),
-                                                ),
+                                              child: Text(
+                                                'File types: pdf, .doc, .docx  Max file size: 5MB',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    color: Color(0xff7D7C7C),
+                                                    fontSize: 14),
                                               ),
                                             )
                                           ],
@@ -1203,8 +1200,8 @@ class _JobApplyState extends State<JobApply> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
-                                            SvgPicture.asset(
-                                                'assets/images/resume.svg',
+                                            Image.asset(
+                                                'assets/images/ic_curriculum.png',
                                                 width: 55,
                                                 height: 55),
                                             SizedBox(
@@ -1214,7 +1211,7 @@ class _JobApplyState extends State<JobApply> {
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width -
-                                                  150,
+                                                  190,
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment:
@@ -1357,9 +1354,17 @@ class _JobApplyState extends State<JobApply> {
       candidateProfileModel = _candidateProfileModel;
       retrievedUserData = _retrievedUserData;
 
-      email = retrievedUserData!.email;
-      emailController.text = _candidateProfileModel!.email!;
-      mobileController.text = _candidateProfileModel!.mobile!.substring(3);
+      // Check for null values before using them
+      email = _retrievedUserData?.email ?? "N/A";
+      emailController.text = _candidateProfileModel?.email ?? "";
+
+      // Ensure mobile is not null before accessing substring
+      String? mobileNumber = _candidateProfileModel?.mobile;
+      if (mobileNumber != null && mobileNumber.length > 3) {
+        mobileController.text = mobileNumber.substring(3);
+      } else {
+        mobileController.text = "";
+      }
 
       fetchAndFormatUpdatedTime();
     });

@@ -1307,7 +1307,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                             if (fNameController.text.trim().isEmpty) {
                               setState(() {
                                 _isFirstNameValid = false;
-                                fNameErrorMsg = 'First name cannot be empty';
+                                fNameErrorMsg = 'First name is required';
                               });
                             } else if (fNameController.text.trim().length < 3) {
                               setState(() {
@@ -1326,7 +1326,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                             if (emailController.text.trim().isEmpty) {
                               setState(() {
                                 _isEmailValid = false;
-                                emailErrorMsg = 'Email cannot be empty';
+                                emailErrorMsg = 'Email is required';
                               });
                             } else if (!validateEmail(emailController.text)) {
                               setState(() {
@@ -1338,7 +1338,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                             if (passwordController.text.trim().isEmpty) {
                               setState(() {
                                 _isPasswordValid = false;
-                                passwordErrorMSG = 'Password cannot be empty';
+                                passwordErrorMSG = 'Password is required';
                               });
                             }
 
@@ -1346,7 +1346,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               setState(() {
                                 _isConfirmPasswordValid = false;
                                 confirm_passwordErrorMSG =
-                                    'Please re-enter your password';
+                                    'Password is required';
                               });
                             }
 
@@ -1366,15 +1366,14 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               setState(() {
                                 _isConfirmPasswordValid = false;
                                 confirm_passwordErrorMSG =
-                                    'Please re-enter your password';
+                                    'Password is required';
                               });
                             }
 
                             if (mobileController.text.trim().isEmpty) {
                               setState(() {
                                 _isMobileNumberValid = false;
-                                mobileErrorMsg =
-                                    'Mobile number cannot be empty';
+                                mobileErrorMsg = 'Mobile Number is required';
                               });
                             } else if (mobileController.text.length <
                                     validLength ||

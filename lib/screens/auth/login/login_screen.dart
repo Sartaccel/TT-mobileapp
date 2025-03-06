@@ -570,8 +570,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (emailController.text.trim().isEmpty) {
                             setState(() {
                               _isEmailValid = false;
-                              emailErrorMessage =
-                                  'Email ID is required';
+                              emailErrorMessage = 'Email ID is required';
                             });
                           } else if (!validateEmail(emailController.text)) {
                             setState(() {
@@ -609,32 +608,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                   width: 24,
                                   child: TweenAnimationBuilder<double>(
                                     tween: Tween<double>(begin: 0, end: 5),
-                                    duration: Duration(
-                                        seconds:
-                                            2), 
+                                    duration: Duration(seconds: 2),
                                     curve: Curves.linear,
                                     builder: (context, value, child) {
                                       return Transform.rotate(
-                                        angle: value *
-                                            2 *
-                                            3.1416, 
+                                        angle: value * 2 * 3.1416,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 4,
-                                          value: 0.20, 
+                                          value: 0.20,
                                           backgroundColor: const Color.fromARGB(
-                                              142,
-                                              234,
-                                              232,
-                                              232), 
-                                          valueColor: AlwaysStoppedAnimation<
-                                                  Color>(
-                                              Colors
-                                                  .white), 
+                                              142, 234, 232, 232),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
                                         ),
                                       );
                                     },
-                                    onEnd: () =>
-                                        {}, 
+                                    onEnd: () => {},
                                   ),
                                 )
                               : Text(

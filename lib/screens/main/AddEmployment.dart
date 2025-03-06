@@ -32,7 +32,7 @@ class _AddemploymentState extends State<Addemployment> {
   final databaseRef =
       FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
 
-  final int maxLength = 50;
+  final int maxLength = 500;
 
   bool isLoading = false;
   bool isEdit = false;
@@ -875,14 +875,12 @@ class _AddemploymentState extends State<Addemployment> {
                                                 0.25,
                                             height: 5,
                                             decoration: BoxDecoration(
-                                              color:
-                                                  Colors.black, // Adjust color
+                                              color: Colors.black,
                                               borderRadius:
                                                   BorderRadius.circular(10),
                                             ),
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.visibility_outlined),
                                             title: Text('On Site'),
                                             onTap: () {
                                               setState(() {
@@ -893,7 +891,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.refresh),
                                             title: Text('Hybrid'),
                                             onTap: () {
                                               setState(() {
@@ -904,7 +901,6 @@ class _AddemploymentState extends State<Addemployment> {
                                             },
                                           ),
                                           ListTile(
-                                            //leading: Icon(Icons.download),
                                             title: Text('Work from home'),
                                             onTap: () {
                                               setState(() {
@@ -965,20 +961,17 @@ class _AddemploymentState extends State<Addemployment> {
                                   showMaterialModalBottomSheet(
                                     isDismissible: true,
                                     context: context,
-                                    backgroundColor: Colors
-                                        .transparent, // Fix: Removes default background
+                                    backgroundColor: Colors.transparent,
                                     builder: (context) => Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 30, horizontal: 10),
                                       decoration: BoxDecoration(
                                         color: Color(0xffFCFCFC),
                                         borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(
-                                              20), // Top-left corner
-                                          topRight: Radius.circular(
-                                              20), // Top-right corner
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
                                         ),
                                       ),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 30, horizontal: 10),
                                       width: MediaQuery.of(context).size.width,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,

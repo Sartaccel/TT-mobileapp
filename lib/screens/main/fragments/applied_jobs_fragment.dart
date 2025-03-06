@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -121,58 +120,119 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
       statusBarIconBrightness: Brightness.light,
     ));
     return isLoading
-        ? SizedBox(
-          height: MediaQuery.of(context).size.height,
+        ? Expanded(
             child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!, // Base color for the shimmer
-              highlightColor:
-                  Colors.grey[100]!, // Highlight color for the shimmer
+              baseColor: Color(0xffE6E6E6),
+              highlightColor: Color(0xffF2F2F2),
               child: ListView.builder(
-                itemCount: 5, // Number of skeleton items to show
+                itemCount: 5,
                 itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 5),
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.2, color: Colors.grey),
-                      color: Colors.white,
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    height: 160,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            // Shimmer placeholder for job title
-                            Container(
-                              width: 200,
-                              height: 20,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(height: 10),
-                            // Shimmer placeholder for company name
-                            Container(
-                              width: 150,
-                              height: 15,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(height: 10),
-                            // Shimmer placeholder for location
-                            Container(
-                              width: 100,
-                              height: 15,
-                              color: Colors.white,
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                color: Color(0xffE6E6E6),
+                              ),
                             ),
                           ],
                         ),
-                        // Shimmer placeholder for other widgets (e.g., icons)
-                        Container(
-                          width: 40,
-                          height: 40,
-                          color: Colors.white,
+                        SizedBox(height: 10),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.11,
+                              height: MediaQuery.of(context).size.width * 0.11,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.62,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.70,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.33,
+                                      height: 15,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffE6E6E6),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.33,
+                                      height: 15,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffE6E6E6),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.27,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

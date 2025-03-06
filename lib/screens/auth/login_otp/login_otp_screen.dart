@@ -318,9 +318,18 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                     SizedBox(
                       height: 40,
                     ),
-                    Text(
-                      'We have send an OTP on this number',
-                      style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [Color(0xff545454), Color(0xff004C99)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ).createShader(
+                          Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                      blendMode: BlendMode.srcIn,
+                      child: Text(
+                        'We have send an OTP on this number',
+                        style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                      ),
                     ),
                     SizedBox(
                       height: 10,
@@ -343,13 +352,6 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                     ),
                     SizedBox(
                       height: 40,
-                    ),
-                    Text(
-                      'Enter OTP',
-                      style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       height: 40,
@@ -417,6 +419,36 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                           )
                         : Container(),
                     SizedBox(height: 50),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Didn\'t receive the code?',
+                          style: TextStyle(
+                              color: Color(0xff333333),
+                              fontFamily: 'Lato',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                            onTap: () {},
+                            child: Text(
+                              'Resend',
+                              style: TextStyle(
+                                  color: Color(0xff2979FF),
+                                  fontFamily: 'Lato',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
                     InkWell(
                       onTap: () {
                         if (kDebugMode) print('length ${enteredOTP.length}');
