@@ -1186,15 +1186,35 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                               : InkWell(
                                   onTap: () => {
                                     showMaterialModalBottomSheet(
+                                      backgroundColor: Color(0x00000000),
                                       context: context,
                                       builder: (context) => Container(
                                         padding: EdgeInsets.symmetric(
                                             vertical: 30, horizontal: 10),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffFCFCFC),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(25),
+                                            topRight: Radius.circular(25),
+                                          ),
+                                        ),
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.25,
+                                              height: 5,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
                                             ListTile(
                                               onTap: () {
                                                 final String? filePath =

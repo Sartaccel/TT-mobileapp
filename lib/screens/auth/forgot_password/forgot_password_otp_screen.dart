@@ -262,7 +262,7 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                         Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
                     blendMode: BlendMode.srcIn,
                     child: Text(
-                      'Please enter the OTP send to your mobile and email',
+                      'Please enter the OTP send to your email',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w400,

@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
@@ -335,24 +336,447 @@ class _JobdetailsState extends State<Jobdetails> {
             ),
           ),
           isLoading
-              ? Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
-                      child: Visibility(
-                        visible: isLoading,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 30,
-                            ),
-                            LoadingAnimationWidget.fourRotatingDots(
-                              color: AppColors.primaryColor,
-                              size: 40,
-                            ),
-                          ],
-                        ),
-                      ),
+              ? Expanded(
+                  child: Shimmer.fromColors(
+                    baseColor: Color(0xffE6E6E6),
+                    highlightColor: Color(0xffF2F2F2),
+                    child: ListView.builder(
+                      itemCount: 1,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Circular profile placeholder
+                              Row(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.11,
+                                    height: MediaQuery.of(context).size.width *
+                                        0.11,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.43,
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.03,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Container(
+                                        width: 250,
+                                        height: 15,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Container(
+                                        width: 300,
+                                        height: 15,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Container(
+                                    width: 25,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.43,
+                                        height: 75,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(height: 15),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.43,
+                                        height: 75,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(width: 25),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.43,
+                                        height: 75,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(height: 15),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.43,
+                                        height: 75,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Color(0xffE6E6E6),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                width: 170,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 250,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Container(
+                                    width: 190,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 180,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Container(
+                                    width: 150,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 120,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Container(
+                                    width: 140,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Container(
+                                    width: 160,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 15),
+                              Container(
+                                width: 185,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Color(0xffE6E6E6),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                width: 250,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 1.0,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 1.0,
+                                height: 78,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 1.0,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Color(0xffE6E6E6),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: 200,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 1.0,
+                                height: 83,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 1.0,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 1.0,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Color(0xffE6E6E6),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: 130,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: 270,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Color(0xffE6E6E6),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: 130,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                width: 270,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   ),
                 )
@@ -800,7 +1224,7 @@ class _JobdetailsState extends State<Jobdetails> {
                                     height: 20,
                                   ),
                                   Text(
-                                    'Job description',
+                                    'Job description:',
                                     style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: Color(0xff333333),
@@ -982,7 +1406,7 @@ class _JobdetailsState extends State<Jobdetails> {
                                               'No description available',
                                           style: {
                                             "p": Style(
-                                              fontSize: FontSize(18.0),
+                                              fontSize: FontSize(14.0),
                                               textAlign: TextAlign.justify,
                                               color: Color(0xff333333),
                                             ),
@@ -1118,6 +1542,55 @@ class _JobdetailsState extends State<Jobdetails> {
                                         ),
                                         SizedBox(
                                           height: 15,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top:
+                                                      10.0), // Adjust padding if needed
+                                              child: Icon(
+                                                Icons
+                                                    .brightness_1, // You can use any icon you prefer for the bullet
+                                                size:
+                                                    8, // Small size for the bullet
+                                                color: Colors
+                                                    .black, // Adjust color if necessary
+                                              ),
+                                            ),
+                                            SizedBox(width: 8),
+                                            Expanded(
+                                              child: RichText(
+                                                  text: TextSpan(children: [
+                                                TextSpan(
+                                                  text: 'Tools: ',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(
+                                                        0xff333333), // Make sure to set color when using TextSpan
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      eligibilityList.length > 0
+                                                          ? eligibilityList[0]
+                                                              ['dataName']
+                                                          : ' - ',
+                                                  style: TextStyle(
+                                                    height: 1.5,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Color(
+                                                        0xff333333), // Make sure to set color when using TextSpan
+                                                  ),
+                                                ),
+                                              ])),
+                                            )
+                                          ],
                                         ),
                                       ],
                                     ),

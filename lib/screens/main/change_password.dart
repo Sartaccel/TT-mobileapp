@@ -169,11 +169,15 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     fontFamily: 'Lato',
                                     fontSize: 16,
                                     color: Colors.white),
-                              ))))
+                              )))),
+                      Text(
+                        'Change Password',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ],
                   ),
                   SizedBox(
-                    width: 80,
+                    width: 10,
                   )
                 ],
               ),

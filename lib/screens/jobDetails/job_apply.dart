@@ -809,7 +809,8 @@ class _JobApplyState extends State<JobApply> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: 280, // Example fixed width
+                                width: MediaQuery.of(context).size.width * 0.75,
+                                constraints: BoxConstraints(maxWidth: 310),
                                 child: Text(
                                   widget.jobData['jobTitle'] ?? 'Default Title',
                                   overflow: TextOverflow.ellipsis,
@@ -1198,8 +1199,8 @@ class _JobApplyState extends State<JobApply> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: [
-                                            SvgPicture.asset(
-                                                'assets/images/resume.svg',
+                                            Image.asset(
+                                                'assets/images/ic_curriculum.png',
                                                 width: 55,
                                                 height: 55),
                                             SizedBox(
@@ -1209,7 +1210,7 @@ class _JobApplyState extends State<JobApply> {
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width -
-                                                  150,
+                                                  190,
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment:
@@ -1352,9 +1353,17 @@ class _JobApplyState extends State<JobApply> {
       candidateProfileModel = _candidateProfileModel;
       retrievedUserData = _retrievedUserData;
 
-      email = retrievedUserData!.email;
-      emailController.text = _candidateProfileModel!.email!;
-      mobileController.text = _candidateProfileModel.mobile!.substring(3);
+      // Check for null values before using them
+      email = _retrievedUserData?.email ?? "N/A";
+      emailController.text = _candidateProfileModel?.email ?? "";
+
+      // Ensure mobile is not null before accessing substring
+      String? mobileNumber = _candidateProfileModel?.mobile;
+      if (mobileNumber != null && mobileNumber.length > 3) {
+        mobileController.text = mobileNumber.substring(3);
+      } else {
+        mobileController.text = "";
+      }
 
       fetchAndFormatUpdatedTime();
     });
