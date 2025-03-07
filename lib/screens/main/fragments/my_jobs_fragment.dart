@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:talent_turbo_new/screens/main/fragments/applied_jobs_fragment.dart';
 import 'package:talent_turbo_new/screens/main/fragments/saved_jobs_fragment.dart';
+import 'package:talent_turbo_new/screens/main/notifications.dart';
 
 class MyJobsFragment extends StatefulWidget {
   const MyJobsFragment({super.key});
@@ -50,7 +52,23 @@ class _MyJobsFragmentState extends State<MyJobsFragment> {
                       fontSize: 16),
                 ),
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.08),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              NotificationScreen()));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: SvgPicture.asset(
+                    'assets/icon/Notifi.svg',
+                    width: 28,
+                    height: 28,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
