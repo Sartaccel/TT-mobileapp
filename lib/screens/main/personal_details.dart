@@ -463,68 +463,89 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   }
 
   Future<void> uploadPDF(File file) async {
-    Dio dio = Dio();
+  Dio dio = Dio();
 
-    String url =
-        'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
+  String url = 'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
 
-    FormData formData = FormData.fromMap({
-      "id": retrievedUserData!.profileId.toString(), // Your id
-      "file": await MultipartFile.fromFile(
-        file.path,
-        filename: file.path.split('/').last,
-      ),
+  FormData formData = FormData.fromMap({
+    "id": retrievedUserData!.profileId.toString(),
+    "file": await MultipartFile.fromFile(
+      file.path,
+      filename: file.path.split('/').last,
+    ),
+  });
+
+  String token = retrievedUserData!.token;
+
+  try {
+    setState(() {
+      isLoading = true;
     });
 
-    String token = retrievedUserData!.token;
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      Response response = await dio.post(
-        url,
-        data: formData,
-        options: Options(
-          headers: {
-            'Authorization': token, // Authorization Header
-            'Content-Type':
-                'multipart/form-data', // Content-Type for file uploads
-          },
-        ),
-      );
+    Response response = await dio.post(
+      url,
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': token, // Ensure the token is correct
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 202) {
       print('Upload success: ${response.statusCode}');
       setUpdatedTimeInRTDB();
 
       Fluttertoast.showToast(
-          msg: 'Successfully uploaded',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: 'Successfully uploaded',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Color(0xff2D2D2D),
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
 
       fetchCandidateProfileData(retrievedUserData!.profileId, token);
-      //Navigator.pop(context);
-      setState(() {
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      print('Upload failed: $e');
+    } else if (response.statusCode == 401) {
+      // Handle Unauthorized (401)
+      print("Error: Unauthorized (401). Please log in again.");
 
       Fluttertoast.showToast(
-          msg: e.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Color(0xff2D2D2D),
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: 'Session expired. Please log in again.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      // Redirect to login screen
+      Navigator.pushReplacementNamed(context, '/login'); // Adjust as needed
+    } else {
+      throw Exception("Unexpected status code: ${response.statusCode}");
     }
+  } catch (e) {
+    print('Upload failed: $e');
+
+    Fluttertoast.showToast(
+      msg: 'Upload failed: ${e.toString()}',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Color(0xff2D2D2D),
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  } finally {
+    setState(() {
+      isLoading = false;
+    });
   }
+}
+
 
   Future<void> pickAndUploadPDF() async {
     File? file = await pickPDF();

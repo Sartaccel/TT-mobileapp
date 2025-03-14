@@ -876,7 +876,7 @@ class _HomeFragmentState extends State<HomeFragment>
                                                     checkExpiry(jobList[index]
                                                                 ['dueDate'] ??
                                                             '1990-01-01')
-                                                        ? 'Expired'
+                                                        ? 'Job Expired'
                                                         : processDate(jobList[
                                                                     index][
                                                                 'createdDate'] ??

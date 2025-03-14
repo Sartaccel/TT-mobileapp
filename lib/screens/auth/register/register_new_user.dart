@@ -930,7 +930,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                           left: MediaQuery.of(context).size.width * 0.015,
                         ),
                         child: Text(
-                          'Re-enter Password',
+                          'Re-Enter Password',
                           style: TextStyle(
                               fontSize: 13,
                               fontFamily: 'Lato',
@@ -964,7 +964,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       icon: SvgPicture.asset(confirmPasswordHide
                                           ? 'assets/images/ic_hide_password.svg'
                                           : 'assets/images/ic_show_password.svg')),
-                                  hintText: 'Re-enter your password',
+                                  hintText: 'Re-Enter your password',
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
                                   enabledBorder: OutlineInputBorder(

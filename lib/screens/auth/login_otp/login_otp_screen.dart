@@ -220,13 +220,13 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
         //   textColor: Colors.white,
         //   fontSize: 16.0,
         // );
-        IconSnackBar.show(
+       /*IconSnackBar.show(
           context,
           label: 'Invalid OTP',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xffBA1A1A),
           iconColor: Colors.white,
-        );
+        );*/
         setState(() {
           clearOTP = true;
           isLoading = false;
@@ -328,29 +328,45 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                           Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
                       blendMode: BlendMode.srcIn,
                       child: Text(
-                        'We have send an OTP on this number',
+                        'We have sent an OTP to this number',
                         style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                       ),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${widget.countryCode}${widget.mobileNumber}',
-                          style:
-                              TextStyle(color: Color(0xff2979FF), fontSize: 14),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        SvgPicture.asset('assets/icon/OTPedit.svg',
-                            width: 20, height: 20),
-                      ],
-                    ),
+                   Row(
+  mainAxisSize: MainAxisSize.min,
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    InkWell(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: EdgeInsets.all(8), // Increase touch area
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8), // Optional rounded effect
+        ),
+        child: Row(
+          children: [
+            Text(
+              '${widget.countryCode}${widget.mobileNumber}',
+              style: TextStyle(color: Color(0xff2979FF), fontSize: 14),
+            ),
+            SizedBox(width: 10),
+            SvgPicture.asset(
+              'assets/icon/OTPedit.svg',
+              width: 20,
+              height: 20,
+            ),
+          ],
+        ),
+      ),
+    ),
+  ],
+),
+
                     SizedBox(
                       height: 40,
                     ),

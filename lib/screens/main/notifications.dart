@@ -90,7 +90,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   height: 10,
                 ),
                 Text(
-                  'No notification',
+                  'No Notification',
                   style: TextStyle(
                       color: Color(0xff333333),
                       fontWeight: FontWeight.w700,

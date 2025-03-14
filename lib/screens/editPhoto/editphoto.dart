@@ -533,7 +533,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                 color: Color(0xff333333)),
           ),
           content: Text(
-            'Are you sure you want to discard changes?',
+            'Are you sure you want to discard all changes?',
             style: TextStyle(
                 height: 1.4,
                 fontSize: 14,

@@ -957,31 +957,32 @@ class _JobApplyState extends State<JobApply> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        height: 48,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(width: 1, color: Color(0xffD9D9D9)),
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: EdgeInsets.all(9),
-                        child: DropdownButton(
-                            underline: Container(),
-                            value: _selectedCountryCode,
-                            icon: SvgPicture.asset(
-                              'assets/icon/ArrowDown.svg',
-                              height: 10,
-                              width: 10,
-                            ),
-                            items: countryOptions.map((countryCode) {
-                              return DropdownMenuItem(
-                                  value: countryCode,
-                                  child: Text(countryCode,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: 'Lato',
-                                          color: const Color(0xFF545454))));
-                            }).toList(),
-                            onChanged: (val) {}),
-                      ),
+  height: 48,
+  decoration: BoxDecoration(
+    border: Border.all(width: 1, color: Color(0xffD9D9D9)),
+    borderRadius: BorderRadius.circular(8),
+  ),
+  padding: EdgeInsets.all(9),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        _selectedCountryCode!, // Displays the selected country code
+        style: TextStyle(
+          fontSize: 14,
+          fontFamily: 'Lato',
+          color: Color(0xFF545454),
+        ),
+      ),
+      SvgPicture.asset(
+        'assets/icon/ArrowDown.svg',
+        height: 10,
+        width: 10,
+      ),
+    ],
+  ),
+),
+
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Expanded(
                         child: Container(

@@ -96,12 +96,12 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
     if (passwordController.text.length < 8) {
       setState(() {
         _isPasswordValid = false;
-        passwordErrorMSG = 'Must be Atleast 8 characters';
+        passwordErrorMSG = 'Password is Requird';
       });
     } else if (passwordController.text != confirmPasswordController.text) {
       setState(() {
         _isConfirmPasswordValid = false;
-        confirm_passwordErrorMSG = 'Passwords do not match';
+        confirm_passwordErrorMSG = 'Passwords didn\'t not match';
       });
       if (kDebugMode) {
         print('Not Equal passwords');
@@ -179,6 +179,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                           controller: passwordController,
                           cursorColor: Color(0xff004C99),
                           obscureText: passwordHide,
+                          enabled: !isLoading,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
@@ -252,6 +253,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                           controller: confirmPasswordController,
                           cursorColor: Color(0xff004C99),
                           obscureText: confirmPasswordHide,
+                          enabled: !isLoading,
                           style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
                           decoration: InputDecoration(
                               suffixIcon: IconButton(

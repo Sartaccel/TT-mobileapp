@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
-
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
@@ -21,7 +18,6 @@ import 'package:talent_turbo_new/screens/auth/login/login_with_mobile_screen.dar
 import 'package:talent_turbo_new/screens/auth/register/register_new_user.dart';
 import 'package:http/http.dart' as http;
 import 'package:talent_turbo_new/screens/main/home_container.dart';
-
 import '../auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -57,17 +53,18 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<void> emailSignIn() async {
-    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
+ Future<void> emailSignIn() async {
+  final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
 
-    final bodyParams = {
-      "email": emailController.text,
-      "password": passwordController.text
-    };
+  final bodyParams = {
+    "email": emailController.text,
+    "password": passwordController.text
+  };
 
-    try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult == ConnectivityResult.none) {
+  try {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      if (mounted) { // Ensure context is still available
         IconSnackBar.show(
           context,
           label: 'No internet connection',
@@ -75,40 +72,42 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
-        return; // Exit the function if no internet
       }
-      setState(() {
-        isLoading = true;
-      });
+      return; // Exit the function if no internet
+    }
 
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(bodyParams),
-      );
+    setState(() {
+      isLoading = true;
+    });
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
-      }
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(bodyParams),
+    );
 
-      if (response.statusCode == 200) {
-        var resOBJ = jsonDecode(response.body);
+    if (kDebugMode) {
+      print('Response code ${response.statusCode} :: Response => ${response.body}');
+    }
 
-        String statusMessage = resOBJ['message'];
+    if (response.statusCode == 200) {
+      var resOBJ = jsonDecode(response.body);
 
-        if (!resOBJ['result']) {
-          if (statusMessage.toLowerCase().contains('exists')) {
-            setState(() {
-              _isEmailValid = false;
-              emailErrorMessage = 'User doesn\'t exist';
-            });
-          } else if (statusMessage.toLowerCase().contains('password')) {
-            setState(() {
-              _isPasswordValid = false;
-              passwordErrorMessage = 'Invalid password';
-            });
-          } else {
+      String statusMessage = resOBJ['message'];
+
+      if (!resOBJ['result']) {
+        if (statusMessage.toLowerCase().contains('exists')) {
+          setState(() {
+            _isEmailValid = false;
+            emailErrorMessage = 'User doesn\'t exist';
+          });
+        } else if (statusMessage.toLowerCase().contains('password')) {
+          setState(() {
+            _isPasswordValid = false;
+            passwordErrorMessage = 'Invalid password';
+          });
+        } else {
+          if (mounted) { // Ensure context is still available
             IconSnackBar.show(
               context,
               label: statusMessage,
@@ -117,39 +116,43 @@ class _LoginScreenState extends State<LoginScreen> {
               iconColor: Colors.white,
             );
           }
-        } else {
-          print(resOBJ.toString());
-
-          final Map<String, dynamic> data = resOBJ['data'];
-          UserData userData = UserData.fromJson(data);
-
-          UserCredentials credentials = UserCredentials(
-              username: emailController.text,
-              password: passwordController.text);
-          await credentials.saveCredentials();
-
-          await saveUserData(userData);
-
-          UserData? retrievedUserData = await getUserData();
-
-          if (kDebugMode) {
-            print('Saved Successfully');
-            print('User Name: ${retrievedUserData!.name}');
-          }
-
-          fetchCandidateProfileData(
-              retrievedUserData!.profileId, retrievedUserData!.token);
-          Navigator.pushReplacementNamed(context, '/home');
         }
+      } else {
+        print(resOBJ.toString());
+
+        final Map<String, dynamic> data = resOBJ['data'];
+        UserData userData = UserData.fromJson(data);
+
+        UserCredentials credentials = UserCredentials(
+            username: emailController.text,
+            password: passwordController.text);
+        await credentials.saveCredentials();
+
+        await saveUserData(userData);
+
+        UserData? retrievedUserData = await getUserData();
+
+        if (kDebugMode) {
+          print('Saved Successfully');
+          print('User Name: ${retrievedUserData!.name}');
+        }
+
+        fetchCandidateProfileData(
+            retrievedUserData!.profileId, retrievedUserData!.token);
+        Navigator.pushReplacementNamed(context, '/home');
       }
-    } catch (e) {
-      print(e.toString());
-    } finally {
+    }
+  } catch (e) {
+    print(e.toString());
+  } finally {
+    if (mounted) {
       setState(() {
         isLoading = false;
       });
     }
   }
+}
+
 
   Future<void> socialGoogleSignin(
       String email, String fn, String ln, String mobile) async {
@@ -498,7 +501,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                             onChanged: (val) {
                               setState(() {
-                                _isPasswordValid = true;
+                                _isPasswordValid =
+                                    true; // Reset validation on input change
                               });
                             },
                           ),
@@ -518,7 +522,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                         ]),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.03,
+                      height: MediaQuery.of(context).size.height *
+                          0.03, // 3% of screen height
                     ),
 
                     Container(
@@ -640,11 +645,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     InkWell(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext con) =>
-                                    MobileNumberLogin()));
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => MobileNumberLogin(),
+      transitionDuration: Duration.zero, // No transition
+      reverseTransitionDuration: Duration.zero, // No reverse transition
+    ),
+                            
+                          );
                       },
+                      
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 44,

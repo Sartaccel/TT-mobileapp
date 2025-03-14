@@ -101,13 +101,13 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
         //     backgroundColor: Colors.red,
         //     textColor: Colors.white,
         //     fontSize: 16.0);
-        IconSnackBar.show(
+       /* IconSnackBar.show(
           context,
           label: statusMessage,
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xFFBA1A1A),
           iconColor: Colors.white,
-        );
+        );*/
       }
     } catch (e) {
       print(e);
@@ -437,7 +437,10 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                               child: Text(
                             'Back',
                             style: TextStyle(fontSize: 16),
-                          ))))
+                          )
+                          )
+                          )
+                          )
                 ],
               )),
         ],

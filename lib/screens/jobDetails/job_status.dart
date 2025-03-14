@@ -401,7 +401,7 @@ class _JobStatusState extends State<JobStatus> {
                             highlightColor: Color(0xffF2F2F2),
                             child: SizedBox(
                               height: MediaQuery.of(context).size.height *
-                                  0.4, // Prevents infinite height
+                                  0.45, // Prevents infinite height
                               child: ListView.builder(
                                 shrinkWrap: true, // Fixes RenderSliver issue
                                 physics:
@@ -632,15 +632,15 @@ class _JobStatusState extends State<JobStatus> {
                                 itemBuilder: (context, index) {
                                   Map<String, String> statusMapping = {
                                     "Talent Identified": "Applied",
-                                    "Shortlisted": "Shortlisted",
+                                    "Shortlisted": "Shortlist",
                                     "Interview Completed": "Interview",
-                                    "Offer Given": "Selection"
+                                    "Offer Given": "Selected"
                                   };
 
                                   List<Map<String, String>> timelineSteps = [
                                     {"statusName": "Applied", "createdAt": ""},
                                     {
-                                      "statusName": "Shortlisted",
+                                      "statusName": "Shortlist",
                                       "createdAt": ""
                                     },
                                     {
@@ -648,7 +648,7 @@ class _JobStatusState extends State<JobStatus> {
                                       "createdAt": ""
                                     },
                                     {
-                                      "statusName": "Selection",
+                                      "statusName": "Selected",
                                       "createdAt": ""
                                     },
                                   ];

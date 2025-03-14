@@ -26,6 +26,11 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   bool isLoading = false;
   bool isStartDateValid = true;
   bool _startDateSelected = false;
+  String emailErrorMessage = '';
+   String mobileErrorMessage = '';
+   
+
+
 
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
@@ -619,10 +624,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
                     keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(
-                          r'[a-zA-Z\s]')), // Allow only letters and spaces
-                    ],
+                   
                     onChanged: (value) {
                       // Validate the email here and update _isEmailValid
                       setState(() {
@@ -760,32 +762,43 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     SizedBox(
                         width: 60,
                         child: InkWell(
-                            onTap: () async {
-                              if (candidateProfileModel!.isEmailVerified != 1) {
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            SendVerificationCode(
-                                                type: "email",
-                                                mobile: candidateProfileModel!
-                                                    .mobile,
-                                                email: candidateProfileModel!
-                                                    .email)));
-                                fetchCandidateProfileData(
-                                    retrievedUserData!.profileId,
-                                    retrievedUserData!.token);
-                              }
-                            },
-                            child: Center(
-                                child: Text(
-                              candidateProfileModel!.isEmailVerified == 1
-                                  ? 'Verified'
-                                  : 'Verify',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff004C99)),
-                            ))))
+  onTap: () async {
+    if (emailController.text.trim().isEmpty) {
+      setState(() {
+        _isEmailValid = false;
+        emailErrorMessage = 'Email cannot be empty';
+        
+      });
+      return;
+    }
+
+    if (candidateProfileModel!.isEmailVerified != 1) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => SendVerificationCode(
+            type: "email",
+            mobile: candidateProfileModel!.mobile,
+            email: candidateProfileModel!.email,
+          ),
+        ),
+      );
+      fetchCandidateProfileData(
+          retrievedUserData!.profileId, retrievedUserData!.token);
+    }
+  },
+  child: Center(
+    child: Text(
+      candidateProfileModel!.isEmailVerified == 1 ? 'Verified' : 'Verify',
+      style: TextStyle(
+        fontWeight: FontWeight.w500,
+        color: Color(0xff004C99),
+      ),
+    ),
+  ),
+),
+
+                            )
                   ],
                 ),
                 SizedBox(
@@ -803,167 +816,144 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 SizedBox(
                   height: 10,
                 ),
+              
+
+
+Container(
+  width: MediaQuery.of(context).size.width - 20,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width - 100,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Country Code Dropdown
                 Container(
-                  width: MediaQuery.of(context).size.width - 20,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width - 100,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: _isMobileNumberValid
-                                              ? Color(0xffd9d9d9)
-                                              : Colors.red),
-                                      borderRadius: BorderRadius.circular(8)),
-                                  padding: EdgeInsets.all(9),
-                                  child: DropdownButton(
-                                      underline: Container(),
-                                      value: _selectedCountryCode,
-                                      items: countryOptions.map((countryCode) {
-                                        return DropdownMenuItem(
-                                            value: countryCode,
-                                            child: Text(countryCode,
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontFamily: 'Lato',
-                                                    color: Color(0xff545454))));
-                                      }).toList(),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _selectedCountryCode = val;
-                                        });
-                                      }),
-                                ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01),
-                                Expanded(
-                                  child: Container(
-                                    width: (MediaQuery.of(context).size.width) -
-                                        200,
-                                    child: TextField(
-                                      maxLength: getValidLengthForCountry(
-                                          _selectedCountryCode!),
-                                      controller: mobileController,
-                                      cursorColor: Color(0xff004C99),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: 'Lato',
-                                          color: Color(0xff545454)),
-                                      decoration: InputDecoration(
-                                          counterText: '',
-                                          hintText: 'Enter mobile number',
-                                          suffixIcon: SvgPicture.asset(
-                                              candidateProfileModel!
-                                                          .isPhoneVerified ==
-                                                      1
-                                                  ? 'assets/images/verified_ic.svg'
-                                                  : 'assets/images/pending_ic.svg'),
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isMobileNumberValid
-                                                    ? Color(0xffd9d9d9)
-                                                    : Colors
-                                                        .red, // Default border color
-                                                width: 1),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isMobileNumberValid
-                                                    ? Color(0xff004C99)
-                                                    : Colors
-                                                        .red, // Border color when focused
-                                                width: 1),
-                                          ),
-                                          // errorText: _isMobileNumberValid
-                                          //     ? null
-                                          //     : mobileErrorMsg, // Display error message if invalid
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10)),
-                                      keyboardType: TextInputType.phone,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'[0-9]')),
-                                      ],
-                                      onChanged: (value) {
-                                        // Validate the email here and update _isEmailValid
-                                        setState(() {
-                                          _isMobileNumberValid = true;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                              width: 60,
-                              child: Center(
-                                  child: InkWell(
-                                      onTap: () async {
-                                        if (candidateProfileModel!
-                                                .isPhoneVerified !=
-                                            1) {
-                                          await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (BuildContext
-                                                          context) =>
-                                                      SendVerificationCode(
-                                                          type: "phone",
-                                                          mobile:
-                                                              candidateProfileModel!
-                                                                  .mobile,
-                                                          email:
-                                                              candidateProfileModel!
-                                                                  .email)));
-                                          fetchCandidateProfileData(
-                                              retrievedUserData!.profileId,
-                                              retrievedUserData!.token);
-                                        }
-                                      },
-                                      child: Text(
-                                        candidateProfileModel!
-                                                    .isPhoneVerified ==
-                                                1
-                                            ? 'Verified'
-                                            : 'Verify',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Color(0xff004C99)),
-                                      ))))
-                        ],
-                      ),
-                      if (!_isMobileNumberValid)
-                        Padding(
-                          padding: EdgeInsets.only(top: 4, left: 10),
-                          child: Text(
-                            mobileErrorMsg ?? '',
-                            style: TextStyle(
-                                color: Color(0xFFBA1A1A), fontSize: 12),
-                          ),
+                  height: 48,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: _isMobileNumberValid ? Color(0xffd9d9d9) : Colors.red,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.all(9),
+                  child: DropdownButton(
+                    underline: Container(),
+                    value: _selectedCountryCode,
+                    items: countryOptions.map((countryCode) {
+                      return DropdownMenuItem(
+                        value: countryCode,
+                        child: Text(
+                          countryCode,
+                          style: TextStyle(fontSize: 14, fontFamily: 'Lato', color: Color(0xff545454)),
                         ),
-                    ],
+                      );
+                    }).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedCountryCode = val;
+                      });
+                    },
                   ),
                 ),
+
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+
+                // Mobile Number Input Field
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 200,
+                    child: TextField(
+                      maxLength: getValidLengthForCountry(_selectedCountryCode!),
+                      controller: mobileController,
+                      cursorColor: Color(0xff004C99),
+                      style: TextStyle(fontSize: 14, fontFamily: 'Lato', color: Color(0xff545454)),
+                      decoration: InputDecoration(
+                        counterText: '',
+                        hintText: 'Enter mobile number',
+                        suffixIcon: SvgPicture.asset(
+                          candidateProfileModel!.isPhoneVerified == 1
+                              ? 'assets/images/verified_ic.svg'
+                              : 'assets/images/pending_ic.svg',
+                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: _isMobileNumberValid ? Color(0xffd9d9d9) : Colors.red,
+                            width: 1,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: _isMobileNumberValid ? Color(0xff004C99) : Colors.red,
+                            width: 1,
+                          ),
+                        ),
+                        errorText: _isMobileNumberValid ? null : mobileErrorMessage, // Show error message
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      ),
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
+                      onChanged: (value) {
+                        setState(() {
+                          _isMobileNumberValid = value.trim().isNotEmpty;
+                        });
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
+          // "Verify" Button
+          SizedBox(
+            width: 60,
+            child: Center(
+              child: InkWell(
+                onTap: () async {
+                  if (mobileController.text.trim().isEmpty) {
+                    setState(() {
+                      _isMobileNumberValid = false;
+                      mobileErrorMessage = 'Mobile number cannot be empty';
+                    });
+                    return;
+                  }
+
+                  if (candidateProfileModel!.isPhoneVerified != 1) {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => SendVerificationCode(
+                          type: "phone",
+                          mobile: candidateProfileModel!.mobile,
+                          email: candidateProfileModel!.email,
+                        ),
+                      ),
+                    );
+                    fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+                  }
+                },
+                child: Text(
+                  candidateProfileModel!.isPhoneVerified == 1 ? 'Verified' : 'Verify',
+                  style: TextStyle(fontWeight: FontWeight.w500, color: Color(0xff004C99)),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      
+
                 SizedBox(
                   height: 20,
                 ),
@@ -1398,9 +1388,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 )
               ],
             ),
-          )))
-        ],
+)
+              ]
+          )
+          )
+              )
       ),
+        ]
+      )
     );
   }
 

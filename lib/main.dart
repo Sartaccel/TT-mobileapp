@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Talent Turbo',
+      title: 'TalentTurbo',
       home: widget.initialScreen,
       debugShowCheckedModeBanner: false,
     );

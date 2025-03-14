@@ -1,0 +1,2 @@
+C:/Users/jijon/OneDrive/Documents/GitHub/Talenturbo-mobapp/android/app/.cxx/Debug/2v24c6ey/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/jijon/OneDrive/Documents/GitHub/Talenturbo-mobapp/android/app/.cxx/Debug/2v24c6ey/x86_64/CMakeFiles/rebuild_cache.dir
