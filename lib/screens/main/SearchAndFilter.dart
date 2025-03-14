@@ -258,16 +258,16 @@ class _SearchandfilterState extends State<Searchandfilter> {
                           ),
                           suffixIcon: isLoading
                               ? Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.all(15.0),
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width *
-                                        0.02,
+                                        0.001,
                                     height: MediaQuery.of(context).size.width *
-                                        0.02,
+                                        0.001,
                                     child: CircularProgressIndicator(
                                       strokeWidth:
                                           MediaQuery.of(context).size.width *
-                                              0.008,
+                                              0.04,
                                       valueColor:
                                           const AlwaysStoppedAnimation<Color>(
                                               Color(0xff004C99)),

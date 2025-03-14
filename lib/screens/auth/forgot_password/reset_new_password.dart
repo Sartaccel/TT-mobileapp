@@ -28,8 +28,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
   bool _isConfirmPasswordValid = true;
   TextEditingController confirmPasswordController = TextEditingController();
   bool confirmPasswordHide = true, passwordHide = true;
-  String confirm_passwordErrorMSG = "Password is required";
-  String passwordErrorMSG = "Password is required";
+  String confirm_passwordErrorMSG = "Password is Required";
+  String passwordErrorMSG = "Password is Required";
 
   Future<void> setNewPassword() async {
     final url = Uri.parse(
@@ -96,7 +96,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
     if (passwordController.text.length < 8) {
       setState(() {
         _isPasswordValid = false;
-        passwordErrorMSG = 'Password must be at-least 8 characters';
+        passwordErrorMSG = 'Must be Atleast 8 characters';
       });
     } else if (passwordController.text != confirmPasswordController.text) {
       setState(() {
@@ -130,7 +130,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
             top: 120,
             child: Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -221,7 +221,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                             if (value.length < 8) {
                               setState(() {
                                 _isPasswordValid = false;
-                                passwordErrorMSG = 'Password is required';
+                                passwordErrorMSG = 'Password is Required';
                               });
                             } else {
                               setState(() {

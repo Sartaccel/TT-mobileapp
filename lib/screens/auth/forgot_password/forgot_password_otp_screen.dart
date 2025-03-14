@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -80,10 +79,12 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
           String id = resOBJ['id'];
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-                builder: (context) => ResetNewPassword(
-                      id: id,
-                    )),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  ResetNewPassword(id: id),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
             (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
           );
         }
@@ -100,13 +101,13 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
         //     backgroundColor: Colors.red,
         //     textColor: Colors.white,
         //     fontSize: 16.0);
-        IconSnackBar.show(
-          context,
-          label: statusMessage,
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xffBA1A1A),
-          iconColor: Colors.white,
-        );
+        // IconSnackBar.show(
+        //   context,
+        //   label: statusMessage,
+        //   snackBarType: SnackBarType.alert,
+        //   backgroundColor: Color(0xffBA1A1A),
+        //   iconColor: Colors.white,
+        // );
       }
     } catch (e) {
       print(e);

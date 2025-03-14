@@ -2,13 +2,16 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
 import 'package:http/http.dart' as http;
+
 class JobStatus extends StatefulWidget {
   final jobData;
   const JobStatus({super.key, required this.jobData});
@@ -20,7 +23,7 @@ class JobStatus extends StatefulWidget {
 class _JobStatusState extends State<JobStatus> {
   UserData? retrievedUserData;
   ReferralData? referralData;
-  bool _isLoading = false;
+  bool isLoading = false;
 
   List<dynamic> statusList = [];
 
@@ -41,7 +44,7 @@ class _JobStatusState extends State<JobStatus> {
 
     try {
       setState(() {
-        _isLoading = true;
+        isLoading = true;
       });
 
       final response = await http.post(
@@ -76,11 +79,11 @@ class _JobStatusState extends State<JobStatus> {
       } else {}
 
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
 
       if (kDebugMode) {
@@ -147,6 +150,7 @@ class _JobStatusState extends State<JobStatus> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
+      backgroundColor: Color(0xffFCFCFC),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,7 +213,7 @@ class _JobStatusState extends State<JobStatus> {
           Expanded(
               child: SingleChildScrollView(
             child: Container(
-              color: Colors.white,
+              color: Color(0xffFCFCFC),
               padding: EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,8 +222,8 @@ class _JobStatusState extends State<JobStatus> {
                     margin: EdgeInsets.symmetric(vertical: 5),
                     padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                        border: Border.all(width: 0, color: Colors.white),
-                        color: Colors.white),
+                        border: Border.all(width: 0, color: Color(0xffFCFCFC)),
+                        color: Color(0xffFCFCFC)),
                     width: MediaQuery.of(context).size.width,
                     height: 150,
                     child: Row(
@@ -369,10 +373,6 @@ class _JobStatusState extends State<JobStatus> {
                                 ),
                               ],
                             ),
-
-                           
-                           
-                            
                           ],
                         ),
 
@@ -383,139 +383,371 @@ class _JobStatusState extends State<JobStatus> {
                       ],
                     ),
                   ),
-
-                  SizedBox(height: 0,),
-                  Container(width:MediaQuery.of(context).size.width ,height: 1, color: Color(0xffE6E6E6),),
-
-                  SizedBox(height: 30,),
-
-                 _isLoading ?
-                      Center(
-                   child: Container(
-                     width: MediaQuery.of(context).size.width,
-                     child: Center(
-                       child: Column(
-                         children: [
-                           SizedBox(height: 30,),
-                           LoadingAnimationWidget.fourRotatingDots(
-                             color: AppColors.primaryColor,
-                             size: 40,
-                           ),
-                         ],
-                       ),
-                     ),
-                   ),
-                 )
-                     : Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          margin: EdgeInsets.symmetric(horizontal: 15),
-                          child: Text('Status', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xff333333)),)),
-
-                      SizedBox(height: 0,),
-              Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: ListView.builder(
-    physics: NeverScrollableScrollPhysics(),
-    shrinkWrap: true,
-    itemCount: 4, // Ensure exactly 4 steps
-    itemBuilder: (context, index) {
-      Map<String, String> statusMapping = {
-        "Talent Identified": "Applied",
-        "Shortlisted": "Shortlisted",
-        "Interview Completed": "Interview",
-        "Offer Given": "Selection"
-      };
-
-      List<Map<String, String>> timelineSteps = [
-        {"statusName": "Applied", "createdAt": ""},
-        {"statusName": "Shortlisted", "createdAt": ""},
-        {"statusName": "Interview", "createdAt": ""},
-        {"statusName": "Selection", "createdAt": ""},
-      ];
-
-      bool isActive = index == 0; // "Applied" is always active
-
-      // Update from API statusList if available
-      if (statusList.isNotEmpty) {
-        for (var status in statusList) {
-          if (statusMapping.containsKey(status['statusName'])) {
-            int stepIndex = timelineSteps.indexWhere(
-                (step) => step['statusName'] == statusMapping[status['statusName']]);
-            if (stepIndex != -1) {
-              timelineSteps[stepIndex]["createdAt"] = status['createdAt'] ?? "";
-              if (index == stepIndex) {
-                isActive = true; // Mark as active if present in API
-              }
-            }
-          }
-        }
-      }
-
-      return Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                children: [
-                  // Timeline Status Circle
+                  SizedBox(
+                    height: 0,
+                  ),
                   Container(
-                    width: 15,
-                    height: 15,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isActive ? const Color(0XFF004C99) : Colors.grey[400]!,
-                        width: 2,
-                      ),
-                      color: Colors.transparent, // Transparent fill color for all circles
-                    ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 1,
+                    color: Color(0xffE6E6E6),
                   ),
-                  // Vertical Line (except last item)
-                  if (index != 3)
-                    Container(
-                      width: 3, // Thicker line
-                      height: 77,
-                      color: isActive ? Color(0XFF004C99) : Colors.grey[300],
-                    ),
-                ],
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    timelineSteps[index]['statusName']!,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: isActive ? Color(0XFF004C99) : Colors.grey[600],
-                    ),
+                  SizedBox(
+                    height: 30,
                   ),
-                  if (timelineSteps[index]['createdAt']!.isNotEmpty)
-                    Text(
-                      timelineSteps[index]['createdAt']!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
-    
-        ],
-      );
-    },
-  ),
-),
+                  isLoading
+                      ? SizedBox(
+                          child: Shimmer.fromColors(
+                            baseColor: Color(0xffE6E6E6),
+                            highlightColor: Color(0xffF2F2F2),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height *
+                                  0.4, // Prevents infinite height
+                              child: ListView.builder(
+                                shrinkWrap: true, // Fixes RenderSliver issue
+                                physics:
+                                    NeverScrollableScrollPhysics(), // Prevents scrolling conflict
+                                itemCount: 1,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 75,
+                                          height: 25,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffE6E6E6),
+                                            shape: BoxShape.rectangle,
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                        SizedBox(height: 35),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 15,
+                                              height: 15,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffE6E6E6),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: 65,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    shape: BoxShape.rectangle,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                Container(
+                                                  width: 75,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 45),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 15,
+                                              height: 15,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffE6E6E6),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: 95,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                Container(
+                                                  width: 75,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 45),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 15,
+                                              height: 15,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffE6E6E6),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: 85,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                Container(
+                                                  width: 75,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 45),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 15,
+                                              height: 15,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffE6E6E6),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: 70,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                Container(
+                                                  width: 75,
+                                                  height: 15,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffE6E6E6),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15),
+                                        Container(
+                                          width: double.infinity,
+                                          height: 1,
+                                          color: Color(0xffE6E6E6),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 15),
+                              child: Text(
+                                'Status',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff333333),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: 4, // Ensuring exactly 4 steps
+                                itemBuilder: (context, index) {
+                                  Map<String, String> statusMapping = {
+                                    "Talent Identified": "Applied",
+                                    "Shortlisted": "Shortlisted",
+                                    "Interview Completed": "Interview",
+                                    "Offer Given": "Selection"
+                                  };
 
-],
- ),
-],
+                                  List<Map<String, String>> timelineSteps = [
+                                    {"statusName": "Applied", "createdAt": ""},
+                                    {
+                                      "statusName": "Shortlisted",
+                                      "createdAt": ""
+                                    },
+                                    {
+                                      "statusName": "Interview",
+                                      "createdAt": ""
+                                    },
+                                    {
+                                      "statusName": "Selection",
+                                      "createdAt": ""
+                                    },
+                                  ];
+
+                                  bool isActive =
+                                      index == 0; // "Applied" is always active
+
+                                  if (statusList.isNotEmpty) {
+                                    for (var status in statusList) {
+                                      if (statusMapping
+                                          .containsKey(status['statusName'])) {
+                                        int stepIndex =
+                                            timelineSteps.indexWhere((step) =>
+                                                step['statusName'] ==
+                                                statusMapping[
+                                                    status['statusName']]);
+                                        if (stepIndex != -1) {
+                                          timelineSteps[stepIndex]
+                                                  ["createdAt"] =
+                                              status['createdAt'] ?? "";
+                                          if (index == stepIndex)
+                                            isActive = true;
+                                        }
+                                      }
+                                    }
+                                  }
+
+                                  return Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              // Timeline Status Circle
+                                              Container(
+                                                width: 17,
+                                                height: 17,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: isActive
+                                                        ? const Color(
+                                                            0XFF004C99)
+                                                        : Color(0xffD9D9D9),
+                                                    width: 3,
+                                                  ),
+                                                ),
+                                              ),
+                                              if (index != 3)
+                                                Container(
+                                                  width: 3, // Thicker line
+                                                  height: 77,
+                                                  color: isActive
+                                                      ? Color(0XFF004C99)
+                                                      : Color(0xffD9D9D9),
+                                                ),
+                                            ],
+                                          ),
+                                          SizedBox(width: 15),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                timelineSteps[index]
+                                                    ['statusName']!,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: isActive
+                                                      ? Color(0XFF333333)
+                                                      : Color(0xff7D7C7C),
+                                                ),
+                                              ),
+                                              if (timelineSteps[index]
+                                                      ['createdAt']!
+                                                  .isNotEmpty)
+                                                Text(
+                                                  timelineSteps[index]
+                                                      ['createdAt']!,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color(0xff7D7C7C),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                ],
               ),
             ),
           )),

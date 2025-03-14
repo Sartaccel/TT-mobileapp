@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dotted_border/dotted_border.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -1989,6 +1989,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                         educationList[index][
                                                                 'schoolName'] ??
                                                             'Unknown',
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 1,
+                                                        softWrap: true,
                                                         style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w400,
@@ -2008,7 +2012,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                                   .height *
                                                               0.01),
                                                       Text(
-                                                        '${educationList[index]['graduatedFrom'] ?? 'Unknown'} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : educationList[index]['graduatedTo'] ?? 'Unknown'}',
+                                                        '${formatDate(educationList[index]['graduatedFrom'])} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : formatDate(educationList[index]['graduatedTo'])}',
                                                         style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w400,
@@ -2078,10 +2082,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Adddeleteskills()
-
-                                    ),
+                                        builder: (BuildContext context) =>
+                                            Adddeleteskills()),
                                   );
                                 },
                                 child: Padding(

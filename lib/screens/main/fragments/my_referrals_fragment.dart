@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:talent_turbo_new/screens/main/notifications.dart';
 
 class MyReferralsFragment extends StatefulWidget {
   const MyReferralsFragment({super.key});
@@ -63,9 +65,27 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
                     fontWeight: FontWeight.w400,
                     fontSize: 16),
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.08,
-              )
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          NotificationScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: SvgPicture.asset(
+                    'assets/icon/Notifi.svg',
+                    width: 28,
+                    height: 28,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

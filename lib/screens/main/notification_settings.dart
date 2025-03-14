@@ -112,9 +112,17 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                             ))))
                   ],
                 ),
-                SizedBox(
-                  width: 80,
-                )
+                Text(
+                  'Notification',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Text(
+                    '           ',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
               ],
             ),
           ),

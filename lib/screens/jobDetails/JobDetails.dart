@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +37,7 @@ class _JobdetailsState extends State<Jobdetails> {
 
   List<dynamic> eligibilityList = [];
   List<dynamic> technologyList = [];
+  List<dynamic> skillList = [];
 
   void _shareApp(String refCode) {
     //final String appUrl = "https://play.google.com/store/apps/details?id=com.android.referral.talentturbo";
@@ -93,6 +93,7 @@ class _JobdetailsState extends State<Jobdetails> {
           rawJobData = resOBJ;
           eligibilityList = resOBJ['data']['eligibilityData'];
           technologyList = resOBJ['data']['technologyList'];
+          skillList = resOBJ['data']['skillList'];
         });
       }
 
@@ -164,14 +165,6 @@ class _JobdetailsState extends State<Jobdetails> {
       }
 
       if (response.statusCode == 200 || response.statusCode == 202) {
-        // Fluttertoast.showToast(
-        //     msg: 'Updated successfully',
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.BOTTOM,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Color(0xff2D2D2D),
-        //     textColor: Colors.white,
-        //     fontSize: 16.0);
         IconSnackBar.show(
           context,
           label: 'Updated successfully',
@@ -242,14 +235,6 @@ class _JobdetailsState extends State<Jobdetails> {
 
         _shareApp(resObj['referralCode'].toString());
       } else {
-        // Fluttertoast.showToast(
-        //   msg: 'Failed to share JOB.',
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Colors.red,
-        //   textColor: Colors.white,
-        //   fontSize: 16.0);
         IconSnackBar.show(
           context,
           label: 'Failed to share JOB.',
@@ -1563,32 +1548,42 @@ class _JobdetailsState extends State<Jobdetails> {
                                             SizedBox(width: 8),
                                             Expanded(
                                               child: RichText(
-                                                  text: TextSpan(children: [
-                                                TextSpan(
-                                                  text: 'Tools: ',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
-                                                  ),
+                                                text: TextSpan(
+                                                  children: technologyList
+                                                      .map((tech) => TextSpan(
+                                                            children: [
+                                                              TextSpan(
+                                                                text:
+                                                                    'Technology: ',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Color(
+                                                                      0xff333333),
+                                                                ),
+                                                              ),
+                                                              TextSpan(
+                                                                text: tech[
+                                                                    'technologyName'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  height: 1.5,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                  color: Color(
+                                                                      0xff333333),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ))
+                                                      .toList(),
                                                 ),
-                                                TextSpan(
-                                                  text:
-                                                      eligibilityList.length > 0
-                                                          ? eligibilityList[0]
-                                                              ['dataName']
-                                                          : ' - ',
-                                                  style: TextStyle(
-                                                    height: 1.5,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
-                                                  ),
-                                                ),
-                                              ])),
+                                              ),
                                             )
                                           ],
                                         ),

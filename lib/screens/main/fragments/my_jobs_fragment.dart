@@ -55,10 +55,14 @@ class _MyJobsFragmentState extends State<MyJobsFragment> {
               InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              NotificationScreen()));
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          NotificationScreen(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16.0),

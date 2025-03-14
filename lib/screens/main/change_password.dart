@@ -170,15 +170,19 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     fontSize: 16,
                                     color: Colors.white),
                               )))),
-                      Text(
-                        'Change Password',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
                     ],
                   ),
-                  SizedBox(
-                    width: 10,
-                  )
+                  Text(
+                    'Change Password',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Text(
+                      '           ',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
                 ],
               ),
             ),
