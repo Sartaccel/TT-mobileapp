@@ -341,7 +341,7 @@ class _HomeFragmentState extends State<HomeFragment>
                             children: [
                               jobSearchTerm.isEmpty
                                   ? SvgPicture.asset(
-                                      'assets/icon/Notifi.svg',
+                                      'assets/icon/Notify.svg',
                                       width: 28,
                                       height: 28,
                                     )
@@ -651,16 +651,21 @@ class _HomeFragmentState extends State<HomeFragment>
 
                                             await Navigator.pushAndRemoveUntil(
                                               context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Jobdetails(
+                                              PageRouteBuilder(
+                                                pageBuilder: (context,
+                                                        animation,
+                                                        secondaryAnimation) =>
+                                                    Jobdetails(
                                                         jobData: jobList[index],
-                                                        isFromSaved: false,
-                                                      )),
-                                              (Route<dynamic> route) => route
-                                                  .isFirst, // This will keep Screen 1
+                                                        isFromSaved: false),
+                                                transitionDuration:
+                                                    Duration.zero,
+                                                reverseTransitionDuration:
+                                                    Duration.zero,
+                                              ),
+                                              (Route<dynamic> route) =>
+                                                  route.isFirst,
                                             );
-
                                             // fetchAllJobs();
                                             loadCachedJobs();
                                           },
@@ -767,11 +772,9 @@ class _HomeFragmentState extends State<HomeFragment>
                                                     child: Row(
                                                       children: [
                                                         SvgPicture.asset(
-                                                          'assets/images/ic_idea.svg',
-                                                          height: 14,
-                                                          width: 14,
-                                                          color: Colors.black,
-                                                        ),
+                                                            'assets/images/ic_idea.svg',
+                                                            height: 14,
+                                                            width: 14),
                                                         SizedBox(
                                                           width: 5,
                                                         ),
@@ -800,11 +803,9 @@ class _HomeFragmentState extends State<HomeFragment>
                                                       Row(
                                                         children: [
                                                           SvgPicture.asset(
-                                                            'assets/images/ic_suitcase.svg',
-                                                            height: 14,
-                                                            width: 14,
-                                                            color: Colors.black,
-                                                          ),
+                                                              'assets/images/ic_suitcase.svg',
+                                                              height: 14,
+                                                              width: 14),
                                                           SizedBox(
                                                             width: 5,
                                                           ),
@@ -833,12 +834,9 @@ class _HomeFragmentState extends State<HomeFragment>
                                                         child: Row(
                                                           children: [
                                                             SvgPicture.asset(
-                                                              'assets/images/ic_location.svg',
-                                                              height: 14,
-                                                              width: 14,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
+                                                                'assets/images/ic_location.svg',
+                                                                height: 14,
+                                                                width: 14),
                                                             SizedBox(
                                                               width: 5,
                                                             ),

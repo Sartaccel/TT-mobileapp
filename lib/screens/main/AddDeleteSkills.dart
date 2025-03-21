@@ -257,14 +257,14 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
                             const SnackBar(
                                 content: Text('Skill saved successfully!')),
                           );
-
-                          // Navigate to the next screen after save
                           Navigator.push(
-                            // ignore: use_build_context_synchronously
                             context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const PersonalDetails(), // Your next screen
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      PersonalDetails(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
                             ),
                           );
                         } catch (error) {
@@ -311,9 +311,7 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
                       fontFamily: 'Lato',
                       color: Color(0xff333333)),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 7),
                 /*Container(
                   width: (MediaQuery.of(context).size.width) - 20,
                   child: TextField(

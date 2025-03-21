@@ -553,10 +553,15 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       InkWell(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      LoginScreen()));
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      LoginScreen(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ),
+                          );
                         },
                         child: Container(
                             margin: EdgeInsets.symmetric(vertical: 20),
@@ -587,9 +592,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                     ? Color(0xff333333)
                                     : Color(0xffBA1A1A))),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: Column(
@@ -643,6 +646,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   });
                                 },
                               ),
+                              SizedBox(height: 4),
                               if (!_isFirstNameValid)
                                 Align(
                                   alignment: Alignment.centerLeft,
@@ -675,9 +679,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   : Color(0xffBA1A1A)),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: Column(
@@ -726,6 +728,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 });
                               },
                             ),
+                            SizedBox(height: 4),
                             if (!_isLastNameValid)
                               Align(
                                 alignment: Alignment.centerLeft,
@@ -759,9 +762,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   : Color(0xffBA1A1A)),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: Column(
@@ -805,6 +806,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 });
                               },
                             ),
+                            SizedBox(height: 4),
                             if (!_isEmailValid)
                               Align(
                                 alignment: Alignment.centerLeft,
@@ -838,9 +840,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   : Color(0xffBA1A1A)),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                           width: (MediaQuery.of(context).size.width) - 20,
                           child: Column(children: [
@@ -908,6 +908,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 });
                               },
                             ),
+                            SizedBox(height: 4),
                             if (!_isPasswordValid)
                               Align(
                                 alignment: Alignment.centerLeft,
@@ -939,9 +940,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   : Color(0xffBA1A1A)),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: Column(
@@ -1009,6 +1008,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 });
                               },
                             ),
+                            SizedBox(height: 4),
                             if (!_isConfirmPasswordValid)
                               Align(
                                 alignment: Alignment.centerLeft,
@@ -1042,9 +1042,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   : Color(0xffBA1A1A)),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                         width: MediaQuery.of(context).size.width - 20,
                         child: Column(
@@ -1153,6 +1151,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 4),
                             if (!_isMobileNumberValid)
                               Padding(
                                 padding: EdgeInsets.only(top: 4, left: 0),

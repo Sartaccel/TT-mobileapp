@@ -353,11 +353,13 @@ class _JobApplyState extends State<JobApply> {
           // Navigate to the next screen
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) =>
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
                   PostJobApplicationSubmission(jobData: widget.jobData),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
             ),
-            (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
+            (Route<dynamic> route) => route.isFirst,
           );
         }
       } else {
@@ -643,7 +645,7 @@ class _JobApplyState extends State<JobApply> {
         ),
       );
 
-      if (response.statusCode == 200||response.statusCode == 202) {
+      if (response.statusCode == 200 || response.statusCode == 202) {
         print('Upload success: ${response.statusCode}');
         setUpdatedTimeInRTDB();
 
@@ -888,9 +890,7 @@ class _JobApplyState extends State<JobApply> {
                           color: Color(0xff333333)),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   TextField(
                     readOnly: true,
                     controller: emailController,
@@ -949,40 +949,38 @@ class _JobApplyState extends State<JobApply> {
                           color: Color(0xff333333)),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-  height: 48,
-  decoration: BoxDecoration(
-    border: Border.all(width: 1, color: Color(0xffD9D9D9)),
-    borderRadius: BorderRadius.circular(8),
-  ),
-  padding: EdgeInsets.all(9),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        _selectedCountryCode!, // Displays the selected country code
-        style: TextStyle(
-          fontSize: 14,
-          fontFamily: 'Lato',
-          color: Color(0xFF545454),
-        ),
-      ),
-      SvgPicture.asset(
-        'assets/icon/ArrowDown.svg',
-        height: 10,
-        width: 10,
-      ),
-    ],
-  ),
-),
-
+                        height: 48,
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(width: 1, color: Color(0xffD9D9D9)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.all(9),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _selectedCountryCode!, // Displays the selected country code
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Lato',
+                                color: Color(0xFF545454),
+                              ),
+                            ),
+                            SvgPicture.asset(
+                              'assets/icon/ArrowDown.svg',
+                              height: 10,
+                              width: 10,
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Expanded(
                         child: Container(
@@ -1049,9 +1047,7 @@ class _JobApplyState extends State<JobApply> {
                         fontWeight: FontWeight.w500,
                         color: Color(0xff333333)),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   DottedBorder(
                     borderType: BorderType.RRect,
                     radius: Radius.circular(12),
@@ -1095,8 +1091,7 @@ class _JobApplyState extends State<JobApply> {
                                                   100,
                                               child: Text(
                                                 'File types: pdf, .doc, .docx  Max file size: 5MB',
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 style: TextStyle(
                                                     color: Color(0xff7D7C7C),
@@ -1138,8 +1133,7 @@ class _JobApplyState extends State<JobApply> {
                                                   0.25,
                                               height: 5,
                                               decoration: BoxDecoration(
-                                                color: Colors
-                                                    .black, // Adjust color
+                                                color: Colors.black,
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),

@@ -206,9 +206,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? Color(0xff333333)
                                 : Color(0xffBA1A1A))),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   TextField(
                     obscureText: old_passwordHide,
                     controller: old_passwordController,
@@ -266,6 +264,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                     },
                   ),
+                  SizedBox(height: 4),
                   if (!_isOldPasswordValid)
                     Padding(
                       padding: EdgeInsets.only(
@@ -295,9 +294,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? Color(0xff333333)
                                 : Color(0xffBA1A1A))),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   TextField(
                     obscureText: new_passwordHide,
                     controller: new_passwordController,
@@ -355,6 +352,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                     },
                   ),
+                  SizedBox(height: 4),
                   if (!_isNewPasswordValid)
                     Padding(
                       padding: EdgeInsets.only(
@@ -384,9 +382,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? Color(0xff333333)
                                 : Color(0xffBA1A1A))),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   TextField(
                     obscureText: confirm_passwordHide,
                     controller: confirm_passwordController,
@@ -444,6 +440,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       });
                     },
                   ),
+                  SizedBox(height: 4),
                   if (!_isConfirmPasswordValid)
                     Padding(
                       padding: EdgeInsets.only(

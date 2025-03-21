@@ -170,9 +170,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                           style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
@@ -244,9 +242,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                           style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 7),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(

@@ -96,11 +96,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           );
 
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ForgotPasswordOTPScreen(
-                        email: emailController.text,
-                      )));
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  ForgotPasswordOTPScreen(email: emailController.text),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
         } else {
           // Fluttertoast.showToast(
           //     msg: statusMessage,
@@ -244,9 +247,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     : Color(0xffBA1A1A)),
                           ),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        SizedBox(height: 7),
                         TextField(
                           controller: emailController,
                           cursorColor: Color(0xff004C99),
@@ -299,6 +300,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             });
                           },
                         ),
+                        SizedBox(height: 4),
                         if (!_isEmailValid)
                           Padding(
                             padding: EdgeInsets.only(

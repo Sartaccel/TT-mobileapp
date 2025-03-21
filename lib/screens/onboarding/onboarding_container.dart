@@ -70,6 +70,15 @@ class _OnboardingContainerState extends State<OnboardingContainer> {
                 onTap: () {
                   Navigator.push(
                       context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            LoginScreen(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                  Navigator.push(
+                      context,
                       MaterialPageRoute(
                           builder: (BuildContext context) => LoginScreen()));
                 },

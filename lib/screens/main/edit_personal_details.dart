@@ -27,10 +27,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   bool isStartDateValid = true;
   bool _startDateSelected = false;
   String emailErrorMessage = '';
-   String mobileErrorMessage = '';
-   
-
-
+  String mobileErrorMessage = '';
 
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
@@ -520,584 +517,662 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 40,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        body: Column(children: [
+      Container(
+        width: MediaQuery.of(context).size.width,
+        height: 40,
+        decoration: BoxDecoration(color: Color(0xff001B3E)),
+      ),
+      Container(
+        width: MediaQuery.of(context).size.width,
+        height: 60,
+        decoration: BoxDecoration(color: Color(0xff001B3E)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                              'Back',
-                              style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 16,
-                                  color: Colors.white),
-                            ))))
-                  ],
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                SizedBox(
-                  width: 40,
-                )
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                        height: 50,
+                        child: Center(
+                            child: Text(
+                          'Back',
+                          style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontSize: 16,
+                              color: Colors.white),
+                        ))))
               ],
             ),
-          ),
-          Expanded(
-              child: SingleChildScrollView(
-                  child: Container(
-            color: Color(0xffFCFCFC),
-            padding: EdgeInsets.all(15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text('First Name',
-                      style: TextStyle(fontSize: 13, fontFamily: 'Lato')),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    controller: fNameController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
-                    decoration: InputDecoration(
-                        hintText: 'Enter your first name',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isFirstNameValid
-                                  ? Color(0xffd9d9d9)
-                                  : Colors.red, // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isFirstNameValid
-                                  ? Color(0xff004C99)
-                                  : Colors.red, // Border color when focused
-                              width: 1),
-                        ),
-                        errorText: _isFirstNameValid
-                            ? null
-                            : 'First name cannot be empty', // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.text,
-                   
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isFirstNameValid = true;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text(
-                    'Last Name',
-                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(
-                          r'[a-zA-Z\s]')), // Allow only letters and spaces
-                    ],
-                    controller: lNameController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
-                    decoration: InputDecoration(
-                        hintText: 'Enter your last name',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isLastNameValid
-                                  ? Color(0xffd9d9d9)
-                                  : Colors.red, // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isLastNameValid
-                                  ? Color(0xff004C99)
-                                  : Colors.red, // Border color when focused
-                              width: 1),
-                        ),
-                        errorText: _isLastNameValid
-                            ? null
-                            : 'Last name cannot be empty', // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isLastNameValid = true;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text(
-                    'Email',
-                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: (MediaQuery.of(context).size.width) - 100,
-                      child: TextField(
-                        controller: emailController,
-                        cursorColor: Color(0xff004C99),
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Lato',
-                            color: Color(0xff545454)),
-                        decoration: InputDecoration(
-                            hintText: 'Enter your email',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                  color: _isEmailValid
-                                      ? Color(0xffd9d9d9)
-                                      : Colors.red, // Default border color
-                                  width: 1),
-                            ),
-                            suffixIcon: SvgPicture.asset(
-                                candidateProfileModel!.isEmailVerified == 1
-                                    ? 'assets/images/verified_ic.svg'
-                                    : 'assets/images/pending_ic.svg'),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(
-                                  color: _isEmailValid
-                                      ? Color(0xff004C99)
-                                      : Colors.red, // Border color when focused
-                                  width: 1),
-                            ),
-                            errorText: _isEmailValid
-                                ? null
-                                : 'Email cannot be empty', // Display error message if invalid
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10)),
-                        keyboardType: TextInputType.emailAddress,
-                        onChanged: (value) {
-                          // Validate the email here and update _isEmailValid
-                          setState(() {
-                            _isEmailValid = true;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                        width: 60,
-                        child: InkWell(
-  onTap: () async {
-    if (emailController.text.trim().isEmpty) {
-      setState(() {
-        _isEmailValid = false;
-        emailErrorMessage = 'Email cannot be empty';
-        
-      });
-      return;
-    }
-
-    if (candidateProfileModel!.isEmailVerified != 1) {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => SendVerificationCode(
-            type: "email",
-            mobile: candidateProfileModel!.mobile,
-            email: candidateProfileModel!.email,
-          ),
+            SizedBox(
+              width: 40,
+            )
+          ],
         ),
-      );
-      fetchCandidateProfileData(
-          retrievedUserData!.profileId, retrievedUserData!.token);
-    }
-  },
-  child: Center(
-    child: Text(
-      candidateProfileModel!.isEmailVerified == 1 ? 'Verified' : 'Verify',
-      style: TextStyle(
-        fontWeight: FontWeight.w500,
-        color: Color(0xff004C99),
       ),
-    ),
-  ),
-),
-
-                            )
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text(
-                    'Mobile Number',
-                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-              
-
-
-Container(
-  width: MediaQuery.of(context).size.width - 20,
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width - 100,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Country Code Dropdown
-                Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1,
-                      color: _isMobileNumberValid ? Color(0xffd9d9d9) : Colors.red,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: EdgeInsets.all(9),
-                  child: DropdownButton(
-                    underline: Container(),
-                    value: _selectedCountryCode,
-                    items: countryOptions.map((countryCode) {
-                      return DropdownMenuItem(
-                        value: countryCode,
-                        child: Text(
-                          countryCode,
-                          style: TextStyle(fontSize: 14, fontFamily: 'Lato', color: Color(0xff545454)),
+      Expanded(
+          child: SingleChildScrollView(
+              child: Container(
+                  color: Color(0xffFCFCFC),
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 20,
                         ),
-                      );
-                    }).toList(),
-                    onChanged: (val) {
-                      setState(() {
-                        _selectedCountryCode = val;
-                      });
-                    },
-                  ),
-                ),
-
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-
-                // Mobile Number Input Field
-                Expanded(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 200,
-                    child: TextField(
-                      maxLength: getValidLengthForCountry(_selectedCountryCode!),
-                      controller: mobileController,
-                      cursorColor: Color(0xff004C99),
-                      style: TextStyle(fontSize: 14, fontFamily: 'Lato', color: Color(0xff545454)),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        hintText: 'Enter mobile number',
-                        suffixIcon: SvgPicture.asset(
-                          candidateProfileModel!.isPhoneVerified == 1
-                              ? 'assets/images/verified_ic.svg'
-                              : 'assets/images/pending_ic.svg',
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.015,
+                          ),
+                          child: Text('First Name',
+                              style:
+                                  TextStyle(fontSize: 13, fontFamily: 'Lato')),
                         ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: _isMobileNumberValid ? Color(0xffd9d9d9) : Colors.red,
-                            width: 1,
+                        SizedBox(height: 7),
+                        Container(
+                          width: (MediaQuery.of(context).size.width) - 20,
+                          child: TextField(
+                            controller: fNameController,
+                            cursorColor: Color(0xff004C99),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Lato',
+                                color: Color(0xff545454)),
+                            decoration: InputDecoration(
+                                hintText: 'Enter your first name',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      color: _isFirstNameValid
+                                          ? Color(0xffd9d9d9)
+                                          : Colors.red, // Default border color
+                                      width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      color: _isFirstNameValid
+                                          ? Color(0xff004C99)
+                                          : Colors
+                                              .red, // Border color when focused
+                                      width: 1),
+                                ),
+                                errorText: _isFirstNameValid
+                                    ? null
+                                    : 'First name cannot be empty', // Display error message if invalid
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10)),
+                            keyboardType: TextInputType.text,
+                            onChanged: (value) {
+                              // Validate the email here and update _isEmailValid
+                              setState(() {
+                                _isFirstNameValid = true;
+                              });
+                            },
                           ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: _isMobileNumberValid ? Color(0xff004C99) : Colors.red,
-                            width: 1,
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.015,
+                          ),
+                          child: Text(
+                            'Last Name',
+                            style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                           ),
                         ),
-                        errorText: _isMobileNumberValid ? null : mobileErrorMessage, // Show error message
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      ),
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
-                      onChanged: (value) {
-                        setState(() {
-                          _isMobileNumberValid = value.trim().isNotEmpty;
-                        });
-                      },
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-
-          // "Verify" Button
-          SizedBox(
-            width: 60,
-            child: Center(
-              child: InkWell(
-                onTap: () async {
-                  if (mobileController.text.trim().isEmpty) {
-                    setState(() {
-                      _isMobileNumberValid = false;
-                      mobileErrorMessage = 'Mobile number cannot be empty';
-                    });
-                    return;
-                  }
-
-                  if (candidateProfileModel!.isPhoneVerified != 1) {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => SendVerificationCode(
-                          type: "phone",
-                          mobile: candidateProfileModel!.mobile,
-                          email: candidateProfileModel!.email,
+                        SizedBox(height: 7),
+                        Container(
+                          width: (MediaQuery.of(context).size.width) - 20,
+                          child: TextField(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(
+                                  r'[a-zA-Z\s]')), // Allow only letters and spaces
+                            ],
+                            controller: lNameController,
+                            cursorColor: Color(0xff004C99),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Lato',
+                                color: Color(0xff545454)),
+                            decoration: InputDecoration(
+                                hintText: 'Enter your last name',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      color: _isLastNameValid
+                                          ? Color(0xffd9d9d9)
+                                          : Colors.red, // Default border color
+                                      width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      color: _isLastNameValid
+                                          ? Color(0xff004C99)
+                                          : Colors
+                                              .red, // Border color when focused
+                                      width: 1),
+                                ),
+                                errorText: _isLastNameValid
+                                    ? null
+                                    : 'Last name cannot be empty', // Display error message if invalid
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10)),
+                            keyboardType: TextInputType.text,
+                            onChanged: (value) {
+                              // Validate the email here and update _isEmailValid
+                              setState(() {
+                                _isLastNameValid = true;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                    fetchCandidateProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
-                  }
-                },
-                child: Text(
-                  candidateProfileModel!.isPhoneVerified == 1 ? 'Verified' : 'Verify',
-                  style: TextStyle(fontWeight: FontWeight.w500, color: Color(0xff004C99)),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-
-      
-
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text(
-                    'Location',
-                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    controller: locationController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
-                    decoration: InputDecoration(
-                        hintText: 'Enter your Location',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isLocationValid
-                                  ? Color(0xffd9d9d9)
-                                  : Colors.red, // Default border color
-                              width: 1),
+                        SizedBox(
+                          height: 20,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isLocationValid
-                                  ? Color(0xff004C99)
-                                  : Colors.red, // Border color when focused
-                              width: 1),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.015,
+                          ),
+                          child: Text(
+                            'Email',
+                            style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                          ),
                         ),
-                        errorText: _isLocationValid
-                            ? null
-                            : 'Location cannot be empty', // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z0-9\s]')),
-                    ],
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isLocationValid = true;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text(
-                    'Date of Birth',
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    child: TextField(
-                      controller: _startDateController,
-                      cursorColor: Color(0xff004C99),
-                      style: TextStyle(fontSize: 14, color: Color(0xff545454)),
-                      decoration: InputDecoration(
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.all(7),
-                            child: SvgPicture.asset(
-                              'assets/icon/Calendar.svg',
-                              width: 24,
-                              height: 24,
+                        SizedBox(height: 7),
+                        Row(
+                          children: [
+                            Container(
+                              width: (MediaQuery.of(context).size.width) - 100,
+                              child: TextField(
+                                controller: emailController,
+                                cursorColor: Color(0xff004C99),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff545454)),
+                                decoration: InputDecoration(
+                                    hintText: 'Enter your email',
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                          color: _isEmailValid
+                                              ? Color(0xffd9d9d9)
+                                              : Colors
+                                                  .red, // Default border color
+                                          width: 1),
+                                    ),
+                                    suffixIcon: SvgPicture.asset(
+                                        candidateProfileModel!
+                                                    .isEmailVerified ==
+                                                1
+                                            ? 'assets/images/verified_ic.svg'
+                                            : 'assets/images/pending_ic.svg'),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                          color: _isEmailValid
+                                              ? Color(0xff004C99)
+                                              : Colors
+                                                  .red, // Border color when focused
+                                          width: 1),
+                                    ),
+                                    errorText: _isEmailValid
+                                        ? null
+                                        : 'Email cannot be empty', // Display error message if invalid
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10)),
+                                keyboardType: TextInputType.emailAddress,
+                                onChanged: (value) {
+                                  // Validate the email here and update _isEmailValid
+                                  setState(() {
+                                    _isEmailValid = true;
+                                  });
+                                },
+                              ),
                             ),
+                            SizedBox(
+                              width: 60,
+                              child: InkWell(
+                                onTap: () async {
+                                  if (emailController.text.trim().isEmpty) {
+                                    setState(() {
+                                      _isEmailValid = false;
+                                      emailErrorMessage =
+                                          'Email cannot be empty';
+                                    });
+                                    return;
+                                  }
+
+                                  if (candidateProfileModel!.isEmailVerified !=
+                                      1) {
+                                    await Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                                secondaryAnimation) =>
+                                            SendVerificationCode(
+                                          type: "email",
+                                          mobile: candidateProfileModel!.mobile,
+                                          email: candidateProfileModel!.email,
+                                        ),
+                                        transitionDuration: Duration.zero,
+                                        reverseTransitionDuration:
+                                            Duration.zero,
+                                      ),
+                                    );
+
+                                    fetchCandidateProfileData(
+                                        retrievedUserData!.profileId,
+                                        retrievedUserData!.token);
+                                  }
+                                },
+                                child: Center(
+                                  child: Text(
+                                    candidateProfileModel!.isEmailVerified == 1
+                                        ? 'Verified'
+                                        : 'Verify',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xff004C99),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.015,
                           ),
-                          hintText: 'Date of Birth',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                                color: isStartDateValid
-                                    ? Color(0xffd9d9d9)
-                                    : Colors.red, // Default border color
-                                width: 1),
+                          child: Text(
+                            'Mobile Number',
+                            style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                                color: isStartDateValid
-                                    ? Color(0xff004C99)
-                                    : Colors.red, // Border color when focused
-                                width: 1),
-                          ),
-                          errorText: isStartDateValid
-                              ? null
-                              : startDateErrorMsg, // Display error message if invalid
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10)),
-                      readOnly: true,
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate:
-                                DateTime.now().subtract(Duration(days: 1)),
-                            firstDate: DateTime(1970),
-                            //lastDate: DateTime(2101),
-                            lastDate:
-                                DateTime.now().subtract(Duration(days: 1)),
-                            initialDatePickerMode: DatePickerMode.year);
-                        if (pickedDate != null) {
-                          setState(() {
-                            isStartDateValid = true;
-                            _startDateSelected = true;
-                            //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                            // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                            _startDateController.text =
-                                "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                /*SizedBox(height: 20,),
+                        ),
+                        SizedBox(height: 7),
+                        Container(
+                          width: MediaQuery.of(context).size.width - 20,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width - 100,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Country Code Dropdown
+                                        Container(
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              width: 1,
+                                              color: _isMobileNumberValid
+                                                  ? Color(0xffd9d9d9)
+                                                  : Colors.red,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          padding: EdgeInsets.all(9),
+                                          child: DropdownButton(
+                                            underline: Container(),
+                                            value: _selectedCountryCode,
+                                            items: countryOptions
+                                                .map((countryCode) {
+                                              return DropdownMenuItem(
+                                                value: countryCode,
+                                                child: Text(
+                                                  countryCode,
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'Lato',
+                                                      color: Color(0xff545454)),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (val) {
+                                              setState(() {
+                                                _selectedCountryCode = val;
+                                              });
+                                            },
+                                          ),
+                                        ),
+
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.01),
+
+                                        // Mobile Number Input Field
+                                        Expanded(
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                200,
+                                            child: TextField(
+                                              maxLength:
+                                                  getValidLengthForCountry(
+                                                      _selectedCountryCode!),
+                                              controller: mobileController,
+                                              cursorColor: Color(0xff004C99),
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: 'Lato',
+                                                  color: Color(0xff545454)),
+                                              decoration: InputDecoration(
+                                                counterText: '',
+                                                hintText: 'Enter mobile number',
+                                                suffixIcon: SvgPicture.asset(
+                                                  candidateProfileModel!
+                                                              .isPhoneVerified ==
+                                                          1
+                                                      ? 'assets/images/verified_ic.svg'
+                                                      : 'assets/images/pending_ic.svg',
+                                                ),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  borderSide: BorderSide(
+                                                    color: _isMobileNumberValid
+                                                        ? Color(0xffd9d9d9)
+                                                        : Colors.red,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  borderSide: BorderSide(
+                                                    color: _isMobileNumberValid
+                                                        ? Color(0xff004C99)
+                                                        : Colors.red,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                errorText: _isMobileNumberValid
+                                                    ? null
+                                                    : mobileErrorMessage, // Show error message
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 10),
+                                              ),
+                                              keyboardType: TextInputType.phone,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .allow(RegExp(r'[0-9]'))
+                                              ],
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _isMobileNumberValid =
+                                                      value.trim().isNotEmpty;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+
+                                  // "Verify" Button
+                                  SizedBox(
+                                    width: 60,
+                                    child: Center(
+                                      child: InkWell(
+                                        onTap: () async {
+                                          if (mobileController.text
+                                              .trim()
+                                              .isEmpty) {
+                                            setState(() {
+                                              _isMobileNumberValid = false;
+                                              mobileErrorMessage =
+                                                  'Mobile number cannot be empty';
+                                            });
+                                            return;
+                                          }
+
+                                          if (candidateProfileModel!
+                                                  .isPhoneVerified !=
+                                              1) {
+                                            await Navigator.push(
+                                              context,
+                                              PageRouteBuilder(
+                                                pageBuilder: (context,
+                                                        animation,
+                                                        secondaryAnimation) =>
+                                                    SendVerificationCode(
+                                                  type: "phone",
+                                                  mobile: candidateProfileModel!
+                                                      .mobile,
+                                                  email: candidateProfileModel!
+                                                      .email,
+                                                ),
+                                                transitionDuration:
+                                                    Duration.zero,
+                                                reverseTransitionDuration:
+                                                    Duration.zero,
+                                              ),
+                                            );
+
+                                            fetchCandidateProfileData(
+                                                retrievedUserData!.profileId,
+                                                retrievedUserData!.token);
+                                          }
+                                        },
+                                        child: Text(
+                                          candidateProfileModel!
+                                                      .isPhoneVerified ==
+                                                  1
+                                              ? 'Verified'
+                                              : 'Verify',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xff004C99)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.015,
+                                ),
+                                child: Text(
+                                  'Location',
+                                  style: TextStyle(
+                                      fontSize: 13, fontFamily: 'Lato'),
+                                ),
+                              ),
+                              SizedBox(height: 7),
+                              Container(
+                                width: (MediaQuery.of(context).size.width) - 20,
+                                child: TextField(
+                                  controller: locationController,
+                                  cursorColor: Color(0xff004C99),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff545454)),
+                                  decoration: InputDecoration(
+                                      hintText: 'Enter your Location',
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isLocationValid
+                                                ? Color(0xffd9d9d9)
+                                                : Colors
+                                                    .red, // Default border color
+                                            width: 1),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isLocationValid
+                                                ? Color(0xff004C99)
+                                                : Colors
+                                                    .red, // Border color when focused
+                                            width: 1),
+                                      ),
+                                      errorText: _isLocationValid
+                                          ? null
+                                          : 'Location cannot be empty', // Display error message if invalid
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10)),
+                                  keyboardType: TextInputType.text,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[a-zA-Z0-9\s]')),
+                                  ],
+                                  onChanged: (value) {
+                                    // Validate the email here and update _isEmailValid
+                                    setState(() {
+                                      _isLocationValid = true;
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.015,
+                                ),
+                                child: Text(
+                                  'Date of Birth',
+                                  style: TextStyle(
+                                      fontSize: 14, fontFamily: 'Lato'),
+                                ),
+                              ),
+                              SizedBox(height: 7),
+                              Container(
+                                width: (MediaQuery.of(context).size.width) - 20,
+                                alignment: Alignment.center,
+                                child: SizedBox(
+                                  child: TextField(
+                                    controller: _startDateController,
+                                    cursorColor: Color(0xff004C99),
+                                    style: TextStyle(
+                                        fontSize: 14, color: Color(0xff545454)),
+                                    decoration: InputDecoration(
+                                        suffixIcon: Padding(
+                                          padding: const EdgeInsets.all(7),
+                                          child: SvgPicture.asset(
+                                            'assets/icon/Calendar.svg',
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                        ),
+                                        hintText: 'Date of Birth',
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          borderSide: BorderSide(
+                                              color: isStartDateValid
+                                                  ? Color(0xffd9d9d9)
+                                                  : Colors
+                                                      .red, // Default border color
+                                              width: 1),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          borderSide: BorderSide(
+                                              color: isStartDateValid
+                                                  ? Color(0xff004C99)
+                                                  : Colors
+                                                      .red, // Border color when focused
+                                              width: 1),
+                                        ),
+                                        errorText: isStartDateValid
+                                            ? null
+                                            : startDateErrorMsg, // Display error message if invalid
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10)),
+                                    readOnly: true,
+                                    onTap: () async {
+                                      DateTime? pickedDate =
+                                          await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now()
+                                                  .subtract(Duration(days: 1)),
+                                              firstDate: DateTime(1970),
+                                              //lastDate: DateTime(2101),
+                                              lastDate: DateTime.now()
+                                                  .subtract(Duration(days: 1)),
+                                              initialDatePickerMode:
+                                                  DatePickerMode.year);
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          isStartDateValid = true;
+                                          _startDateSelected = true;
+                                          //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                          // _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                                          _startDateController.text =
+                                              "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                              /*SizedBox(height: 20,),
                 Text('Date of Birth', style: TextStyle(fontSize: 13, fontFamily: 'Lato'),),
                 SizedBox(height: 10,),
                 Container(
@@ -1135,268 +1210,286 @@ Container(
                   ),
                 ),*/
 
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text(
-                    'Current Position',
-                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    controller: currentPositionController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
-                    decoration: InputDecoration(
-                        hintText: 'Enter your position',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isPositionValid
-                                  ? Color(0xffd9d9d9)
-                                  : Colors.red, // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isPositionValid
-                                  ? Color(0xff004C99)
-                                  : Colors.red, // Border color when focused
-                              width: 1),
-                        ),
-                        errorText: _isPositionValid
-                            ? null
-                            : 'Position cannot be empty', // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-zA-Z0-9\s]')),
-                    ],
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isPositionValid = true;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.015,
-                  ),
-                  child: Text(
-                    'Total Experience in years',
-                    style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: (MediaQuery.of(context).size.width) - 20,
-                  child: TextField(
-                    controller: experienceController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff545454)),
-                    decoration: InputDecoration(
-                        hintText: 'Experience',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isExperienceValid
-                                  ? Color(0xffd9d9d9)
-                                  : Colors.red, // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isExperienceValid
-                                  ? Color(0xff004C99)
-                                  : Colors.red, // Border color when focused
-                              width: 1),
-                        ),
-                        errorText: _isExperienceValid
-                            ? null
-                            : 'Experience cannot be empty', // Display error message if invalid
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                    ],
-                    onChanged: (value) {
-                      // Validate the email here and update _isEmailValid
-                      setState(() {
-                        _isExperienceValid = true;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                InkWell(
-                  onTap: () {
-                    int validLength =
-                        getValidLengthForCountry(_selectedCountryCode!);
-                    if (fNameController.text.isEmpty ||
-                        lNameController.text.isEmpty ||
-                        emailController.text.isEmpty ||
-                        mobileController.text.isEmpty ||
-                        mobileController.text.length < validLength ||
-                        mobileController.text.length > validLength ||
-                        locationController.text.isEmpty ||
-                        currentPositionController.text.isEmpty ||
-                        experienceController.text.isEmpty ||
-                        _startDateController.text.isEmpty) {
-                      if (fNameController.text.isEmpty) {
-                        setState(() {
-                          _isFirstNameValid = false;
-                        });
-                      }
-
-                      if (_startDateController.text.isEmpty) {
-                        setState(() {
-                          isStartDateValid = false;
-                        });
-                      }
-
-                      if (lNameController.text.isEmpty) {
-                        setState(() {
-                          _isLastNameValid = false;
-                        });
-                      }
-
-                      if (emailController.text.isEmpty) {
-                        setState(() {
-                          _isEmailValid = false;
-                        });
-                      }
-
-                      if (locationController.text.isEmpty) {
-                        setState(() {
-                          _isLocationValid = false;
-                        });
-                      }
-
-                      if (mobileController.text.isEmpty ||
-                          mobileController.text.length < validLength ||
-                          mobileController.text.length > validLength) {
-                        setState(() {
-                          _isMobileNumberValid = false;
-                          mobileErrorMsg =
-                              'Enter a valid $validLength digits mobile number';
-                        });
-                      }
-
-                      if (currentPositionController.text.isEmpty) {
-                        setState(() {
-                          _isPositionValid = false;
-                        });
-                      }
-
-                      if (experienceController.text.isEmpty) {
-                        setState(() {
-                          _isExperienceValid = false;
-                        });
-                      }
-                    } else {
-                      if (kDebugMode) {
-                        print('Processing........');
-                      }
-
-                      // Call your updateProfile function
-                      updateProfile().then((_) {
-                        // On successful profile update, navigate back to the previous screen
-                        Navigator.pop(context);
-                      }).catchError((error) {
-                        // Handle any errors that occur during the update
-                        print('Error updating profile: $error');
-                      });
-                    }
-                  },
-                  child: Container(
-                    width: (MediaQuery.of(context).size.width) - 20,
-                    height: 44,
-                    margin: EdgeInsets.symmetric(horizontal: 0),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: isLoading
-                          ? SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: TweenAnimationBuilder<double>(
-                                tween: Tween<double>(begin: 0, end: 5),
-                                duration: Duration(seconds: 2),
-                                curve: Curves.linear,
-                                builder: (context, value, child) {
-                                  return Transform.rotate(
-                                    angle: value *
-                                        2 *
-                                        3.1416, // Full rotation effect
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 4,
-                                      value: 0.20, // 1/5 of the circle
-                                      backgroundColor: const Color.fromARGB(
-                                          142, 234, 232, 232), // Grey stroke
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors
-                                              .white), // White rotating stroke
-                                    ),
-                                  );
-                                },
-                                onEnd: () =>
-                                    {}, // Ensures smooth infinite animation
+                              SizedBox(
+                                height: 20,
                               ),
-                            )
-                          : Text(
-                              'Save',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-)
-              ]
-          )
-          )
-              )
-      ),
-        ]
-      )
-    );
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.015,
+                                ),
+                                child: Text(
+                                  'Current Position',
+                                  style: TextStyle(
+                                      fontSize: 13, fontFamily: 'Lato'),
+                                ),
+                              ),
+                              SizedBox(height: 7),
+                              Container(
+                                width: (MediaQuery.of(context).size.width) - 20,
+                                child: TextField(
+                                  controller: currentPositionController,
+                                  cursorColor: Color(0xff004C99),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff545454)),
+                                  decoration: InputDecoration(
+                                      hintText: 'Enter your position',
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isPositionValid
+                                                ? Color(0xffd9d9d9)
+                                                : Colors
+                                                    .red, // Default border color
+                                            width: 1),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isPositionValid
+                                                ? Color(0xff004C99)
+                                                : Colors
+                                                    .red, // Border color when focused
+                                            width: 1),
+                                      ),
+                                      errorText: _isPositionValid
+                                          ? null
+                                          : 'Position cannot be empty', // Display error message if invalid
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10)),
+                                  keyboardType: TextInputType.text,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[a-zA-Z0-9\s]')),
+                                  ],
+                                  onChanged: (value) {
+                                    // Validate the email here and update _isEmailValid
+                                    setState(() {
+                                      _isPositionValid = true;
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.015,
+                                ),
+                                child: Text(
+                                  'Total Experience in years',
+                                  style: TextStyle(
+                                      fontSize: 13, fontFamily: 'Lato'),
+                                ),
+                              ),
+                              SizedBox(height: 7),
+                              Container(
+                                width: (MediaQuery.of(context).size.width) - 20,
+                                child: TextField(
+                                  controller: experienceController,
+                                  cursorColor: Color(0xff004C99),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff545454)),
+                                  decoration: InputDecoration(
+                                      hintText: 'Experience',
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isExperienceValid
+                                                ? Color(0xffd9d9d9)
+                                                : Colors
+                                                    .red, // Default border color
+                                            width: 1),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isExperienceValid
+                                                ? Color(0xff004C99)
+                                                : Colors
+                                                    .red, // Border color when focused
+                                            width: 1),
+                                      ),
+                                      errorText: _isExperienceValid
+                                          ? null
+                                          : 'Experience cannot be empty', // Display error message if invalid
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10)),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9.]')),
+                                  ],
+                                  onChanged: (value) {
+                                    // Validate the email here and update _isEmailValid
+                                    setState(() {
+                                      _isExperienceValid = true;
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  int validLength = getValidLengthForCountry(
+                                      _selectedCountryCode!);
+                                  if (fNameController.text.isEmpty ||
+                                      lNameController.text.isEmpty ||
+                                      emailController.text.isEmpty ||
+                                      mobileController.text.isEmpty ||
+                                      mobileController.text.length <
+                                          validLength ||
+                                      mobileController.text.length >
+                                          validLength ||
+                                      locationController.text.isEmpty ||
+                                      currentPositionController.text.isEmpty ||
+                                      experienceController.text.isEmpty ||
+                                      _startDateController.text.isEmpty) {
+                                    if (fNameController.text.isEmpty) {
+                                      setState(() {
+                                        _isFirstNameValid = false;
+                                      });
+                                    }
+
+                                    if (_startDateController.text.isEmpty) {
+                                      setState(() {
+                                        isStartDateValid = false;
+                                      });
+                                    }
+
+                                    if (lNameController.text.isEmpty) {
+                                      setState(() {
+                                        _isLastNameValid = false;
+                                      });
+                                    }
+
+                                    if (emailController.text.isEmpty) {
+                                      setState(() {
+                                        _isEmailValid = false;
+                                      });
+                                    }
+
+                                    if (locationController.text.isEmpty) {
+                                      setState(() {
+                                        _isLocationValid = false;
+                                      });
+                                    }
+
+                                    if (mobileController.text.isEmpty ||
+                                        mobileController.text.length <
+                                            validLength ||
+                                        mobileController.text.length >
+                                            validLength) {
+                                      setState(() {
+                                        _isMobileNumberValid = false;
+                                        mobileErrorMsg =
+                                            'Enter a valid $validLength digits mobile number';
+                                      });
+                                    }
+
+                                    if (currentPositionController
+                                        .text.isEmpty) {
+                                      setState(() {
+                                        _isPositionValid = false;
+                                      });
+                                    }
+
+                                    if (experienceController.text.isEmpty) {
+                                      setState(() {
+                                        _isExperienceValid = false;
+                                      });
+                                    }
+                                  } else {
+                                    if (kDebugMode) {
+                                      print('Processing........');
+                                    }
+
+                                    // Call your updateProfile function
+                                    updateProfile().then((_) {
+                                      // On successful profile update, navigate back to the previous screen
+                                      Navigator.pop(context);
+                                    }).catchError((error) {
+                                      // Handle any errors that occur during the update
+                                      print('Error updating profile: $error');
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  width:
+                                      (MediaQuery.of(context).size.width) - 20,
+                                  height: 44,
+                                  margin: EdgeInsets.symmetric(horizontal: 0),
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Center(
+                                    child: isLoading
+                                        ? SizedBox(
+                                            height: 24,
+                                            width: 24,
+                                            child:
+                                                TweenAnimationBuilder<double>(
+                                              tween: Tween<double>(
+                                                  begin: 0, end: 5),
+                                              duration: Duration(seconds: 2),
+                                              curve: Curves.linear,
+                                              builder: (context, value, child) {
+                                                return Transform.rotate(
+                                                  angle: value *
+                                                      2 *
+                                                      3.1416, // Full rotation effect
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 4,
+                                                    value:
+                                                        0.20, // 1/5 of the circle
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            142,
+                                                            234,
+                                                            232,
+                                                            232), // Grey stroke
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Colors
+                                                                .white), // White rotating stroke
+                                                  ),
+                                                );
+                                              },
+                                              onEnd: () =>
+                                                  {}, // Ensures smooth infinite animation
+                                            ),
+                                          )
+                                        : Text(
+                                            'Save',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ])))),
+    ]));
   }
 
   void initState() {

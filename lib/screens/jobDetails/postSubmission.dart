@@ -412,17 +412,22 @@ class _PostJobApplicationSubmissionState
                                               await Navigator
                                                   .pushAndRemoveUntil(
                                                 context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Jobdetails(
-                                                          jobData:
-                                                              jobList[index],
-                                                          isFromSaved: false,
-                                                        )),
-                                                (Route<dynamic> route) => route
-                                                    .isFirst, // This will keep Screen 1
+                                                PageRouteBuilder(
+                                                  pageBuilder: (context,
+                                                          animation,
+                                                          secondaryAnimation) =>
+                                                      Jobdetails(
+                                                    jobData: jobList[index],
+                                                    isFromSaved: false,
+                                                  ),
+                                                  transitionDuration:
+                                                      Duration.zero,
+                                                  reverseTransitionDuration:
+                                                      Duration.zero,
+                                                ),
+                                                (Route<dynamic> route) =>
+                                                    route.isFirst,
                                               );
-
                                               fetchAllJobs();
                                             },
                                             child: Row(
@@ -687,7 +692,7 @@ class _PostJobApplicationSubmissionState
                                         jobList[index]['id'],
                                         (jobList[index]['isSaved'] ?? 0) == 1 ? 0 : 1
                                     );*/
-                                                      },
+                                              },
                                               child: Icon(
                                                 (jobList[index]['isFavorite'] ??
                                                             "0") ==
@@ -766,10 +771,10 @@ class _PostJobApplicationSubmissionState
                             ],
                           ),
                         ))
-                       ],
-                       ),
-                       );
-                        }
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {

@@ -121,124 +121,120 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
     ));
     return isLoading
         ? Shimmer.fromColors(
-          baseColor: Color(0xffE6E6E6),
-          highlightColor: Color(0xffF2F2F2),
-          child: ListView.builder(
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 1,
-                            color: Color(0xffE6E6E6),
+            baseColor: Color(0xffE6E6E6),
+            highlightColor: Color(0xffF2F2F2),
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              color: Color(0xffE6E6E6),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.11,
-                          height: MediaQuery.of(context).size.width * 0.11,
-                          decoration: BoxDecoration(
-                            color: Color(0xffE6E6E6),
-                            shape: BoxShape.circle,
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.11,
+                            height: MediaQuery.of(context).size.width * 0.11,
+                            decoration: BoxDecoration(
+                              color: Color(0xffE6E6E6),
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width:
-                                  MediaQuery.of(context).size.width * 0.62,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                color: Color(0xffE6E6E6),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              width:
-                                  MediaQuery.of(context).size.width * 0.45,
-                              height: 15,
-                              decoration: BoxDecoration(
-                                color: Color(0xffE6E6E6),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              width:
-                                  MediaQuery.of(context).size.width * 0.70,
-                              height: 15,
-                              decoration: BoxDecoration(
-                                color: Color(0xffE6E6E6),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.33,
-                                  height: 15,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffE6E6E6),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.62,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                SizedBox(width: 10),
-                                Container(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.33,
-                                  height: 15,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffE6E6E6),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              width:
-                                  MediaQuery.of(context).size.width * 0.27,
-                              height: 15,
-                              decoration: BoxDecoration(
-                                color: Color(0xffE6E6E6),
-                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ),
-                          ],
-                        ),
-                        Spacer(),
-                        Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: Color(0xffE6E6E6),
-                            borderRadius: BorderRadius.circular(5),
+                              SizedBox(height: 10),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.45,
+                                height: 15,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.70,
+                                height: 15,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.33,
+                                    height: 15,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.33,
+                                    height: 15,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.27,
+                                height: 15,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE6E6E6),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        )
+                          Spacer(),
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: Color(0xffE6E6E6),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          )
         : (jobList.length > 0
             ? RefreshIndicator(
                 onRefresh: getAppliedJobsList,
@@ -324,12 +320,8 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
                                         MediaQuery.of(context).size.width - 110,
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          'assets/images/ic_skills.png',
-                                          height: 14,
-                                          width: 14,
-                                          color: Colors.black,
-                                        ),
+                                        SvgPicture.asset('assets/icon/bulb.svg',
+                                            height: 14, width: 14),
                                         SizedBox(
                                           width: 5,
                                         ),
@@ -351,12 +343,10 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
                                     children: [
                                       Row(
                                         children: [
-                                          Image.asset(
-                                            'assets/images/ic_work_type.png',
-                                            height: 14,
-                                            width: 14,
-                                            color: Colors.black,
-                                          ),
+                                          SvgPicture.asset(
+                                              'assets/icon/circum_medical-case.svg',
+                                              height: 14,
+                                              width: 14),
                                           SizedBox(
                                             width: 5,
                                           ),
@@ -377,12 +367,10 @@ class _AppliedJobsFragmentState extends State<AppliedJobsFragment> {
                                         width: 150,
                                         child: Row(
                                           children: [
-                                            Image.asset(
-                                              'assets/images/ic_location.png',
-                                              height: 14,
-                                              width: 14,
-                                              color: Colors.black,
-                                            ),
+                                            SvgPicture.asset(
+                                                'assets/icon/location-black.svg',
+                                                height: 14,
+                                                width: 14),
                                             SizedBox(
                                               width: 5,
                                             ),

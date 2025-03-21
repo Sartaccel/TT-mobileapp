@@ -154,8 +154,8 @@ class _AddeducationState extends State<Addeducation> {
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
-      return;  // Exit the function if no internet
-    }
+        return; // Exit the function if no internet
+      }
       setState(() {
         isLoading = true;
       });
@@ -335,12 +335,12 @@ class _AddeducationState extends State<Addeducation> {
                           fontSize: 12,
                           fontFamily: 'Lato',
                           fontWeight: FontWeight.w500,
-                          color: Color(0xff333333)),
+                          color: isQualificationValid
+                              ? Color(0xff333333)
+                              : Color(0xffBA1A1A)),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   Container(
                     width: (MediaQuery.of(context).size.width) - 20,
                     child: TextField(
@@ -397,12 +397,12 @@ class _AddeducationState extends State<Addeducation> {
                       style: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Lato',
-                          color: Color(0xff333333)),
+                          color: isSpecializationValid
+                              ? Color(0xff333333)
+                              : Color(0xffBA1A1A)),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   Container(
                     width: (MediaQuery.of(context).size.width) - 20,
                     child: TextField(
@@ -461,12 +461,12 @@ class _AddeducationState extends State<Addeducation> {
                       style: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Lato',
-                          color: Color(0xff333333)),
+                          color: isInstituteValid
+                              ? Color(0xff333333)
+                              : Color(0xffBA1A1A)),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   Container(
                     width: (MediaQuery.of(context).size.width) - 20,
                     child: TextField(
@@ -638,12 +638,12 @@ class _AddeducationState extends State<Addeducation> {
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'Lato',
-                                    color: Color(0xff333333)),
+                                    color: isStartDateValid
+                                        ? Color(0xff333333)
+                                        : Color(0xffBA1A1A)),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 7),
                             TextField(
                               controller: _startDateController,
                               cursorColor: Color(0xff004C99),
@@ -723,12 +723,12 @@ class _AddeducationState extends State<Addeducation> {
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'Lato',
-                                    color: Color(0xff333333)),
+                                    color: isEndDateValid
+                                        ? Color(0xff333333)
+                                        : Color(0xffBA1A1A)),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 7),
                             TextField(
                               controller: _endDateController,
                               cursorColor: Color(0xff004C99),
@@ -817,12 +817,12 @@ class _AddeducationState extends State<Addeducation> {
                       style: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Lato',
-                          color: Color(0xff333333)),
+                          color: isEducationTypeValid
+                              ? Color(0xff333333)
+                              : Color(0xffBA1A1A)),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   Container(
                     height: 50,
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -916,9 +916,7 @@ class _AddeducationState extends State<Addeducation> {
                       visible: !isEducationTypeValid,
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 10,
-                          ),
+                          SizedBox(height: 4),
                           Text(
                             'Education type cannot be empty',
                             style: TextStyle(

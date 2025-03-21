@@ -463,42 +463,76 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   }
 
   Future<void> uploadPDF(File file) async {
-  Dio dio = Dio();
+    Dio dio = Dio();
 
-  String url = 'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
+    String url =
+        'https://mobileapidev.talentturbo.us/api/v1/resumeresource/uploadresume';
 
-  FormData formData = FormData.fromMap({
-    "id": retrievedUserData!.profileId.toString(),
-    "file": await MultipartFile.fromFile(
-      file.path,
-      filename: file.path.split('/').last,
-    ),
-  });
-
-  String token = retrievedUserData!.token;
-
-  try {
-    setState(() {
-      isLoading = true;
+    FormData formData = FormData.fromMap({
+      "id": retrievedUserData!.profileId.toString(),
+      "file": await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+      ),
     });
 
-    Response response = await dio.post(
-      url,
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': token, // Ensure the token is correct
-          'Content-Type': 'multipart/form-data',
-        },
-      ),
-    );
+    String token = retrievedUserData!.token;
 
-    if (response.statusCode == 200 || response.statusCode == 202) {
-      print('Upload success: ${response.statusCode}');
-      setUpdatedTimeInRTDB();
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      Response response = await dio.post(
+        url,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': token, // Ensure the token is correct
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        print('Upload success: ${response.statusCode}');
+        setUpdatedTimeInRTDB();
+
+        Fluttertoast.showToast(
+          msg: 'Successfully uploaded',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Color(0xff2D2D2D),
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+
+        fetchCandidateProfileData(retrievedUserData!.profileId, token);
+      } else if (response.statusCode == 401) {
+        // Handle Unauthorized (401)
+        print("Error: Unauthorized (401). Please log in again.");
+
+        Fluttertoast.showToast(
+          msg: 'Session expired. Please log in again.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+
+        // Redirect to login screen
+        Navigator.pushReplacementNamed(context, '/login'); // Adjust as needed
+      } else {
+        throw Exception("Unexpected status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print('Upload failed: $e');
 
       Fluttertoast.showToast(
-        msg: 'Successfully uploaded',
+        msg: 'Upload failed: ${e.toString()}',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -506,46 +540,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-
-      fetchCandidateProfileData(retrievedUserData!.profileId, token);
-    } else if (response.statusCode == 401) {
-      // Handle Unauthorized (401)
-      print("Error: Unauthorized (401). Please log in again.");
-
-      Fluttertoast.showToast(
-        msg: 'Session expired. Please log in again.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-
-      // Redirect to login screen
-      Navigator.pushReplacementNamed(context, '/login'); // Adjust as needed
-    } else {
-      throw Exception("Unexpected status code: ${response.statusCode}");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-  } catch (e) {
-    print('Upload failed: $e');
-
-    Fluttertoast.showToast(
-      msg: 'Upload failed: ${e.toString()}',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Color(0xff2D2D2D),
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
-  } finally {
-    setState(() {
-      isLoading = false;
-    });
   }
-}
-
 
   Future<void> pickAndUploadPDF() async {
     File? file = await pickPDF();
@@ -1434,11 +1434,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 onTap: () async {
                                   await Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Addemployment(
-                                        emplomentData: null,
-                                      ),
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
+                                          Addemployment(emplomentData: null),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
                                     ),
                                   );
                                   fetchProfileFromPref();
@@ -1532,14 +1533,18 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                         Navigator.pop(context);
                                                         await Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
+                                                          PageRouteBuilder(
+                                                            pageBuilder: (context,
+                                                                    animation,
+                                                                    secondaryAnimation) =>
                                                                 Addemployment(
-                                                              emplomentData:
-                                                                  workList[
-                                                                      index],
-                                                            ),
+                                                                    emplomentData:
+                                                                        workList[
+                                                                            index]),
+                                                            transitionDuration:
+                                                                Duration.zero,
+                                                            reverseTransitionDuration:
+                                                                Duration.zero,
                                                           ),
                                                         );
                                                         fetchProfileFromPref();
@@ -1617,28 +1622,26 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                               ),
                                                             ),
                                                           ),
-
                                                           SizedBox(
                                                               height: MediaQuery.of(
                                                                           context)
                                                                       .size
                                                                       .height *
-                                                                  0.005), // Responsive spacing
-
+                                                                  0.005),
                                                           if (index !=
                                                               workList.length -
-                                                                  1) // Only add line if not last item
+                                                                  1)
                                                             Container(
                                                               width: MediaQuery.of(
                                                                           context)
                                                                       .size
                                                                       .width *
-                                                                  0.007, // Responsive line thickness
+                                                                  0.007,
                                                               height: MediaQuery.of(
                                                                           context)
                                                                       .size
                                                                       .height *
-                                                                  0.1, // Adjust based on screen
+                                                                  0.1,
                                                               color: Color(
                                                                   0xff004C99),
                                                             ),
@@ -1721,8 +1724,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                     ),
                     Container(
                       padding: EdgeInsets.all(
-                          MediaQuery.of(context).size.width *
-                              0.03), // Responsive padding
+                          MediaQuery.of(context).size.width * 0.03),
                       decoration: BoxDecoration(
                         border:
                             Border.all(width: 0.3, color: Color(0xffD2D2D2)),
@@ -1749,11 +1751,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 onTap: () async {
                                   await Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Addeducation(
-                                        educationDetail: null,
-                                      ),
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
+                                          Addeducation(educationDetail: null),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
                                     ),
                                   );
                                   fetchProfileFromPref();
@@ -1859,14 +1862,18 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                         Navigator.pop(context);
                                                         await Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
+                                                          PageRouteBuilder(
+                                                            pageBuilder: (context,
+                                                                    animation,
+                                                                    secondaryAnimation) =>
                                                                 Addeducation(
-                                                              educationDetail:
-                                                                  educationList[
-                                                                      index],
-                                                            ),
+                                                                    educationDetail:
+                                                                        educationList[
+                                                                            index]),
+                                                            transitionDuration:
+                                                                Duration.zero,
+                                                            reverseTransitionDuration:
+                                                                Duration.zero,
                                                           ),
                                                         );
                                                         fetchProfileFromPref();
@@ -2102,9 +2109,13 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Adddeleteskills()),
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
+                                          Adddeleteskills(),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
+                                    ),
                                   );
                                 },
                                 child: Padding(

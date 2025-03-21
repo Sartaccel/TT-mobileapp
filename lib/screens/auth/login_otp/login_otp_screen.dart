@@ -220,7 +220,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
         //   textColor: Colors.white,
         //   fontSize: 16.0,
         // );
-       /*IconSnackBar.show(
+        /*IconSnackBar.show(
           context,
           label: 'Invalid OTP',
           snackBarType: SnackBarType.alert,
@@ -335,38 +335,39 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                   Row(
-  mainAxisSize: MainAxisSize.min,
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.all(8), // Increase touch area
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8), // Optional rounded effect
-        ),
-        child: Row(
-          children: [
-            Text(
-              '${widget.countryCode}${widget.mobileNumber}',
-              style: TextStyle(color: Color(0xff2979FF), fontSize: 14),
-            ),
-            SizedBox(width: 10),
-            SvgPicture.asset(
-              'assets/icon/OTPedit.svg',
-              width: 20,
-              height: 20,
-            ),
-          ],
-        ),
-      ),
-    ),
-  ],
-),
-
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(8), // Increase touch area
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  8), // Optional rounded effect
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '${widget.countryCode}${widget.mobileNumber}',
+                                  style: TextStyle(
+                                      color: Color(0xff2979FF), fontSize: 14),
+                                ),
+                                SizedBox(width: 10),
+                                SvgPicture.asset(
+                                  'assets/icon/OTPedit.svg',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(
                       height: 40,
                     ),
@@ -423,7 +424,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(30, 20, 0, 0),
+                                    const EdgeInsets.fromLTRB(30, 10, 0, 0),
                                 child: Text(
                                   otpErrorMsg,
                                   style: TextStyle(
@@ -497,26 +498,19 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                                     curve: Curves.linear,
                                     builder: (context, value, child) {
                                       return Transform.rotate(
-                                        angle: value *
-                                            2 *
-                                            3.1416, // Full rotation effect
+                                        angle: value * 2 * 3.1416,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 4,
-                                          value: 0.20, // 1/5 of the circle
+                                          value: 0.20,
                                           backgroundColor: const Color.fromARGB(
-                                              142,
-                                              234,
-                                              232,
-                                              232), // Grey stroke
-                                          valueColor: AlwaysStoppedAnimation<
-                                                  Color>(
-                                              Colors
-                                                  .white), // White rotating stroke
+                                              142, 234, 232, 232),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
                                         ),
                                       );
                                     },
-                                    onEnd: () =>
-                                        {}, // Ensures smooth infinite animation
+                                    onEnd: () => {},
                                   ),
                                 )
                               : Text(

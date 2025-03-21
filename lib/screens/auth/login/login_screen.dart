@@ -53,106 +53,108 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
- Future<void> emailSignIn() async {
-  final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
+  Future<void> emailSignIn() async {
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
 
-  final bodyParams = {
-    "email": emailController.text,
-    "password": passwordController.text
-  };
+    final bodyParams = {
+      "email": emailController.text,
+      "password": passwordController.text
+    };
 
-  try {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      if (mounted) { // Ensure context is still available
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-      }
-      return; // Exit the function if no internet
-    }
-
-    setState(() {
-      isLoading = true;
-    });
-
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(bodyParams),
-    );
-
-    if (kDebugMode) {
-      print('Response code ${response.statusCode} :: Response => ${response.body}');
-    }
-
-    if (response.statusCode == 200) {
-      var resOBJ = jsonDecode(response.body);
-
-      String statusMessage = resOBJ['message'];
-
-      if (!resOBJ['result']) {
-        if (statusMessage.toLowerCase().contains('exists')) {
-          setState(() {
-            _isEmailValid = false;
-            emailErrorMessage = 'User doesn\'t exist';
-          });
-        } else if (statusMessage.toLowerCase().contains('password')) {
-          setState(() {
-            _isPasswordValid = false;
-            passwordErrorMessage = 'Invalid password';
-          });
-        } else {
-          if (mounted) { // Ensure context is still available
-            IconSnackBar.show(
-              context,
-              label: statusMessage,
-              snackBarType: SnackBarType.alert,
-              backgroundColor: Color(0xffBA1A1A),
-              iconColor: Colors.white,
-            );
-          }
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectivityResult.none) {
+        if (mounted) {
+          // Ensure context is still available
+          IconSnackBar.show(
+            context,
+            label: 'No internet connection',
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xff2D2D2D),
+            iconColor: Colors.white,
+          );
         }
-      } else {
-        print(resOBJ.toString());
-
-        final Map<String, dynamic> data = resOBJ['data'];
-        UserData userData = UserData.fromJson(data);
-
-        UserCredentials credentials = UserCredentials(
-            username: emailController.text,
-            password: passwordController.text);
-        await credentials.saveCredentials();
-
-        await saveUserData(userData);
-
-        UserData? retrievedUserData = await getUserData();
-
-        if (kDebugMode) {
-          print('Saved Successfully');
-          print('User Name: ${retrievedUserData!.name}');
-        }
-
-        fetchCandidateProfileData(
-            retrievedUserData!.profileId, retrievedUserData!.token);
-        Navigator.pushReplacementNamed(context, '/home');
+        return; // Exit the function if no internet
       }
-    }
-  } catch (e) {
-    print(e.toString());
-  } finally {
-    if (mounted) {
+
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(bodyParams),
+      );
+
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
+      }
+
+      if (response.statusCode == 200) {
+        var resOBJ = jsonDecode(response.body);
+
+        String statusMessage = resOBJ['message'];
+
+        if (!resOBJ['result']) {
+          if (statusMessage.toLowerCase().contains('exists')) {
+            setState(() {
+              _isEmailValid = false;
+              emailErrorMessage = 'User doesn\'t exist';
+            });
+          } else if (statusMessage.toLowerCase().contains('password')) {
+            setState(() {
+              _isPasswordValid = false;
+              passwordErrorMessage = 'Invalid password';
+            });
+          } else {
+            if (mounted) {
+              // Ensure context is still available
+              IconSnackBar.show(
+                context,
+                label: statusMessage,
+                snackBarType: SnackBarType.alert,
+                backgroundColor: Color(0xffBA1A1A),
+                iconColor: Colors.white,
+              );
+            }
+          }
+        } else {
+          print(resOBJ.toString());
+
+          final Map<String, dynamic> data = resOBJ['data'];
+          UserData userData = UserData.fromJson(data);
+
+          UserCredentials credentials = UserCredentials(
+              username: emailController.text,
+              password: passwordController.text);
+          await credentials.saveCredentials();
+
+          await saveUserData(userData);
+
+          UserData? retrievedUserData = await getUserData();
+
+          if (kDebugMode) {
+            print('Saved Successfully');
+            print('User Name: ${retrievedUserData!.name}');
+          }
+
+          fetchCandidateProfileData(
+              retrievedUserData!.profileId, retrievedUserData!.token);
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
-}
-
 
   Future<void> socialGoogleSignin(
       String email, String fn, String ln, String mobile) async {
@@ -351,9 +353,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? Color(0xff333333)
                                   : Color(0xffBA1A1A))),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 7),
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -408,6 +408,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                           ),
+                          SizedBox(height: 4),
                           if (!_isEmailValid)
                             Padding(
                               padding: EdgeInsets.only(
@@ -439,9 +440,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? Color(0xff333333)
                                   : Color(0xffBA1A1A))),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 7),
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -506,6 +505,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                           ),
+                          SizedBox(height: 4),
                           if (!_isPasswordValid)
                             Padding(
                               padding: EdgeInsets.only(
@@ -637,24 +637,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height *
-                          0.02, // 3% of screen height
-                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
                     InkWell(
                       onTap: () {
                         Navigator.push(
-    context,
-    PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => MobileNumberLogin(),
-      transitionDuration: Duration.zero, // No transition
-      reverseTransitionDuration: Duration.zero, // No reverse transition
-    ),
-                            
-                          );
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    MobileNumberLogin(),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                          ),
+                        );
                       },
-                      
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 44,
@@ -815,10 +812,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               onTap: () {
                                 print(MediaQuery.of(context).size.width);
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            RegisterNewUser()));
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        RegisterNewUser(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                  ),
+                                );
                               },
                               child: Text(
                                 'Register for free',

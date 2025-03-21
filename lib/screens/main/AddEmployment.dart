@@ -364,12 +364,12 @@ class _AddemploymentState extends State<Addemployment> {
                                     fontSize: 12,
                                     fontFamily: 'Lato',
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xff333333)),
+                                    color: _isDesignationValid
+                                        ? Color(0xff333333)
+                                        : Color(0xffBA1A1A)),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 7),
                             Container(
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: TextField(
@@ -432,7 +432,9 @@ class _AddemploymentState extends State<Addemployment> {
                                     fontSize: 12,
                                     fontFamily: 'Lato',
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xff333333)),
+                                    color: _isCompanyNameValid
+                                        ? Color(0xff333333)
+                                        : Color(0xffBA1A1A)),
                               ),
                             ),
                             SizedBox(
@@ -616,12 +618,12 @@ class _AddemploymentState extends State<Addemployment> {
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontFamily: 'Lato',
-                                              color: Color(0xff333333)),
+                                              color: isStartDateValid
+                                                  ? Color(0xff333333)
+                                                  : Color(0xffBA1A1A)),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
+                                      SizedBox(height: 7),
                                       TextField(
                                         controller: _startDateController,
                                         style: TextStyle(
@@ -717,12 +719,12 @@ class _AddemploymentState extends State<Addemployment> {
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontFamily: 'Lato',
-                                              color: Color(0xff333333)),
+                                              color: isEndDateValid
+                                                  ? Color(0xff333333)
+                                                  : Color(0xffBA1A1A)),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
+                                      SizedBox(height: 7),
                                       TextField(
                                         controller: _endDateController,
                                         style: TextStyle(
@@ -830,12 +832,12 @@ class _AddemploymentState extends State<Addemployment> {
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'Lato',
-                                    color: Color(0xff333333)),
+                                    color: isWorkTypeValid
+                                        ? Color(0xff333333)
+                                        : Color(0xffBA1A1A)),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 7),
                             Container(
                               height: 50,
                               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -940,12 +942,12 @@ class _AddemploymentState extends State<Addemployment> {
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'Lato',
-                                    color: Color(0xff333333)),
+                                    color: isWorkTypeValid
+                                        ? Color(0xff333333)
+                                        : Color(0xffBA1A1A)),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 7),
                             Container(
                               height: 50,
                               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -1073,12 +1075,12 @@ class _AddemploymentState extends State<Addemployment> {
                                     fontSize: 12,
                                     fontFamily: 'Lato',
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xff333333)),
+                                    color: _isDescriptionValid
+                                        ? Color(0xff333333)
+                                        : Color(0xffBA1A1A)),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
+                            SizedBox(height: 7),
                             Container(
                               width: (MediaQuery.of(context).size.width) - 20,
                               child: TextField(

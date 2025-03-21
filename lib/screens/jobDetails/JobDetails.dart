@@ -1378,7 +1378,6 @@ class _JobdetailsState extends State<Jobdetails> {
                             ],
                           ),
                         ),*/
-
                                   widget.jobData['jobDescription']
                                           .toString()
                                           .trim()
@@ -1390,6 +1389,11 @@ class _JobdetailsState extends State<Jobdetails> {
                                                   .trim() ??
                                               'No description available',
                                           style: {
+                                            "body": Style(
+                                              fontSize: FontSize(14),
+                                              textAlign: TextAlign.justify,
+                                              color: Color(0xff333333),
+                                            ),
                                             "p": Style(
                                               fontSize: FontSize(14.0),
                                               textAlign: TextAlign.justify,

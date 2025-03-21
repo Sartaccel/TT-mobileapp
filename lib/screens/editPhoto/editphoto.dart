@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -261,14 +261,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       }
 
       if (response.statusCode == 200) {
-        // Fluttertoast.showToast(
-        //     msg: 'Removed successfully',
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.BOTTOM,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Color(0xff2D2D2D),
-        //     textColor: Colors.white,
-        //     fontSize: 16.0);
         IconSnackBar.show(
           context,
           label: 'Removed successfully',
@@ -313,14 +305,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          // Fluttertoast.showToast(
-          //     msg: 'Personal details updated successfully',
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Color(0xff2D2D2D),
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
           IconSnackBar.show(
             context,
             label: 'Personal details updated successfully',
@@ -396,19 +380,11 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       );
       print('Upload success: ${response.statusCode}');
 
-      // Fluttertoast.showToast(
-      //     msg: 'Successfully uploaded',
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
       IconSnackBar.show(
         context,
         label: 'Successfully uploaded',
         snackBarType: SnackBarType.success,
-        backgroundColor: Color(0xff4CAF50),
+        backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
       );
 
@@ -423,19 +399,11 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       });
       print('Upload failed: $e');
 
-      // Fluttertoast.showToast(
-      //     msg: e.toString(),
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
       IconSnackBar.show(
         context,
         label: e.toString(),
         snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xFFBA1A1A),
+        backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
       );
     }
@@ -693,8 +661,8 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                                           width: 300,
                                           fit: BoxFit.cover,
                                         )
-                                      : Image.asset(
-                                          'assets/images/profile.jfif',
+                                      : SvgPicture.asset(
+                                          'assets/icon/profile.svg',
                                           height: 300,
                                           width: 300,
                                           fit: BoxFit.cover,
@@ -786,12 +754,21 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                                     height: 259,
                                     child: Column(
                                       children: [
-                                        const SizedBox(height: 5),
-                                        const Divider(
-                                            thickness: 5,
-                                            indent: 150,
-                                            endIndent: 150,
-                                            color: Colors.black),
+                                        const SizedBox(height: 15),
+                                        Center(
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.25,
+                                            height: 5,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ),
                                         const SizedBox(height: 10),
                                         Text(
                                           'Upload & take a picture',

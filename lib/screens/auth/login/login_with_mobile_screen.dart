@@ -288,14 +288,6 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
 
         if (resOBJ['result'] == true &&
             statusMessage.toLowerCase().contains('sent')) {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Color(0xff2D2D2D),
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
           IconSnackBar.show(
             context,
             label: statusMessage,
@@ -304,12 +296,16 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
             iconColor: Colors.white,
           );
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => LoginOTPScreen(
-                        countryCode: _selectedCountryCode,
-                        mobileNumber: mobileController.text,
-                      )));
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  LoginOTPScreen(
+                      countryCode: _selectedCountryCode,
+                      mobileNumber: mobileController.text),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
         } else {
           // Fluttertoast.showToast(
           //   msg: 'Invalid user !',
@@ -407,9 +403,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 7),
                   Container(
                     width: MediaQuery.of(context).size.width - 20,
                     child: Column(
@@ -464,7 +458,6 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                             SizedBox(
                                 width:
                                     MediaQuery.of(context).size.width * 0.01),
-                            // Mobile Number TextField
                             Expanded(
                               child: Container(
                                 height: 48,
@@ -516,8 +509,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                             )
                           ],
                         ),
-
-                        // Single Error Message for Both Fields
+                        SizedBox(height: 4),
                         if (!_isMobileNumberValid)
                           Padding(
                             padding: EdgeInsets.only(top: 4, left: 0),
