@@ -211,7 +211,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                     obscureText: old_passwordHide,
                     controller: old_passwordController,
                     cursorColor: Color(0xff004C99),
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff333333)),
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
                             onPressed: () {
@@ -224,6 +227,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? 'assets/images/ic_hide_password.svg'
                                 : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
+                        hintStyle: TextStyle(color: Color(0xff545454)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
@@ -299,7 +303,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                     obscureText: new_passwordHide,
                     controller: new_passwordController,
                     cursorColor: Color(0xff004C99),
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff333333)),
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
                             onPressed: () {
@@ -312,6 +319,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? 'assets/images/ic_hide_password.svg'
                                 : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
+                        hintStyle: TextStyle(color: Color(0xff545454)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
@@ -387,7 +395,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                     obscureText: confirm_passwordHide,
                     controller: confirm_passwordController,
                     cursorColor: Color(0xff004C99),
-                    style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xff333333)),
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
                             onPressed: () {
@@ -400,6 +411,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ? 'assets/images/ic_hide_password.svg'
                                 : 'assets/images/ic_show_password.svg')),
                         hintText: 'Enter your password',
+                        hintStyle: TextStyle(color: Color(0xff545454)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(

@@ -604,9 +604,11 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
-                                    color: Color(0xff545454)),
+                                    color: Color(0xff333333)),
                                 decoration: InputDecoration(
                                   hintText: 'Enter your first name',
+                                  hintStyle:
+                                      TextStyle(color: Color(0xff545454)),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
                                   enabledBorder: OutlineInputBorder(
@@ -691,13 +693,15 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'Lato',
-                                  color: Color(0xff545454)),
+                                  color: Color(0xff333333)),
                               inputFormatters: [
                                 FilteringTextInputFormatter.allow(RegExp(
                                     r'[a-zA-Z\s]')), // Allow only letters and spaces
                               ],
                               decoration: InputDecoration(
                                   hintText: 'Enter your last name',
+                                  hintStyle:
+                                      TextStyle(color: Color(0xff545454)),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
                                   enabledBorder: OutlineInputBorder(
@@ -773,9 +777,11 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'Lato',
-                                  color: Color(0xff545454)),
+                                  color: Color(0xff333333)),
                               decoration: InputDecoration(
                                   hintText: 'Enter your email address',
+                                  hintStyle:
+                                      TextStyle(color: Color(0xff545454)),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
                                   enabledBorder: OutlineInputBorder(
@@ -851,7 +857,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'Lato',
-                                  color: Color(0xff545454)),
+                                  color: Color(0xff333333)),
                               decoration: InputDecoration(
                                   suffixIcon: IconButton(
                                       onPressed: () {
@@ -864,6 +870,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                           ? 'assets/images/ic_hide_password.svg'
                                           : 'assets/images/ic_show_password.svg')),
                                   hintText: 'Enter your password',
+                                  hintStyle:
+                                      TextStyle(color: Color(0xff545454)),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
                                   enabledBorder: OutlineInputBorder(
@@ -949,8 +957,10 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               controller: confirmPasswordController,
                               cursorColor: Color(0xff004C99),
                               obscureText: confirmPasswordHide,
-                              style:
-                                  TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff333333)),
                               decoration: InputDecoration(
                                   suffixIcon: IconButton(
                                       onPressed: () {
@@ -964,6 +974,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                           ? 'assets/images/ic_hide_password.svg'
                                           : 'assets/images/ic_show_password.svg')),
                                   hintText: 'Re-Enter your password',
+                                  hintStyle:
+                                      TextStyle(color: Color(0xff545454)),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8)),
                                   enabledBorder: OutlineInputBorder(
@@ -1106,11 +1118,13 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                           fontSize: 14,
                                           fontFamily: 'Lato',
                                           color: _isMobileNumberValid
-                                              ? Color(0xff545454)
+                                              ? Color(0xff333333)
                                               : Color(0xffBA1A1A)),
                                       decoration: InputDecoration(
                                           counterText: '',
                                           hintText: 'Enter mobile number',
+                                          hintStyle: TextStyle(
+                                              color: Color(0xff545454)),
                                           border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(8)),

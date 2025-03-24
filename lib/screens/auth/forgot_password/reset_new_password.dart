@@ -178,7 +178,10 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                           cursorColor: Color(0xff004C99),
                           obscureText: passwordHide,
                           enabled: !isLoading,
-                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              color: Color(0xff333333)),
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
                                   onPressed: () {
@@ -190,6 +193,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Enter password',
+                              hintStyle: TextStyle(color: Color(0xff545454)),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(
@@ -250,7 +254,10 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                           cursorColor: Color(0xff004C99),
                           obscureText: confirmPasswordHide,
                           enabled: !isLoading,
-                          style: TextStyle(fontSize: 14, fontFamily: 'Lato'),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              color: Color(0xff333333)),
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
                                   onPressed: () {
@@ -263,6 +270,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                       ? 'assets/images/ic_hide_password.svg'
                                       : 'assets/images/ic_show_password.svg')),
                               hintText: 'Re-enter your password',
+                              hintStyle: TextStyle(color: Color(0xff545454)),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8)),
                               enabledBorder: OutlineInputBorder(

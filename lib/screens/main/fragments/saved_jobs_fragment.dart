@@ -77,22 +77,13 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       });
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult.contains(ConnectivityResult.none)) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
+        // IconSnackBar.show(
+        //   context,
+        //   label: 'No internet connection',
+        //   snackBarType: SnackBarType.alert,
         //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
+        //   iconColor: Colors.white,
         // );
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
 
         setState(() {
           isConnectionAvailable = false;
@@ -128,13 +119,13 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.none)) {
       if (mounted) {
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
+        // IconSnackBar.show(
+        //   context,
+        //   label: 'No internet connection',
+        //   snackBarType: SnackBarType.alert,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   iconColor: Colors.white,
+        // );
       }
       return; // Exit function if no internet
     }

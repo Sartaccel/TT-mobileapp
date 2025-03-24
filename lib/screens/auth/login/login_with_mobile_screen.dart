@@ -292,7 +292,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
             context,
             label: statusMessage,
             snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff004C99),
+            backgroundColor: Color(0xff2D2D2D),
             iconColor: Colors.white,
           );
           Navigator.push(
@@ -468,10 +468,14 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                   controller: mobileController,
                                   cursorColor: Color(0xff004C99),
                                   style: TextStyle(
-                                      fontSize: 14, fontFamily: 'Lato'),
+                                      fontSize: 14,
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff333333)),
                                   decoration: InputDecoration(
                                       counterText: '',
                                       hintText: 'Enter mobile number',
+                                      hintStyle:
+                                          TextStyle(color: Color(0xff545454)),
                                       border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(10)),

@@ -930,8 +930,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                     .imagePath!,
                                                 fit: BoxFit.cover,
                                               )
-                                            : Image.asset(
-                                                'assets/images/profile.jfif',
+                                            : SvgPicture.asset(
+                                                'assets/icon/profile.svg',
+                                                height: 100,
+                                                width: 100,
                                                 fit: BoxFit.cover,
                                               ),
                                       ),
@@ -941,14 +943,13 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Positioned(
                                   left: (MediaQuery.of(context).size.width /
                                           2) +
-                                      MediaQuery.of(context).size.width * 0.05,
+                                      MediaQuery.of(context).size.width * 0.07,
                                   top:
-                                      MediaQuery.of(context).size.height * 0.22,
+                                      MediaQuery.of(context).size.height * 0.23,
                                   child: SvgPicture.asset(
-                                    'assets/icon/DpEdit.svg',
-                                    width: MediaQuery.of(context).size.width *
-                                        0.08,
-                                  ),
+                                      'assets/icon/DpEdit.svg',
+                                      width: 26,
+                                      height: 26),
                                 ),
                                 Positioned(
                                   right:
@@ -972,11 +973,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.05,
+                                              0.045,
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.05,
+                                              0.045,
                                         ),
                                         SizedBox(width: 3),
                                         Text(
@@ -1183,11 +1184,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                   color: Color(0xff004C99)),
                                             ),
                                             SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.012, // Responsive height
-                                            ),
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.012),
                                             Text(
                                               'File types: pdf, .doc, .docx  Max file size: 5MB',
                                               style: TextStyle(
@@ -1425,10 +1425,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                               Text(
                                 'Work Experience',
                                 style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: Color(0xff333333),
-                                ),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xff333333)),
                               ),
                               InkWell(
                                 onTap: () async {
@@ -1589,7 +1588,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                                     context)
                                                                 .size
                                                                 .height *
-                                                            0.01, // 1% of screen height
+                                                            0.01,
                                                       ),
                                                       Column(
                                                         children: [
@@ -1598,7 +1597,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                                         context)
                                                                     .size
                                                                     .width *
-                                                                0.03, // Responsive dot size
+                                                                0.03,
                                                             height: MediaQuery.of(
                                                                         context)
                                                                     .size
@@ -1607,18 +1606,18 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                             decoration:
                                                                 BoxDecoration(
                                                               color: Colors
-                                                                  .transparent, // Transparent inside
+                                                                  .transparent,
                                                               shape: BoxShape
                                                                   .circle,
                                                               border:
                                                                   Border.all(
                                                                 color: Color(
-                                                                    0xff004C99), // Border color
+                                                                    0xff004C99),
                                                                 width: MediaQuery.of(
                                                                             context)
                                                                         .size
                                                                         .width *
-                                                                    0.006, // Responsive border thickness
+                                                                    0.006,
                                                               ),
                                                             ),
                                                           ),
@@ -1733,9 +1732,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       child: Column(
                         children: [
                           SizedBox(
-                            height: MediaQuery.of(context).size.height *
-                                0.02, // 2% of screen height
-                          ),
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

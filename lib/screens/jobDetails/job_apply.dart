@@ -898,9 +898,10 @@ class _JobApplyState extends State<JobApply> {
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: 'Lato',
-                        color: Color(0xFF545454)),
+                        color: Color(0xff333333)),
                     decoration: InputDecoration(
                         hintText: 'Enter your email',
+                        hintStyle: TextStyle(color: Color(0xff545454)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8)),
                         enabledBorder: OutlineInputBorder(
@@ -993,10 +994,11 @@ class _JobApplyState extends State<JobApply> {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: 'Lato',
-                                color: Color(0xFF545454)),
+                                color: Color(0xff333333)),
                             decoration: InputDecoration(
                                 counterText: '',
                                 hintText: 'Enter mobile number',
+                                hintStyle: TextStyle(color: Color(0xff545454)),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8)),
                                 enabledBorder: OutlineInputBorder(

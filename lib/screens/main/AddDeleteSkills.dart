@@ -254,8 +254,31 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
                           // Show success message
                           // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Skill saved successfully!')),
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  Icon(Icons.check_circle,
+                                      color: Color(0xff4CAF50)),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Skills updated !',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Color(0xFF2D2D2D),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              duration: Duration(seconds: 2),
+                              action: SnackBarAction(
+                                label: '✖',
+                                textColor: Color(0xFFFFFFFF),
+                                onPressed: () {},
+                              ),
+                            ),
                           );
                           Navigator.push(
                             context,
@@ -374,9 +397,10 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
                         style: const TextStyle(
                             fontSize: 14,
                             fontFamily: 'Lato',
-                            color: Color(0xff7D7C7C)),
+                            color: Color(0xff333333)),
                         decoration: InputDecoration(
                           hintText: 'Skills',
+                          hintStyle: TextStyle(color: Color(0xff545454)),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10)),
                           enabledBorder: OutlineInputBorder(

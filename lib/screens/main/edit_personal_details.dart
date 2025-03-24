@@ -592,9 +592,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: 'Lato',
-                                color: Color(0xff545454)),
+                                color: Color(0xff333333)),
                             decoration: InputDecoration(
                                 hintText: 'Enter your first name',
+                                hintStyle: TextStyle(color: Color(0xff545454)),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8)),
                                 enabledBorder: OutlineInputBorder(
@@ -653,9 +654,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: 'Lato',
-                                color: Color(0xff545454)),
+                                color: Color(0xff333333)),
                             decoration: InputDecoration(
                                 hintText: 'Enter your last name',
+                                hintStyle: TextStyle(color: Color(0xff545454)),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8)),
                                 enabledBorder: OutlineInputBorder(
@@ -712,9 +714,11 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
-                                    color: Color(0xff545454)),
+                                    color: Color(0xff333333)),
                                 decoration: InputDecoration(
                                     hintText: 'Enter your email',
+                                    hintStyle: TextStyle(
+                                        color: Color(0xff545454)),
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(8)),
                                     enabledBorder: OutlineInputBorder(
@@ -895,10 +899,12 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   fontFamily: 'Lato',
-                                                  color: Color(0xff545454)),
+                                                  color: Color(0xff333333)),
                                               decoration: InputDecoration(
                                                 counterText: '',
                                                 hintText: 'Enter mobile number',
+                                                hintStyle: TextStyle(
+                                                    color: Color(0xff545454)),
                                                 suffixIcon: SvgPicture.asset(
                                                   candidateProfileModel!
                                                               .isPhoneVerified ==
@@ -1041,9 +1047,11 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: 'Lato',
-                                      color: Color(0xff545454)),
+                                      color: Color(0xff333333)),
                                   decoration: InputDecoration(
                                       hintText: 'Enter your Location',
+                                      hintStyle:
+                                          TextStyle(color: Color(0xff545454)),
                                       border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(8)),
@@ -1106,7 +1114,9 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                     controller: _startDateController,
                                     cursorColor: Color(0xff004C99),
                                     style: TextStyle(
-                                        fontSize: 14, color: Color(0xff545454)),
+                                        fontSize: 14,
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff333333)),
                                     decoration: InputDecoration(
                                         suffixIcon: Padding(
                                           padding: const EdgeInsets.all(7),
@@ -1117,6 +1127,8 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                           ),
                                         ),
                                         hintText: 'Date of Birth',
+                                        hintStyle:
+                                            TextStyle(color: Color(0xff545454)),
                                         border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8)),
@@ -1233,9 +1245,11 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: 'Lato',
-                                      color: Color(0xff545454)),
+                                      color: Color(0xff333333)),
                                   decoration: InputDecoration(
                                       hintText: 'Enter your position',
+                                      hintStyle:
+                                          TextStyle(color: Color(0xff545454)),
                                       border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(8)),
@@ -1298,9 +1312,11 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: 'Lato',
-                                      color: Color(0xff545454)),
+                                      color: Color(0xff333333)),
                                   decoration: InputDecoration(
                                       hintText: 'Experience',
+                                      hintStyle:
+                                          TextStyle(color: Color(0xff545454)),
                                       border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(8)),

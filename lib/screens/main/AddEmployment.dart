@@ -372,52 +372,70 @@ class _AddemploymentState extends State<Addemployment> {
                             SizedBox(height: 7),
                             Container(
                               width: (MediaQuery.of(context).size.width) - 20,
-                              child: TextField(
-                                controller: txtDesignationController,
-                                cursorColor: Color(0xff004C99),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff7D7C7C)),
-                                decoration: InputDecoration(
-                                    hintText: 'Designation',
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(
-                                          color: _isDesignationValid
-                                              ? Color(0xffd9d9d9d9)
-                                              : Color(
-                                                  0xffBA1A1A), // Default border color
-                                          width: 1),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextField(
+                                      controller: txtDesignationController,
+                                      cursorColor: Color(0xff004C99),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff333333)),
+                                      decoration: InputDecoration(
+                                          hintText: 'Designation',
+                                          hintStyle: TextStyle(
+                                              color: Color(0xff545454)),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            borderSide: BorderSide(
+                                                color: _isDesignationValid
+                                                    ? Color(0xffd9d9d9d9)
+                                                    : Color(
+                                                        0xffBA1A1A), // Default border color
+                                                width: 1),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            borderSide: BorderSide(
+                                                color: _isDesignationValid
+                                                    ? Color(0xff004C99)
+                                                    : Color(
+                                                        0xffBA1A1A), // Border color when focused
+                                                width: 1),
+                                          ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10)),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[a-zA-Z0-9\s]')),
+                                      ],
+                                      onChanged: (value) {
+                                        // Validate the email here and update _isEmailValid
+                                        setState(() {
+                                          _isDesignationValid = true;
+                                        });
+                                      },
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(
-                                          color: _isDesignationValid
-                                              ? Color(0xff004C99)
-                                              : Color(
-                                                  0xffBA1A1A), // Border color when focused
-                                          width: 1),
-                                    ),
-                                    errorText: _isDesignationValid
-                                        ? null
-                                        : designationErrorMsg,
-                                    // Display error message if invalid
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10)),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'[a-zA-Z0-9\s]')),
-                                ],
-                                onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
-                                  setState(() {
-                                    _isDesignationValid = true;
-                                  });
-                                },
-                              ),
+                                    SizedBox(height: 4),
+                                    if (!_isDesignationValid)
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          designationErrorMsg ?? '',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xffBA1A1A),
+                                            fontFamily: 'Lato',
+                                          ),
+                                        ),
+                                      ),
+                                  ]),
                             ),
                             SizedBox(
                               height: 25,
@@ -442,52 +460,70 @@ class _AddemploymentState extends State<Addemployment> {
                             ),
                             Container(
                               width: (MediaQuery.of(context).size.width) - 20,
-                              child: TextField(
-                                controller: txtComanyNameController,
-                                cursorColor: Color(0xff004C99),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff7D7C7C)),
-                                decoration: InputDecoration(
-                                    hintText: 'Company',
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(
-                                          color: _isCompanyNameValid
-                                              ? Color(0xffd9d9d9)
-                                              : Color(
-                                                  0xffBA1A1A), // Default border color
-                                          width: 1),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextField(
+                                      controller: txtComanyNameController,
+                                      cursorColor: Color(0xff004C99),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff333333)),
+                                      decoration: InputDecoration(
+                                          hintText: 'Company',
+                                          hintStyle: TextStyle(
+                                              color: Color(0xff545454)),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            borderSide: BorderSide(
+                                                color: _isCompanyNameValid
+                                                    ? Color(0xffd9d9d9)
+                                                    : Color(
+                                                        0xffBA1A1A), // Default border color
+                                                width: 1),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            borderSide: BorderSide(
+                                                color: _isCompanyNameValid
+                                                    ? Color(0xff004C99)
+                                                    : Color(
+                                                        0xffBA1A1A), // Border color when focused
+                                                width: 1),
+                                          ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 10)),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[a-zA-Z0-9\s]')),
+                                      ],
+                                      onChanged: (value) {
+                                        // Validate the email here and update _isEmailValid
+                                        setState(() {
+                                          _isCompanyNameValid = true;
+                                        });
+                                      },
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(
-                                          color: _isCompanyNameValid
-                                              ? Color(0xff004C99)
-                                              : Color(
-                                                  0xffBA1A1A), // Border color when focused
-                                          width: 1),
-                                    ),
-                                    errorText: _isCompanyNameValid
-                                        ? null
-                                        : companyNameErrorMsg,
-                                    // Display error message if invalid
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10)),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'[a-zA-Z0-9\s]')),
-                                ],
-                                onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
-                                  setState(() {
-                                    _isCompanyNameValid = true;
-                                  });
-                                },
-                              ),
+                                    SizedBox(height: 4),
+                                    if (!_isCompanyNameValid)
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          companyNameErrorMsg ?? '',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xffBA1A1A),
+                                            fontFamily: 'Lato',
+                                          ),
+                                        ),
+                                      ),
+                                  ]),
                             ),
                             SizedBox(
                               height: 20,
@@ -624,80 +660,105 @@ class _AddemploymentState extends State<Addemployment> {
                                         ),
                                       ),
                                       SizedBox(height: 7),
-                                      TextField(
-                                        controller: _startDateController,
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFF505050)),
-                                        decoration: InputDecoration(
-                                            suffixIcon: Padding(
-                                              padding: EdgeInsets.all(7),
-                                              child: SvgPicture.asset(
-                                                'assets/icon/Calendar.svg',
-                                                width: 24,
-                                                height: 24,
+                                      Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            TextField(
+                                              controller: _startDateController,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xFF505050)),
+                                              decoration: InputDecoration(
+                                                  suffixIcon: Padding(
+                                                    padding: EdgeInsets.all(7),
+                                                    child: SvgPicture.asset(
+                                                      'assets/icon/Calendar.svg',
+                                                      width: 24,
+                                                      height: 24,
+                                                    ),
+                                                  ),
+                                                  hintText: 'From',
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    borderSide: BorderSide(
+                                                        color: isStartDateValid
+                                                            ? Color(0xffd9d9d9)
+                                                            : Color(
+                                                                0xffBA1A1A), // Default border color
+                                                        width: 1),
+                                                  ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    borderSide: BorderSide(
+                                                        color: isStartDateValid
+                                                            ? Color(0xff004C99)
+                                                            : Color(
+                                                                0xffBA1A1A), // Border color when focused
+                                                        width: 1),
+                                                  ),
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 10,
+                                                          horizontal: 10)),
+                                              readOnly: true,
+                                              onTap: () async {
+                                                DateTime? pickedDate =
+                                                    await showDatePicker(
+                                                        context: context,
+                                                        initialDate:
+                                                            DateTime.now()
+                                                                .subtract(
+                                                                    Duration(
+                                                                        days:
+                                                                            1)),
+                                                        firstDate:
+                                                            DateTime(2000),
+                                                        //lastDate: DateTime(2101),
+                                                        lastDate: DateTime.now()
+                                                            .subtract(Duration(
+                                                                days: 1)),
+                                                        initialDatePickerMode:
+                                                            DatePickerMode
+                                                                .year);
+                                                if (pickedDate != null) {
+                                                  setState(() {
+                                                    isStartDateValid = true;
+                                                    _startDateSelected = true;
+                                                    startDatems = pickedDate;
+                                                    //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                                    _startDateController.text =
+                                                        "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                                                    startYear =
+                                                        '${pickedDate.month}-${pickedDate.year}';
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                            SizedBox(height: 4),
+                                            if (!isStartDateValid)
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  startDateErrorMsg ?? '',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xffBA1A1A),
+                                                    fontFamily: 'Lato',
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            hintText: 'From',
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8)),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              borderSide: BorderSide(
-                                                  color: isStartDateValid
-                                                      ? Color(0xffd9d9d9)
-                                                      : Color(
-                                                          0xffBA1A1A), // Default border color
-                                                  width: 1),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              borderSide: BorderSide(
-                                                  color: isStartDateValid
-                                                      ? Color(0xff004C99)
-                                                      : Color(
-                                                          0xffBA1A1A), // Border color when focused
-                                                  width: 1),
-                                            ),
-                                            errorText: isStartDateValid
-                                                ? null
-                                                : startDateErrorMsg, // Display error message if invalid
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 10,
-                                                    horizontal: 10)),
-                                        readOnly: true,
-                                        onTap: () async {
-                                          DateTime? pickedDate =
-                                              await showDatePicker(
-                                                  context: context,
-                                                  initialDate: DateTime.now()
-                                                      .subtract(
-                                                          Duration(days: 1)),
-                                                  firstDate: DateTime(2000),
-                                                  //lastDate: DateTime(2101),
-                                                  lastDate: DateTime.now()
-                                                      .subtract(
-                                                          Duration(days: 1)),
-                                                  initialDatePickerMode:
-                                                      DatePickerMode.year);
-                                          if (pickedDate != null) {
-                                            setState(() {
-                                              isStartDateValid = true;
-                                              _startDateSelected = true;
-                                              startDatems = pickedDate;
-                                              //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                              _startDateController.text =
-                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                                              startYear =
-                                                  '${pickedDate.month}-${pickedDate.year}';
-                                            });
-                                          }
-                                        },
-                                      ),
+                                          ]),
                                     ],
                                   ),
                                 ),
@@ -725,96 +786,116 @@ class _AddemploymentState extends State<Addemployment> {
                                         ),
                                       ),
                                       SizedBox(height: 7),
-                                      TextField(
-                                        controller: _endDateController,
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFF505050)),
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 5),
-                                          hintText: _selectedOption == 'No'
-                                              ? 'To'
-                                              : 'Present',
-                                          suffixIcon: Padding(
-                                            padding: EdgeInsets.all(7),
-                                            child: SvgPicture.asset(
-                                              'assets/icon/Calendar.svg',
-                                              width: 24,
-                                              height: 24,
+                                      Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            TextField(
+                                              controller: _endDateController,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color(0xFF505050)),
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 5),
+                                                hintText:
+                                                    _selectedOption == 'No'
+                                                        ? 'To'
+                                                        : 'Present',
+                                                suffixIcon: Padding(
+                                                  padding: EdgeInsets.all(7),
+                                                  child: SvgPicture.asset(
+                                                    'assets/icon/Calendar.svg',
+                                                    width: 24,
+                                                    height: 24,
+                                                  ),
+                                                ),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  borderSide: BorderSide(
+                                                      color: isEndDateValid
+                                                          ? Color(0xffd9d9d9)
+                                                          : Color(0xffBA1A1A),
+                                                      width: 1),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  borderSide: BorderSide(
+                                                      color: isEndDateValid
+                                                          ? Color(0xff004C99)
+                                                          : Color(0xffBA1A1A),
+                                                      width: 1),
+                                                ),
+                                              ),
+                                              readOnly: true,
+                                              onTap: () async {
+                                                if (_selectedOption == 'No' &&
+                                                    _startDateSelected ==
+                                                        true) {
+                                                  DateTime? pickedDate =
+                                                      await showDatePicker(
+                                                          context: context,
+                                                          initialDate:
+                                                              startDatems,
+                                                          firstDate:
+                                                              startDatems,
+                                                          lastDate:
+                                                              DateTime.now(),
+                                                          initialDatePickerMode:
+                                                              DatePickerMode
+                                                                  .year);
+                                                  if (pickedDate != null) {
+                                                    setState(() {
+                                                      isEndDateValid = true;
+                                                      //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                                      _endDateController.text =
+                                                          "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                                                      //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                                      endYear =
+                                                          '${pickedDate.month}-${pickedDate.year}';
+                                                    });
+                                                  }
+                                                } else if (_selectedOption ==
+                                                        'No' &&
+                                                    _startDateSelected ==
+                                                        false) {
+                                                  IconSnackBar.show(
+                                                    context,
+                                                    label:
+                                                        'Please select start date first',
+                                                    snackBarType:
+                                                        SnackBarType.alert,
+                                                    backgroundColor:
+                                                        Color(0xff2D2D2D),
+                                                    iconColor: Colors.white,
+                                                  );
+                                                }
+                                              },
                                             ),
-                                          ),
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: isEndDateValid
-                                                    ? Color(0xffd9d9d9)
-                                                    : Color(0xffBA1A1A),
-                                                width: 1),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: isEndDateValid
-                                                    ? Color(0xff004C99)
-                                                    : Color(0xffBA1A1A),
-                                                width: 1),
-                                          ),
-                                          errorText: isEndDateValid
-                                              ? null
-                                              : endDateErrorMsg,
-                                        ),
-                                        readOnly: true,
-                                        onTap: () async {
-                                          if (_selectedOption == 'No' &&
-                                              _startDateSelected == true) {
-                                            DateTime? pickedDate =
-                                                await showDatePicker(
-                                                    context: context,
-                                                    initialDate: startDatems,
-                                                    firstDate: startDatems,
-                                                    lastDate: DateTime.now(),
-                                                    initialDatePickerMode:
-                                                        DatePickerMode.year);
-                                            if (pickedDate != null) {
-                                              setState(() {
-                                                isEndDateValid = true;
-                                                //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                                _endDateController.text =
-                                                    "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                                                //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                                endYear =
-                                                    '${pickedDate.month}-${pickedDate.year}';
-                                              });
-                                            }
-                                          } else if (_selectedOption == 'No' &&
-                                              _startDateSelected == false) {
-                                            // Fluttertoast.showToast(
-                                            //   msg: 'Please select start date first',
-                                            //   toastLength: Toast.LENGTH_SHORT,
-                                            //   gravity: ToastGravity.BOTTOM,
-                                            //   timeInSecForIosWeb: 1,
-                                            //   backgroundColor: Color(0xff2D2D2D),
-                                            //   textColor: Colors.white,
-                                            //   fontSize: 16.0,
-                                            // );
-                                            IconSnackBar.show(
-                                              context,
-                                              label:
-                                                  'Please select start date first',
-                                              snackBarType: SnackBarType.alert,
-                                              backgroundColor:
-                                                  Color(0xff2D2D2D),
-                                              iconColor: Colors.white,
-                                            );
-                                          }
-                                        },
-                                      ),
+                                            SizedBox(height: 4),
+                                            if (!isEndDateValid)
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  endDateErrorMsg ?? '',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xffBA1A1A),
+                                                    fontFamily: 'Lato',
+                                                  ),
+                                                ),
+                                              ),
+                                          ]),
                                     ],
                                   ),
                                 ),
@@ -1091,9 +1172,11 @@ class _AddemploymentState extends State<Addemployment> {
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
-                                    color: Color(0xff7D7C7C)),
+                                    color: Color(0xff333333)),
                                 decoration: InputDecoration(
                                     hintText: 'Your work experience',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff545454)),
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(12)),

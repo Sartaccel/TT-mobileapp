@@ -352,9 +352,10 @@ class _AddeducationState extends State<Addeducation> {
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Lato',
-                          color: Color(0xff7D7C7C)),
+                          color: Color(0xff333333)),
                       decoration: InputDecoration(
                           hintText: 'Qualification',
+                          hintStyle: TextStyle(color: Color(0xff545454)),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           enabledBorder: OutlineInputBorder(
@@ -415,9 +416,10 @@ class _AddeducationState extends State<Addeducation> {
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Lato',
-                          color: Color(0xff7D7C7C)),
+                          color: Color(0xff333333)),
                       decoration: InputDecoration(
                           hintText: 'Specialization',
+                          hintStyle: TextStyle(color: Color(0xff545454)),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           enabledBorder: OutlineInputBorder(
@@ -479,9 +481,10 @@ class _AddeducationState extends State<Addeducation> {
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Lato',
-                          color: Color(0xff7D7C7C)),
+                          color: Color(0xff333333)),
                       decoration: InputDecoration(
                           hintText: 'Institute',
+                          hintStyle: TextStyle(color: Color(0xff545454)),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           enabledBorder: OutlineInputBorder(

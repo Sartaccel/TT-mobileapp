@@ -198,6 +198,8 @@ class _SearchandfilterState extends State<Searchandfilter> {
                                     title: Text(
                                       option,
                                       style: const TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: 'Lato',
                                           color: Color(0xff333333)),
                                     ),
                                     onTap: () {
@@ -212,15 +214,16 @@ class _SearchandfilterState extends State<Searchandfilter> {
                       );
                     },
                     optionsBuilder: (TextEditingValue textEditingValue) {
-  if (textEditingValue.text.isEmpty) {
-    return jobSuggestions;
-  }
+                      if (textEditingValue.text.isEmpty) {
+                        return jobSuggestions;
+                      }
 
-  return jobSuggestions.where(
-    (title) => title.toLowerCase().startsWith(textEditingValue.text.toLowerCase()),
-  );
-},
-
+                      return jobSuggestions.where(
+                        (title) => title
+                            .toLowerCase()
+                            .startsWith(textEditingValue.text.toLowerCase()),
+                      );
+                    },
                     onSelected: (String selection) {
                       setState(() {
                         selectedJob = selection;
@@ -239,11 +242,9 @@ class _SearchandfilterState extends State<Searchandfilter> {
                           // Immediate response: Update UI and trigger API call
                           setState(() {
                             searchedJob = value;
-                            isLoading =
-                                true; // Show loading indicator immediately
+                            isLoading = true;
                           });
-                          fetchJobTitles(
-                              value); // Trigger API call with debounce
+                          fetchJobTitles(value);
                         },
                         decoration: InputDecoration(
                           prefixIcon: Padding(
@@ -255,7 +256,7 @@ class _SearchandfilterState extends State<Searchandfilter> {
                             ),
                           ),
                           suffixIcon: isLoading
-                              ?Padding(
+                              ? Padding(
                                   padding: const EdgeInsets.all(15.0),
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width *
@@ -276,7 +277,7 @@ class _SearchandfilterState extends State<Searchandfilter> {
                           filled: true,
                           fillColor: Colors.white,
                           hintText: 'Search for job or skills',
-                          hintStyle: const TextStyle(color: Color(0xFF818385)),
+                          hintStyle: TextStyle(color: Color(0xff7D7C7C)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
                             borderSide: BorderSide.none,

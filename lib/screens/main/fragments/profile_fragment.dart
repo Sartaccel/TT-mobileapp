@@ -1,12 +1,9 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talent_turbo_new/AppColors.dart';
@@ -45,21 +42,13 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       await launchUrl(Uri.parse(filePath));
       //await launch(filePath, forceSafariVC: false, forceWebView: false);
     } else {
-      // Fluttertoast.showToast(
-      //     msg: 'Could not launch ${filePath}',
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
-      IconSnackBar.show(
-        context,
-        label: 'Could not launch ${filePath}',
-        snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
-      );
+      // IconSnackBar.show(
+      //   context,
+      //   label: 'Could not launch ${filePath}',
+      //   snackBarType: SnackBarType.alert,
+      //   backgroundColor: Color(0xff2D2D2D),
+      //   iconColor: Colors.white,
+      // );
       throw 'Could not launch ${filePath}';
     }
   }
@@ -255,7 +244,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             left: (MediaQuery.of(context).size.width / 2) + 20,
                             top: 125,
                             child: SvgPicture.asset('assets/icon/DpEdit.svg',
-                                width: 24, height: 24),
+                                width: 26, height: 26),
                           ),
                           Stack(
                             children: [
@@ -628,15 +617,15 @@ class _ProfileFragmentState extends State<ProfileFragment> {
             results.contains(ConnectivityResult.wifi);
       });
 
-      if (!isConnectionAvailable) {
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-      }
+      // if (!isConnectionAvailable) {
+      //   IconSnackBar.show(
+      //     context,
+      //     label: 'No internet connection',
+      //     snackBarType: SnackBarType.alert,
+      //     backgroundColor: Color(0xff2D2D2D),
+      //     iconColor: Colors.white,
+      //   );
+      // }
     });
   }
 
@@ -649,22 +638,13 @@ class _ProfileFragmentState extends State<ProfileFragment> {
   Future<void> checkInternetAvailability() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.none)) {
-      // Fluttertoast.showToast(
-      //   msg: "No internet connection",
-      //   toastLength: Toast.LENGTH_SHORT,
-      //   gravity: ToastGravity.BOTTOM,
-      //   timeInSecForIosWeb: 1,
+      // IconSnackBar.show(
+      //   context,
+      //   label: 'No internet connection',
+      //   snackBarType: SnackBarType.alert,
       //   backgroundColor: Color(0xff2D2D2D),
-      //   textColor: Colors.white,
-      //   fontSize: 16.0,
+      //   iconColor: Colors.white,
       // );
-      IconSnackBar.show(
-        context,
-        label: 'No internet connection',
-        snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
-      );
 
       setState(() {
         isConnectionAvailable = false;
