@@ -276,7 +276,7 @@ class _SearchandfilterState extends State<Searchandfilter> {
                               : null,
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'Search for job or skills',
+                          hintText: 'Search for jobs or skills',
                           hintStyle: TextStyle(color: Color(0xff7D7C7C)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),

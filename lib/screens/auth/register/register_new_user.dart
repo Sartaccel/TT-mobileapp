@@ -1148,9 +1148,6 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                                         0xffBA1A1A), // Border color when focused
                                                 width: 1),
                                           ),
-                                          // errorText: _isMobileNumberValid
-                                          //     ? null
-                                          //     : mobileErrorMsg, // Display error message if invalid
                                           contentPadding: EdgeInsets.symmetric(
                                               vertical: 10, horizontal: 10)),
                                       keyboardType: TextInputType.phone,

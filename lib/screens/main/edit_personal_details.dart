@@ -876,14 +876,11 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                             },
                                           ),
                                         ),
-
                                         SizedBox(
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
                                                 0.01),
-
-                                        // Mobile Number Input Field
                                         Expanded(
                                           child: Container(
                                             width: MediaQuery.of(context)

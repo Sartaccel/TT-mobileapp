@@ -798,8 +798,8 @@ class _AddemploymentState extends State<Addemployment> {
                                               decoration: InputDecoration(
                                                 contentPadding:
                                                     EdgeInsets.symmetric(
-                                                        vertical: 5,
-                                                        horizontal: 5),
+                                                        vertical: 10,
+                                                        horizontal: 10),
                                                 hintText:
                                                     _selectedOption == 'No'
                                                         ? 'To'

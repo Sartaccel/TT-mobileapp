@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,8 +34,8 @@ class _InviteAndEarnState extends State<InviteAndEarn> {
         Container(
           margin: EdgeInsets.only(right: 16),
           child: Icon(
-            Icons.circle,
-            size: 12,
+            Icons.circle_outlined,
+            size: 15,
             color: isActive ? AppColors.primaryColor : Colors.grey,
           ),
         ),
@@ -100,14 +99,6 @@ class _InviteAndEarnState extends State<InviteAndEarn> {
 
         _shareApp(resObj['referralCode'].toString());
       } else {
-        // Fluttertoast.showToast(
-        //     msg: 'Failed to generate invite link.',
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.BOTTOM,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Colors.red,
-        //     textColor: Colors.white,
-        //     fontSize: 16.0);
         IconSnackBar.show(
           context,
           label: 'Failed to generate invite link !',
@@ -207,20 +198,20 @@ class _InviteAndEarnState extends State<InviteAndEarn> {
                   height: 50,
                 ),
                 Container(
-                  width: 300,
+                  width: 350,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildTimelineRow('Invite your friend', true),
                       Container(
-                        margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                        margin: EdgeInsets.fromLTRB(6, 0, 0, 0),
                         height: 40,
                         width: 2,
                         color: AppColors.primaryColor,
                       ),
                       buildTimelineRow('They signup with your link', true),
                       Container(
-                        margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                        margin: EdgeInsets.fromLTRB(6, 0, 0, 0),
                         height: 40,
                         width: 2,
                         color: AppColors.primaryColor,

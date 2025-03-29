@@ -951,92 +951,104 @@ class _JobApplyState extends State<JobApply> {
                     ),
                   ),
                   SizedBox(height: 7),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: 48,
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(width: 1, color: Color(0xffD9D9D9)),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: EdgeInsets.all(9),
-                        child: Row(
+                  Container(
+                    width: MediaQuery.of(context).size.width - 20,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              _selectedCountryCode!, // Displays the selected country code
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'Lato',
-                                color: Color(0xFF545454),
+                            Container(
+                              height: 48,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1, color: Color(0xffD9D9D9)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _selectedCountryCode!, // Displays the selected country code
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Lato',
+                                      color: Color(0xFF545454),
+                                    ),
+                                  ),
+                                  SvgPicture.asset(
+                                    'assets/icon/ArrowDown.svg',
+                                    height: 10,
+                                    width: 10,
+                                  ),
+                                ],
                               ),
                             ),
-                            SvgPicture.asset(
-                              'assets/icon/ArrowDown.svg',
-                              height: 10,
-                              width: 10,
-                            ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            Expanded(
+                              child: Container(
+                                width:
+                                    (MediaQuery.of(context).size.width) - 130,
+                                child: TextField(
+                                  readOnly: true,
+                                  maxLength: 10,
+                                  controller: mobileController,
+                                  cursorColor: Color(0xff004C99),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff333333)),
+                                  decoration: InputDecoration(
+                                      counterText: '',
+                                      hintText: 'Enter mobile number',
+                                      hintStyle:
+                                          TextStyle(color: Color(0xff545454)),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isMobileNumberValid
+                                                ? Color(0xffd9d9d9)
+                                                : Color(0xffBA1A1A),
+                                            width: 1),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: _isMobileNumberValid
+                                                ? Color(0xff004C99)
+                                                : Color(0xffBA1A1A),
+                                            width: 1),
+                                      ),
+                                      errorText: _isMobileNumberValid
+                                          ? null
+                                          : mobileErrorMsg,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10)),
+                                  keyboardType: TextInputType.phone,
+                                  onChanged: (value) {
+                                    // Validate the email here and update _isEmailValid
+                                    setState(() {
+                                      setState(() {
+                                        _isMobileNumberValid = true;
+                                      });
+                                    });
+                                  },
+                                ),
+                              ),
+                            )
                           ],
                         ),
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                      Expanded(
-                        child: Container(
-                          width: (MediaQuery.of(context).size.width) - 130,
-                          child: TextField(
-                            readOnly: true,
-                            maxLength: 10,
-                            controller: mobileController,
-                            cursorColor: Color(0xff004C99),
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'Lato',
-                                color: Color(0xff333333)),
-                            decoration: InputDecoration(
-                                counterText: '',
-                                hintText: 'Enter mobile number',
-                                hintStyle: TextStyle(color: Color(0xff545454)),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                      color: _isMobileNumberValid
-                                          ? Color(0xffd9d9d9)
-                                          : Color(
-                                              0xffBA1A1A), // Default border color
-                                      width: 1),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(
-                                      color: _isMobileNumberValid
-                                          ? Color(0xff004C99)
-                                          : Color(
-                                              0xffBA1A1A), // Border color when focused
-                                      width: 1),
-                                ),
-                                errorText: _isMobileNumberValid
-                                    ? null
-                                    : mobileErrorMsg, // Display error message if invalid
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10)),
-                            keyboardType: TextInputType.phone,
-                            onChanged: (value) {
-                              // Validate the email here and update _isEmailValid
-                              setState(() {
-                                setState(() {
-                                  _isMobileNumberValid = true;
-                                });
-                              });
-                            },
-                          ),
-                        ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 40,
@@ -1157,24 +1169,44 @@ class _JobApplyState extends State<JobApply> {
                                                   );
                                                 }
                                               },
-                                              leading: Icon(
-                                                  Icons.visibility_outlined),
-                                              title: Text('View Resume'),
+                                              leading: SvgPicture.asset(
+                                                  "assets/images/view.svg"),
+                                              title: Text(
+                                                'View Resume',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: 'Lato',
+                                                ),
+                                              ),
                                             ),
                                             ListTile(
                                               onTap: () {
                                                 Navigator.pop(context);
                                                 pickAndUploadPDF();
                                               },
-                                              leading: Icon(Icons.refresh),
-                                              title: Text('Replace Resume'),
+                                              leading: SvgPicture.asset(
+                                                  "assets/images/replace.svg"),
+                                              title: Text(
+                                                'Replace Resume',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: 'Lato',
+                                                ),
+                                              ),
                                             ),
                                             ListTile(
                                               onTap: () {
                                                 _launchURL();
                                               },
-                                              leading: Icon(Icons.download),
-                                              title: Text('Download'),
+                                              leading: SvgPicture.asset(
+                                                  "assets/images/download.svg"),
+                                              title: Text(
+                                                'Download',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: 'Lato',
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
