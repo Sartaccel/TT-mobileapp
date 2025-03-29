@@ -305,13 +305,13 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          IconSnackBar.show(
-            context,
-            label: 'Personal details updated successfully',
-            snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff4CAF50),
-            iconColor: Colors.white,
-          );
+          // IconSnackBar.show(
+          //   context,
+          //   label: 'Personal details updated successfully',
+          //   snackBarType: SnackBarType.success,
+          //   backgroundColor: Color(0xff4CAF50),
+          //   iconColor: Colors.white,
+          // );
 
           final Map<String, dynamic> data = resOBJ['data'];
           //ReferralData referralData = ReferralData.fromJson(data);

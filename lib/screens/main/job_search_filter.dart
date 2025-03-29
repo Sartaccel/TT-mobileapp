@@ -30,6 +30,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
+
     Future<void> clearFilter() async {
       setState(() {
         _isLoading = true;
@@ -43,9 +44,18 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
 
       await saveStringToPreferences("searchEmpType", "");
       await saveStringToPreferences("searchExp", '0');
+      await saveEmploymentTypeToPrefs(false, false, false);
 
       setState(() {
         _isLoading = false;
+      });
+    }
+
+    // Function to reset experience selection
+    void resetExperience() {
+      setState(() {
+        selectedExpType = '';
+        saveStringToPreferences("searchExp", '0');
       });
     }
 
@@ -94,7 +104,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                             ))))
                   ],
                 ),
-                //SizedBox(width: 80,)
                 Text(
                   'Filter',
                   style: TextStyle(color: Colors.white, fontSize: 16),
@@ -129,44 +138,57 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                 SizedBox(
                   height: 10,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    children: [
-                      Radio(
-                          value: 'Full time',
+                Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Checkbox(
+                          value: _isFullTimeSelected,
                           activeColor: AppColors.primaryColor,
-                          groupValue: selectedEmpType,
-                          onChanged: (val) {
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          side: BorderSide(width: 1, color: Color(0xffD1D1D6)),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          onChanged: (bool? value) {
                             setState(() {
-                              selectedEmpType = val;
-                              saveStringToPreferences(
-                                  "searchEmpType", selectedEmpType!);
+                              _isFullTimeSelected = value!;
+                              saveEmploymentTypeToPrefs(_isFullTimeSelected,
+                                  _isContractSelected, _isInternshipSelected);
                             });
                           }),
-                      const Text(
-                        'Full time',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 7),
+                    const Text(
+                      'Full time',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 0,
                 ),
                 Row(
                   children: [
-                    Radio(
-                        value: 'Contract',
-                        activeColor: AppColors.primaryColor,
-                        groupValue: selectedEmpType,
-                        onChanged: (val) {
-                          setState(() {
-                            selectedEmpType = val;
-                            saveStringToPreferences(
-                                "searchEmpType", selectedEmpType!);
-                          });
-                        }),
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Checkbox(
+                          value: _isContractSelected,
+                          activeColor: AppColors.primaryColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          side: BorderSide(width: 1, color: Color(0xffD1D1D6)),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isContractSelected = value!;
+                              saveEmploymentTypeToPrefs(_isFullTimeSelected,
+                                  _isContractSelected, _isInternshipSelected);
+                            });
+                          }),
+                    ),
+                    const SizedBox(width: 7),
                     const Text(
                       'Contract',
                       style: TextStyle(fontSize: 16),
@@ -176,27 +198,32 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                 SizedBox(
                   height: 0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    children: [
-                      Radio(
-                          value: 'Internship',
+                Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Checkbox(
+                          value: _isInternshipSelected,
                           activeColor: AppColors.primaryColor,
-                          groupValue: selectedEmpType,
-                          onChanged: (val) {
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          side: BorderSide(width: 1, color: Color(0xffD1D1D6)),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          onChanged: (bool? value) {
                             setState(() {
-                              selectedEmpType = val;
-                              saveStringToPreferences(
-                                  "searchEmpType", selectedEmpType!);
+                              _isInternshipSelected = value!;
+                              saveEmploymentTypeToPrefs(_isFullTimeSelected,
+                                  _isContractSelected, _isInternshipSelected);
                             });
                           }),
-                      const Text(
-                        'Internship',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 7),
+                    const Text(
+                      'Internship',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
                 Divider(),
                 SizedBox(
@@ -254,7 +281,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                 ),
                               ),
                               ListTile(
-                                //leading: Icon(Icons.visibility_outlined),
                                 title: Text('Fresher'),
                                 onTap: () {
                                   setState(() {
@@ -265,7 +291,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                 },
                               ),
                               ListTile(
-                                //leading: Icon(Icons.visibility_outlined),
                                 title: Text('1 Year'),
                                 onTap: () {
                                   setState(() {
@@ -276,7 +301,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                 },
                               ),
                               ListTile(
-                                //leading: Icon(Icons.visibility_outlined),
                                 title: Text('2 Years'),
                                 onTap: () {
                                   setState(() {
@@ -287,7 +311,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                 },
                               ),
                               ListTile(
-                                //leading: Icon(Icons.visibility_outlined),
                                 title: Text('3 Years'),
                                 onTap: () {
                                   setState(() {
@@ -298,7 +321,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                 },
                               ),
                               ListTile(
-                                //leading: Icon(Icons.visibility_outlined),
                                 title: Text('4 Years'),
                                 onTap: () {
                                   setState(() {
@@ -309,7 +331,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                 },
                               ),
                               ListTile(
-                                //leading: Icon(Icons.visibility_outlined),
                                 title: Text('5 Years'),
                                 onTap: () {
                                   setState(() {
@@ -319,56 +340,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                   Navigator.pop(context);
                                 },
                               ),
-                              /*ListTile(
-                                    //leading: Icon(Icons.visibility_outlined),
-                                    title: Text('6 Years'),
-                                    onTap: (){
-                                      setState(() {
-                                        selectedExpType  = '6 Years';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    //leading: Icon(Icons.visibility_outlined),
-                                    title: Text('7 Years'),
-                                    onTap: (){
-                                      setState(() {
-                                        selectedExpType  = '7 Years';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    //leading: Icon(Icons.visibility_outlined),
-                                    title: Text('8 Years'),
-                                    onTap: (){
-                                      setState(() {
-                                        selectedExpType  = '8 Years';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    //leading: Icon(Icons.visibility_outlined),
-                                    title: Text('9 Years'),
-                                    onTap: (){
-                                      setState(() {
-                                        selectedExpType  = '9 Years';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    //leading: Icon(Icons.visibility_outlined),
-                                    title: Text('10 Years'),
-                                    onTap: (){
-                                      setState(() {
-                                        selectedExpType  = '10 Years';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),*/
                             ],
                           ),
                         ),
@@ -385,8 +356,28 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                   : '${selectedExpType}',
                           style: TextStyle(color: Color(0xff545454)),
                         ),
-                        SvgPicture.asset('assets/icon/ArrowDown.svg',
-                            height: 10, width: 10),
+                        if (selectedExpType.isNotEmpty)
+                          GestureDetector(
+                            onTap: resetExperience,
+                            child: Container(
+                              padding: EdgeInsets.all(4),
+                              child: SvgPicture.asset(
+                                'assets/images/ic_close_vector.svg',
+                                height: 16,
+                                width: 16,
+                                color: Color(0xff545454),
+                                placeholderBuilder: (BuildContext context) =>
+                                    Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: Color(0xff545454),
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          SvgPicture.asset('assets/icon/ArrowDown.svg',
+                              height: 10, width: 10),
                       ],
                     ),
                   ),
@@ -399,6 +390,8 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                 ),
                 InkWell(
                   onTap: () {
+                    saveStringToPreferences(
+                        "searchEmpType", getSelectedEmploymentTypes());
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -420,22 +413,18 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                                 curve: Curves.linear,
                                 builder: (context, value, child) {
                                   return Transform.rotate(
-                                    angle: value *
-                                        2 *
-                                        3.1416, // Full rotation effect
+                                    angle: value * 2 * 3.1416,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 4,
-                                      value: 0.20, // 1/5 of the circle
+                                      value: 0.20,
                                       backgroundColor: const Color.fromARGB(
-                                          142, 234, 232, 232), // Grey stroke
+                                          142, 234, 232, 232),
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors
-                                              .white), // White rotating stroke
+                                          Colors.white),
                                     ),
                                   );
                                 },
-                                onEnd: () =>
-                                    {}, // Ensures smooth infinite animation
+                                onEnd: () => {},
                               ),
                             )
                           : Text(
@@ -453,11 +442,40 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
     );
   }
 
+  // Helper methods for employment type preferences
+  Future<void> saveEmploymentTypeToPrefs(
+      bool fullTime, bool contract, bool internship) async {
+    await saveStringToPreferences("isFullTimeSelected", fullTime.toString());
+    await saveStringToPreferences("isContractSelected", contract.toString());
+    await saveStringToPreferences(
+        "isInternshipSelected", internship.toString());
+  }
+
+  Future<void> loadEmploymentTypeFromPrefs() async {
+    String? fullTime = await getStringFromPreferences("isFullTimeSelected");
+    String? contract = await getStringFromPreferences("isContractSelected");
+    String? internship = await getStringFromPreferences("isInternshipSelected");
+
+    setState(() {
+      _isFullTimeSelected = fullTime == "true";
+      _isContractSelected = contract == "true";
+      _isInternshipSelected = internship == "true";
+    });
+  }
+
+  String getSelectedEmploymentTypes() {
+    List<String> types = [];
+    if (_isFullTimeSelected) types.add("Full time");
+    if (_isContractSelected) types.add("Contract");
+    if (_isInternshipSelected) types.add("Internship");
+    return types.join(", ");
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchProfileFromPref();
+    loadEmploymentTypeFromPrefs();
   }
 
   Future<void> fetchProfileFromPref() async {
