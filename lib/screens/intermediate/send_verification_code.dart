@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +100,7 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
         //     backgroundColor: Colors.red,
         //     textColor: Colors.white,
         //     fontSize: 16.0);
-       /* IconSnackBar.show(
+        /* IconSnackBar.show(
           context,
           label: statusMessage,
           snackBarType: SnackBarType.alert,
@@ -194,17 +193,17 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
     return Scaffold(
       body: Stack(
         children: [
+          // Positioned(
+          //   right: 0,
+          //   child: Image.asset('assets/images/Ellipse 1.png'),
+          // ),
+          // Positioned(
+          //   left: 0,
+          //   bottom: 0,
+          //   child: Image.asset('assets/images/ellipse_bottom.png'),
+          // ),
           Positioned(
-            right: 0,
-            child: Image.asset('assets/images/Ellipse 1.png'),
-          ),
-          Positioned(
-            left: 0,
-            bottom: 0,
-            child: Image.asset('assets/images/ellipse_bottom.png'),
-          ),
-          Positioned(
-            top: 120,
+            top: 200,
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(10),
@@ -243,7 +242,7 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                         Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
                     blendMode: BlendMode.srcIn,
                     child: Text(
-                      'Please enter the OTP send to your ${widget.type == 'phone' ? 'mobile number' : 'email address'}',
+                      'We have sent an OTP to your ${widget.type == 'phone' ? 'mobile' : 'email'}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -258,27 +257,36 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                   SizedBox(
                     height: 50,
                   ),
-                  OtpPinField(
-                    cursorColor: AppColors.primaryColor,
-                    autoFillEnable: false,
-                    maxLength: 6,
-                    onSubmit: (otp) {},
-                    onChange: (txt) {
-                      setState(() {
-                        ValueKey(enteredOTP);
-                        enteredOTP = txt;
-                        inValidOTP = false;
-                        otpFieldKey = UniqueKey().toString();
-                        otpController.clear();
-                      });
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      double availableWidth = constraints.maxWidth - 40;
+                      double fieldWidth =
+                          (availableWidth / 6).clamp(40.0, 60.0);
+                      return OtpPinField(
+                        cursorColor: AppColors.primaryColor,
+                        autoFillEnable: false,
+                        maxLength: 6,
+                        fieldWidth: fieldWidth,
+                        fieldHeight: 55,
+                        onSubmit: (otp) {},
+                        onChange: (txt) {
+                          setState(() {
+                            ValueKey(enteredOTP);
+                            enteredOTP = txt;
+                            inValidOTP = false;
+                            otpFieldKey = UniqueKey().toString();
+                            otpController.clear();
+                          });
+                        },
+                        otpPinFieldStyle: OtpPinFieldStyle(
+                          activeFieldBorderColor: AppColors.primaryColor,
+                          defaultFieldBorderColor:
+                              inValidOTP ? Colors.red : Color(0xff333333),
+                        ),
+                        otpPinFieldDecoration:
+                            OtpPinFieldDecoration.underlinedPinBoxDecoration,
+                      );
                     },
-                    otpPinFieldStyle: OtpPinFieldStyle(
-                      activeFieldBorderColor: AppColors.primaryColor,
-                      defaultFieldBorderColor:
-                          inValidOTP ? Colors.red : Color(0xff333333),
-                    ),
-                    otpPinFieldDecoration:
-                        OtpPinFieldDecoration.underlinedPinBoxDecoration,
                   ),
                   inValidOTP
                       ? Row(
@@ -302,7 +310,7 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Didn\'t get the code?',
+                        'Didn\'t receive OTP?',
                         style: TextStyle(
                             color: Color(0xff333333),
                             fontSize: 14,
@@ -342,7 +350,7 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                         child: Text(
                           'Resend',
                           style: TextStyle(
-                            color: Color(0xff004C99),
+                            color: Color(0xff2979FF),
                             fontSize: 14,
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w700,
@@ -387,22 +395,19 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
                                   curve: Curves.linear,
                                   builder: (context, value, child) {
                                     return Transform.rotate(
-                                      angle: value *
-                                          2 *
-                                          3.1416, // Full rotation effect
+                                      angle: value * 2 * 3.1416,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 4,
-                                        value: 0.20, // 1/5 of the circle
+                                        value: 0.20,
                                         backgroundColor: const Color.fromARGB(
-                                            142, 234, 232, 232), // Grey stroke
+                                            142, 234, 232, 232),
                                         valueColor:
-                                            AlwaysStoppedAnimation<Color>(Colors
-                                                .white), // White rotating stroke
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
                                       ),
                                     );
                                   },
-                                  onEnd: () =>
-                                      {}, // Ensures smooth infinite animation
+                                  onEnd: () => {},
                                 ),
                               )
                             : Text(
@@ -417,32 +422,39 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
             ),
           ),
           Positioned(
-              top: 40,
-              left: 0,
+            top: 40,
+            left: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+              decoration: BoxDecoration(
+                color: Color(0xff001B3E),
+              ),
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back_ios_new),
+                    icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
                   InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                          height: 50,
-                          child: Center(
-                              child: Text(
-                            'Back',
-                            style: TextStyle(fontSize: 16),
-                          )
-                          )
-                          )
-                          )
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Back',
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ],
-              )),
+              ),
+            ),
+          ),
         ],
       ),
     );

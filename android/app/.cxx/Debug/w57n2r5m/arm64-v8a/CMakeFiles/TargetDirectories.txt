@@ -1,0 +1,2 @@
+C:/Users/91890/Downloads/TT_mobile_app (Final Deployment With Functionality)/TT_mobile_app/android/app/.cxx/Debug/w57n2r5m/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/91890/Downloads/TT_mobile_app (Final Deployment With Functionality)/TT_mobile_app/android/app/.cxx/Debug/w57n2r5m/arm64-v8a/CMakeFiles/rebuild_cache.dir

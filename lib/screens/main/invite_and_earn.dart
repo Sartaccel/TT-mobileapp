@@ -291,6 +291,7 @@ class _InviteAndEarnState extends State<InviteAndEarn> {
     setState(() {
       referralData = _referralData;
       retrievedUserData = _retrievedUserData;
-    });
+    }
+    );
   }
 }

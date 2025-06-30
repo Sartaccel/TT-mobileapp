@@ -63,9 +63,11 @@ class _HomeContainerState extends State<HomeContainer> {
                         ? MyReferralsFragment()
                         : const ProfileFragment())),
             Positioned(
-                bottom: 0,
-                right: 0,
-                left: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: SafeArea(
+                top: false,
                 child: PhysicalModel(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(24),
@@ -73,8 +75,10 @@ class _HomeContainerState extends State<HomeContainer> {
                   elevation: 10,
                   color: const Color(0xFFFFFFFF),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, ),
-                    height: screenHeight * 0.075,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: screenHeight * 0.015),
+                    height: screenHeight * 0.09,
                     width: screenWidth,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -82,8 +86,8 @@ class _HomeContainerState extends State<HomeContainer> {
                           topRight: Radius.circular(24)),
                       border: Border(
                         top: BorderSide(
-                          color: Color(0xffDBDBDB), // Only top border color
-                          width: 1.0, // You can adjust the width if needed
+                          color: Color(0xffDBDBDB),
+                          width: 1.0,
                         ),
                       ),
                     ),
@@ -214,7 +218,9 @@ class _HomeContainerState extends State<HomeContainer> {
                       ],
                     ),
                   ),
-                ))
+                ),
+              ),
+            ),
           ],
         ),
       ),

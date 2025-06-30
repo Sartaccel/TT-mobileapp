@@ -1,12 +1,12 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\flutter"
-export "FLUTTER_APPLICATION_PATH=D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app"
+export "FLUTTER_ROOT=C:\flutter new\flutter"
+export "FLUTTER_APPLICATION_PATH=C:\Users\91890\Downloads\TT_mobile_app (Final Deployment With Functionality)\TT_mobile_app"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
-export "FLUTTER_BUILD_NAME=1.0.5"
-export "FLUTTER_BUILD_NUMBER=5"
+export "FLUTTER_BUILD_NAME=1.0.6"
+export "FLUTTER_BUILD_NUMBER=6"
 export "DART_OBFUSCATION=false"
 export "TRACK_WIDGET_CREATION=true"
 export "TREE_SHAKE_ICONS=false"

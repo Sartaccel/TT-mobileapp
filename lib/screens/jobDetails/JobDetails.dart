@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:share_plus/share_plus.dart';
@@ -38,6 +40,7 @@ class _JobdetailsState extends State<Jobdetails> {
   List<dynamic> eligibilityList = [];
   List<dynamic> technologyList = [];
   List<dynamic> skillList = [];
+  List<String> userSkills = [];
 
   void _shareApp(String refCode) {
     //final String appUrl = "https://play.google.com/store/apps/details?id=com.android.referral.talentturbo";
@@ -128,54 +131,227 @@ class _JobdetailsState extends State<Jobdetails> {
     }
   }
 
-  Future<void> saveJob(int jobId, int status) async {
-    print('status : ${status}');
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV);
+  Future<bool> saveJob(int jobId, int status) async {
     final url =
         Uri.parse(AppConstants.BASE_URL + AppConstants.SAVE_JOB_TO_FAV_NEW);
-
     final bodyParams = {"jobId": jobId, "isFavorite": status};
 
     try {
-      setState(() {
-        isLoading = true;
-      });
-
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': retrievedUserData!.token
+          'Authorization': retrievedUserData?.token ?? '',
         },
         body: jsonEncode(bodyParams),
       );
 
       if (kDebugMode) {
         print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
+            'Response code: ${response.statusCode} :: Response => ${response.body}');
       }
 
       if (response.statusCode == 200 || response.statusCode == 202) {
-        IconSnackBar.show(
-          context,
-          label: 'Updated successfully',
-          snackBarType: SnackBarType.success,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-        setState(() {
-          isSaved = !isSaved;
-          isLoading = false;
-          //jobSearchTerm ="";
-          //fetchAllJobs();
-        });
+        return true; // ✅ Return success
+      } else {
+        if (kDebugMode) {
+          print('Something went wrong. Please try again.');
+        }
+        return false; // ❌ Return failure
       }
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      if (kDebugMode) print("Error: $e");
+
+      return false; // ❌ Return failure
     }
   }
+
+  String getFormattedExperience(dynamic experience) {
+    double expValue = 0;
+    if (experience is String) {
+      expValue = double.tryParse(experience) ?? 0;
+    } else if (experience is num) {
+      expValue = experience.toDouble();
+    }
+
+    if (expValue == 0) {
+      return 'Fresher';
+    } else {
+      return '${expValue.floor()}+ Years';
+    }
+  }
+
+  String _formatSalary(dynamic salary) {
+    if (salary is num) {
+      if (salary % 1 == 0) {
+        return salary.toInt().toString();
+      } else {
+        return salary.toStringAsFixed(2);
+      }
+    }
+    return salary.toString();
+  }
+
+  final FToast fToast = FToast();
+
+  double _currentBottomPosition = 0.1;
+  final List<double> _activeToastPositions = [];
+
+  void _resetToastPositions() {
+    _currentBottomPosition = 0.1;
+    _activeToastPositions.clear();
+  }
+
+  void showJobSavedToast(BuildContext context) {
+    fToast.init(context);
+    fToast.removeQueuedCustomToasts();
+
+    final position = _currentBottomPosition;
+    _activeToastPositions.add(position);
+    _currentBottomPosition += 0.05;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final toastWidth = screenWidth * 0.95;
+
+    Widget toast = SizedBox(
+      width: toastWidth,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFF2D2D2D),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const Icon(Icons.bookmark_rounded,
+                color: Color(0xff004C99), size: 24),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text(
+                "Job saved!",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontFamily: 'Lato',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                fToast.removeCustomToast();
+                _activeToastPositions.remove(position);
+                if (_activeToastPositions.isEmpty) {
+                  _resetToastPositions();
+                }
+              },
+              child: const Icon(Icons.close, color: Colors.white, size: 22),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    fToast.showToast(
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.045,
+        ),
+        child: toast,
+      ),
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: const Duration(seconds: 2),
+    );
+  }
+
+  void showJobRemovedToast(BuildContext context, VoidCallback onUndo) {
+  fToast.init(context);
+  fToast.removeQueuedCustomToasts();
+
+  final position = _currentBottomPosition;
+  _activeToastPositions.add(position);
+  _currentBottomPosition += 0.05;
+
+  final screenWidth = MediaQuery.of(context).size.width;
+  final toastWidth = screenWidth * 0.95;
+
+  Widget toast = SizedBox(
+    width: toastWidth,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2D2D2D),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const Icon(Icons.bookmark_border_rounded,
+              color: Colors.white, size: 24),
+          const SizedBox(width: 8.0),
+          const Expanded(
+            child: Text(
+              "Job removed!",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontFamily: 'Lato',
+              ),
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              fToast.removeCustomToast();
+              _activeToastPositions.remove(position);
+              if (_activeToastPositions.isEmpty) {
+                _resetToastPositions();
+              }
+              onUndo();
+            },
+            child: IntrinsicWidth(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Undo",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Lato',
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Container(
+                    height: 1,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  fToast.showToast(
+    child: Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).size.height * 0.045,
+      ),
+      child: toast,
+    ),
+    gravity: ToastGravity.BOTTOM,
+    toastDuration: const Duration(seconds: 3),
+  );
+}
 
   bool checkExpiry(String dateString) {
     // Parse the date string
@@ -255,964 +431,1079 @@ class _JobdetailsState extends State<Jobdetails> {
     ));
     return Scaffold(
       backgroundColor: Color(0xffFCFCFC),
-      body: Column(
+      body: Stack(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 40,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
+          Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 40,
+                decoration: BoxDecoration(color: Color(0xff001B3E)),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 60,
+                decoration: BoxDecoration(color: Color(0xff001B3E)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                height: 50,
+                                child: Center(
+                                    child: Text(
+                                  'Back',
+                                  style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontSize: 16,
+                                      color: Colors.white),
+                                ))))
+                      ],
                     ),
-                    InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                              'Back',
-                              style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 16,
-                                  color: Colors.white),
-                            ))))
+                    Text(
+                      'Job Details',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16),
+                    ),
+                    SizedBox(
+                      width: 80,
+                    )
                   ],
                 ),
-                Text(
-                  'Job Details',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Lato',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16),
-                ),
-                SizedBox(
-                  width: 80,
-                )
-              ],
-            ),
-          ),
-          isLoading
-              ? Expanded(
-                  child: Shimmer.fromColors(
-                    baseColor: Color(0xffE6E6E6),
-                    highlightColor: Color(0xffF2F2F2),
-                    child: ListView.builder(
-                      itemCount: 1,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Circular profile placeholder
-                              Row(
-                                children: [
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.11,
-                                    height: MediaQuery.of(context).size.width *
-                                        0.11,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.43,
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.03,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffE6E6E6),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Container(
-                                        width: 250,
-                                        height: 15,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffE6E6E6),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Container(
-                                        width: 300,
-                                        height: 15,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffE6E6E6),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Container(
-                                    width: 25,
-                                    height: 25,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffE6E6E6),
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 15),
-                              Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.43,
-                                        height: 75,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffE6E6E6),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      SizedBox(height: 15),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.43,
-                                        height: 75,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffE6E6E6),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: 25),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.43,
-                                        height: 75,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffE6E6E6),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      SizedBox(height: 15),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.43,
-                                        height: 75,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffE6E6E6),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Color(0xffE6E6E6),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: 170,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(height: 15),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 250,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Container(
-                                    width: 190,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 15),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 180,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Container(
-                                    width: 150,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 15),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 120,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Container(
-                                    width: 140,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Container(
-                                    width: 160,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 15),
-                              Container(
-                                width: 185,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Color(0xffE6E6E6),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: 250,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 1.0,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 1.0,
-                                height: 78,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 1.0,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Color(0xffE6E6E6),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: 200,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 1.0,
-                                height: 83,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 1.0,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 1.0,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Color(0xffE6E6E6),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: 130,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: 270,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Color(0xffE6E6E6),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: 130,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                width: 270,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                )
-              : rawJobData != null
+              ),
+              isLoading
                   ? Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Container(
+                      child: Shimmer.fromColors(
+                        baseColor: Color(0xffE6E6E6),
+                        highlightColor: Color(0xffF2F2F2),
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return Padding(
                               padding: EdgeInsets.all(15),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Circular profile placeholder
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.11,
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.11,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.43,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.03,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Container(
+                                            width: 250,
+                                            height: 15,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Container(
+                                            width: 300,
+                                            height: 15,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        width: 25,
+                                        height: 25,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffE6E6E6),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.43,
+                                            height: 75,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          SizedBox(height: 15),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.43,
+                                            height: 75,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(width: 25),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.43,
+                                            height: 75,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          SizedBox(height: 15),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.43,
+                                            height: 75,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffE6E6E6),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 1,
+                                    color: Color(0xffE6E6E6),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    width: 170,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 250,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(width: 15),
+                                      Container(
+                                        width: 190,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 180,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(width: 15),
+                                      Container(
+                                        width: 150,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 120,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(width: 15),
+                                      Container(
+                                        width: 140,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      SizedBox(width: 15),
+                                      Container(
+                                        width: 160,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 15),
+                                  Container(
+                                    width: 185,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 1,
+                                    color: Color(0xffE6E6E6),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    width: 250,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1.0,
+                                    height: 45,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1.0,
+                                    height: 78,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1.0,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 1,
+                                    color: Color(0xffE6E6E6),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: 200,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1.0,
+                                    height: 83,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1.0,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1.0,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 1,
+                                    color: Color(0xffE6E6E6),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: 130,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: 270,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 1,
+                                    color: Color(0xffE6E6E6),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: 130,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: 270,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffE6E6E6),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  : rawJobData != null
+                      ? Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(15),
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          //Image.asset('assets/images/bmw_logo.png', height: 41, width: 41, ),
-                                          Image(
-                                            image: widget.jobData['logo'] !=
-                                                        null &&
-                                                    widget.jobData['logo']
-                                                        .isNotEmpty
-                                                ? NetworkImage(
-                                                    widget.jobData['logo'],
-                                                  ) as ImageProvider<Object>
-                                                : const AssetImage(
-                                                    'assets/images/tt_logo_resized.png'),
-                                            height: 40,
-                                            width: 40,
-                                            fit: BoxFit.contain,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              // Fallback to asset if network image fails
-                                              return Image.asset(
-                                                  'assets/images/tt_logo_resized.png',
-                                                  height: 40,
-                                                  width: 40);
-                                            },
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Flexible(
-                                                fit: FlexFit.loose,
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width -
-                                                      150,
-                                                  child: Text(
-                                                    rawJobData['data']
-                                                            ['jobTitle'] ??
-                                                        '',
-                                                    //'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontFamily: 'Lato',
-                                                        fontSize: 20,
-                                                        color:
-                                                            Color(0xff333333)),
+                                          Flexible(
+                                            child: Row(
+                                              children: [
+                                                Image(
+                                                  image: widget.jobData[
+                                                                  'logo'] !=
+                                                              null &&
+                                                          widget.jobData['logo']
+                                                              .isNotEmpty
+                                                      ? NetworkImage(widget
+                                                          .jobData['logo'])
+                                                      : const AssetImage(
+                                                              'assets/images/tt_logo_resized.png')
+                                                          as ImageProvider,
+                                                  height: 60,
+                                                  width: 60,
+                                                  fit: BoxFit.contain,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/images/tt_logo_resized.png',
+                                                        height: 40,
+                                                        width: 40);
+                                                  },
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        rawJobData['data']
+                                                                ['jobTitle'] ??
+                                                            '',
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          fontFamily: 'Lato',
+                                                          fontSize: 18,
+                                                          color:
+                                                              Color(0xff333333),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        widget.jobData[
+                                                                'companyName'] ??
+                                                            '',
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontFamily: 'Lato',
+                                                          fontSize: 14,
+                                                          color:
+                                                              Color(0xff545454),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 15),
+                                            child: InkWell(
+                                              onTap: () async {
+                                                bool isSaved = (widget.jobData[
+                                                        'isFavorite'] ==
+                                                    "1");
+                                                int? jobId =
+                                                    widget.jobData['jobId'] ??
+                                                        widget.jobData['id'];
+
+                                                if (jobId != null) {
+                                                  setState(() {
+                                                    widget.jobData[
+                                                            'isFavorite'] =
+                                                        isSaved ? "0" : "1";
+                                                  });
+
+                                                  bool success = await saveJob(
+                                                      jobId, isSaved ? 0 : 1);
+
+                                                  if (!success) {
+                                                    setState(() {
+                                                      widget.jobData[
+                                                              'isFavorite'] =
+                                                          isSaved ? "1" : "0";
+                                                    });
+                                                  } else {
+                                                    if (widget.jobData[
+                                                            'isFavorite'] ==
+                                                        "1") {
+                                                      showJobSavedToast(
+                                                          context);
+                                                    } else {
+                                                      showJobRemovedToast(
+                                                          context, () {
+                                                        setState(() {
+                                                          widget.jobData[
+                                                                  'isFavorite'] =
+                                                              "1";
+                                                        });
+                                                        saveJob(jobId, 1);
+                                                      });
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              child:
+                                                  TweenAnimationBuilder<double>(
+                                                duration:
+                                                    Duration(milliseconds: 400),
+                                                tween: Tween<double>(
+                                                  begin: widget.jobData[
+                                                              'isFavorite'] ==
+                                                          "1"
+                                                      ? 0
+                                                      : 1,
+                                                  end: widget.jobData[
+                                                              'isFavorite'] ==
+                                                          "1"
+                                                      ? 1
+                                                      : 0,
+                                                ),
+                                                builder:
+                                                    (context, value, child) {
+                                                  return Stack(
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .bookmark_border_rounded,
+                                                        size: 25,
+                                                        color: Colors.black54,
+                                                      ),
+                                                      ClipRect(
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .topCenter,
+                                                          heightFactor: value,
+                                                          child: Icon(
+                                                            Icons.bookmark,
+                                                            size: 25,
+                                                            color: Color(
+                                                                0xff004C99),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
                                               ),
-                                              SizedBox(
-                                                height: 3,
-                                              ),
-                                              Text(
-                                                widget.jobData['companyName'] ==
-                                                        null
-                                                    ? ''
-                                                    : widget
-                                                        .jobData['companyName'],
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontFamily: 'Lato',
-                                                    fontSize: 14,
-                                                    color: Color(0xff545454)),
-                                              ),
-                                            ],
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      //Icon( rawJobData['data']['isFavorite'] ==1? Icons.bookmark : Icons.bookmark_border_rounded, size: 25,)
-                                      InkWell(
-                                          onTap: () {
-                                            //saveJob(jobList[index]['id'], jobList[index]['isSaved'] ? 0 : 1);
-                                            if (kDebugMode) {
-                                              print('Status: ${isSaved}');
-                                              print(
-                                                  'id: ${widget.jobData['id']}');
-                                              print(
-                                                  'jobId: ${widget.jobData['jobId']}');
-                                            }
-                                            saveJob(
-                                                widget.jobData['id'] ??
-                                                    widget.jobData['jobId'],
-                                                isSaved ? 0 : 1);
-                                            /* saveJob(
-                                      jobList[index]['id'],
-                                      (jobList[index]['isSaved'] ?? 0) == 1 ? 0 : 1
-                                  );*/
-                                          },
-                                          child: Icon(
-                                            isSaved
-                                                ? Icons.bookmark
-                                                : Icons.bookmark_border_rounded,
-                                            color: isSaved
-                                                ? Color(0xff004C99)
-                                                : null,
-                                            size: 25,
-                                          ))
-                                    ],
-                                  ),
 
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(60, 15, 0, 0),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(5)),
-                                          child: Text(
-                                            widget.jobData['jobCode'] ??
-                                                'TT-JB-9571',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff545454),
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(5)),
-                                          child: Text(
-                                            'Posted ${processDate(widget.jobData['dueDate'])}',
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff545454)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_worktype.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Employment type',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  widget.jobData['workType'],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_experience.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Experience',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  '${(rawJobData['data']['experience'] ?? 1).toInt()}+ years',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Lato',
-                                                    color: Color(0xff333333),
-                                                    fontSize: 14,
+                                      Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(67, 15, 0, 0),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 6, vertical: 8),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Text(
+                                                widget.jobData['jobCode'] ??
+                                                    'TT-JB-9571',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xff545454),
                                                     fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
+                                                    fontFamily: 'lato'),
+                                              ),
                                             ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffEEEEEE),
-                                              borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_onsite.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Work type',
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  rawJobData['data']
-                                                      ['workType'],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Lato',
-                                                      color: Color(0xff333333),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
+                                            SizedBox(
+                                              width: 20,
                                             ),
-                                          ),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5, vertical: 8),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffEEEEEE),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Text(
+                                                'Posted ${processDate(widget.jobData['createdDate']).replaceFirst('-', '')}',
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xff545454),
+                                                    fontWeight: FontWeight.w400,
+                                                    fontFamily: 'lato'),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Container(
-                                          width: 157,
-                                          height: 70,
-                                          decoration: BoxDecoration(
+                                      ),
+
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      GridView.count(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        crossAxisCount: 2,
+                                        mainAxisSpacing: 20,
+                                        crossAxisSpacing: 16,
+                                        childAspectRatio: 157 / 70,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 0),
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
                                               color: Color(0xffEEEEEE),
                                               borderRadius:
-                                                  BorderRadius.circular(9)),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    'assets/images/ic_job_location.svg'),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  'Location',
-                                                  style: TextStyle(
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                      'assets/images/ic_worktype.svg'),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    'Employment type',
+                                                    style: TextStyle(
                                                       fontFamily: 'Lato',
                                                       color: Color(0xff333333),
-                                                      fontSize: 12,
+                                                      fontSize: 10 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
                                                       fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Text(
-                                                  widget.jobData['location'] ??
-                                                      'N/A',
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    widget.jobData['workType'],
+                                                    style: TextStyle(
                                                       fontFamily: 'Lato',
                                                       color: Color(0xff333333),
-                                                      fontSize: 14,
+                                                      fontSize: 11 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
                                                       fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ],
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 40,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Skills required:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Wrap(
-                                      spacing:
-                                          8.0, // Horizontal space between boxes
-                                      runSpacing:
-                                          12.0, // Vertical space between rows
-                                      children: List.generate(
-                                          technologyList.length, (i) {
-                                        return technologyList[i]
-                                                    ['technologyName'] ==
-                                                null
-                                            ? Container()
-                                            : Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 8),
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xffF0F6FF)),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/images/ic_tick.png',
-                                                      height: 8,
-                                                      width: 12,
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffEEEEEE),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                      'assets/images/ic_experience.svg'),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    'Experience',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      color: Color(0xff333333),
+                                                      fontSize: 10 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                     ),
-                                                    SizedBox(
-                                                      width: 10,
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    '${((rawJobData['data']['experience'] ?? 1) < 1) ? '0–1 year' : '${(rawJobData['data']['experience']).toInt()}+ years'}',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      color: Color(0xff333333),
+                                                      fontSize: 11 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                     ),
-                                                    Text(
-                                                      technologyList[i]
-                                                          ['technologyName'],
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontFamily: 'Lato',
-                                                          color: Color(
-                                                              0xff004C99)),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffEEEEEE),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                      'assets/images/ic_onsite.svg'),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    'Work type',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      color: Color(0xff333333),
+                                                      fontSize: 10 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                     ),
-                                                  ],
-                                                ),
-                                              );
-                                      }),
-                                    ),
-                                  ),
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    rawJobData['data']
+                                                        ['workType'],
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      color: Color(0xff333333),
+                                                      fontSize: 11 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffEEEEEE),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                      'assets/images/ic_job_location.svg'),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    'Location',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      color: Color(0xff333333),
+                                                      fontSize: 10 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Text(
+                                                    widget.jobData[
+                                                            'location'] ??
+                                                        'N/A',
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      color: Color(0xff333333),
+                                                      fontSize: 11 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Job description:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Skills required:',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Wrap(
+                                          spacing: 8.0,
+                                          runSpacing: 12.0,
+                                          children: () {
+                                            Set<String> seenSkillsLower = {};
+                                            List<Widget> skillWidgets = [];
 
-                                  //Job Description
-                                  /* Container(
+                                            for (var tech in technologyList) {
+                                              List<dynamic> skills =
+                                                  tech['technologySkillData'] ??
+                                                      [];
+
+                                              for (var skill in skills) {
+                                                final String skillName =
+                                                    skill['skillName'] ?? '';
+                                                final String skillNameLower =
+                                                    skillName.toLowerCase();
+
+                                                if (seenSkillsLower.contains(
+                                                    skillNameLower)) continue;
+
+                                                seenSkillsLower
+                                                    .add(skillNameLower);
+
+                                                final bool isMatched =
+                                                    userSkills
+                                                        .map((e) =>
+                                                            e.toLowerCase())
+                                                        .contains(
+                                                            skillNameLower);
+
+                                                skillWidgets.add(
+                                                  Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 8),
+                                                    decoration: BoxDecoration(
+                                                      color: isMatched
+                                                          ? Color(0xffF0F6FF)
+                                                          : Color(0xffEEEEEE),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              7.0),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        if (isMatched)
+                                                          SvgPicture.asset(
+                                                            'assets/images/ic_tick.svg',
+                                                            height: 12,
+                                                            width: 18,
+                                                          ),
+                                                        if (isMatched)
+                                                          SizedBox(width: 10),
+                                                        Text(
+                                                          skillName,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontFamily: 'Lato',
+                                                            color: isMatched
+                                                                ? Color(
+                                                                    0xff004C99)
+                                                                : Color(
+                                                                    0xff333333),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            }
+
+                                            return skillWidgets;
+                                          }(),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
+
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Job description:',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+
+                                      //Job Description
+                                      /* Container(
                           width: MediaQuery.of(context).size.width,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1369,537 +1660,544 @@ class _JobdetailsState extends State<Jobdetails> {
                             ],
                           ),
                         ),*/
-                                  widget.jobData['jobDescription']
-                                          .toString()
-                                          .trim()
-                                          .isEmpty
-                                      ? Text("No description available")
-                                      : Html(
-                                          data: widget.jobData['jobDescription']
-                                                  ?.toString()
-                                                  .trim() ??
-                                              'No description available',
-                                          style: {
-                                            "body": Style(
-                                              fontSize: FontSize(14),
-                                              textAlign: TextAlign.justify,
-                                              color: Color(0xff333333),
+                                      widget.jobData['jobDescription']
+                                              .toString()
+                                              .trim()
+                                              .isEmpty
+                                          ? Text("No description available")
+                                          : Html(
+                                              data: widget
+                                                      .jobData['jobDescription']
+                                                      ?.toString()
+                                                      .trim() ??
+                                                  'No description available',
+                                              style: {
+                                                "body": Style(
+                                                  fontSize: FontSize(11 *
+                                                      MediaQuery.of(context)
+                                                          .textScaleFactor),
+                                                  textAlign: TextAlign.left,
+                                                  color: Color(0xff333333),
+                                                ),
+                                                "p": Style(
+                                                  fontSize: FontSize(14.0 *
+                                                      MediaQuery.of(context)
+                                                          .textScaleFactor),
+                                                  textAlign: TextAlign.left,
+                                                  color: Color(0xff333333),
+                                                ),
+                                              },
                                             ),
-                                            "p": Style(
-                                              fontSize: FontSize(14.0),
-                                              textAlign: TextAlign.justify,
-                                              color: Color(0xff333333),
-                                            ),
-                                          },
-                                        ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
 
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Qualifications: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Qualifications: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top:
-                                                      10.0), // Adjust padding if needed
-                                              child: Icon(
-                                                Icons
-                                                    .brightness_1, // You can use any icon you prefer for the bullet
-                                                size:
-                                                    8, // Small size for the bullet
-                                                color: Colors
-                                                    .black, // Adjust color if necessary
-                                              ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 10.5),
+                                                  child: Icon(
+                                                    Icons.brightness_1,
+                                                    size: 8 *
+                                                        MediaQuery.of(context)
+                                                            .textScaleFactor,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 8),
+                                                Expanded(
+                                                  child: RichText(
+                                                      text: TextSpan(children: [
+                                                    TextSpan(
+                                                      text: 'Experience: ',
+                                                      style: TextStyle(
+                                                        fontSize: 14 *
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .textScaleFactor,
+                                                        fontFamily: 'lato',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Color(0xff333333),
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text:
+                                                          getFormattedExperience(
+                                                              rawJobData['data']
+                                                                  [
+                                                                  'experience']),
+                                                      style: TextStyle(
+                                                        height: 1.5,
+                                                        fontSize: 14 *
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .textScaleFactor,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        color:
+                                                            Color(0xff333333),
+                                                      ),
+                                                    ),
+                                                  ])),
+                                                )
+                                              ],
                                             ),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: RichText(
-                                                  text: TextSpan(children: [
-                                                TextSpan(
-                                                  text: 'Experience: ',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                      '${rawJobData['data']['experience']} ${rawJobData['data']['expType']}',
-                                                  style: TextStyle(
-                                                    height: 1.5,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
-                                                  ),
-                                                ),
-                                              ])),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top:
-                                                      10.0), // Adjust padding if needed
-                                              child: Icon(
-                                                Icons
-                                                    .brightness_1, // You can use any icon you prefer for the bullet
-                                                size:
-                                                    8, // Small size for the bullet
-                                                color: Colors
-                                                    .black, // Adjust color if necessary
-                                              ),
+                                            SizedBox(
+                                              height: 15,
                                             ),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: RichText(
-                                                  text: TextSpan(children: [
-                                                TextSpan(
-                                                  text: 'Education: ',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 10.5),
+                                                  child: Icon(
+                                                    Icons.brightness_1,
+                                                    size: 8 *
+                                                        MediaQuery.of(context)
+                                                            .textScaleFactor,
+                                                    color: Colors.black,
                                                   ),
                                                 ),
-                                                TextSpan(
-                                                  text:
-                                                      eligibilityList.length > 0
+                                                SizedBox(width: 8),
+                                                Expanded(
+                                                  child: RichText(
+                                                      text: TextSpan(children: [
+                                                    TextSpan(
+                                                      text: 'Education: ',
+                                                      style: TextStyle(
+                                                        fontSize: 14 *
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .textScaleFactor,
+                                                        fontFamily: 'lato',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Color(0xff333333),
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: eligibilityList
+                                                                  .length >
+                                                              0
                                                           ? eligibilityList[0]
                                                               ['dataName']
                                                           : ' - ',
-                                                  style: TextStyle(
-                                                    height: 1.5,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Color(
-                                                        0xff333333), // Make sure to set color when using TextSpan
+                                                      style: TextStyle(
+                                                        height: 1.5,
+                                                        fontSize: 14 *
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .textScaleFactor,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        color:
+                                                            Color(0xff333333),
+                                                      ),
+                                                    ),
+                                                  ])),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 15,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 10.5),
+                                                  child: Icon(
+                                                    Icons.brightness_1,
+                                                    size: 8 *
+                                                        MediaQuery.of(context)
+                                                            .textScaleFactor,
+                                                    color: Colors.black,
                                                   ),
                                                 ),
-                                              ])),
-                                            )
+                                                SizedBox(width: 8),
+                                                Expanded(
+                                                  child: RichText(
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: 'Technology: ',
+                                                          style: TextStyle(
+                                                            fontSize: 14 *
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .textScaleFactor,
+                                                            fontFamily: 'lato',
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Color(
+                                                                0xff333333),
+                                                          ),
+                                                        ),
+                                                        TextSpan(
+                                                          text: technologyList
+                                                              .map((tech) => tech[
+                                                                  'technologyName'])
+                                                              .join(', '),
+                                                          style: TextStyle(
+                                                            height: 1.5,
+                                                            fontSize: 14 *
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .textScaleFactor,
+                                                            fontFamily: 'lato',
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal,
+                                                            color: Color(
+                                                                0xff333333),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top:
-                                                      10.0), // Adjust padding if needed
-                                              child: Icon(
-                                                Icons
-                                                    .brightness_1, // You can use any icon you prefer for the bullet
-                                                size:
-                                                    8, // Small size for the bullet
-                                                color: Colors
-                                                    .black, // Adjust color if necessary
-                                              ),
-                                            ),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: RichText(
-                                                text: TextSpan(
-                                                  children: technologyList
-                                                      .map((tech) => TextSpan(
-                                                            children: [
-                                                              TextSpan(
-                                                                text:
-                                                                    'Technology: ',
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Color(
-                                                                      0xff333333),
-                                                                ),
-                                                              ),
-                                                              TextSpan(
-                                                                text: tech[
-                                                                    'technologyName'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  height: 1.5,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .normal,
-                                                                  color: Color(
-                                                                      0xff333333),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ))
-                                                      .toList(),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Salary: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 10.0),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Expanded(
+                                            child: RichText(
+                                                text: TextSpan(children: [
+                                              TextSpan(
+                                                text: 'Est. ',
+                                                style: TextStyle(
+                                                  fontSize: 14 *
+                                                      MediaQuery.of(context)
+                                                          .textScaleFactor,
+                                                  fontFamily: 'lato',
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Color(0xff333333),
                                                 ),
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
-                                  Text(
-                                    'Salary: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top:
-                                                10.0), // Adjust padding if needed
-                                        child: Icon(
-                                          Icons
-                                              .brightness_1, // You can use any icon you prefer for the bullet
-                                          size: 8, // Small size for the bullet
-                                          color: Colors
-                                              .black, // Adjust color if necessary
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: RichText(
-                                            text: TextSpan(children: [
-                                          TextSpan(
-                                            text: 'EST. ',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(
-                                                  0xff333333), // Make sure to set color when using TextSpan
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                ' ${rawJobData['data']['currency']} ${widget.jobData['salary']} ${rawJobData['data']['payFrequency']}',
-                                            style: TextStyle(
-                                              height: 1.5,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(
-                                                  0xff333333), // Make sure to set color when using TextSpan
-                                            ),
-                                          ),
-                                        ])),
-                                      )
-                                    ],
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Valid till: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xff333333),
-                                        fontSize: 18,
-                                        fontFamily: 'Lato'),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top:
-                                                8.0), // Adjust padding if needed
-                                        child: Icon(
-                                          Icons
-                                              .calendar_month, // You can use any icon you prefer for the bullet
-                                          size: 12, // Small size for the bullet
-                                          color: Colors
-                                              .black, // Adjust color if necessary
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: [
                                               TextSpan(
-                                                text: checkExpiry(
-                                                        widget.jobData[
-                                                                'dueDate'] ??
-                                                            '1990-01-01')
-                                                    ? 'Expired'
-                                                    : formatDate(widget.jobData[
-                                                            'dueDate'] ??
-                                                        '1990-01-01'),
+                                                text:
+                                                    ' ${rawJobData['data']['currency']} ${_formatSalary(widget.jobData['salary'])} ${rawJobData['data']['payFrequency']}',
                                                 style: TextStyle(
                                                   height: 1.5,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Color(
-                                                      0xff333333), // Ensure color is set
+                                                  fontSize: 14 *
+                                                      MediaQuery.of(context)
+                                                          .textScaleFactor,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: 'lato',
+                                                  color: Color(0xff333333),
                                                 ),
                                               ),
-                                            ],
+                                            ])),
+                                          )
+                                        ],
+                                      ),
+
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 1,
+                                        color: Color(0xffE6E6E6),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        'Valid till: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xff333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Lato'),
+                                      ),
+                                      SizedBox(height: 20),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8.0),
+                                            // child: Icon(
+                                            //   Icons.calendar_month,
+                                            //   size: 12,
+                                            //   color: Colors.black,
+                                            // ),
                                           ),
-                                        ),
-                                      )
+                                          SizedBox(width: 8),
+                                          Expanded(
+                                            child: RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: checkExpiry(widget
+                                                                    .jobData[
+                                                                'dueDate'] ??
+                                                            '1990-01-01')
+                                                        ? 'Expired'
+                                                        : _formatDate(widget
+                                                                    .jobData[
+                                                                'dueDate'] ??
+                                                            '1990-01-01'),
+                                                    style: TextStyle(
+                                                      height: 1.5,
+                                                      fontSize: 14 *
+                                                          MediaQuery.of(context)
+                                                              .textScaleFactor,
+                                                      fontFamily: 'Lato',
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Color(0xff333333),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+
+                                      SizedBox(height: 85),
+                                      // Container(
+                                      //   width: MediaQuery.of(context).size.width,
+                                      //   height: 1,
+                                      //   color: Color(0xffE6E6E6),
+                                      // ),
                                     ],
                                   ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 1,
-                                    color: Color(0xffE6E6E6),
-                                  ),
-
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 20),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            if (!checkExpiry(
-                                                widget.jobData['dueDate'])) {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          JobApply(
-                                                            jobData:
-                                                                widget.jobData,
-                                                          )));
-                                            }
-                                          },
-                                          child: Container(
-                                            width: ((MediaQuery.of(context)
-                                                        .size
-                                                        .width) /
-                                                    2) -
-                                                30,
-                                            height: 44,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 0),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            decoration: BoxDecoration(
-                                                color: checkExpiry(
-                                                        widget.jobData[
-                                                                'dueDate'] ??
-                                                            '01-01-1990')
-                                                    ? Colors.redAccent
-                                                    : AppColors.primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Center(
-                                              child: Text(
-                                                checkExpiry(widget.jobData[
-                                                            'dueDate'] ??
-                                                        '01-01-1990')
-                                                    ? 'Expired'
-                                                    : 'Apply',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            //_shareApp();
-                                            checkExpiry(
-                                                    widget.jobData['dueDate'] ??
-                                                        '1990-01-01')
-                                                ?
-
-                                                // Fluttertoast.showToast(
-                                                //     msg: 'Cannot share an expired job !!!',
-                                                //     toastLength: Toast.LENGTH_SHORT,
-                                                //     gravity: ToastGravity.BOTTOM,
-                                                //     timeInSecForIosWeb: 1,
-                                                //     backgroundColor: Color(0xff2D2D2D),
-                                                //     textColor: Colors.white,
-                                                //     fontSize: 16.0)
-                                                IconSnackBar.show(
-                                                    context,
-                                                    label:
-                                                        'Cannot share an expired job !!!',
-                                                    snackBarType:
-                                                        SnackBarType.alert,
-                                                    backgroundColor:
-                                                        Color(0xff2D2D2D),
-                                                    iconColor: Colors.white,
-                                                  )
-                                                : getRefCode(widget.isFromSaved
-                                                    ? widget.jobData['jobId']
-                                                    : widget.jobData['id']);
-                                          },
-                                          child: Container(
-                                            width: ((MediaQuery.of(context)
-                                                        .size
-                                                        .width) /
-                                                    2) -
-                                                30,
-                                            height: 44,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 0),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color:
-                                                        AppColors.primaryColor),
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Center(
-                                              child: Text(
-                                                'Refer',
-                                                style: TextStyle(
-                                                    color:
-                                                        AppColors.primaryColor),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
+                        )
+                      : Expanded(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset('assets/icon/noInternet.svg'),
+                                SizedBox(height: 25),
+                                Text(
+                                  'No Internet connection',
+                                  style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Color(0xff333333)),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Connect to Wi-Fi or cellular data and try again.',
+                                  style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Color(0xff545454)),
+                                ),
+                                SizedBox(height: 20),
+                                InkWell(
+                                  onTap: () {
+                                    getJobData();
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width - 50,
+                                    height: 44,
+                                    margin: EdgeInsets.symmetric(horizontal: 0),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: AppColors.primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Center(
+                                      child: Text(
+                                        'Try Again',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+            ],
+          ),
+          isLoading
+              ? Container()
+              : Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    bottom: true,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 25),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.95),
                       ),
-                    )
-                  : Expanded(
-                      child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SvgPicture.asset('assets/icon/noInternet.svg'),
-                          Text(
-                            'No Internet connection',
-                            style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Color(0xff333333)),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            'Connect to Wi-Fi or cellular data and try again.',
-                            style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Color(0xff545454)),
-                          ),
-                          SizedBox(height: 30),
+                          // Apply Button
                           InkWell(
                             onTap: () {
-                              getJobData();
+                              if (!checkExpiry(widget.jobData['dueDate'])) {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        JobApply(jobData: widget.jobData),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                  ),
+                                );
+                              }
                             },
                             child: Container(
-                              width: MediaQuery.of(context).size.width - 50,
+                              width:
+                                  (MediaQuery.of(context).size.width / 2) - 20,
                               height: 44,
-                              margin: EdgeInsets.symmetric(horizontal: 0),
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.circular(10)),
+                                color: checkExpiry(widget.jobData['dueDate'] ??
+                                        '01-01-1990')
+                                    ? Colors.redAccent
+                                    : AppColors.primaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'Apply',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Refer Button
+                          InkWell(
+                            onTap: () {
+                              checkExpiry(
+                                      widget.jobData['dueDate'] ?? '1990-01-01')
+                                  ? IconSnackBar.show(
+                                      context,
+                                      label: 'Cannot share an expired job !!!',
+                                      snackBarType: SnackBarType.alert,
+                                      backgroundColor: Color(0xff2D2D2D),
+                                      iconColor: Colors.white,
+                                    )
+                                  : getRefCode(widget.isFromSaved
+                                      ? widget.jobData['jobId']
+                                      : widget.jobData['id']);
+                            },
+                            child: Container(
+                              width:
+                                  (MediaQuery.of(context).size.width / 2) - 20,
+                              height: 44,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: AppColors.primaryColor),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                               child: Center(
                                 child: Text(
-                                  'Try Again',
-                                  style: TextStyle(color: Colors.white),
+                                  'Refer',
+                                  style:
+                                      TextStyle(color: AppColors.primaryColor),
                                 ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ))
+                    ),
+                  ),
+                ),
         ],
       ),
     );
@@ -1932,11 +2230,11 @@ class _JobdetailsState extends State<Jobdetails> {
   }
 }
 
-String formatDate(String dateString) {
+String _formatDate(String dateStr) {
   try {
-    DateTime parsedDate = DateFormat("yyyy-MM-dd").parse(dateString);
-    return DateFormat("dd-MM-yyyy").format(parsedDate);
+    DateTime date = DateTime.parse(dateStr);
+    return DateFormat('dd-MMM-yyyy').format(date);
   } catch (e) {
-    return 'Invalid Date'; // Handle invalid input gracefully
+    return dateStr; // fallback in case it's not a date
   }
 }

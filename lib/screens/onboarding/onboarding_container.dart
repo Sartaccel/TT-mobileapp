@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/screens/auth/login/login_screen.dart';
@@ -29,7 +29,10 @@ class _OnboardingContainerState extends State<OnboardingContainer> {
         ],
       ),
     );*/
-
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Color(0xffFCFCFC),
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return Scaffold(
       backgroundColor: Color(0xffFCFCFC),
       body: SingleChildScrollView(
@@ -38,37 +41,35 @@ class _OnboardingContainerState extends State<OnboardingContainer> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
-            child: Image.asset('assets/images/tt_logo_full_1.png',
-                width: MediaQuery.of(context).size.width * 0.6,
-                height: MediaQuery.of(context).size.height * 0.25,
-                fit: BoxFit.contain),
-          ),
-          SizedBox(
-            height: 400,
-            child: PageView(
-              controller: _controller,
-              children: [
-                OnboardingContentOne(),
-                OnboardingContentTwo(),
-                OnboardingContentThree(),
-              ],
+              child: Image.asset('assets/images/tt_logo_full_1.png',
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  fit: BoxFit.contain),
             ),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.07),
-          Column(
-            children: [
-              SmoothPageIndicator(
+            SizedBox(
+              height: 400,
+              child: PageView(
                 controller: _controller,
-                count: 3,
-                effect: ExpandingDotsEffect(
-                    dotHeight: 5,
-                    activeDotColor: Color(
-                        0xff004C99)), // You can customize the indicator style
+                children: [
+                  OnboardingContentOne(),
+                  OnboardingContentTwo(),
+                  OnboardingContentThree(),
+                ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+            Column(
+              children: [
+                SmoothPageIndicator(
+                  controller: _controller,
+                  count: 3,
+                  effect: ExpandingDotsEffect(
+                      dotHeight: 5, activeDotColor: Color(0xff004C99)),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
                       context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -77,33 +78,30 @@ class _OnboardingContainerState extends State<OnboardingContainer> {
                         reverseTransitionDuration: Duration.zero,
                       ),
                     );
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => LoginScreen()));
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 44,
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: Text(
-                      'Get Started',
-                      style: TextStyle(color: Colors.white),
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 44,
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Center(
+                      child: Text(
+                        'Get Started',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-        ],
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          ],
+        ),
       ),
-    ),);
+    );
   }
 
   @override

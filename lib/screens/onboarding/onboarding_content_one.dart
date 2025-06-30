@@ -15,10 +15,8 @@ class _OnboardingContentOneState extends State<OnboardingContentOne> {
     return Container(
       child: Column(
         children: [
-          Center(
-              //Image.asset('assets/images/onboarding_one_.png', height: 220),
-              child: SvgPicture.asset('assets/images/slider1.svg',
-                  height: MediaQuery.of(context).size.height * 0.25)),
+          SvgPicture.asset('assets/images/slider1.svg',
+              height: MediaQuery.of(context).size.height * 0.25),
           SizedBox(
             height: 30,
           ),

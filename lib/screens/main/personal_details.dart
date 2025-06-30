@@ -124,6 +124,16 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     }
   }
 
+  String formatToMonthYear(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+    try {
+      final DateTime date = DateTime.parse(dateStr);
+      return DateFormat('MMM yyyy').format(date);
+    } catch (e) {
+      return '';
+    }
+  }
+
   Future<void> deleteEmployment(String id) async {
     final url = Uri.parse(
         AppConstants.BASE_URL + AppConstants.DELETE_EMPLOYMENT + '/${id}');
@@ -711,17 +721,19 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
           contentPadding: EdgeInsets.fromLTRB(22, 15, 15, 22),
           title: Text(
-            'Delete employment details',
+            'Delete work experience',
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'lato',
                 color: Color(0xff333333)),
           ),
           content: Text(
-            'Are you sure you want to delete this employment detail?',
+            'Are you sure you want to delete your work experience?',
             style: TextStyle(
                 height: 1.4,
                 fontSize: 14,
+                fontFamily: 'lato',
                 fontWeight: FontWeight.w400,
                 color: Color(0xff333333)),
           ),
@@ -740,7 +752,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 child: Center(
                   child: Text(
                     'Cancel',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: TextStyle(
+                        color: AppColors.primaryColor, fontFamily: 'lato'),
                   ),
                 ),
               ),
@@ -896,60 +909,71 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 Positioned(
                                   top:
                                       MediaQuery.of(context).size.height * 0.14,
-                                  left:
-                                      (MediaQuery.of(context).size.width / 2) -
-                                          55,
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.25,
-                                    height: MediaQuery.of(context).size.width *
-                                        0.25,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.white, width: 2),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: InkWell(
-                                      onTap: () async {
-                                        await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditPhotoPage()),
-                                        );
-                                        fetchProfileFromPref();
-                                      },
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: (candidateProfileModel != null &&
-                                                candidateProfileModel!
-                                                        .imagePath !=
-                                                    null)
-                                            ? Image.network(
-                                                candidateProfileModel!
-                                                    .imagePath!,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : SvgPicture.asset(
-                                                'assets/icon/profile.svg',
-                                                height: 100,
-                                                width: 100,
-                                                fit: BoxFit.cover,
+                                  left: (MediaQuery.of(context).size.width -
+                                          (MediaQuery.of(context).size.width *
+                                              0.25)) /
+                                      2,
+                                  child: Stack(
+                                    alignment: Alignment.bottomRight,
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.25,
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.25,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.white, width: 2),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            await Navigator.push(
+                                              context,
+                                              PageRouteBuilder(
+                                                pageBuilder: (context,
+                                                        animation,
+                                                        secondaryAnimation) =>
+                                                    EditPhotoPage(),
+                                                transitionDuration:
+                                                    Duration.zero,
+                                                reverseTransitionDuration:
+                                                    Duration.zero,
                                               ),
+                                            );
+                                            fetchProfileFromPref();
+                                          },
+                                          child: ClipOval(
+                                            child: (candidateProfileModel !=
+                                                        null &&
+                                                    candidateProfileModel!
+                                                            .imagePath !=
+                                                        null)
+                                                ? Image.network(
+                                                    candidateProfileModel!
+                                                        .imagePath!,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : SvgPicture.asset(
+                                                    'assets/icon/profile.svg',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        right: 0,
+                                        bottom: 0,
+                                        child: SvgPicture.asset(
+                                          'assets/icon/DpEdit.svg',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Positioned(
-                                  left: (MediaQuery.of(context).size.width /
-                                          2) +
-                                      MediaQuery.of(context).size.width * 0.07,
-                                  top:
-                                      MediaQuery.of(context).size.height * 0.23,
-                                  child: SvgPicture.asset(
-                                      'assets/icon/DpEdit.svg',
-                                      width: 26,
-                                      height: 26),
                                 ),
                                 Positioned(
                                   right:
@@ -960,9 +984,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                     onTap: () async {
                                       await Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                EditPersonalDetails()),
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation,
+                                                  secondaryAnimation) =>
+                                              EditPersonalDetails(),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration:
+                                              Duration.zero,
+                                        ),
                                       );
                                       fetchProfileFromPref();
                                     },
@@ -1060,10 +1089,20 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 minLeadingWidth: 10,
                                 title: Text(
                                   candidateProfileModel!.experience != null
-                                      ? '${candidateProfileModel!.experience} Years'
+                                      ? candidateProfileModel!.experience ==
+                                                  0 ||
+                                              candidateProfileModel!
+                                                      .experience ==
+                                                  0.0
+                                          ? 'Fresher'
+                                          : candidateProfileModel!.experience!
+                                                  .toStringAsFixed(1)
+                                                  .endsWith('.0')
+                                              ? '${candidateProfileModel!.experience!.toInt()} ${candidateProfileModel!.experience!.toInt() == 1 ? 'Year' : 'Years'}'
+                                              : '${candidateProfileModel!.experience} Years'
                                       : 'Experience not updated',
                                   style: TextStyle(
-                                    fontSize: 16, // Static font size
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff333333),
                                   ),
@@ -1080,9 +1119,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                 ),
                                 minLeadingWidth: 10,
                                 title: Text(
-                                  '${candidateProfileModel!.mobile}',
+                                  candidateProfileModel!.mobile != null &&
+                                          candidateProfileModel!.mobile!
+                                              .startsWith('+91') &&
+                                          candidateProfileModel!
+                                                  .mobile!.length ==
+                                              13
+                                      ? '+91 ${candidateProfileModel!.mobile!.substring(3)}'
+                                      : candidateProfileModel!.mobile ??
+                                          'Not available',
                                   style: TextStyle(
-                                    fontSize: 16, // Static font size
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff333333),
                                   ),
@@ -1137,7 +1184,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                           )
                         : Container(),
                     SizedBox(
-                      height: 15,
+                      height: 10,
                     ),
                     Container(
                       width: 550,
@@ -1245,10 +1292,16 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                   Navigator.pop(context);
                                                   Navigator.push(
                                                     context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
+                                                    PageRouteBuilder(
+                                                      pageBuilder: (context,
+                                                              animation,
+                                                              secondaryAnimation) =>
                                                           DocViewerPage(
                                                               url: filePath),
+                                                      transitionDuration:
+                                                          Duration.zero,
+                                                      reverseTransitionDuration:
+                                                          Duration.zero,
                                                     ),
                                                   );
                                                 }
@@ -1406,7 +1459,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       ),
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 10,
                     ),
                     Container(
                       padding: EdgeInsets.all(12),
@@ -1684,11 +1737,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                       ),
                                                       SizedBox(height: 10),
                                                       Text(
-                                                        '${formatDate(workList[index]['employedFrom'])} - ${formatDate(workList[index]['employedTo'])}',
+                                                        '${formatToMonthYear(educationList[index]['graduatedFrom'])} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : formatToMonthYear(educationList[index]['graduatedTo'])}',
                                                         style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w400,
                                                           fontSize: 14,
+                                                          fontFamily: 'lato',
                                                           color:
                                                               Color(0xff7D7C7C),
                                                         ),
@@ -1719,7 +1773,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       ),
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 10,
                     ),
                     Container(
                       padding: EdgeInsets.all(
@@ -1924,7 +1978,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                                     context)
                                                                 .size
                                                                 .width *
-                                                            0.03, // Responsive dot size
+                                                            0.03,
                                                         height: MediaQuery.of(
                                                                     context)
                                                                 .size
@@ -1933,53 +1987,50 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                         decoration:
                                                             BoxDecoration(
                                                           color: Colors
-                                                              .transparent, // Transparent inside
+                                                              .transparent,
                                                           shape:
                                                               BoxShape.circle,
                                                           border: Border.all(
                                                             color: Color(
-                                                                0xff004C99), // Border color
+                                                                0xff004C99),
                                                             width: MediaQuery.of(
                                                                         context)
                                                                     .size
                                                                     .width *
-                                                                0.006, // Responsive border thickness
+                                                                0.006,
                                                           ),
                                                         ),
                                                       ),
-
                                                       SizedBox(
                                                           height: MediaQuery.of(
                                                                       context)
                                                                   .size
                                                                   .height *
-                                                              0.005), // Responsive spacing
-
+                                                              0.005),
                                                       if (index !=
-                                                          workList.length -
-                                                              1) // Only add line if not last item
+                                                          workList.length - 1)
                                                         Container(
                                                           width: MediaQuery.of(
                                                                       context)
                                                                   .size
                                                                   .width *
-                                                              0.007, // Responsive line thickness
+                                                              0.007,
                                                           height: MediaQuery.of(
                                                                       context)
                                                                   .size
                                                                   .height *
-                                                              0.1, // Adjust based on screen
+                                                              0.1,
                                                           color:
                                                               Color(0xff004C99),
                                                         ),
                                                     ],
                                                   ),
                                                   SizedBox(
-                                                      width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width *
-                                                          0.04), // Spacing before text
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.04),
 
                                                   // Education Details Column
                                                   Column(
@@ -1996,11 +2047,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                         style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w600,
-                                                          fontSize: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.04,
+                                                          fontSize: 18,
+                                                          fontFamily: 'lato',
                                                           color:
                                                               Color(0xff333333),
                                                         ),
@@ -2022,11 +2070,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                         style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w400,
-                                                          fontSize: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.035,
+                                                          fontFamily: 'lato',
+                                                          fontSize: 14,
                                                           color:
                                                               Color(0xff333333),
                                                         ),
@@ -2038,15 +2083,12 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                                                   .height *
                                                               0.01),
                                                       Text(
-                                                        '${formatDate(educationList[index]['graduatedFrom'])} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : formatDate(educationList[index]['graduatedTo'])}',
+                                                        '${formatToMonthYear(educationList[index]['graduatedFrom'])} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : formatToMonthYear(educationList[index]['graduatedTo'])}',
                                                         style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w400,
-                                                          fontSize: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.035,
+                                                          fontSize: 14,
+                                                          fontFamily: 'lato',
                                                           color:
                                                               Color(0xff7D7C7C),
                                                         ),
@@ -2078,7 +2120,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.02,
+                      height: 10,
                     ),
                     Container(
                       padding: EdgeInsets.all(12),
@@ -2158,8 +2200,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                                       alignment: WrapAlignment.start,
                                       crossAxisAlignment:
                                           WrapCrossAlignment.start,
-                                      spacing:
-                                          12.0, // Horizontal space between boxes
+                                      spacing: 12.0,
                                       runSpacing: 12.0,
                                       children:
                                           List.generate(userSkills.length, (i) {

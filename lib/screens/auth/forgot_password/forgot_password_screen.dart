@@ -79,20 +79,41 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       if (response.statusCode == 200) {
         if (status.toLowerCase().trim().contains('ok') ||
             statusMessage.toLowerCase().trim().contains('successfully')) {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.green,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff4CAF50),
-            iconColor: Colors.white,
+          // IconSnackBar.show(
+          //   context,
+          //   label: statusMessage,
+          //   snackBarType: SnackBarType.success,
+          //   backgroundColor: Color(0xff4CAF50),
+          //   iconColor: Colors.white,
+          // );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Color(0xff2D2D2D),
+              elevation: 10,
+              margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              content: Row(
+                children: [
+                  SvgPicture.asset('assets/icon/send.svg'),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      statusMessage,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () =>
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                    child: Icon(Icons.close_rounded, color: Colors.white),
+                  )
+                ],
+              ),
+              duration: Duration(seconds: 3),
+            ),
           );
 
           Navigator.push(
@@ -206,29 +227,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
-                        colors: [Color(0xff545454), Color(0xff004C99)],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ).createShader(
-                          Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                      blendMode: BlendMode.srcIn,
-                      child: Text(
-                        'Please enter the address associated with your account',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: ShaderMask(
+                        shaderCallback: (bounds) => LinearGradient(
+                          colors: [Color(0xff545454), Color(0xff004C99)],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ).createShader(
+                            Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                        blendMode: BlendMode.srcIn,
+                        child: Text(
+                          'Please enter the email address associated with your account',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
                             fontWeight: FontWeight.w400,
                             color: Color(0xff545454),
                             fontSize: 14,
-                            fontFamily: 'Lato'),
+                            fontFamily: 'Lato',
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: 50,
+                      height: 60,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +340,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ),
                       ],
                     ),
-                    SizedBox(height: 50),
+                    SizedBox(height: 60),
                     InkWell(
                       onTap: () {
                         if (emailController.text.trim().isEmpty ||

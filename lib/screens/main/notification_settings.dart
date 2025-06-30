@@ -1,7 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/models/login_data_model.dart';
@@ -14,8 +13,6 @@ class NotificationSettings extends StatefulWidget {
 }
 
 class _NotificationSettingsState extends State<NotificationSettings> {
-  bool isLoading = true;
-
   final databaseRef =
       FirebaseDatabase.instance.ref().child(AppConstants.APP_NAME);
 
@@ -29,25 +26,14 @@ class _NotificationSettingsState extends State<NotificationSettings> {
     final snapshot =
         await databaseRef.child('$sanitizedEmail/notificationSettings').get();
 
-    setState(() {
-      isLoading = true;
-    });
-
     if (snapshot.exists) {
       print('Settings: ${snapshot.value}');
-
       var snapData = snapshot.value as Map<dynamic, dynamic>;
-
       setState(() {
         pushNotification = snapData['pushNotification'];
         emailNotification = snapData['emailNotification'];
-
-        isLoading = false;
       });
     } else {
-      setState(() {
-        isLoading = false;
-      });
       print('No data found for the user.');
     }
   }
@@ -55,10 +41,27 @@ class _NotificationSettingsState extends State<NotificationSettings> {
   void updatePushNotificationDb() {
     final sanitizedEmail = email.replaceAll('.', ',');
 
-    databaseRef.child('${sanitizedEmail}/notificationSettings').set({
+    databaseRef.child('$sanitizedEmail/notificationSettings').set({
       'pushNotification': pushNotification,
       'emailNotification': emailNotification
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfileFromPref();
+  }
+
+  Future<void> fetchProfileFromPref() async {
+    UserCredentials? loadedCredentials =
+        await UserCredentials.loadCredentials();
+    if (loadedCredentials != null) {
+      setState(() {
+        email = loadedCredentials.username;
+        getUserSettings(email);
+      });
+    }
   }
 
   @override
@@ -68,6 +71,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
+
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
       body: Column(
@@ -97,19 +101,23 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                       },
                     ),
                     InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                              'Back',
-                              style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 16,
-                                  color: Colors.white),
-                            ))))
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            'Back',
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 Text(
@@ -126,9 +134,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
               ],
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           ListTile(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,35 +146,37 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                     Text(
                       'Push Notifications',
                       style: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
+                        fontFamily: 'NunitoSans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       'Job alerts, referral updates, messages',
                       style: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300),
+                        fontFamily: 'NunitoSans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ],
                 ),
                 Switch(
-                    value: pushNotification,
-                    activeTrackColor: Color(0xFF2563EB),
-                    inactiveTrackColor: Color(0xFFD2D5DA),
-                    activeColor: Colors.white,
-                    inactiveThumbColor: Colors.white,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    trackOutlineColor:
-                        WidgetStateProperty.all(Colors.transparent),
-                    onChanged: (value) {
-                      setState(() {
-                        pushNotification = value;
-
-                        updatePushNotificationDb();
-                      });
-                    })
+                  value: pushNotification,
+                  activeTrackColor: Color(0xFF2563EB),
+                  inactiveTrackColor: Color(0xFFD2D5DA),
+                  activeColor: Colors.white,
+                  inactiveThumbColor: Colors.white,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  trackOutlineColor:
+                      WidgetStateProperty.all(Colors.transparent),
+                  onChanged: (value) {
+                    setState(() {
+                      pushNotification = value;
+                      updatePushNotificationDb();
+                    });
+                  },
+                ),
               ],
             ),
           ),
@@ -188,34 +196,37 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                     Text(
                       'Email Notifications',
                       style: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
+                        fontFamily: 'NunitoSans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       'Job alerts, referral updates, messages',
                       style: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300),
+                        fontFamily: 'NunitoSans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ],
                 ),
                 Switch(
-                    value: emailNotification,
-                    activeTrackColor: Color(0xFF2563EB),
-                    inactiveTrackColor: Color(0xFFD2D5DA),
-                    activeColor: Colors.white,
-                    inactiveThumbColor: Colors.white,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    trackOutlineColor:
-                        WidgetStateProperty.all(Colors.transparent),
-                    onChanged: (value) {
-                      setState(() {
-                        emailNotification = value;
-                        updatePushNotificationDb();
-                      });
-                    })
+                  value: emailNotification,
+                  activeTrackColor: Color(0xFF2563EB),
+                  inactiveTrackColor: Color(0xFFD2D5DA),
+                  activeColor: Colors.white,
+                  inactiveThumbColor: Colors.white,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  trackOutlineColor:
+                      WidgetStateProperty.all(Colors.transparent),
+                  onChanged: (value) {
+                    setState(() {
+                      emailNotification = value;
+                      updatePushNotificationDb();
+                    });
+                  },
+                ),
               ],
             ),
           ),
@@ -224,46 +235,8 @@ class _NotificationSettingsState extends State<NotificationSettings> {
             indent: 15,
             endIndent: 15,
           ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: Visibility(
-                visible: isLoading,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 30,
-                    ),
-                    LoadingAnimationWidget.fourRotatingDots(
-                      color: AppColors.primaryColor,
-                      size: 40,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchProfileFromPref();
-  }
-
-  Future<void> fetchProfileFromPref() async {
-    UserCredentials? loadedCredentials =
-        await UserCredentials.loadCredentials();
-    if (loadedCredentials != null) {
-      setState(() {
-        email = loadedCredentials.username;
-
-        getUserSettings(email);
-      });
-    }
   }
 }

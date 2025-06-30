@@ -80,11 +80,13 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
           String id = resOBJ['id'];
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-                builder: (context) => ResetNewPassword(
-                      id: id,
-                    )),
-            (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  ResetNewPassword(id: id),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+            (Route<dynamic> route) => route.isFirst,
           );
         }
       } else if (response.statusCode >= 400) {
@@ -100,7 +102,7 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
         //     backgroundColor: Colors.red,
         //     textColor: Colors.white,
         //     fontSize: 16.0);
-       /* IconSnackBar.show(
+        /* IconSnackBar.show(
           context,
           label: statusMessage,
           snackBarType: SnackBarType.alert,
@@ -168,20 +170,41 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
       if (response.statusCode == 200) {
         if (status.toLowerCase().trim().contains('ok') ||
             statusMessage.toLowerCase().trim().contains('successfully')) {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.green,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff4CAF50),
-            iconColor: Colors.white,
+          // IconSnackBar.show(
+          //   context,
+          //   label: statusMessage,
+          //   snackBarType: SnackBarType.success,
+          //   backgroundColor: Color(0xff4CAF50),
+          //   iconColor: Colors.white,
+          // );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Color(0xff2D2D2D),
+              elevation: 10,
+              margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              content: Row(
+                children: [
+                  SvgPicture.asset('assets/icon/send.svg'),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      statusMessage,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () =>
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                    child: Icon(Icons.close_rounded, color: Colors.white),
+                  )
+                ],
+              ),
+              duration: Duration(seconds: 3),
+            ),
           );
         } else {
           // Fluttertoast.showToast(
@@ -241,6 +264,9 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                       fit: BoxFit.contain,
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Center(
                       child: Text(
                     'Enter OTP',
@@ -272,10 +298,7 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    height: 50,
+                    height: 80,
                   ),
                   /* Container(
                     width: MediaQuery.of(context).size.width - 20,
@@ -302,25 +325,42 @@ class _ForgotPasswordOTPScreenState extends State<ForgotPasswordOTPScreen> {
                     ),
                   ),*/
 
-                  OtpPinField(
-                    cursorColor: AppColors.primaryColor,
-                    autoFillEnable: false,
-                    maxLength: 6,
-                    onSubmit: (otp) {},
-                    onChange: (txt) {
-                      print('txt: ${txt} length: ${txt.length}');
-                      setState(() {
-                        enteredOTP = txt;
-                        inValidOTP = false;
-                      });
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      double availableWidth = constraints.maxWidth - 40;
+                      double fieldWidth =
+                          (availableWidth / 6).clamp(40.0, 60.0);
+
+                      return OtpPinField(
+                        cursorColor: Color(0xff333333),
+                        autoFillEnable: false,
+                        maxLength: 6,
+                        fieldWidth: fieldWidth,
+                        fieldHeight: 55,
+                        onSubmit: (otp) {
+                          FocusScope.of(context).unfocus();
+                        },
+                        onChange: (txt) {
+                          print('txt: $txt length: ${txt.length}');
+                          setState(() {
+                            enteredOTP = txt;
+                            inValidOTP = false;
+                          });
+                        },
+                        otpPinFieldStyle: OtpPinFieldStyle(
+                          activeFieldBorderColor: Color(0xff333333),
+                          defaultFieldBorderColor:
+                              inValidOTP ? Colors.red : Color(0xffA9A9A9),
+                          fieldBorderWidth: 2,
+                          filledFieldBackgroundColor: Colors.transparent,
+                          filledFieldBorderColor: Color(0xff333333),
+                        ),
+                        otpPinFieldDecoration:
+                            OtpPinFieldDecoration.underlinedPinBoxDecoration,
+                        showCursor: true,
+                        cursorWidth: 2,
+                      );
                     },
-                    otpPinFieldStyle: OtpPinFieldStyle(
-                      activeFieldBorderColor: AppColors.primaryColor,
-                      defaultFieldBorderColor:
-                          inValidOTP ? Color(0xffBA1A1A) : Color(0xff333333),
-                    ),
-                    otpPinFieldDecoration:
-                        OtpPinFieldDecoration.underlinedPinBoxDecoration,
                   ),
                   inValidOTP
                       ? Row(

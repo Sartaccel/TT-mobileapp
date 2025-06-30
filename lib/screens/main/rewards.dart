@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +14,7 @@ class _MyRewardsState extends State<MyRewards> {
   bool rewardsAvailable = true;
 
   var rewardHistory = [];
+  int totalPoints = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +87,13 @@ class _MyRewardsState extends State<MyRewards> {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(25.0, 30.0, 25.0, 0.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              height: 125,
+                              height: 160,
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -103,7 +104,7 @@ class _MyRewardsState extends State<MyRewards> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Total Reward points',
+                                        'Total Reward ${totalPoints == 0 || totalPoints == 1 ? "point" : "points"}',
                                         style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: Color(0xff333333),
@@ -111,7 +112,7 @@ class _MyRewardsState extends State<MyRewards> {
                                             fontWeight: FontWeight.w500),
                                       ),
                                       Text(
-                                        '0',
+                                        '$totalPoints',
                                         style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: Color(0xff333333),
@@ -131,7 +132,8 @@ class _MyRewardsState extends State<MyRewards> {
                                 ],
                               ),
                             ),
-                            SvgPicture.asset('assets/images/rewards_ic.svg')
+                            SvgPicture.asset('assets/images/rewards_ic.svg',
+                                width: 200, height: 200)
                           ],
                         ),
                       ),
@@ -219,7 +221,7 @@ class _MyRewardsState extends State<MyRewards> {
                         width: MediaQuery.of(context).size.width,
                         height: 44,
                         margin:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                             color: rewardHistory.length > 0

@@ -24,6 +24,7 @@ class ChangePassword extends StatefulWidget {
 
 class _ChangePasswordState extends State<ChangePassword> {
   UserData? retrievedUserData;
+  UserCredentials? loadedCredentials;
 
   bool _isOldPasswordValid = true;
   bool old_passwordHide = true;
@@ -66,19 +67,9 @@ class _ChangePasswordState extends State<ChangePassword> {
 
       if (response.statusCode == 200 || response.statusCode == 202) {
         var resOBJ = jsonDecode(response.body);
-
-        // String statusMessage = resOBJ["status"];
         String statusMessage = resOBJ["message"];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.green,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
           IconSnackBar.show(
             context,
             label: statusMessage,
@@ -87,16 +78,14 @@ class _ChangePasswordState extends State<ChangePassword> {
             iconColor: Colors.white,
           );
 
+          // Update stored credentials with new password
+          if (loadedCredentials != null) {
+            loadedCredentials!.password = new_passwordController.text;
+            await loadedCredentials!.saveCredentials();
+          }
+
           Navigator.pop(context);
         } else {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.red,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
           IconSnackBar.show(
             context,
             label: statusMessage,
@@ -109,24 +98,38 @@ class _ChangePasswordState extends State<ChangePassword> {
         if (kDebugMode) {
           print('${response.statusCode} :: ${response.body}');
         }
+        IconSnackBar.show(
+          context,
+          label: 'Failed to update password. Please try again.',
+          snackBarType: SnackBarType.fail,
+          backgroundColor: Color(0xFFBA1A1A),
+          iconColor: Colors.white,
+        );
       }
     } catch (e) {
       setState(() {
-        isLoading = true;
+        isLoading = false;
       });
       if (kDebugMode) {
         print(e.toString());
       }
+      IconSnackBar.show(
+        context,
+        label: 'An error occurred. Please try again.',
+        snackBarType: SnackBarType.fail,
+        backgroundColor: Color(0xFFBA1A1A),
+        iconColor: Colors.white,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
+
     return Scaffold(
       backgroundColor: Color(0xffFCFCFC),
       body: SingleChildScrollView(
@@ -187,366 +190,135 @@ class _ChangePasswordState extends State<ChangePassword> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.015,
-                    ),
-                    child: Text('Old Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isOldPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A))),
-                  ),
-                  SizedBox(height: 7),
-                  TextField(
-                    obscureText: old_passwordHide,
+                  SizedBox(height: 20),
+                  // Old Password Field
+                  _buildPasswordField(
+                    label: 'Current Password',
                     controller: old_passwordController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                old_passwordHide = !old_passwordHide;
-                              });
-                            },
-                            //icon: Icon( old_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset(old_passwordHide
-                                ? 'assets/images/ic_hide_password.svg'
-                                : 'assets/images/ic_show_password.svg')),
-                        hintText: 'Enter your password',
-                        hintStyle: TextStyle(color: Color(0xff545454)),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isOldPasswordValid
-                                  ? Color(0xffd9d9d9)
-                                  : Color(0xffBA1A1A), // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isOldPasswordValid
-                                  ? Color(0xff004C99)
-                                  : Color(
-                                      0xffBA1A1A), // Border color when focused
-                              width: 1),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(r'\s'),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(
-                            r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                            unicode: true),
-                      ),
-                    ],
+                    isPasswordValid: _isOldPasswordValid,
+                    errorMessage: old_passwordErrorMessage,
+                    isHidden: old_passwordHide,
+                    onToggleVisibility: () {
+                      setState(() {
+                        old_passwordHide = !old_passwordHide;
+                      });
+                    },
                     onChanged: (val) {
                       setState(() {
                         _isOldPasswordValid = true;
                       });
                     },
                   ),
-                  SizedBox(height: 4),
-                  if (!_isOldPasswordValid)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 0,
-                      ),
-                      child: Text(
-                        old_passwordErrorMessage ?? '',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xffBA1A1A),
-                          fontFamily: 'Lato',
-                        ),
-                      ),
-                    ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.015,
-                    ),
-                    child: Text('New Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isNewPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A))),
-                  ),
-                  SizedBox(height: 7),
-                  TextField(
-                    obscureText: new_passwordHide,
+
+                  SizedBox(height: 20),
+                  // New Password Field
+                  _buildPasswordField(
+                    label: 'New Password',
                     controller: new_passwordController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                new_passwordHide = !new_passwordHide;
-                              });
-                            },
-                            //icon: Icon( new_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset(new_passwordHide
-                                ? 'assets/images/ic_hide_password.svg'
-                                : 'assets/images/ic_show_password.svg')),
-                        hintText: 'Enter your password',
-                        hintStyle: TextStyle(color: Color(0xff545454)),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isNewPasswordValid
-                                  ? Color(0xffd9d9d9)
-                                  : Color(0xffBA1A1A), // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isNewPasswordValid
-                                  ? Color(0xff004C99)
-                                  : Color(
-                                      0xffBA1A1A), // Border color when focused
-                              width: 1),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(r'\s'),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(
-                            r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                            unicode: true),
-                      ),
-                    ],
+                    isPasswordValid: _isNewPasswordValid,
+                    errorMessage: new_passwordErrorMessage,
+                    isHidden: new_passwordHide,
+                    onToggleVisibility: () {
+                      setState(() {
+                        new_passwordHide = !new_passwordHide;
+                      });
+                    },
                     onChanged: (val) {
                       setState(() {
                         _isNewPasswordValid = true;
                       });
                     },
                   ),
-                  SizedBox(height: 4),
-                  if (!_isNewPasswordValid)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 0,
-                      ),
-                      child: Text(
-                        new_passwordErrorMessage ?? '',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xffBA1A1A),
-                          fontFamily: 'Lato',
-                        ),
-                      ),
-                    ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.015,
-                    ),
-                    child: Text('Confirm New Password',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Lato',
-                            color: _isConfirmPasswordValid
-                                ? Color(0xff333333)
-                                : Color(0xffBA1A1A))),
-                  ),
-                  SizedBox(height: 7),
-                  TextField(
-                    obscureText: confirm_passwordHide,
+
+                  SizedBox(height: 20),
+                  // Confirm Password Field
+                  _buildPasswordField(
+                    label: 'Confirm New Password',
                     controller: confirm_passwordController,
-                    cursorColor: Color(0xff004C99),
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xff333333)),
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                confirm_passwordHide = !confirm_passwordHide;
-                              });
-                            },
-                            //icon: Icon( confirm_passwordHide?Icons.visibility :Icons.visibility_off)),
-                            icon: SvgPicture.asset(confirm_passwordHide
-                                ? 'assets/images/ic_hide_password.svg'
-                                : 'assets/images/ic_show_password.svg')),
-                        hintText: 'Enter your password',
-                        hintStyle: TextStyle(color: Color(0xff545454)),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isConfirmPasswordValid
-                                  ? Color(0xffd9d9d9)
-                                  : Color(0xffBA1A1A), // Default border color
-                              width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: _isConfirmPasswordValid
-                                  ? Color(0xff004C99)
-                                  : Color(
-                                      0xffBA1A1A), // Border color when focused
-                              width: 1),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10)),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(r'\s'),
-                      ),
-                      FilteringTextInputFormatter.deny(
-                        RegExp(
-                            r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
-                            unicode: true),
-                      ),
-                    ],
+                    isPasswordValid: _isConfirmPasswordValid,
+                    errorMessage: confirm_passwordErrorMessage,
+                    isHidden: confirm_passwordHide,
+                    onToggleVisibility: () {
+                      setState(() {
+                        confirm_passwordHide = !confirm_passwordHide;
+                      });
+                    },
                     onChanged: (val) {
                       setState(() {
                         _isConfirmPasswordValid = true;
                       });
                     },
                   ),
-                  SizedBox(height: 4),
-                  if (!_isConfirmPasswordValid)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 0,
-                      ),
-                      child: Text(
-                        confirm_passwordErrorMessage ?? '',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xffBA1A1A),
-                          fontFamily: 'Lato',
-                        ),
-                      ),
-                    ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(height: 30),
+
+                  SizedBox(height: 40),
+                  // Confirm Button
                   InkWell(
                     onTap: () async {
-                      UserCredentials? loadedCredentials =
-                          await UserCredentials.loadCredentials();
+                      // Validate all fields
+                      bool isValid = true;
 
-                      if (old_passwordController.text.trim().isEmpty ||
-                          new_passwordController.text.trim().isEmpty ||
-                          confirm_passwordController.text.trim().isEmpty ||
-                          new_passwordController.text.length < 8 ||
-                          new_passwordController.text !=
-                              confirm_passwordController.text) {
-                        if (old_passwordController.text.trim().isEmpty) {
-                          setState(() {
-                            _isOldPasswordValid = false;
-                            old_passwordErrorMessage =
-                                'Password cannot be empty';
-                          });
-                        }
-
-                        if (new_passwordController.text.trim().isEmpty) {
-                          setState(() {
-                            _isNewPasswordValid = false;
-                            new_passwordErrorMessage =
-                                'Password cannot be empty';
-                          });
-                        }
-
-                        if (confirm_passwordController.text.trim().isEmpty) {
-                          setState(() {
-                            _isConfirmPasswordValid = false;
-                            confirm_passwordErrorMessage =
-                                'Password cannot be empty';
-                          });
-                        } else if (new_passwordController.text.length < 8) {
-                          setState(() {
-                            _isNewPasswordValid = false;
-                            new_passwordErrorMessage =
-                                'Password must be at least 8 characters in length';
-                          });
-                        }
-
-                        if (new_passwordController.text !=
-                            confirm_passwordController.text) {
-                          setState(() {
-                            // _isNewPasswordValid =false;
-                            //new_passwordErrorMessage = 'New password do not match';
-
-                            _isConfirmPasswordValid = false;
-                            confirm_passwordErrorMessage =
-                                'New password do not match';
-                          });
-                        }
+                      if (old_passwordController.text.trim().isEmpty) {
+                        setState(() {
+                          _isOldPasswordValid = false;
+                          old_passwordErrorMessage = 'Password is required';
+                          isValid = false;
+                        });
                       } else if (loadedCredentials != null &&
-                          loadedCredentials.password !=
+                          loadedCredentials!.password !=
                               old_passwordController.text) {
                         setState(() {
                           _isOldPasswordValid = false;
                           old_passwordErrorMessage = 'Wrong password';
+                          isValid = false;
+                        });
+                      }
+
+                      if (new_passwordController.text.trim().isEmpty) {
+                        setState(() {
+                          _isNewPasswordValid = false;
+                          new_passwordErrorMessage = 'Password is required';
+                          isValid = false;
+                        });
+                      } else if (new_passwordController.text.length < 8) {
+                        setState(() {
+                          _isNewPasswordValid = false;
+                          new_passwordErrorMessage =
+                              'Password must be at least 8 characters';
+                          isValid = false;
                         });
                       } else if (loadedCredentials != null &&
-                          loadedCredentials.password ==
+                          loadedCredentials!.password ==
                               new_passwordController.text) {
                         setState(() {
-                          _isOldPasswordValid = false;
                           _isNewPasswordValid = false;
-                          _isConfirmPasswordValid = false;
-
-                          old_passwordErrorMessage =
-                              'Old and new passwords cannot be same';
                           new_passwordErrorMessage =
-                              'Old and new passwords cannot be same';
-                          confirm_passwordErrorMessage =
-                              'Old and new passwords cannot be same';
+                              'New password can\'t be the same as the old password';
+                          isValid = false;
                         });
-                      } else {
-                        setNewPassword();
+                      }
+
+                      if (confirm_passwordController.text.trim().isEmpty) {
+                        setState(() {
+                          _isConfirmPasswordValid = false;
+                          confirm_passwordErrorMessage = 'Password is required';
+                          isValid = false;
+                        });
+                      } else if (new_passwordController.text !=
+                          confirm_passwordController.text) {
+                        setState(() {
+                          _isConfirmPasswordValid = false;
+                          confirm_passwordErrorMessage =
+                              'New Password didn\'t match';
+                          isValid = false;
+                        });
+                      }
+
+                      if (isValid && !isLoading) {
+                        await setNewPassword();
                       }
                     },
                     child: Container(
@@ -568,22 +340,19 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   curve: Curves.linear,
                                   builder: (context, value, child) {
                                     return Transform.rotate(
-                                      angle: value *
-                                          2 *
-                                          3.1416, // Full rotation effect
+                                      angle: value * 2 * 3.1416,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 4,
-                                        value: 0.20, // 1/5 of the circle
+                                        value: 0.20,
                                         backgroundColor: const Color.fromARGB(
-                                            142, 234, 232, 232), // Grey stroke
+                                            142, 234, 232, 232),
                                         valueColor:
-                                            AlwaysStoppedAnimation<Color>(Colors
-                                                .white), // White rotating stroke
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
                                       ),
                                     );
                                   },
-                                  onEnd: () =>
-                                      {}, // Ensures smooth infinite animation
+                                  onEnd: () => {},
                                 ),
                               )
                             : Text(
@@ -602,18 +371,116 @@ class _ChangePasswordState extends State<ChangePassword> {
     );
   }
 
+  Widget _buildPasswordField({
+    required String label,
+    required TextEditingController controller,
+    required bool isPasswordValid,
+    required String errorMessage,
+    required bool isHidden,
+    required VoidCallback onToggleVisibility,
+    required ValueChanged<String> onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding:
+              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.015),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontFamily: 'Lato',
+              color: isPasswordValid ? Color(0xff333333) : Color(0xffBA1A1A),
+            ),
+          ),
+        ),
+        SizedBox(height: 7),
+        TextField(
+          obscureText: isHidden,
+          controller: controller,
+          cursorColor: Color(0xff004C99),
+          style: TextStyle(
+            fontSize: 14,
+            fontFamily: 'Lato',
+            color: Color(0xff333333),
+          ),
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              onPressed: onToggleVisibility,
+              icon: SvgPicture.asset(
+                isHidden
+                    ? 'assets/images/ic_hide_password.svg'
+                    : 'assets/images/ic_show_password.svg',
+              ),
+            ),
+            hintText: 'Enter your password',
+            hintStyle: TextStyle(color: Color(0xff545454)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: isPasswordValid ? Color(0xffd9d9d9) : Color(0xffBA1A1A),
+                width: 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: isPasswordValid ? Color(0xff004C99) : Color(0xffBA1A1A),
+                width: 1,
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          ),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(
+              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
+            ),
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+            FilteringTextInputFormatter.deny(
+              RegExp(
+                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                  unicode: true),
+            ),
+          ],
+          onChanged: onChanged,
+        ),
+        SizedBox(height: 4),
+        if (!isPasswordValid)
+          Padding(
+            padding: EdgeInsets.only(left: 0),
+            child: Text(
+              errorMessage,
+              style: TextStyle(
+                fontSize: 12,
+                color: Color(0xffBA1A1A),
+                fontFamily: 'Lato',
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     fetchProfileFromPref();
+    loadCredentials();
   }
 
   Future<void> fetchProfileFromPref() async {
     UserData? _retrievedUserData = await getUserData();
     setState(() {
       retrievedUserData = _retrievedUserData;
+    });
+  }
+
+  Future<void> loadCredentials() async {
+    UserCredentials? credentials = await UserCredentials.loadCredentials();
+    setState(() {
+      loadedCredentials = credentials;
     });
   }
 }

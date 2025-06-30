@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,8 +29,8 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
   bool _isConfirmPasswordValid = true;
   TextEditingController confirmPasswordController = TextEditingController();
   bool confirmPasswordHide = true, passwordHide = true;
-  String confirm_passwordErrorMSG = "Password is Required";
-  String passwordErrorMSG = "Password is Required";
+  String confirm_passwordErrorMSG = '';
+  String passwordErrorMSG = '';
 
   Future<void> setNewPassword() async {
     final url = Uri.parse(
@@ -93,20 +94,24 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
   }
 
   void validatePassword() {
-    if (passwordController.text.length < 8) {
-      setState(() {
-        _isPasswordValid = false;
-        passwordErrorMSG = 'Password is Requird';
-      });
-    } else if (passwordController.text != confirmPasswordController.text) {
-      setState(() {
-        _isConfirmPasswordValid = false;
-        confirm_passwordErrorMSG = 'Passwords didn\'t not match';
-      });
-      if (kDebugMode) {
-        print('Not Equal passwords');
-      }
-    } else {
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPasswordController.text.trim();
+
+    setState(() {
+      _isPasswordValid = password.isNotEmpty && password.length >= 8;
+      _isConfirmPasswordValid =
+          confirmPassword.isNotEmpty && password == confirmPassword;
+
+      passwordErrorMSG = password.isEmpty
+          ? 'Password is Required'
+          : (password.length < 8 ? 'Must be Atleast 8 characters' : '');
+
+      confirm_passwordErrorMSG = confirmPassword.isEmpty
+          ? 'Password is Required'
+          : (password != confirmPassword ? 'Password didn\'t match' : '');
+    });
+
+    if (_isPasswordValid && _isConfirmPasswordValid) {
       setNewPassword();
     }
   }
@@ -142,6 +147,9 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                       fit: BoxFit.contain,
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Center(
                       child: Text(
                     'Create new password',
@@ -167,22 +175,28 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                         ),
                         child: Text(
                           'New Password',
-                          style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w500,
+                              color: _isPasswordValid
+                                  ? const Color(0xFF333333)
+                                  : const Color(0xFFBA1A1A)),
                         ),
                       ),
                       SizedBox(height: 7),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
-                          controller: passwordController,
-                          cursorColor: Color(0xff004C99),
-                          obscureText: passwordHide,
-                          enabled: !isLoading,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Lato',
-                              color: Color(0xff333333)),
-                          decoration: InputDecoration(
+                            controller: passwordController,
+                            cursorColor: Color(0xff004C99),
+                            obscureText: passwordHide,
+                            enabled: !isLoading,
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Lato',
+                                color: Color(0xff333333)),
+                            decoration: InputDecoration(
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     setState(() {
@@ -201,8 +215,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
                                         ? Color(0xffd9d9d9)
-                                        : Color(
-                                            0xffBA1a1a), // Default border color
+                                        : Color(0xffBA1a1a),
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -210,28 +223,43 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                 borderSide: BorderSide(
                                     color: _isPasswordValid
                                         ? Color(0xff004C99)
-                                        : Color(
-                                            0xffBA1a1a), // Border color when focused
+                                        : Color(0xffBA1a1a),
                                     width: 1),
                               ),
-                              errorText: _isPasswordValid
-                                  ? null
-                                  : passwordErrorMSG, // Display error message if invalid
                               contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10)),
-                          onChanged: (value) {
-                            // Validate the email here and update _isEmailValid
-                            if (value.length < 8) {
-                              setState(() {
-                                _isPasswordValid = false;
-                                passwordErrorMSG = 'Password is Required';
-                              });
-                            } else {
+                                  vertical: 10, horizontal: 10),
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'[\p{L}\p{N}\p{P}\p{S}]',
+                                    unicode: true),
+                              ),
+                              FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                              FilteringTextInputFormatter.deny(
+                                RegExp(
+                                    r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                                    unicode: true),
+                              ),
+                            ],
+                            onChanged: (value) {
                               setState(() {
                                 _isPasswordValid = true;
                               });
-                            }
-                          },
+                            }),
+                      ),
+                      SizedBox(height: 4),
+                      Padding(
+                        padding: EdgeInsets.only(top: 4, left: 0),
+                        child: Text(
+                          passwordErrorMSG.isNotEmpty
+                              ? passwordErrorMSG
+                              : 'Must be at least 8 characters',
+                          style: TextStyle(
+                            color: passwordErrorMSG.isNotEmpty
+                                ? Color(0xFFBA1A1A)
+                                : Color(0xFF545454),
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -243,7 +271,13 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                         ),
                         child: Text(
                           'Re-enter Password',
-                          style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w500,
+                              color: _isConfirmPasswordValid
+                                  ? const Color(0xFF333333)
+                                  : const Color(0xFFBA1A1A)),
                         ),
                       ),
                       SizedBox(height: 7),
@@ -259,49 +293,68 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                               fontFamily: 'Lato',
                               color: Color(0xff333333)),
                           decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      confirmPasswordHide =
-                                          !confirmPasswordHide;
-                                    });
-                                  },
-                                  icon: SvgPicture.asset(confirmPasswordHide
-                                      ? 'assets/images/ic_hide_password.svg'
-                                      : 'assets/images/ic_show_password.svg')),
-                              hintText: 'Re-enter your password',
-                              hintStyle: TextStyle(color: Color(0xff545454)),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                    color: _isConfirmPasswordValid
-                                        ? Color(0xffd9d9d9)
-                                        : Color(
-                                            0xffBA1A1A), // Default border color
-                                    width: 1),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(
-                                    color: _isConfirmPasswordValid
-                                        ? Color(0xff004C99)
-                                        : Color(
-                                            0xffBA1A1A), // Border color when focused
-                                    width: 1),
-                              ),
-                              errorText: _isConfirmPasswordValid
-                                  ? null
-                                  : confirm_passwordErrorMSG, // Display error message if invalid
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10)),
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    confirmPasswordHide = !confirmPasswordHide;
+                                  });
+                                },
+                                icon: SvgPicture.asset(confirmPasswordHide
+                                    ? 'assets/images/ic_hide_password.svg'
+                                    : 'assets/images/ic_show_password.svg')),
+                            hintText: 'Re-enter your password',
+                            hintStyle: TextStyle(color: Color(0xff545454)),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                  color: _isConfirmPasswordValid
+                                      ? Color(0xffd9d9d9)
+                                      : Color(0xffBA1A1A),
+                                  width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                  color: _isConfirmPasswordValid
+                                      ? Color(0xff004C99)
+                                      : Color(0xffBA1A1A),
+                                  width: 1),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
+                            ),
+                            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                            FilteringTextInputFormatter.deny(
+                              RegExp(
+                                  r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                                  unicode: true),
+                            ),
+                          ],
                           onChanged: (value) {
-                            // Validate the email here and update _isEmailValid
                             setState(() {
                               _isConfirmPasswordValid = true;
                             });
                           },
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 4, left: 0),
+                        child: Text(
+                          confirm_passwordErrorMSG.isNotEmpty
+                              ? confirm_passwordErrorMSG
+                              : 'Both passwords must match',
+                          style: TextStyle(
+                            color: confirm_passwordErrorMSG.isNotEmpty
+                                ? Color(0xFFBA1A1A)
+                                : Color(0xFF545454),
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
@@ -309,6 +362,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                   SizedBox(height: 50),
                   InkWell(
                     onTap: () {
+                      FocusScope.of(context).unfocus();
                       validatePassword();
                     },
                     child: Container(
@@ -330,22 +384,19 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                   curve: Curves.linear,
                                   builder: (context, value, child) {
                                     return Transform.rotate(
-                                      angle: value *
-                                          2 *
-                                          3.1416, // Full rotation effect
+                                      angle: value * 2 * 3.1416,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 4,
-                                        value: 0.20, // 1/5 of the circle
+                                        value: 0.20,
                                         backgroundColor: const Color.fromARGB(
-                                            142, 234, 232, 232), // Grey stroke
+                                            142, 234, 232, 232),
                                         valueColor:
-                                            AlwaysStoppedAnimation<Color>(Colors
-                                                .white), // White rotating stroke
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
                                       ),
                                     );
                                   },
-                                  onEnd: () =>
-                                      {}, // Ensures smooth infinite animation
+                                  onEnd: () => {},
                                 ),
                               )
                             : Text(

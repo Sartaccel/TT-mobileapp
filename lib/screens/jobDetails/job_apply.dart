@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as BorderType;
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
@@ -334,15 +335,6 @@ class _JobApplyState extends State<JobApply> {
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          // Fluttertoast.showToast(
-          //   msg: statusMessage,
-          //   toastLength: Toast.LENGTH_SHORT,
-          //   gravity: ToastGravity.BOTTOM,
-          //   timeInSecForIosWeb: 1,
-          //   backgroundColor: Colors.green,
-          //   textColor: Colors.white,
-          //   fontSize: 16.0,
-          // );
           IconSnackBar.show(
             context,
             label: statusMessage,
@@ -368,15 +360,6 @@ class _JobApplyState extends State<JobApply> {
             resOBJ['message'] ?? 'An unknown error occurred.';
 
         // Show backend error message or a default message
-        // Fluttertoast.showToast(
-        //   msg: statusMessage,
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Colors.red,
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
         IconSnackBar.show(
           context,
           label: statusMessage,
@@ -387,20 +370,11 @@ class _JobApplyState extends State<JobApply> {
       }
     } catch (e) {
       // Handle network or unexpected errors
-      // Fluttertoast.showToast(
-      //   msg: "Network error. Please try again later.",
-      //   toastLength: Toast.LENGTH_SHORT,
-      //   gravity: ToastGravity.BOTTOM,
-      //   timeInSecForIosWeb: 1,
-      //   backgroundColor: Colors.red,
-      //   textColor: Colors.white,
-      //   fontSize: 16.0,
-      // );
       IconSnackBar.show(
         context,
-        label: "Network error, try again later.",
+        label: "No internet connection, try again",
         snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xffBA1A1A),
+        backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
       );
       if (kDebugMode) {
@@ -422,14 +396,6 @@ class _JobApplyState extends State<JobApply> {
       await launchUrl(Uri.parse(filePath));
       //await launch(filePath, forceSafariVC: false, forceWebView: false);
     } else {
-      // Fluttertoast.showToast(
-      //     msg: 'Could not launch ${filePath}',
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: Color(0xff2D2D2D),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
       IconSnackBar.show(
         context,
         label: 'Could not launch ${filePath}',
@@ -468,14 +434,6 @@ class _JobApplyState extends State<JobApply> {
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          // Fluttertoast.showToast(
-          //     msg: 'Fetching updated profile...',
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Color(0xff2D2D2D),
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
           IconSnackBar.show(
             context,
             label: 'Fetching updated profile...',
@@ -530,14 +488,6 @@ class _JobApplyState extends State<JobApply> {
 
       String extension = file.path.split('.').last.toLowerCase();
       if (!_isValidExtension(extension)) {
-        // Fluttertoast.showToast(
-        //     msg: 'Unsupported file type.',
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.BOTTOM,
-        //     timeInSecForIosWeb: 1,
-        //     backgroundColor: Color(0xff2D2D2D),
-        //     textColor: Colors.white,
-        //     fontSize: 16.0);
         IconSnackBar.show(
           context,
           label: 'Unsupported file type.',
@@ -551,15 +501,6 @@ class _JobApplyState extends State<JobApply> {
 
       final fileSize = await file.length(); // Get file size in bytes
       if (fileSize <= 0) {
-        // Fluttertoast.showToast(
-        //   msg: 'File must be greater than 0MB.',
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
         IconSnackBar.show(
           context,
           label: 'File must be greater than 0MB.',
@@ -569,16 +510,6 @@ class _JobApplyState extends State<JobApply> {
         );
         return null;
       } else if (fileSize > 5 * 1024 * 1024) {
-        // 5MB in bytes
-        // Fluttertoast.showToast(
-        //   msg: 'File must be less than 5MB.',
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
         IconSnackBar.show(
           context,
           label: 'File must be less than 5MB.',
@@ -1063,17 +994,17 @@ class _JobApplyState extends State<JobApply> {
                   ),
                   SizedBox(height: 7),
                   DottedBorder(
-                    borderType: BorderType.RRect,
-                    radius: Radius.circular(12),
-                    dashPattern: [10, 5],
-                    color: Color(0xff000000),
-                    strokeWidth: 1.5,
+                    // borderType: BorderType.RRect,
+                    // radius: Radius.circular(12),
+                    // dashPattern: [10, 5],
+                    // color: Color(0xff000000),
+                    // strokeWidth: 1.5,
                     child: Container(
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          candidateProfileModel!.fileName == null
+                          (candidateProfileModel?.fileName ?? '').isEmpty
                               ? InkWell(
                                   onTap: () {
                                     pickAndUploadPDF();

@@ -1,6 +1,7 @@
 // ignore: file_names
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,11 +38,12 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
   bool isLoading = false;
+  bool isImageLoading = false;
+  double? imageDownloadProgress;
 
   CandidateProfileModel? candidateProfileModel;
   UserData? retrievedUserData;
 
-  // Request permissions for camera and storage
   Future<void> _requestPermissions() async {
     if (await Permission.camera.request().isDenied) {
       return;
@@ -56,26 +58,29 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     }
   }
 
-  // Open Camera and directly upload the image
   Future<void> _openCamera() async {
-    await _requestPermissions(); // Ensure permissions are granted
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    if (image != null) {
-      final XFile? processedImage = await processResizeImage(image);
+    await _requestPermissions();
+    setState(() {
+      isImageLoading = true;
+    });
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        final XFile? processedImage = await processResizeImage(image);
+        setState(() {
+          _imageFile = processedImage;
+          isImageLoading = false;
+        });
+      } else {
+        setState(() {
+          isImageLoading = false;
+        });
+      }
+    } catch (e) {
       setState(() {
-        _imageFile = processedImage;
+        isImageLoading = false;
       });
-    }
-  }
-
-  // Open Gallery and directly upload the image
-  Future<void> _openGallery_() async {
-    await _requestPermissions(); // Ensure permissions are granted
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _imageFile = image;
-      });
+      _showError('Failed to capture image: $e');
     }
   }
 
@@ -83,37 +88,24 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     if (image == null) return null;
 
     try {
-      // Read the image file as bytes
       final imageBytes = await image.readAsBytes();
-      // Decode the image
       img.Image? decodedImage = img.decodeImage(imageBytes);
 
       if (decodedImage == null) return null;
 
-      // Resize if the image dimensions are greater than 720
-      /*if (decodedImage.width > 720 || decodedImage.height > 720) {
-        decodedImage = img.copyResize(decodedImage, width: 720, height: 720, interpolation: img.Interpolation.cubic);
-      }*/
-
       if (decodedImage.width > 720 || decodedImage.height > 720) {
-        // Calculate the aspect ratio
         double aspectRatio = decodedImage.width / decodedImage.height;
-
-        // Calculate new dimensions while maintaining the aspect ratio
         int newWidth;
         int newHeight;
 
         if (decodedImage.width > decodedImage.height) {
-          // Landscape or square image
           newWidth = 720;
           newHeight = (720 / aspectRatio).round();
         } else {
-          // Portrait image
           newHeight = 720;
           newWidth = (720 * aspectRatio).round();
         }
 
-        // Resize the image while preserving the aspect ratio
         decodedImage = img.copyResize(
           decodedImage,
           width: newWidth,
@@ -121,18 +113,12 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
           interpolation: img.Interpolation.cubic,
         );
       }
-      // Check if the image is already a JPEG
-      String fileExtension = path.extension(image.path).toLowerCase();
-      bool isJPEG = fileExtension == '.jpg' || fileExtension == '.jpeg';
 
-      // Get the app's temporary directory to save the image
       final tempDir = await getTemporaryDirectory();
       String jpegPath = path.join(tempDir.path,
           'processed_image${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-      // Encode to JPEG format and save the file
-      final jpegBytes =
-          img.encodeJpg(decodedImage, quality: 85); // Set JPEG quality to 85
+      final jpegBytes = img.encodeJpg(decodedImage, quality: 85);
       File jpegFile = await File(jpegPath).writeAsBytes(jpegBytes);
 
       return XFile(jpegFile.path);
@@ -144,65 +130,47 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
 
   Future<void> _openGallery() async {
     await _requestPermissions();
+    setState(() {
+      isImageLoading = true;
+    });
 
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        final mimeType = lookupMimeType(image.path);
+        final fileSize = await image.length();
 
-    if (image != null) {
-      final mimeType = lookupMimeType(image.path);
-      final fileSize = await image.length();
-
-      setState(() {
-        isLoading = true;
-      });
-
-      if (kDebugMode) {
-        print('MIME ${mimeType}');
-      }
-
-      if (mimeType == 'image/jpeg' && fileSize <= 5 * 1024 * 1024) {
-        // Check if the image dimensions are valid
-        bool validDimensions = await _validateImageDimensions(image);
-
-        if (validDimensions) {
-          print('Valid Dimensions');
-          setState(() {
-            _imageFile = image;
-          });
+        if (mimeType == 'image/jpeg' && fileSize <= 5 * 1024 * 1024) {
+          bool validDimensions = await _validateImageDimensions(image);
+          if (validDimensions) {
+            setState(() {
+              _imageFile = image;
+              isImageLoading = false;
+            });
+          } else {
+            final XFile? processedImage = await processResizeImage(image);
+            setState(() {
+              _imageFile = processedImage;
+              isImageLoading = false;
+            });
+          }
         } else {
-          // _showError('Image size or dimensions are too large. Select a smaller one');
-          print('Non- Valid Dimensions');
           final XFile? processedImage = await processResizeImage(image);
           setState(() {
             _imageFile = processedImage;
+            isImageLoading = false;
           });
         }
-
-        setState(() {
-          isLoading = false;
-        });
       } else {
-        /* String errorMessage = mimeType != 'image/jpeg'
-            ? 'Please select a JPEG image.'
-            : 'File size must be less than 5 MB.';
-
-        _showError(errorMessage);*/
-
-        final XFile? processedImage = await processResizeImage(image);
-
-        if (processedImage != null) {
-          print('Image processed and saved at: ${processedImage.path}');
-          setState(() {
-            _imageFile = processedImage;
-          });
-        } else {
-          print('Image processing failed.');
-          _showError('Image processing failed.');
-        }
-
         setState(() {
-          isLoading = false;
+          isImageLoading = false;
         });
       }
+    } catch (e) {
+      setState(() {
+        isImageLoading = false;
+      });
+      _showError('Failed to pick image: $e');
     }
   }
 
@@ -210,19 +178,13 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     Uint8List bytes = await image.readAsBytes();
     try {
       final decodedImage = img.decodeImage(bytes);
-
       if (decodedImage != null) {
         const maxDimension = 4000;
-        if (decodedImage.width <= maxDimension &&
-            decodedImage.height <= maxDimension) {
-          return true;
-        }
+        return decodedImage.width <= maxDimension &&
+            decodedImage.height <= maxDimension;
       }
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      //_showError('Image size is too large.');
+      print(e);
     }
     return false;
   }
@@ -235,7 +197,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
 
   Future<void> _removeImage() async {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REMOVE_PHOTO);
-
     final bodyParams = {
       "id": retrievedUserData!.profileId,
       "type": "Candidate"
@@ -255,11 +216,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         body: jsonEncode(bodyParams),
       );
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
-      }
-
       if (response.statusCode == 200) {
         IconSnackBar.show(
           context,
@@ -270,16 +226,17 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         );
 
         String token = retrievedUserData!.token;
-        //Navigator.pop(context);
         fetchCandidateProfileData(retrievedUserData!.profileId, token);
       }
     } catch (e) {
       print(e);
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
     final url = Uri.parse(AppConstants.BASE_URL +
         AppConstants.CANDIDATE_PROFILE +
         profileId.toString());
@@ -294,91 +251,61 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
 
-      if (kDebugMode) {
-        print(
-            'Response code ${response.statusCode} :: Response => ${response.body}');
-      }
-
       if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
-
-        String statusMessage = resOBJ['message'];
-
-        if (statusMessage.toLowerCase().contains('success')) {
-          // IconSnackBar.show(
-          //   context,
-          //   label: 'Personal details updated successfully',
-          //   snackBarType: SnackBarType.success,
-          //   backgroundColor: Color(0xff4CAF50),
-          //   iconColor: Colors.white,
-          // );
-
+        if (resOBJ['message'].toLowerCase().contains('success')) {
           final Map<String, dynamic> data = resOBJ['data'];
-          //ReferralData referralData = ReferralData.fromJson(data);
           CandidateProfileModel candidateData =
               CandidateProfileModel.fromJson(data);
-
           await saveCandidateProfileData(candidateData);
-
-          /*Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => PersonalDetails()),
-                (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
-          );*/
-
           Navigator.pop(context);
-          setState(() {
-            isLoading = false;
-          });
         }
-      } else {
-        print(response);
-        setState(() {
-          isLoading = false;
-        });
       }
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       print(e);
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   Future<void> uploadImage(File file) async {
     Dio dio = Dio();
-
     String url =
         AppConstants.BASE_URL + AppConstants.UPDATE_CANDIDATE_PROFILE_PICTURE;
 
-    print('id ${retrievedUserData!.profileId.toString()}');
-    print('file.path ${file.path}');
-    print('filename ${file.path.split('/').last}');
-
-    FormData formData = FormData.fromMap({
-      "id": retrievedUserData!.profileId.toString(),
-      "file": await MultipartFile.fromFile(
-        file.path,
-        filename: file.path.split('/').last,
-      ),
-      "type": "candidate"
+    setState(() {
+      isImageLoading = true;
     });
 
-    String token = retrievedUserData!.token;
     try {
-      setState(() {
-        isLoading = true;
+      FormData formData = FormData.fromMap({
+        "id": retrievedUserData!.profileId.toString(),
+        "file": await MultipartFile.fromFile(
+          file.path,
+          filename: file.path.split('/').last,
+        ),
+        "type": "candidate"
       });
+
       Response response = await dio.post(
         url,
         data: formData,
         options: Options(
           headers: {
-            'Authorization': token,
-            // Authorization Header
+            'Authorization': retrievedUserData!.token,
             'Content-Type': 'multipart/form-data',
-            // Content-Type for file uploads
           },
         ),
+        onSendProgress: (int sent, int total) {
+          setState(() {
+            imageDownloadProgress = sent / total;
+          });
+        },
       );
-      print('Upload success: ${response.statusCode}');
 
       IconSnackBar.show(
         context,
@@ -388,17 +315,9 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         iconColor: Colors.white,
       );
 
-      fetchCandidateProfileData(retrievedUserData!.profileId, token);
-      //Navigator.pop(context);
-      setState(() {
-        isLoading = false;
-      });
+      fetchCandidateProfileData(
+          retrievedUserData!.profileId, retrievedUserData!.token);
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      print('Upload failed: $e');
-
       IconSnackBar.show(
         context,
         label: e.toString(),
@@ -406,6 +325,11 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
       );
+    } finally {
+      setState(() {
+        isImageLoading = false;
+        imageDownloadProgress = null;
+      });
     }
   }
 
@@ -460,7 +384,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
             InkWell(
               onTap: () async {
                 Navigator.pop(context);
-                _removeImage();
+                await _removeImage();
               },
               child: Container(
                 height: 40,
@@ -553,316 +477,369 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     );
   }
 
+  Widget _buildProfileImage() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          height: 360,
+          width: 360,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0xFFB0B0B0),
+          ),
+          child: _imageFile != null
+              ? ClipOval(
+                  child: Image.file(
+                    File(_imageFile!.path),
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : ClipOval(
+                  child: (candidateProfileModel != null &&
+                          candidateProfileModel!.imagePath != null)
+                      ? Image.network(
+                          candidateProfileModel!.imagePath!,
+                          height: 300,
+                          width: 300,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return SvgPicture.asset(
+                              'assets/icon/profile.svg',
+                              height: 300,
+                              width: 300,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : SvgPicture.asset(
+                          'assets/icon/profile.svg',
+                          height: 300,
+                          width: 300,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+        ),
+        if (isImageLoading)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withOpacity(0.3),
+              ),
+              child: Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (imageDownloadProgress != null)
+                      CircularProgressIndicator(
+                        value: imageDownloadProgress,
+                        backgroundColor: Colors.white30,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 4,
+                      ),
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      strokeWidth: imageDownloadProgress != null ? 2 : 4,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: const Color(0xFF001B3E),
-        child: Scaffold(
-            backgroundColor: Colors.white,
-            body: Column(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 40,
-                  decoration: BoxDecoration(color: Color(0xff001B3E)),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 60,
-                  decoration: BoxDecoration(color: Color(0xff001B3E)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+      color: const Color(0xFF001B3E),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 40,
+              decoration: BoxDecoration(color: Color(0xff001B3E)),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 60,
+              decoration: BoxDecoration(color: Color(0xff001B3E)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.arrow_back_ios_new,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              showDiscardConfirmationDialog(context);
-                            },
-                          ),
-                          InkWell(
-                              onTap: () {
-                                showDiscardConfirmationDialog(context);
-
-                                // Navigator.pop(context);
-                              },
-                              child: Container(
-                                  height: 50,
-                                  child: Center(
-                                      child: Text(
-                                    'Back',
-                                    style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontSize: 16,
-                                        color: Colors.white),
-                                  ))))
-                        ],
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          showDiscardConfirmationDialog(context);
+                        },
                       ),
-                      //SizedBox(width: 80,)
-                      Text(
-                        'Edit Photo',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-
-                      _imageFile != null
-                          ? Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: InkWell(
-                                  onTap: () {
-                                    if (_imageFile != null) {
-                                      File file = File(_imageFile!.path);
-                                      uploadImage(file);
-                                    } else {
-                                      showCustomSnackbar(
-                                          context, 'Failed to upload!');
-                                    }
-                                  },
+                      InkWell(
+                          onTap: () {
+                            showDiscardConfirmationDialog(context);
+                          },
+                          child: Container(
+                              height: 50,
+                              child: Center(
                                   child: Text(
-                                    'Save',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  )),
-                            )
-                          : Container(
-                              width: 60,
-                            ),
+                                'Back',
+                                style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 16,
+                                    color: Colors.white),
+                              ))))
                     ],
                   ),
-                ),
-                Center(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 360,
-                          width: 360,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey[300],
-                          ),
-                          child: _imageFile != null
-                              ? ClipOval(
-                                  child: Image.file(File(_imageFile!.path),
-                                      fit: BoxFit.cover),
-                                )
-                              : ClipOval(
-                                  child: (candidateProfileModel != null &&
-                                          candidateProfileModel!.imagePath !=
-                                              null)
-                                      ? Image.network(
-                                          candidateProfileModel!.imagePath!,
-                                          height: 300,
-                                          width: 300,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : SvgPicture.asset(
-                                          'assets/icon/profile.svg',
-                                          height: 300,
-                                          width: 300,
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
+                  Text(
+                    'Edit Photo',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  _imageFile != null
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: InkWell(
+                              onTap: () {
+                                if (_imageFile != null) {
+                                  File file = File(_imageFile!.path);
+                                  uploadImage(file);
+                                } else {
+                                  showCustomSnackbar(
+                                      context, 'Failed to upload!');
+                                }
+                              },
+                              child: Text(
+                                'Save',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              )),
+                        )
+                      : Container(
+                          width: 60,
                         ),
-                      ),
-                      isLoading
-                          ? Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    LoadingAnimationWidget.fourRotatingDots(
-                                      color: AppColors.primaryColor,
-                                      size: 40,
-                                    ),
-                                  ],
+                ],
+              ),
+            ),
+            Center(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _buildProfileImage(),
+                  ),
+                  isLoading
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                LoadingAnimationWidget.fourRotatingDots(
+                                  color: AppColors.primaryColor,
+                                  size: 40,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Container(),
+                  const SizedBox(height: 20),
+                  _imageFile != null
+                      ? Column(
+                          children: [
+                            const Divider(
+                                thickness: 0.5, color: Color(0xffD9D9D9)),
+                            Row(children: [
+                              const SizedBox(width: 30),
+                              const Icon(Icons.crop,
+                                  color: Color(0xFF484C52), size: 14),
+                              const SizedBox(width: 8),
+                              TextButton(
+                                onPressed: () async {
+                                  if (_imageFile != null) {
+                                    final croppedImagePath =
+                                        await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => Croppage(
+                                            imagePath: _imageFile!.path),
+                                      ),
+                                    );
+
+                                    if (croppedImagePath != null) {
+                                      setState(() {
+                                        _imageFile = XFile(croppedImagePath);
+                                      });
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Please select an image first.")),
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  "Crop",
+                                  style: GoogleFonts.lato(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black),
                                 ),
                               ),
-                            )
-                          : Container(),
-                      const SizedBox(height: 20),
-                      _imageFile != null
-                          ? Column(
-                              children: [
-                                const Divider(
-                                    thickness: 0.5, color: Color(0xffD9D9D9)),
-                                Row(children: [
-                                  const SizedBox(width: 30),
-                                  const Icon(Icons.crop,
-                                      color: Color(0xFF484C52), size: 14),
-                                  const SizedBox(width: 8),
-                                  TextButton(
-                                    onPressed: () async {
-                                      if (_imageFile != null) {
-                                        final croppedImagePath =
-                                            await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => Croppage(
-                                                imagePath: _imageFile!.path),
-                                          ),
-                                        );
-
-                                        if (croppedImagePath != null) {
-                                          setState(() {
-                                            _imageFile =
-                                                XFile(croppedImagePath);
-                                          });
-                                        }
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  "Please select an image first.")),
-                                        );
-                                      }
-                                    },
-                                    child: Text(
-                                      "Crop",
-                                      style: GoogleFonts.lato(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                ]),
-                              ],
-                            )
-                          : Container(),
-                      const Divider(thickness: 0.5, color: Color(0xffD9D9D9)),
-                      Row(
-                        children: [
-                          const SizedBox(width: 30),
-                          const Icon(Icons.photo,
-                              color: Color(0xFF484C52), size: 14),
-                          const SizedBox(width: 8),
-                          TextButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                backgroundColor: Colors.white,
-                                builder: (BuildContext context) {
-                                  return SizedBox(
-                                    height: 259,
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 15),
-                                        Center(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.25,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color: Colors.black,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          'Upload & take a picture',
-                                          style: GoogleFonts.lato(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black),
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                _openCamera();
-                                                Navigator.pop(context);
-                                              },
-                                              child: _buildOptionContainer(
-                                                  'assets/images/camera (1).png',
-                                                  'Camera'),
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.pop(context);
-                                                _openGallery();
-                                              },
-                                              child: _buildOptionContainer(
-                                                  'assets/images/files.png',
-                                                  'Gallery'),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          "File types: png, jpg, jpeg  Max file size: 5MB",
-                                          style: GoogleFonts.lato(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              color: Color(0xff333333)),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Text(
-                              "Change Photo",
-                              style: GoogleFonts.lato(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: const Color(0xFF333333)),
-                            ),
-                          ),
-                        ],
-                      ),
-                      candidateProfileModel!.imagePath != null
-                          ? Column(
-                              children: [
-                                const Divider(
-                                    thickness: 0.5, color: Color(0xffD9D9D9)),
-                                Row(
+                            ]),
+                          ],
+                        )
+                      : Container(),
+                  const Divider(thickness: 0.5, color: Color(0xffD9D9D9)),
+                  Row(
+                    children: [
+                      const SizedBox(width: 30),
+                      const Icon(Icons.photo,
+                          color: Color(0xFF484C52), size: 14),
+                      const SizedBox(width: 8),
+                      TextButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.white,
+                            builder: (BuildContext context) {
+                              return SizedBox(
+                                height: 259,
+                                child: Column(
                                   children: [
-                                    const SizedBox(width: 30),
-                                    const Icon(Icons.delete,
-                                        color: Color(0xFF484C52), size: 14),
-                                    const SizedBox(width: 8),
-                                    TextButton(
-                                      onPressed: () {
-                                        showDeleteConfirmationDialog(context);
-                                      },
-                                      child: Text(
-                                        "Remove Photo",
-                                        style: GoogleFonts.lato(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xff333333)),
+                                    const SizedBox(height: 15),
+                                    Center(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.25,
+                                        height: 5,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
                                       ),
                                     ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      'Upload & take a picture',
+                                      style: GoogleFonts.lato(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            _openCamera();
+                                            Navigator.pop(context);
+                                          },
+                                          child: _buildOptionContainer(
+                                              'assets/images/camera (1).png',
+                                              'Camera'),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            _openGallery();
+                                          },
+                                          child: _buildOptionContainer(
+                                              'assets/images/files.png',
+                                              'Gallery'),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      "File types: png, jpg, jpeg  Max file size: 5MB",
+                                      style: GoogleFonts.lato(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xff333333)),
+                                    )
                                   ],
                                 ),
-                              ],
-                            )
-                          : Container(),
-                      const Divider(thickness: 0.5, color: Color(0xffD9D9D9)),
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
+                          "Change Photo",
+                          style: GoogleFonts.lato(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF333333)),
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ],
-            )));
+                  candidateProfileModel != null &&
+                          candidateProfileModel!.imagePath != null
+                      ? Column(
+                          children: [
+                            const Divider(
+                                thickness: 0.5, color: Color(0xffD9D9D9)),
+                            Row(
+                              children: [
+                                const SizedBox(width: 30),
+                                const Icon(Icons.delete,
+                                    color: Color(0xFF484C52), size: 14),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  onPressed: () {
+                                    showDeleteConfirmationDialog(context);
+                                  },
+                                  child: Text(
+                                    "Remove Photo",
+                                    style: GoogleFonts.lato(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xff333333)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : Container(),
+                  const Divider(thickness: 0.5, color: Color(0xffD9D9D9)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  // Helper function to build the option container for Camera/Gallery
   Widget _buildOptionContainer(String assetPath, String label) {
     return Column(
       children: [
@@ -895,29 +872,18 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchProfileFromPref();
   }
 
   Future<void> fetchProfileFromPref() async {
-    //ReferralData? _referralData = await getReferralProfileData();
     CandidateProfileModel? _candidateProfileModel =
         await getCandidateProfileData();
     UserData? _retrievedUserData = await getUserData();
 
-    print('Resume : ${_candidateProfileModel!.fileName}');
-    UserCredentials? loadedCredentials =
-        await UserCredentials.loadCredentials();
-
     setState(() {
-      //referralData = _referralData;
       candidateProfileModel = _candidateProfileModel;
       retrievedUserData = _retrievedUserData;
-
-      print(_candidateProfileModel.imagePath);
-
-      if (loadedCredentials != null) {}
     });
   }
 }

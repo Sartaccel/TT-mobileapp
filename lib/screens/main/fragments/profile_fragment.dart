@@ -127,7 +127,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
 
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        LoginScreen(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                  ),
                   (Route<dynamic> route) => false,
                 );
               },
@@ -212,9 +217,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                 onTap: () async {
                                   await Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
                                           EditPhotoPage(),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
                                     ),
                                   );
                                   fetchProfileFromPref();
@@ -297,7 +305,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                     ),
                     Container(
                       color: Color(0xffFCFCFC),
-                      height: MediaQuery.of(context).size.height - 400,
+                      height: MediaQuery.of(context).size.height - 387,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -305,9 +313,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               onTap: () async {
                                 await Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
                                         PersonalDetails(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
                                   ),
                                 );
                                 fetchProfileFromPref();
@@ -346,9 +357,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
                                         Accountsettings(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
                                   ),
                                 );
                               },
@@ -386,9 +400,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
                                         MyRewards(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
                                   ),
                                 );
                               },
@@ -426,9 +443,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
                                         InviteAndEarn(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
                                   ),
                                 );
                               },
@@ -541,6 +561,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SvgPicture.asset('assets/icon/noInternet.svg'),
+                      SizedBox(height: 25),
                       Text(
                         'No Internet connection',
                         style: TextStyle(
@@ -549,9 +570,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             fontSize: 18,
                             color: Color(0xff333333)),
                       ),
-                      SizedBox(
-                        height: 15,
-                      ),
+                      SizedBox(height: 10),
                       Text(
                         'Connect to Wi-Fi or cellular data and try again.',
                         style: TextStyle(
@@ -560,7 +579,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             fontSize: 14,
                             color: Color(0xff545454)),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 20),
                       InkWell(
                         onTap: () {
                           checkInternetAvailability();

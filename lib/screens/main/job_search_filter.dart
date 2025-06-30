@@ -21,7 +21,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
   bool _isLoading = false;
 
   String selectedExpType = '';
-  String? selectedEmpType = 'Full time';
+  String? selectedEmpType = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +34,15 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
     Future<void> clearFilter() async {
       setState(() {
         _isLoading = true;
+        _isFullTimeSelected = false;
+        _isContractSelected = false;
+        _isInternshipSelected = false;
+        selectedExpType = '';
+        selectedEmpType = '';
       });
 
-      _isFullTimeSelected = false;
-      _isContractSelected = false;
-      _isInternshipSelected = false;
-      selectedExpType = '';
-      selectedEmpType = '';
-
       await saveStringToPreferences("searchEmpType", "");
-      await saveStringToPreferences("searchExp", '0');
+      await saveStringToPreferences("searchExp", "");
       await saveEmploymentTypeToPrefs(false, false, false);
 
       setState(() {
@@ -51,12 +50,11 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
       });
     }
 
-    // Function to reset experience selection
     void resetExperience() {
       setState(() {
         selectedExpType = '';
-        saveStringToPreferences("searchExp", '0');
       });
+      saveStringToPreferences("searchExp", "");
     }
 
     return Scaffold(
@@ -124,9 +122,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
                 Text(
                   'Employment Type:',
                   style: TextStyle(
@@ -135,9 +131,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                       fontFamily: 'Lato',
                       fontSize: 18),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
                 Row(
                   children: [
                     Transform.scale(
@@ -165,9 +159,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 0,
-                ),
+                SizedBox(height: 0),
                 Row(
                   children: [
                     Transform.scale(
@@ -195,9 +187,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 0,
-                ),
+                SizedBox(height: 0),
                 Row(
                   children: [
                     Transform.scale(
@@ -226,9 +216,7 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                   ],
                 ),
                 Divider(),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
                 Text(
                   'Experience:',
                   style: TextStyle(
@@ -237,112 +225,102 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                       fontFamily: 'Lato',
                       fontSize: 18),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 Container(
                   height: 50,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: Color(0xffD9D9D9)),
-                      borderRadius: BorderRadius.circular(10)),
-                  width: (MediaQuery.of(context).size.width) - 20,
+                    border: Border.all(width: 1, color: Color(0xffD9D9D9)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  width: MediaQuery.of(context).size.width - 20,
                   child: InkWell(
                     onTap: () {
                       showMaterialModalBottomSheet(
-                        backgroundColor: Color(0x00000000),
+                        backgroundColor: Colors.transparent,
                         isDismissible: true,
                         context: context,
-                        builder: (context) => Container(
-                          height: MediaQuery.of(context).size.height * 0.365,
-                          padding: EdgeInsets.only(
-                            top: 30,
-                            bottom: 0,
-                            left: 10,
-                            right: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xffFCFCFC),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(25),
-                              topRight: Radius.circular(25),
+                        builder: (context) {
+                          ScrollController scrollController =
+                              ScrollController();
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.365,
+                            padding:
+                                EdgeInsets.only(top: 30, left: 10, right: 10),
+                            decoration: BoxDecoration(
+                              color: Color(0xffFCFCFC),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25),
+                              ),
                             ),
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.25,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  color: Colors.black, // Adjust color
-                                  borderRadius: BorderRadius.circular(10),
+                            width: MediaQuery.of(context).size.width,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.25,
+                                  height: 5,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff333333),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
-                              ),
-                              ListTile(
-                                title: Text('Fresher'),
-                                onTap: () {
-                                  setState(() {
-                                    selectedExpType = 'Fresher';
-                                    saveStringToPreferences("searchExp", '0');
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              ListTile(
-                                title: Text('1 Year'),
-                                onTap: () {
-                                  setState(() {
-                                    selectedExpType = '1 Year';
-                                    saveStringToPreferences("searchExp", '1');
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              ListTile(
-                                title: Text('2 Years'),
-                                onTap: () {
-                                  setState(() {
-                                    selectedExpType = '2 Years';
-                                    saveStringToPreferences("searchExp", '2');
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              ListTile(
-                                title: Text('3 Years'),
-                                onTap: () {
-                                  setState(() {
-                                    selectedExpType = '3 Years';
-                                    saveStringToPreferences("searchExp", '3');
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              ListTile(
-                                title: Text('4 Years'),
-                                onTap: () {
-                                  setState(() {
-                                    selectedExpType = '4 Years';
-                                    saveStringToPreferences("searchExp", '4');
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              ListTile(
-                                title: Text('5 Years'),
-                                onTap: () {
-                                  setState(() {
-                                    selectedExpType = '5 Years';
-                                    saveStringToPreferences("searchExp", '5');
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
+                                SizedBox(height: 10),
+                                Expanded(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.only(bottom: 20, right: 10),
+                                    child: Scrollbar(
+                                      controller: scrollController,
+                                      thumbVisibility: true,
+                                      trackVisibility: true,
+                                      thickness: 5,
+                                      radius: Radius.circular(10),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                          scrollbarTheme: ScrollbarThemeData(
+                                            thumbColor: WidgetStateProperty.all(
+                                                Color(0xff545454)),
+                                            trackColor: WidgetStateProperty.all(
+                                                Color(0xffD9D9D9)),
+                                          ),
+                                        ),
+                                        child: SingleChildScrollView(
+                                          controller: scrollController,
+                                          child: Column(
+                                            children:
+                                                List.generate(11, (index) {
+                                              String label = index == 0
+                                                  ? "Fresher"
+                                                  : index == 10
+                                                      ? "10+ Years"
+                                                      : "$index ${index > 1 ? 'Years' : 'Year'}";
+                                              return ListTile(
+                                                title: Text(label),
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedExpType =
+                                                        index.toString();
+                                                    saveStringToPreferences(
+                                                        "searchExp",
+                                                        index.toString());
+                                                  });
+                                                  Navigator.pop(context);
+                                                },
+                                              );
+                                            }),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       );
                     },
                     child: Row(
@@ -353,7 +331,9 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                               ? 'Choose Experience'
                               : selectedExpType == "0"
                                   ? "Fresher"
-                                  : '${selectedExpType}',
+                                  : selectedExpType == "10"
+                                      ? "10+ Years"
+                                      : '${selectedExpType} ${int.parse(selectedExpType) > 1 ? 'Years' : 'Year'}',
                           style: TextStyle(color: Color(0xff545454)),
                         ),
                         if (selectedExpType.isNotEmpty)
@@ -382,16 +362,26 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  height: 30,
-                ),
+                SizedBox(height: 30),
                 InkWell(
-                  onTap: () {
-                    saveStringToPreferences(
+                  onTap: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    await saveStringToPreferences(
                         "searchEmpType", getSelectedEmploymentTypes());
+                    if (selectedExpType.isNotEmpty) {
+                      await saveStringToPreferences(
+                          "searchExp", selectedExpType);
+                    } else {
+                      await saveStringToPreferences("searchExp", "");
+                    }
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -442,7 +432,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
     );
   }
 
-  // Helper methods for employment type preferences
   Future<void> saveEmploymentTypeToPrefs(
       bool fullTime, bool contract, bool internship) async {
     await saveStringToPreferences("isFullTimeSelected", fullTime.toString());
@@ -484,14 +473,6 @@ class _JobSearchFilterState extends State<JobSearchFilter> {
 
     String? pref_filt = await getStringFromPreferences("searchExp");
     selectedExpType = pref_filt ?? '';
-
-    if (selectedExpType == "0") {
-      selectedExpType = "Fresher";
-    } else if (selectedExpType == '1') {
-      selectedExpType = selectedExpType + ' year';
-    } else {
-      selectedExpType = selectedExpType + ' years';
-    }
 
     setState(() {});
   }

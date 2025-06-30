@@ -41,7 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
 
   final String redirectUrl = 'https://dev.talentturbo.us/auth/linkedin';
-  //final String redirectUrl = 'https://talentturbo.us/auth/linkedin';
   final String clientId = '775fcwvghj3bpd';
   final String clientSecret = 'X8572A3w5LQ4aM3d';
 
@@ -53,29 +52,33 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  Future<bool> _checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      if (mounted) {
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
+      }
+      return false;
+    }
+    return true;
+  }
+
   Future<void> emailSignIn() async {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN);
-
     final bodyParams = {
       "email": emailController.text,
       "password": passwordController.text
     };
 
     try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult == ConnectivityResult.none) {
-        if (mounted) {
-          // Ensure context is still available
-          IconSnackBar.show(
-            context,
-            label: 'No internet connection',
-            snackBarType: SnackBarType.alert,
-            backgroundColor: Color(0xff2D2D2D),
-            iconColor: Colors.white,
-          );
-        }
-        return; // Exit the function if no internet
-      }
+      // Check internet connection first
+      if (!await _checkInternetConnection()) return;
 
       setState(() {
         isLoading = true;
@@ -94,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
-
         String statusMessage = resOBJ['message'];
 
         if (!resOBJ['result']) {
@@ -110,7 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
             });
           } else {
             if (mounted) {
-              // Ensure context is still available
               IconSnackBar.show(
                 context,
                 label: statusMessage,
@@ -122,7 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         } else {
           print(resOBJ.toString());
-
           final Map<String, dynamic> data = resOBJ['data'];
           UserData userData = UserData.fromJson(data);
 
@@ -174,26 +174,9 @@ class _LoginScreenState extends State<LoginScreen> {
     };
 
     try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: const Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-        return; // Exit the function if no internet
-      }
+      // Check internet connection first
+      if (!await _checkInternetConnection()) return;
+
       setState(() {
         isLoading = true;
       });
@@ -210,20 +193,8 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (response.statusCode == 200) {
-        if (kDebugMode) {
-          print('Trying to save - 1');
-        }
         var resOBJ = jsonDecode(response.body);
-
-        if (kDebugMode) {
-          print('Trying to save - 2');
-        }
-
         String statusMessage = resOBJ['message'] ?? '';
-
-        if (kDebugMode) {
-          print('Trying to save - 3');
-        }
 
         if (!resOBJ['result']) {
           if (statusMessage.toLowerCase().contains('exists')) {
@@ -247,42 +218,19 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         } else {
           print(resOBJ.toString());
-
-          if (kDebugMode) {
-            print('Trying to save');
-          }
           final Map<String, dynamic> data = resOBJ['data'];
-          // Map the API response to UserData model
-
           UserData userData = UserData.fromJson(data);
 
-          if (kDebugMode) {
-            print('Stage 1');
-          }
-          //UserCredentials credentials = UserCredentials(username: emailController.text, password: passwordController.text);
-          //await credentials.saveCredentials();
-
           await saveUserData(userData);
-
-          if (kDebugMode) {
-            print('Stage 2');
-          }
-
           UserData? retrievedUserData = await getUserData();
 
-          if (kDebugMode) {
-            print('Stage 3');
-          }
           if (kDebugMode) {
             print('Saved Successfully');
             print('User Name: ${retrievedUserData!.name}');
           }
 
-          //fetchProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
           fetchCandidateProfileData(
               retrievedUserData!.profileId, retrievedUserData!.token);
-
-          // In Screen 3
         }
       }
     } catch (e) {
@@ -318,7 +266,8 @@ class _LoginScreenState extends State<LoginScreen> {
               left: 15,
               right: 15,
               bottom: 0,
-              child: SingleChildScrollView(
+              child: SafeArea(
+                  child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -402,7 +351,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
                             onChanged: (value) {
-                              // Validate the email here and update _isEmailValid
                               setState(() {
                                 _isEmailValid = true;
                               });
@@ -500,8 +448,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                             onChanged: (val) {
                               setState(() {
-                                _isPasswordValid =
-                                    true; // Reset validation on input change
+                                _isPasswordValid = true;
                               });
                             },
                           ),
@@ -522,17 +469,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                         ]),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height *
-                          0.03, // 3% of screen height
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
-
                     Container(
                       width: (MediaQuery.of(context).size.width) - 15,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                if (!await _checkInternetConnection()) return;
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(
@@ -557,15 +503,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-
-                    //Button
                     SizedBox(
-                      height: MediaQuery.of(context).size.height *
-                          0.03, // 3% of screen height
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
-
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        // Check internet connection first
+                        if (!await _checkInternetConnection()) return;
+
                         if (emailController.text.trim().isEmpty ||
                             !validateEmail(emailController.text) ||
                             passwordController.text.trim().isEmpty) {
@@ -589,9 +534,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         } else {
                           setState(() => isLoading = true);
-                          emailSignIn().then((_) {
-                            setState(() => isLoading = false);
-                          });
+                          await emailSignIn();
+                          setState(() => isLoading = false);
                         }
                       },
                       child: Container(
@@ -636,11 +580,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
                     SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        // Check internet connection first
+                        if (!await _checkInternetConnection()) return;
+
                         Navigator.push(
                           context,
                           PageRouteBuilder(
@@ -670,10 +615,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height *
-                          0.03, // 3% of screen height
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
-
                     Container(
                         width: MediaQuery.of(context).size.width,
                         child: Text(
@@ -684,12 +627,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           textAlign: TextAlign.center,
                         )),
-
                     SizedBox(
-                      height: MediaQuery.of(context).size.height *
-                          0.03, // 3% of screen height
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
-
                     Container(
                       width: MediaQuery.of(context).size.width,
                       child: Center(
@@ -698,26 +638,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             InkWell(
                               onTap: () async {
-                                await _googleAuthService.signOut();
-                                //await _googleSignIn.disconnect();
+                                // Check internet connection first
+                                if (!await _checkInternetConnection()) return;
 
+                                await _googleAuthService.signOut();
                                 final user =
                                     await _authService.signInWithGoogle();
                                 if (user != null) {
-                                  // ignore: use_build_context_synchronously
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(
                                             'Welcome ${user.displayName}!')),
                                   );
 
-                                  socialGoogleSignin(
+                                  await socialGoogleSignin(
                                       user.email!,
                                       user.displayName!,
                                       user.displayName!,
                                       "0");
                                 } else {
-                                  // ignore: use_build_context_synchronously
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content:
@@ -742,52 +681,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                         height: 35,
                                       ),
                                     ),
-                                    // child: Center(child: SvgPicture.asset('assets/images/ic_google.svg', height: 220,),),
                                   )),
                             )
-                            /* SizedBox(width: 53,),
-                        InkWell(
-                          onTap: (){
-                            print('LinkedIn Test');
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return LinkedInUserWidget(
-                                  redirectUrl: redirectUrl,
-                                  clientId: clientId,
-                                  clientSecret: clientSecret,
-                                  onGetUserProfile: (UserSucceededAction linkedInUser) {
-                                    print('Access token: ${linkedInUser.user.token}');
-                                    print('First name: ${linkedInUser.user.givenName}');
-                                    print('Last name: ${linkedInUser.user.familyName}');
-                                  },
-                                  onError: (UserFailedAction e) {
-                                    print('Error: ${e.toString()}');
-                                  },
-                                );
-                              },
-                            );
-                          },
-                          child: PhysicalModel(elevation: 1,color: Colors.white,borderRadius: BorderRadius.circular(8) ,child: Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),border: Border.all(color: Color(0xffD9D9D9))),
-                            child: Center(child: Image.asset('assets/images/LinkedIn_icon_circle.svg.png', height: 35,),),
-                            //child: Center(child: SvgPicture.asset('assets/images/ic_linked.svg', ),),
-                          )),
-                        )
-
-                        */
                           ],
                         ),
                       ),
                     ),
-
                     SizedBox(
-                      height: MediaQuery.of(context).size.height *
-                          0.03, // 3% of screen height
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
-
                     Container(
                       padding: EdgeInsets.all(10),
                       width: MediaQuery.of(context).size.width,
@@ -795,7 +697,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Don’t have an account?',
+                            'Don\'t have an account?',
                             style: TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width > 360
@@ -809,7 +711,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 5,
                           ),
                           InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                if (!await _checkInternetConnection()) return;
                                 print(MediaQuery.of(context).size.width);
                                 Navigator.push(
                                   context,
@@ -836,13 +739,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-
-                    SizedBox(
-                      height: 0,
-                    ),
                   ],
                 ),
-              ))
+              ))),
         ],
       ),
     );
@@ -850,12 +749,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    //emailController.text = 'gayathrikabi15@gmail.com';
-    //passwordController.text='changeme';
-
-    //emailController.text = 'gayathri7251+50@gmail.com';
-    //passwordController.text='changeme';
-
     super.initState();
   }
 
@@ -863,7 +756,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-
     super.dispose();
   }
 
@@ -871,9 +763,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final url = Uri.parse(AppConstants.BASE_URL +
         AppConstants.REFERRAL_PROFILE +
         profileId.toString());
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.CANDIDATE_PROFILE + profileId.toString());
 
     try {
+      if (!await _checkInternetConnection()) return;
+
       setState(() {
         isLoading = true;
       });
@@ -890,7 +783,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
-
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
@@ -901,27 +793,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeContainer()),
-            (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomeContainer(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+            (Route<dynamic> route) => route.isFirst,
           );
         }
-      } else {}
-
+      }
+    } catch (e) {
+      print(e);
+    } finally {
       setState(() {
         isLoading = false;
       });
-    } catch (e) {
-      print(e);
     }
   }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
     final url = Uri.parse(AppConstants.BASE_URL +
         AppConstants.CANDIDATE_PROFILE +
         profileId.toString());
 
     try {
+      if (!await _checkInternetConnection()) return;
+
       setState(() {
         isLoading = true;
       });
@@ -938,12 +836,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         var resOBJ = jsonDecode(response.body);
-
         String statusMessage = resOBJ['message'];
 
         if (statusMessage.toLowerCase().contains('success')) {
           final Map<String, dynamic> data = resOBJ['data'];
-          //ReferralData referralData = ReferralData.fromJson(data);
           CandidateProfileModel candidateData =
               CandidateProfileModel.fromJson(data);
 
@@ -951,15 +847,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeContainer()),
-            (Route<dynamic> route) => false, // This will keep Screen 1
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomeContainer(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+            (Route<dynamic> route) => false,
           );
         }
-      } else {}
-
-      /*setState(() {
-        isLoading = false;
-      });*/
+      }
     } catch (e) {
       print('Exception : ${e}');
       throw e;

@@ -80,7 +80,7 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16.0),
                   child: SvgPicture.asset(
-                    'assets/icon/Notifi.svg',
+                    'assets/icon/Notify.svg',
                     width: 28,
                     height: 28,
                   ),

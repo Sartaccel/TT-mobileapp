@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +29,7 @@ class LoginOTPScreen extends StatefulWidget {
 }
 
 class _LoginOTPScreenState extends State<LoginOTPScreen> {
+  final TextEditingController otpController = TextEditingController();
   bool isLoading = false;
   bool _isOTPValid = false;
 
@@ -37,6 +37,8 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
   bool inValidOTP = false;
   String enteredOTP = '';
   String otpErrorMsg = '';
+  final GlobalKey otpKey = GlobalKey();
+  String otpFieldKey = UniqueKey().toString();
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
@@ -95,8 +97,13 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
 
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeContainer()),
-            (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomeContainer(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+            (Route<dynamic> route) => route.isFirst,
           );
         }
       } else {}
@@ -109,6 +116,100 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
         isLoading = false;
       });
       print(e);
+    }
+  }
+
+  Future<void> resendOTP() async {
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN_BY_MOBILE);
+    final bodyParams = {
+      "countryCode": widget.countryCode,
+      "phoneNumber": widget.mobileNumber
+    };
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      IconSnackBar.show(
+        context,
+        label: "No internet connection",
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(bodyParams),
+      );
+
+      if (kDebugMode) {
+        print('${response.statusCode} :: ${response.body}');
+      }
+
+      var resOBJ = jsonDecode(response.body);
+      String statusMessage = resOBJ['message'];
+
+      if (response.statusCode == 200) {
+        // Reset OTP field and clear states
+        setState(() {
+          enteredOTP = "";
+          inValidOTP = false;
+          otpFieldKey = UniqueKey().toString();
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Color(0xff2D2D2D),
+            elevation: 10,
+            margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Row(
+              children: [
+                SvgPicture.asset('assets/icon/send.svg'),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'OTP resent successfully',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () =>
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                  child: Icon(Icons.close_rounded, color: Colors.white),
+                )
+              ],
+            ),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else {
+        IconSnackBar.show(
+          context,
+          label: statusMessage,
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xffBA1A1A),
+          iconColor: Colors.white,
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -304,6 +405,9 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                         fit: BoxFit.contain,
                       ),
                     ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Center(
                         child: InkWell(
                             onTap: () {
@@ -317,7 +421,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                                   fontWeight: FontWeight.bold),
                             ))),
                     SizedBox(
-                      height: 40,
+                      height: 20,
                     ),
                     ShaderMask(
                       shaderCallback: (bounds) => LinearGradient(
@@ -369,12 +473,8 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: 40,
+                      height: 80,
                     ),
-                    SizedBox(
-                      height: 40,
-                    ),
-
                     /*Container(
                       width: MediaQuery.of(context).size.width - 20,
                       child: OtpTextField(
@@ -399,25 +499,42 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                       ),
                     ),*/
 
-                    OtpPinField(
-                      cursorColor: AppColors.primaryColor,
-                      autoFillEnable: false,
-                      maxLength: 6,
-                      onSubmit: (otp) {},
-                      onChange: (txt) {
-                        print('txt: ${txt} length: ${txt.length}');
-                        setState(() {
-                          enteredOTP = txt;
-                          inValidOTP = false;
-                        });
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final fieldWidth = (constraints.maxWidth - 40) / 6;
+
+                        return OtpPinField(
+                          key: ValueKey(otpFieldKey),
+                          cursorColor: Color(0xff333333),
+                          autoFillEnable: false,
+                          maxLength: 6,
+                          fieldWidth: fieldWidth.clamp(40.0, 60.0),
+                          fieldHeight: 55,
+                          onSubmit: (otp) {
+                            FocusScope.of(context).unfocus();
+                          },
+                          onChange: (txt) {
+                            print('txt: $txt length: ${txt.length}');
+                            setState(() {
+                              enteredOTP = txt;
+                              inValidOTP = false;
+                            });
+                          },
+                          otpPinFieldStyle: OtpPinFieldStyle(
+                            activeFieldBorderColor: Color(0xff333333),
+                            defaultFieldBorderColor:
+                                inValidOTP ? Colors.red : Color(0xffA9A9A9),
+                            fieldBorderWidth: 2,
+                            filledFieldBackgroundColor: Colors.transparent,
+                            filledFieldBorderColor:
+                                inValidOTP ? Colors.red : Color(0xff333333),
+                          ),
+                          otpPinFieldDecoration:
+                              OtpPinFieldDecoration.underlinedPinBoxDecoration,
+                          showCursor: true,
+                          cursorWidth: 2,
+                        );
                       },
-                      otpPinFieldStyle: OtpPinFieldStyle(
-                        activeFieldBorderColor: AppColors.primaryColor,
-                        defaultFieldBorderColor:
-                            inValidOTP ? Colors.red : Color(0xff333333),
-                      ),
-                      otpPinFieldDecoration:
-                          OtpPinFieldDecoration.underlinedPinBoxDecoration,
                     ),
                     inValidOTP
                         ? Row(
@@ -453,7 +570,22 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                           width: 10,
                         ),
                         InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                resendOTP();
+                                enteredOTP = "";
+                                inValidOTP = false;
+                                otpController.clear();
+                                otpFieldKey = UniqueKey()
+                                    .toString(); // Clear text controller
+                              });
+
+                              // Recreate the OtpPinField widget
+                              setState(() {
+                                otpKey.currentState
+                                    ?.dispose(); // Dispose the old widget
+                              });
+                            },
                             child: Text(
                               'Resend',
                               style: TextStyle(
@@ -469,6 +601,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                     ),
                     InkWell(
                       onTap: () {
+                        FocusScope.of(context).unfocus();
                         if (kDebugMode) print('length ${enteredOTP.length}');
                         if (enteredOTP.length < 6) {
                           setState(() {

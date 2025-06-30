@@ -9,8 +9,9 @@ class AppConstants {
       "/api/v1/userresource/authenticate/with/mobileno";
   static String VERIFY_LOGIN_OTP = "/api/v1/userresource/verify/login/otp";
   static const String REGISTER = "/api/v1/userresource/register";
+  static const String Reg_Verify_OTP = "/api/v1/userresource/verify/register/otp";
 
-  static String FORGOT_PASSWORD = "/api/v1/userresource/reset/password";
+  static String FORGOT_PASSWORD = "/api/v1/userresource/reset/password"; 
   static String FORGOT_PASSWORD_OTP_VERIFY =
       "/api/v1/userresource/verify/resetotp";
   static String FORGOT_PASSWORD_UPDATE_PASSWORD =
@@ -56,8 +57,16 @@ class AppConstants {
 
   static String VERIFY_EMAIL_PHONE =
       "/api/v1/userresource/send/verificationcode";
+
+
   static String VALIDATE_VERIFY_OTP =
-      "/api/v1/userresource/verify/verificationcode"; 
-      
-      static String SEARCH_LIST = "/api/v1/jobresource/get/job/titles";
+      "/api/v1/userresource/verify/verificationcode";
+
+  static String SEARCH_LIST = "/api/v1/jobresource/get/job/titles";
+
+//
+  static String API_NEW_VERIFY_OTP =
+      "/api/v1/userresource/activate/user";
+static String RESEND_OTP =
+      "/api/v1/userresource/resend/otp/{userId}";
 }

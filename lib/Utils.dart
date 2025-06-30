@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talent_turbo_new/models/candidate_profile_model.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
-import 'package:intl/intl.dart';  // Add this for date formatting
+import 'package:intl/intl.dart'; // Add this for date formatting
 
 bool validateEmail(String email) {
   // A basic regex pattern for email validation
@@ -80,40 +80,36 @@ Future<CandidateProfileModel?> getCandidateProfileData() async {
   return null;
 }
 
-
 String processDate(String createdDate) {
-  // Parse the input date string
-  DateTime postDate = DateTime.parse(createdDate);
+  DateTime postDate = DateTime.tryParse(createdDate) ?? DateTime(1990);
   DateTime today = DateTime.now();
+  Duration diff = today.difference(postDate);
 
-  // Calculate the difference in days
-  int differenceInDays = today.difference(postDate).inDays;
+  int differenceInDays = diff.inDays;
 
-  // Return appropriate message based on the difference
   if (differenceInDays == 0) {
     return 'Today';
   } else if (differenceInDays == 1) {
     return '1 day ago';
-  } else if (differenceInDays <= 30) {
+  } else if (differenceInDays < 30) {
     return '$differenceInDays days ago';
+  } else if (differenceInDays < 365) {
+    int months = (differenceInDays / 30).floor();
+    return '$months month${months == 1 ? '' : 's'} ago';
   } else {
-    // Format the date as 'YYYY-MM-DD' or however you want to display it
-    return DateFormat('yyyy-MM-dd').format(postDate);
+    int years = (differenceInDays / 365).floor();
+    return '$years year${years == 1 ? '' : 's'} ago';
   }
 }
-  Future<void> saveJobListLocally(List<dynamic> jobs) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jobListString = jsonEncode(jobs);
-    await prefs.setString('jobList', jobListString);
-  }
-  
-  Future<void> clearCredentials() async {
+
+Future<void> saveJobListLocally(List<dynamic> jobs) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String jobListString = jsonEncode(jobs);
+  await prefs.setString('jobList', jobListString);
+}
+
+Future<void> clearCredentials() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('username');
   await prefs.remove('password');
 }
-
-
- 
-
-

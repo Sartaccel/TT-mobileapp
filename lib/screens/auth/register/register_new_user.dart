@@ -11,7 +11,10 @@ import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:http/http.dart' as http;
 import 'package:talent_turbo_new/Utils.dart';
+import 'package:talent_turbo_new/data/preference.dart';
 import 'package:talent_turbo_new/screens/auth/login/login_screen.dart';
+import 'package:talent_turbo_new/screens/auth/register/MobileVerificationScreen%20.dart';
+import 'package:talent_turbo_new/test_screens/otp_test_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterNewUser extends StatefulWidget {
@@ -329,128 +332,374 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
     }
   }
 
+  Future<void> _verifyAndRegister() async {
+    if (!_validateForm()) return;
+
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      IconSnackBar.show(
+        context,
+        label: 'No internet connection',
+        snackBarType: SnackBarType.alert,
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      // Step 1: Register user
+      final registerUrl =
+          Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER);
+      final registerBody = {
+        "firstName": fNameController.text.trim(),
+        "lastName": lNameController.text.trim(),
+        "email": emailController.text.trim(),
+        "password": passwordController.text.trim(),
+        "countryCode": _selectedCountryCode,
+        "phoneNumber": mobileController.text.trim(),
+        "priAccUserType": "candidate"
+      };
+
+      final registerResponse = await http.post(
+        registerUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(registerBody),
+      );
+
+      final regResBody = jsonDecode(registerResponse.body);
+      debugPrint("📩 Register API Response: $regResBody");
+
+      if (registerResponse.statusCode == 200 &&
+          regResBody['status']?.toString().toUpperCase() == 'OK') {
+        final userId = int.tryParse(regResBody['id'].toString()) ?? 0;
+
+        final verificationSuccess = await Navigator.push<bool>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MobileVerificationScreen(
+              mobileNumber: mobileController.text,
+              countryCode: _selectedCountryCode!,
+              firstName: fNameController.text,
+              lastName: lNameController.text,
+              email: emailController.text,
+              password: passwordController.text,
+              userId: userId,
+            ),
+          ),
+        );
+
+        debugPrint("✅ Returned from OTP screen: $verificationSuccess");
+
+        if (verificationSuccess == true) {
+          IconSnackBar.show(
+            context,
+            label: 'Registration complete!',
+            snackBarType: SnackBarType.success,
+          );
+          Navigator.pop(context);
+        }
+      } else {
+        IconSnackBar.show(
+          context,
+          label: regResBody['message'] ?? 'Registration failed',
+          snackBarType: SnackBarType.alert,
+        );
+      }
+    } catch (e) {
+      debugPrint("❌ Exception during registration: $e");
+      IconSnackBar.show(
+        context,
+        label: 'Something went wrong. Please try again.',
+        snackBarType: SnackBarType.alert,
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  bool _validateForm() {
+    int validLength = getValidLengthForCountry(_selectedCountryCode!);
+    bool isValid = true;
+
+    // Agreement check
+    if (!agreementAccepted) {
+      setState(() => _isAgreementError = true);
+      isValid = false;
+    }
+
+    // First Name
+    if (fNameController.text.trim().isEmpty) {
+      setState(() {
+        _isFirstNameValid = false;
+        fNameErrorMsg = 'First name is required';
+      });
+      isValid = false;
+    } else if (fNameController.text.trim().length < 3) {
+      setState(() {
+        _isFirstNameValid = false;
+        fNameErrorMsg = 'First name must be at least 3 characters';
+      });
+      isValid = false;
+    } else {
+      _isFirstNameValid = true;
+    }
+
+    // Last Name
+    if (lNameController.text.trim().isEmpty) {
+      setState(() => _isLastNameValid = false);
+      isValid = false;
+    } else {
+      _isLastNameValid = true;
+    }
+
+    // Email
+    if (emailController.text.trim().isEmpty) {
+      setState(() {
+        _isEmailValid = false;
+        emailErrorMsg = 'Email is required';
+      });
+      isValid = false;
+    } else if (!validateEmail(emailController.text)) {
+      setState(() {
+        _isEmailValid = false;
+        emailErrorMsg = 'Enter a valid email address';
+      });
+      isValid = false;
+    } else {
+      _isEmailValid = true;
+    }
+
+    // Password
+    if (passwordController.text.trim().isEmpty) {
+      setState(() {
+        _isPasswordValid = false;
+        passwordErrorMSG = 'Password is required';
+      });
+      isValid = false;
+    } else if (passwordController.text.length < 8) {
+      setState(() {
+        _isPasswordValid = false;
+        passwordErrorMSG = 'Password must be at least 8 characters';
+      });
+      isValid = false;
+    } else {
+      _isPasswordValid = true;
+    }
+
+    // Confirm Password
+    if (confirmPasswordController.text.trim().isEmpty) {
+      setState(() {
+        _isConfirmPasswordValid = false;
+        confirm_passwordErrorMSG = 'Confirm password is required';
+      });
+      isValid = false;
+    } else if (passwordController.text != confirmPasswordController.text) {
+      setState(() {
+        _isPasswordValid = false;
+        _isConfirmPasswordValid = false;
+        passwordErrorMSG = 'Passwords don\'t match';
+        confirm_passwordErrorMSG = 'Passwords don\'t match';
+      });
+      isValid = false;
+    } else {
+      _isConfirmPasswordValid = true;
+    }
+
+    // Mobile Number
+    if (mobileController.text.trim().isEmpty) {
+      setState(() {
+        _isMobileNumberValid = false;
+        mobileErrorMsg = 'Mobile number is required';
+      });
+      isValid = false;
+    } else if (mobileController.text.length != validLength) {
+      setState(() {
+        _isMobileNumberValid = false;
+        mobileErrorMsg =
+            'Please enter a valid $validLength-digit mobile number';
+      });
+      isValid = false;
+    } else {
+      _isMobileNumberValid = true;
+    }
+
+    return isValid;
+  }
+
+  Future<void> sendotp() async {
+    // Step 2: Send OTP
+    final otpUrl =
+        Uri.parse(AppConstants.BASE_URL + AppConstants.Reg_Verify_OTP);
+    final otpBody = {
+      "email": emailController.text.trim(),
+      "countryCode": _selectedCountryCode,
+      "phoneNumber": mobileController.text.trim(),
+    };
+
+    final otpResponse = await http.post(
+      otpUrl,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(otpBody),
+    );
+    print("📩 OTP API input : $otpBody");
+
+    final otpResBody = jsonDecode(otpResponse.body);
+    print("📩 OTP API: $otpResBody");
+
+    if (otpResponse.statusCode == 200 &&
+        otpResBody['status']?.toString().toUpperCase() == 'OK') {
+      print("✅ OTP sent successfully, navigating to verification screen...");
+    } else {
+      IconSnackBar.show(
+        context,
+        label: otpResBody['message'] ?? 'Failed to send OTP',
+        snackBarType: SnackBarType.alert,
+      );
+    }
+  }
+
   Future<void> registerUser() async {
     if (kDebugMode) print('Registering...');
 
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER);
 
     final bodyParams = {
-      "firstName": fNameController.text,
-      "lastName": lNameController.text,
-      "email": emailController.text,
-      "password": passwordController.text,
+      "firstName": fNameController.text.trim(),
+      "lastName": lNameController.text.trim(),
+      "email": emailController.text.trim(),
+      "password": passwordController.text.trim(),
       "countryCode": _selectedCountryCode,
-      "phoneNumber": mobileController.text,
-      //"referralCode" : referralController.text,
+      "phoneNumber": mobileController.text.trim(),
       "priAccUserType": "candidate"
     };
 
-    if (kDebugMode) print(jsonEncode(bodyParams));
+    print("📤 Input Sent: ${jsonEncode(bodyParams)}");
 
     try {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
+      final connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectivityResult.none) {
         IconSnackBar.show(
           context,
           label: 'No internet connection',
           snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
+          backgroundColor: const Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
-        return; // Exit the function if no internet
+        return;
       }
-      setState(() {
-        isLoading = true;
-      });
-      final response = await http.post(url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(bodyParams));
 
-      if (response.statusCode == 200) {
-        var resOBJ = jsonDecode(response.body);
+      setState(() => isLoading = true);
 
-        String statusMessage = resOBJ['message'];
-        //print(response.body);
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(bodyParams),
+      );
 
-        if (statusMessage.toLowerCase().contains('email')) {
-          setState(() {
-            _isEmailValid = false;
-            emailErrorMsg = statusMessage;
-          });
-        } else if (statusMessage.toLowerCase().contains('phone') ||
-            statusMessage.toLowerCase().contains('mobile')) {
-          _isMobileNumberValid = false;
-          mobileErrorMsg = statusMessage;
-        } else if (statusMessage.toLowerCase().contains('successfully')) {
-          // Fluttertoast.showToast(
-          //     msg: statusMessage,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.green,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
+      final resBody = jsonDecode(response.body);
+      final statusMessage =
+          resBody['message']?.toString() ?? 'Unknown response';
+
+      print("📩 Response Body: $resBody");
+      print("📦 Status Code: ${response.statusCode}");
+
+      if (response.statusCode == 200 && resBody['result'] == true) {
+        // ✅ Save token for OTP API
+        if (resBody['token'] != null) {
+          Preference.token = resBody['token'];
+          print("✅ Token saved to preferences: ${Preference.token}");
+        }
+
+        _handleSuccess(statusMessage);
+
+        // ✅ Get userId safely as int
+        final int userId = int.parse(resBody['id'].toString());
+
+        final verificationSuccess = await Navigator.push<bool>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MobileVerificationScreen(
+              mobileNumber: mobileController.text,
+              countryCode: _selectedCountryCode!,
+              firstName: fNameController.text,
+              lastName: lNameController.text,
+              email: emailController.text,
+              password: passwordController.text,
+              userId: userId,
+            ),
+          ),
+        );
+
+        if (verificationSuccess == true) {
           IconSnackBar.show(
             context,
-            label: statusMessage,
+            label: 'Registration successful!',
             snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff4CAF50),
-            iconColor: Colors.white,
           );
-
           Navigator.pop(context);
-        } else {
-          // Fluttertoast.showToast(
-          //   msg: statusMessage,
-          //   toastLength: Toast.LENGTH_SHORT,
-          //   gravity: ToastGravity.BOTTOM,
-          //   timeInSecForIosWeb: 1,
-          //   backgroundColor: Colors.green,
-          //   textColor: Colors.white,
-          //   fontSize: 16.0);
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff4CAF50),
-            iconColor: Colors.white,
-          );
         }
       } else {
-        var resOBJ = jsonDecode(response.body);
-
-        if (kDebugMode) print(resOBJ);
-
-        String statusMessage = resOBJ['message'];
-        if (statusMessage.toLowerCase().contains('email')) {
-          setState(() {
-            _isEmailValid = false;
-            emailErrorMsg = statusMessage;
-          });
-        } else if (statusMessage.toLowerCase().contains('phone') ||
-            statusMessage.toLowerCase().contains('mobile')) {
-          _isMobileNumberValid = false;
-          mobileErrorMsg = statusMessage;
-        }
-
-        print('Error. errorcode: ${response.statusCode} => ${response.body}');
+        _handleError(statusMessage);
       }
     } catch (e) {
-      print(e.toString());
+      print("❌ Exception: $e");
+      IconSnackBar.show(
+        context,
+        label: 'Something went wrong. Please try again.',
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Colors.red,
+        iconColor: Colors.white,
+      );
     } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  void _handleSuccess(String message) {
+    if (message.toLowerCase().contains('successfully')) {
+      IconSnackBar.show(
+        context,
+        label: message,
+        snackBarType: SnackBarType.success,
+        backgroundColor: Color(0xff4CAF50),
+        iconColor: Colors.white,
+      );
+      Navigator.pop(context);
+    } else {
+      IconSnackBar.show(
+        context,
+        label: message,
+        snackBarType: SnackBarType.success,
+        backgroundColor: Color(0xff4CAF50),
+        iconColor: Colors.white,
+      );
+    }
+  }
+
+  void _handleError(String message) {
+    if (message.toLowerCase().contains('email')) {
       setState(() {
-        isLoading = false;
+        _isEmailValid = false;
+        emailErrorMsg = message;
+      });
+    } else if (message.toLowerCase().contains('phone') ||
+        message.toLowerCase().contains('mobile')) {
+      setState(() {
+        _isMobileNumberValid = false;
+        mobileErrorMsg = message;
       });
     }
+
+    IconSnackBar.show(
+      context,
+      label: message,
+      snackBarType: SnackBarType.alert,
+      backgroundColor: Colors.orange,
+      iconColor: Colors.white,
+    );
   }
 
   int getValidLengthForCountry(String countryCode) {
@@ -564,17 +813,18 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                           );
                         },
                         child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 20),
-                            width: MediaQuery.of(context).size.width,
-                            child: Text(
-                              textAlign: TextAlign.center,
-                              'Register your profile',
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            )),
+                          margin: EdgeInsets.symmetric(vertical: 20),
+                          width: MediaQuery.of(context).size.width,
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            'Register your profile',
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                       ),
 
                       SizedBox(
@@ -601,6 +851,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               TextField(
                                 controller: fNameController,
                                 cursorColor: Color(0xff004C99),
+                                textCapitalization: TextCapitalization.words,
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: 'Lato',
@@ -661,11 +912,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                     ),
                                   ),
                                 ),
+                              SizedBox(height: _isFirstNameValid ? 20 : 7),
                             ]),
-                      ),
-
-                      SizedBox(
-                        height: 20,
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -690,6 +938,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                             TextField(
                               controller: lNameController,
                               cursorColor: Color(0xff004C99),
+                              textCapitalization: TextCapitalization.words,
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'Lato',
@@ -745,12 +994,9 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   ),
                                 ),
                               ),
+                            SizedBox(height: _isLastNameValid ? 20 : 7),
                           ],
                         ),
-                      ),
-
-                      SizedBox(
-                        height: 20,
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -825,12 +1071,9 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   ),
                                 ),
                               ),
+                            SizedBox(height: _isEmailValid ? 20 : 7),
                           ],
                         ),
-                      ),
-
-                      SizedBox(
-                        height: 20,
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -929,11 +1172,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   ),
                                 ),
                               ),
+                            SizedBox(height: _isPasswordValid ? 20 : 7),
                           ])),
-
-                      SizedBox(
-                        height: 20,
-                      ),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.015,
@@ -1033,12 +1273,9 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   ),
                                 ),
                               ),
+                            SizedBox(height: _isConfirmPasswordValid ? 20 : 7),
                           ],
                         ),
-                      ),
-
-                      SizedBox(
-                        height: 20,
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -1175,6 +1412,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   ),
                                 ),
                               ),
+                            SizedBox(height: _isMobileNumberValid ? 40 : 15),
                           ],
                         ),
                       ),
@@ -1212,7 +1450,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                   ),*/
 
                       //CheckBox
-                      SizedBox(height: 40),
+
                       Center(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1275,7 +1513,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                       //Button
                       SizedBox(height: 30),
                       InkWell(
-                        onTap: () {
+                        onTap: () async {
                           int validLength =
                               getValidLengthForCountry(_selectedCountryCode!);
 
@@ -1415,7 +1653,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   'Passwords don\'t match';
                             });
                           } else {
-                            registerUser();
+                            _verifyAndRegister();
                           }
                         },
                         child: Container(
@@ -1437,24 +1675,20 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                       curve: Curves.linear,
                                       builder: (context, value, child) {
                                         return Transform.rotate(
-                                          angle: value *
-                                              2 *
-                                              3.1416, // Full rotation effect
+                                          angle: value * 2 * 3.1416,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 4,
-                                            value: 0.20, // 1/5 of the circle
+                                            value: 0.20,
                                             backgroundColor:
-                                                const Color.fromARGB(142, 234,
-                                                    232, 232), // Grey stroke
-                                            valueColor: AlwaysStoppedAnimation<
-                                                    Color>(
-                                                Colors
-                                                    .white), // White rotating stroke
+                                                const Color.fromARGB(
+                                                    142, 234, 232, 232),
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.white),
                                           ),
                                         );
                                       },
-                                      onEnd: () =>
-                                          {}, // Ensures smooth infinite animation
+                                      onEnd: () => {},
                                     ),
                                   )
                                 : Text(

@@ -44,6 +44,7 @@ class _AddemploymentState extends State<Addemployment> {
 
   String? _selectedOption = 'No';
   String startYear = '', endYear = '';
+  String? dateErrorMsg = 'Start date and end date are required';
 
   bool _isDesignationValid = true;
   TextEditingController txtDesignationController = TextEditingController();
@@ -280,360 +281,356 @@ class _AddemploymentState extends State<Addemployment> {
 
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 40,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            decoration: BoxDecoration(color: Color(0xff001B3E)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    InkWell(
-                        onTap: () {
+      backgroundColor: Color(0xffFCFCFC),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 60,
+              decoration: BoxDecoration(color: Color(0xff001B3E)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                              'Back',
-                              style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 16,
-                                  color: Colors.white),
-                            ))))
-                  ],
-                ),
-                //SizedBox(width: 80,)
-                Text(
-                  'Work Experience',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    '       ',
+                      ),
+                      InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                              height: 50,
+                              child: Center(
+                                  child: Text(
+                                'Back',
+                                style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 16,
+                                    color: Colors.white),
+                              ))))
+                    ],
+                  ),
+                  //SizedBox(width: 80,)
+                  Text(
+                    'Work Experience',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      '       ',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
+            Expanded(
               child: SingleChildScrollView(
-                  child: Container(
-                      padding: EdgeInsets.all(16),
-                      color: Color(0xffFCFCFC),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 25,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Current Designation',
+                child: Container(
+                  margin: EdgeInsets.zero,
+                  padding: EdgeInsets.only(left: 15, right: 15),
+                  color: Color(0xffFCFCFC),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        child: Text(
+                          'Current Designation',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w500,
+                              color: _isDesignationValid
+                                  ? Color(0xff333333)
+                                  : Color(0xffBA1A1A)),
+                        ),
+                      ),
+                      SizedBox(height: 7),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextField(
+                                controller: txtDesignationController,
+                                cursorColor: Color(0xff004C99),
                                 style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 14,
                                     fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w500,
-                                    color: _isDesignationValid
-                                        ? Color(0xff333333)
-                                        : Color(0xffBA1A1A)),
-                              ),
-                            ),
-                            SizedBox(height: 7),
-                            Container(
-                              width: (MediaQuery.of(context).size.width) - 20,
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextField(
-                                      controller: txtDesignationController,
-                                      cursorColor: Color(0xff004C99),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: 'Lato',
-                                          color: Color(0xff333333)),
-                                      decoration: InputDecoration(
-                                          hintText: 'Designation',
-                                          hintStyle: TextStyle(
-                                              color: Color(0xff545454)),
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isDesignationValid
-                                                    ? Color(0xffd9d9d9d9)
-                                                    : Color(
-                                                        0xffBA1A1A), // Default border color
-                                                width: 1),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isDesignationValid
-                                                    ? Color(0xff004C99)
-                                                    : Color(
-                                                        0xffBA1A1A), // Border color when focused
-                                                width: 1),
-                                          ),
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10)),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'[a-zA-Z0-9\s]')),
-                                      ],
-                                      onChanged: (value) {
-                                        // Validate the email here and update _isEmailValid
-                                        setState(() {
-                                          _isDesignationValid = true;
-                                        });
-                                      },
+                                    color: Color(0xff333333)),
+                                decoration: InputDecoration(
+                                    hintText: 'Designation',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff545454)),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                          color: _isDesignationValid
+                                              ? Color(0xffd9d9d9d9)
+                                              : Color(
+                                                  0xffBA1A1A), // Default border color
+                                          width: 1),
                                     ),
-                                    SizedBox(height: 4),
-                                    if (!_isDesignationValid)
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          designationErrorMsg ?? '',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xffBA1A1A),
-                                            fontFamily: 'Lato',
-                                          ),
-                                        ),
-                                      ),
-                                  ]),
-                            ),
-                            SizedBox(
-                              height: 25,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Company Name',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w500,
-                                    color: _isCompanyNameValid
-                                        ? Color(0xff333333)
-                                        : Color(0xffBA1A1A)),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              width: (MediaQuery.of(context).size.width) - 20,
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextField(
-                                      controller: txtComanyNameController,
-                                      cursorColor: Color(0xff004C99),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: 'Lato',
-                                          color: Color(0xff333333)),
-                                      decoration: InputDecoration(
-                                          hintText: 'Company',
-                                          hintStyle: TextStyle(
-                                              color: Color(0xff545454)),
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isCompanyNameValid
-                                                    ? Color(0xffd9d9d9)
-                                                    : Color(
-                                                        0xffBA1A1A), // Default border color
-                                                width: 1),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            borderSide: BorderSide(
-                                                color: _isCompanyNameValid
-                                                    ? Color(0xff004C99)
-                                                    : Color(
-                                                        0xffBA1A1A), // Border color when focused
-                                                width: 1),
-                                          ),
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 10)),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'[a-zA-Z0-9\s]')),
-                                      ],
-                                      onChanged: (value) {
-                                        // Validate the email here and update _isEmailValid
-                                        setState(() {
-                                          _isCompanyNameValid = true;
-                                        });
-                                      },
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                          color: _isDesignationValid
+                                              ? Color(0xff004C99)
+                                              : Color(
+                                                  0xffBA1A1A), // Border color when focused
+                                          width: 1),
                                     ),
-                                    SizedBox(height: 4),
-                                    if (!_isCompanyNameValid)
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          companyNameErrorMsg ?? '',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xffBA1A1A),
-                                            fontFamily: 'Lato',
-                                          ),
-                                        ),
-                                      ),
-                                  ]),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              'Is this your current company?',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff333333)),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Transform.scale(
-                                        scale: 1.5,
-                                        child: Radio<String>(
-                                          value: 'Yes',
-                                          groupValue: _selectedOption,
-                                          activeColor: Color(0xff415F91),
-                                          visualDensity: VisualDensity.compact,
-                                          fillColor: WidgetStateProperty
-                                              .resolveWith<Color>((states) {
-                                            if (states.contains(
-                                                WidgetState.selected)) {
-                                              return Color(0xff004C99);
-                                            }
-                                            return Color(0xffD1D1D6);
-                                          }),
-                                          overlayColor: WidgetStateProperty
-                                              .resolveWith<Color>(
-                                            (states) => Colors.transparent,
-                                          ),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectedOption = value;
-                                              _endDateController.text = '';
-                                              isEndDateValid = true;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        'Yes',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'Lato',
-                                        ),
-                                      ),
-                                    ],
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
+                                onChanged: (value) {
+                                  // Validate the email here and update _isEmailValid
+                                  setState(() {
+                                    _isDesignationValid = true;
+                                  });
+                                },
+                              ),
+                              SizedBox(height: 4),
+                              if (!_isDesignationValid)
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    designationErrorMsg ?? '',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xffBA1A1A),
+                                      fontFamily: 'Lato',
+                                    ),
                                   ),
                                 ),
-                                SizedBox(width: 5), // Space between Yes and No
-                                Expanded(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Transform.scale(
-                                        scale: 1.5,
-                                        child: Radio<String>(
-                                          value: 'No',
-                                          groupValue: _selectedOption,
-                                          activeColor: Color(0xff415F91),
-                                          visualDensity: VisualDensity.compact,
-                                          fillColor: WidgetStateProperty
-                                              .resolveWith<Color>((states) {
-                                            if (states.contains(
-                                                WidgetState.selected)) {
-                                              return Color(0xff004C99);
-                                            }
-                                            return Color(0xffD1D1D6);
-                                          }),
-                                          overlayColor: WidgetStateProperty
-                                              .resolveWith<Color>(
-                                            (states) => Colors.transparent,
-                                          ),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              isEndDateValid = true;
-                                              _selectedOption = value;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        'No',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'Lato',
-                                        ),
-                                      ),
-                                    ],
+                            ]),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        child: Text(
+                          'Company Name',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w500,
+                              color: _isCompanyNameValid
+                                  ? Color(0xff333333)
+                                  : Color(0xffBA1A1A)),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextField(
+                                controller: txtComanyNameController,
+                                cursorColor: Color(0xff004C99),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff333333)),
+                                decoration: InputDecoration(
+                                    hintText: 'Company',
+                                    hintStyle:
+                                        TextStyle(color: Color(0xff545454)),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                          color: _isCompanyNameValid
+                                              ? Color(0xffd9d9d9)
+                                              : Color(
+                                                  0xffBA1A1A), // Default border color
+                                          width: 1),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                          color: _isCompanyNameValid
+                                              ? Color(0xff004C99)
+                                              : Color(
+                                                  0xffBA1A1A), // Border color when focused
+                                          width: 1),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10)),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[a-zA-Z0-9\s]')),
+                                ],
+                                onChanged: (value) {
+                                  // Validate the email here and update _isEmailValid
+                                  setState(() {
+                                    _isCompanyNameValid = true;
+                                  });
+                                },
+                              ),
+                              SizedBox(height: 4),
+                              if (!_isCompanyNameValid)
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    companyNameErrorMsg ?? '',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xffBA1A1A),
+                                      fontFamily: 'Lato',
+                                    ),
+                                  ),
+                                ),
+                            ]),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Is this your current company?',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'Lato',
+                            color: Color(0xff333333)),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Transform.scale(
+                                  scale: 1.5,
+                                  child: Radio<String>(
+                                    value: 'Yes',
+                                    groupValue: _selectedOption,
+                                    activeColor: Color(0xff415F91),
+                                    visualDensity: VisualDensity.compact,
+                                    fillColor:
+                                        WidgetStateProperty.resolveWith<Color>(
+                                            (states) {
+                                      if (states
+                                          .contains(WidgetState.selected)) {
+                                        return Color(0xff004C99);
+                                      }
+                                      return Color(0xffD1D1D6);
+                                    }),
+                                    overlayColor:
+                                        WidgetStateProperty.resolveWith<Color>(
+                                      (states) => Colors.transparent,
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _selectedOption = value;
+                                        _endDateController.text = '';
+                                        isEndDateValid = true;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  'Yes',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Lato',
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 25,
+                          ),
+                          SizedBox(width: 5), // Space between Yes and No
+                          Expanded(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Transform.scale(
+                                  scale: 1.5,
+                                  child: Radio<String>(
+                                    value: 'No',
+                                    groupValue: _selectedOption,
+                                    activeColor: Color(0xff415F91),
+                                    visualDensity: VisualDensity.compact,
+                                    fillColor:
+                                        WidgetStateProperty.resolveWith<Color>(
+                                            (states) {
+                                      if (states
+                                          .contains(WidgetState.selected)) {
+                                        return Color(0xff004C99);
+                                      }
+                                      return Color(0xffD1D1D6);
+                                    }),
+                                    overlayColor:
+                                        WidgetStateProperty.resolveWith<Color>(
+                                      (states) => Colors.transparent,
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isEndDateValid = true;
+                                        _selectedOption = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  'No',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Lato',
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -745,19 +742,6 @@ class _AddemploymentState extends State<Addemployment> {
                                                 }
                                               },
                                             ),
-                                            SizedBox(height: 4),
-                                            if (!isStartDateValid)
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  startDateErrorMsg ?? '',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xffBA1A1A),
-                                                    fontFamily: 'Lato',
-                                                  ),
-                                                ),
-                                              ),
                                           ]),
                                     ],
                                   ),
@@ -868,475 +852,453 @@ class _AddemploymentState extends State<Addemployment> {
                                                 } else if (_selectedOption ==
                                                         'No' &&
                                                     _startDateSelected ==
-                                                        false) {
-                                                  IconSnackBar.show(
-                                                    context,
-                                                    label:
-                                                        'Please select start date first',
-                                                    snackBarType:
-                                                        SnackBarType.alert,
-                                                    backgroundColor:
-                                                        Color(0xff2D2D2D),
-                                                    iconColor: Colors.white,
-                                                  );
-                                                }
+                                                        false) {}
                                               },
                                             ),
-                                            SizedBox(height: 4),
-                                            if (!isEndDateValid)
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  endDateErrorMsg ?? '',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xffBA1A1A),
-                                                    fontFamily: 'Lato',
-                                                  ),
-                                                ),
-                                              ),
                                           ]),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 25,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Work type',
-                                style: TextStyle(
+                            SizedBox(height: 4),
+                            if (!isStartDateValid || !isEndDateValid)
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  dateErrorMsg ?? '',
+                                  style: TextStyle(
                                     fontSize: 12,
+                                    color: Color(0xffBA1A1A),
                                     fontFamily: 'Lato',
-                                    color: isWorkTypeValid
-                                        ? Color(0xff333333)
-                                        : Color(0xffBA1A1A)),
-                              ),
-                            ),
-                            SizedBox(height: 7),
-                            Container(
-                              height: 50,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1,
-                                      color: isWorkTypeValid
-                                          ? Color(0xffD9D9D9)
-                                          : Color(0xffBA1A1A)),
-                                  borderRadius: BorderRadius.circular(10)),
-                              width: (MediaQuery.of(context).size.width) - 20,
-                              child: InkWell(
-                                onTap: () {
-                                  showMaterialModalBottomSheet(
-                                    backgroundColor: Color(0x00000000),
-                                    isDismissible: true,
-                                    context: context,
-                                    builder: (context) => Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 30, horizontal: 10),
-                                      color: Color(0xffFCFCFC),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xffFCFCFC),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(25),
-                                          topRight: Radius.circular(25),
-                                        ),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.25,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Colors.black, // Adjust color
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
-                                          ListTile(
-                                            title: Text('On Site'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedWorkType = 'On Site';
-                                                isWorkTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          ListTile(
-                                            title: Text('Hybrid'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedWorkType = 'Hybrid';
-                                                isWorkTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          ListTile(
-                                            title: Text('Work from home'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedWorkType =
-                                                    'Work from home';
-                                                isWorkTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    selectedWorkType.isEmpty
-                                        ? 'Select your work type'
-                                        : selectedWorkType,
-                                    style: TextStyle(color: Color(0xFF505050)),
                                   ),
                                 ),
                               ),
-                            ),
                             SizedBox(
-                              height: 25,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Employment Type',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    color: isWorkTypeValid
-                                        ? Color(0xff333333)
-                                        : Color(0xffBA1A1A)),
-                              ),
-                            ),
-                            SizedBox(height: 7),
-                            Container(
-                              height: 50,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1,
-                                      color: isWorkTypeValid
-                                          ? Color(0xffD9D9D9)
-                                          : Color(0xffBA1A1A)),
-                                  borderRadius: BorderRadius.circular(10)),
-                              width: (MediaQuery.of(context).size.width) - 20,
-                              child: InkWell(
-                                onTap: () {
-                                  showMaterialModalBottomSheet(
-                                    isDismissible: true,
-                                    context: context,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) => Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 30, horizontal: 10),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xffFCFCFC),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                        ),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.25,
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                              color: Colors.black,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
-                                          ListTile(
-                                            title: Text('Full time'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedEmploymentType =
-                                                    'Full time';
-                                                isEmploymentTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          ListTile(
-                                            title: Text('Part time'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedEmploymentType =
-                                                    'Part time';
-                                                isEmploymentTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          ListTile(
-                                            title: Text('Internship'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedEmploymentType =
-                                                    'Internship';
-                                                isEmploymentTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          ListTile(
-                                            title: Text('Freelance'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedEmploymentType =
-                                                    'Freelance';
-                                                isEmploymentTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          ListTile(
-                                            title: Text('Self-employed'),
-                                            onTap: () {
-                                              setState(() {
-                                                selectedEmploymentType =
-                                                    'Self-employed';
-                                                isEmploymentTypeValid = true;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    selectedEmploymentType.isEmpty
-                                        ? 'Select your employment type'
-                                        : selectedEmploymentType,
-                                    style: TextStyle(color: Color(0xFF505050)),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 25,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.015,
-                              ),
-                              child: Text(
-                                'Description',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w500,
-                                    color: _isDescriptionValid
-                                        ? Color(0xff333333)
-                                        : Color(0xffBA1A1A)),
-                              ),
-                            ),
-                            SizedBox(height: 7),
-                            Container(
-                              width: (MediaQuery.of(context).size.width) - 20,
-                              child: TextField(
-                                maxLines: 4,
-                                maxLength: maxLength,
-                                controller: txtDescriptionController,
-                                cursorColor: Color(0xff004C99),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff333333)),
-                                decoration: InputDecoration(
-                                    hintText: 'Your work experience',
-                                    hintStyle:
-                                        TextStyle(color: Color(0xff545454)),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
-                                          color: _isDescriptionValid
-                                              ? Color(0xffd9d9d9)
-                                              : Color(
-                                                  0xffBA1A1A), // Default border color
-                                          width: 1),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
-                                          color: _isDescriptionValid
-                                              ? Color(0xff004C99)
-                                              : Color(
-                                                  0xffBA1A1A), // Border color when focused
-                                          width: 1),
-                                    ),
-                                    errorText: _isDescriptionValid
-                                        ? null
-                                        : descriptionErrorMsg,
-                                    // Display error message if invalid
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10)),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'[a-zA-Z0-9\s]')),
-                                ],
-                                onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
-                                  setState(() {
-                                    _isDescriptionValid = true;
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                              height: 25,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                if ((_selectedOption == 'No' &&
-                                        _endDateController.text.isEmpty) ||
-                                    txtDesignationController.text.isEmpty ||
-                                    txtComanyNameController.text.isEmpty ||
-                                    txtDescriptionController.text.isEmpty ||
-                                    _startDateController.text.isEmpty ||
-                                    selectedWorkType.isEmpty ||
-                                    selectedEmploymentType.isEmpty) {
-                                  if (txtDesignationController.text.isEmpty) {
-                                    setState(() {
-                                      _isDesignationValid = false;
-                                    });
-                                  }
-
-                                  if (txtComanyNameController.text.isEmpty) {
-                                    setState(() {
-                                      _isCompanyNameValid = false;
-                                    });
-                                  }
-
-                                  if (_startDateController.text.isEmpty) {
-                                    setState(() {
-                                      isStartDateValid = false;
-                                    });
-                                  }
-
-                                  if (_selectedOption == 'No' &&
-                                      _endDateController.text.isEmpty) {
-                                    setState(() {
-                                      isEndDateValid = false;
-                                    });
-                                  }
-
-                                  if (selectedWorkType.isEmpty) {
-                                    setState(() {
-                                      isWorkTypeValid = false;
-                                    });
-                                  }
-
-                                  if (selectedEmploymentType.isEmpty) {
-                                    setState(() {
-                                      isEmploymentTypeValid = false;
-                                    });
-                                  }
-
-                                  if (txtDescriptionController.text.isEmpty) {
-                                    setState(() {
-                                      _isDescriptionValid = false;
-                                    });
-                                  }
-                                } else {
-                                  if (kDebugMode) {
-                                    print(
-                                        'Performing operation................');
-                                  }
-
-                                  if (isLoading == false) {
-                                    updateEmployment();
-                                  }
-                                }
-                              },
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 44,
-                                margin: EdgeInsets.symmetric(horizontal: 0),
-                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                height: !isStartDateValid || !isEndDateValid
+                                    ? 7
+                                    : 20),
+                          ]),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        child: Text(
+                          'Work type',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Lato',
+                              color: isWorkTypeValid
+                                  ? Color(0xff333333)
+                                  : Color(0xffBA1A1A)),
+                        ),
+                      ),
+                      SizedBox(height: 7),
+                      Container(
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color: isWorkTypeValid
+                                    ? Color(0xffD9D9D9)
+                                    : Color(0xffBA1A1A)),
+                            borderRadius: BorderRadius.circular(10)),
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: InkWell(
+                          onTap: () {
+                            showMaterialModalBottomSheet(
+                              backgroundColor: Color(0x00000000),
+                              isDismissible: true,
+                              context: context,
+                              builder: (context) => Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 30, horizontal: 10),
                                 decoration: BoxDecoration(
-                                    color: AppColors.primaryColor,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Center(
-                                  child: isLoading
-                                      ? SizedBox(
-                                          height: 24,
-                                          width: 24,
-                                          child: TweenAnimationBuilder<double>(
-                                            tween:
-                                                Tween<double>(begin: 0, end: 5),
-                                            duration: Duration(seconds: 2),
-                                            curve: Curves.linear,
-                                            builder: (context, value, child) {
-                                              return Transform.rotate(
-                                                angle: value *
-                                                    2 *
-                                                    3.1416, // Full rotation effect
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 4,
-                                                  value:
-                                                      0.20, // 1/5 of the circle
-                                                  backgroundColor:
-                                                      const Color.fromARGB(
-                                                          142,
-                                                          234,
-                                                          232,
-                                                          232), // Grey stroke
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                              Color>(
-                                                          Colors
-                                                              .white), // White rotating stroke
-                                                ),
-                                              );
-                                            },
-                                            onEnd: () =>
-                                                {}, // Ensures smooth infinite animation
-                                          ),
-                                        )
-                                      : Text(
-                                          'Save',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
+                                  color: Color(0xffFCFCFC),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(25),
+                                    topRight: Radius.circular(25),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      height: 5,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black, // Adjust color
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    ListTile(
+                                      title: Text('On Site'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedWorkType = 'On Site';
+                                          isWorkTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text('Hybrid'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedWorkType = 'Hybrid';
+                                          isWorkTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text('Work from home'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedWorkType = 'Work from home';
+                                          isWorkTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
-                            )
-                          ]))))
-        ],
+                            );
+                          },
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              selectedWorkType.isEmpty
+                                  ? 'Select your work type'
+                                  : selectedWorkType,
+                              style: TextStyle(color: Color(0xFF505050)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        child: Text(
+                          'Employment Type',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Lato',
+                              color: isWorkTypeValid
+                                  ? Color(0xff333333)
+                                  : Color(0xffBA1A1A)),
+                        ),
+                      ),
+                      SizedBox(height: 7),
+                      Container(
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color: isEmploymentTypeValid
+                                    ? Color(0xffD9D9D9)
+                                    : Color(0xffBA1A1A)),
+                            borderRadius: BorderRadius.circular(10)),
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: InkWell(
+                          onTap: () {
+                            showMaterialModalBottomSheet(
+                              isDismissible: true,
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 30, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: Color(0xffFCFCFC),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      height: 5,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    ListTile(
+                                      title: Text('Full time'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedEmploymentType = 'Full time';
+                                          isEmploymentTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text('Part time'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedEmploymentType = 'Part time';
+                                          isEmploymentTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text('Internship'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedEmploymentType = 'Internship';
+                                          isEmploymentTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text('Freelance'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedEmploymentType = 'Freelance';
+                                          isEmploymentTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      title: Text('Self-employed'),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedEmploymentType =
+                                              'Self-employed';
+                                          isEmploymentTypeValid = true;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              selectedEmploymentType.isEmpty
+                                  ? 'Select your employment type'
+                                  : selectedEmploymentType,
+                              style: TextStyle(color: Color(0xFF505050)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.015,
+                        ),
+                        child: Text(
+                          'Description',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w500,
+                              color: _isDescriptionValid
+                                  ? Color(0xff333333)
+                                  : Color(0xffBA1A1A)),
+                        ),
+                      ),
+                      SizedBox(height: 7),
+                      Container(
+                        width: (MediaQuery.of(context).size.width) - 20,
+                        child: TextField(
+                          maxLines: 4,
+                          maxLength: maxLength,
+                          controller: txtDescriptionController,
+                          cursorColor: Color(0xff004C99),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              color: Color(0xff333333)),
+                          decoration: InputDecoration(
+                              hintText: 'Your work experience',
+                              hintStyle: TextStyle(color: Color(0xff545454)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: _isDescriptionValid
+                                        ? Color(0xffd9d9d9)
+                                        : Color(
+                                            0xffBA1A1A), // Default border color
+                                    width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: _isDescriptionValid
+                                        ? Color(0xff004C99)
+                                        : Color(
+                                            0xffBA1A1A), // Border color when focused
+                                    width: 1),
+                              ),
+                              errorText: _isDescriptionValid
+                                  ? null
+                                  : descriptionErrorMsg,
+                              // Display error message if invalid
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10)),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[a-zA-Z0-9\s]')),
+                          ],
+                          onChanged: (value) {
+                            // Validate the email here and update _isEmailValid
+                            setState(() {
+                              _isDescriptionValid = true;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+                        child: InkWell(
+                          onTap: () {
+                            if ((_selectedOption == 'No' &&
+                                    _endDateController.text.isEmpty) ||
+                                txtDesignationController.text.isEmpty ||
+                                txtComanyNameController.text.isEmpty ||
+                                txtDescriptionController.text.isEmpty ||
+                                _startDateController.text.isEmpty ||
+                                selectedWorkType.isEmpty ||
+                                selectedEmploymentType.isEmpty) {
+                              if (txtDesignationController.text.isEmpty) {
+                                setState(() {
+                                  _isDesignationValid = false;
+                                });
+                              }
+
+                              if (txtComanyNameController.text.isEmpty) {
+                                setState(() {
+                                  _isCompanyNameValid = false;
+                                });
+                              }
+
+                              if (_startDateController.text.isEmpty) {
+                                setState(() {
+                                  isStartDateValid = false;
+                                });
+                              }
+
+                              if (_selectedOption == 'No' &&
+                                  _endDateController.text.isEmpty) {
+                                setState(() {
+                                  isEndDateValid = false;
+                                });
+                              }
+
+                              if (selectedWorkType.isEmpty) {
+                                setState(() {
+                                  isWorkTypeValid = false;
+                                });
+                              }
+
+                              if (selectedEmploymentType.isEmpty) {
+                                setState(() {
+                                  isEmploymentTypeValid = false;
+                                });
+                              }
+
+                              if (txtDescriptionController.text.isEmpty) {
+                                setState(() {
+                                  _isDescriptionValid = false;
+                                });
+                              }
+                            } else {
+                              if (kDebugMode) {
+                                print('Performing operation................');
+                              }
+
+                              if (isLoading == false) {
+                                updateEmployment();
+                              }
+                            }
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 44,
+                            margin: EdgeInsets.symmetric(horizontal: 0),
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            decoration: BoxDecoration(
+                                color: AppColors.primaryColor,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                              child: isLoading
+                                  ? SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: TweenAnimationBuilder<double>(
+                                        tween: Tween<double>(begin: 0, end: 5),
+                                        duration: Duration(seconds: 2),
+                                        curve: Curves.linear,
+                                        builder: (context, value, child) {
+                                          return Transform.rotate(
+                                            angle: value *
+                                                2 *
+                                                3.1416, // Full rotation effect
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 4,
+                                              value: 0.20, // 1/5 of the circle
+                                              backgroundColor:
+                                                  const Color.fromARGB(142, 234,
+                                                      232, 232), // Grey stroke
+                                              valueColor: AlwaysStoppedAnimation<
+                                                      Color>(
+                                                  Colors
+                                                      .white), // White rotating stroke
+                                            ),
+                                          );
+                                        },
+                                        onEnd: () =>
+                                            {}, // Ensures smooth infinite animation
+                                      ),
+                                    )
+                                  : Text(
+                                      'Save',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

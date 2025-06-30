@@ -288,12 +288,41 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
 
         if (resOBJ['result'] == true &&
             statusMessage.toLowerCase().contains('sent')) {
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff2D2D2D),
-            iconColor: Colors.white,
+          // IconSnackBar.show(
+          //   context,
+          //   label: statusMessage,
+          //   snackBarType: SnackBarType.success,
+          //   backgroundColor: Color(0xff2D2D2D),
+          //   iconColor: Colors.white,
+          // );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Color(0xff2D2D2D),
+              elevation: 10,
+              margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              content: Row(
+                children: [
+                  SvgPicture.asset('assets/icon/send.svg'),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      statusMessage,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () =>
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                    child: Icon(Icons.close_rounded, color: Colors.white),
+                  )
+                ],
+              ),
+              duration: Duration(seconds: 3),
+            ),
           );
           Navigator.push(
             context,
@@ -529,24 +558,30 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                   SizedBox(height: 60),
                   InkWell(
                     onTap: () {
-                      if (mobileController.text.isEmpty ||
-                          mobileController.text.length < 10) {
+                      FocusScope.of(context).unfocus();
+                      if (mobileController.text.isEmpty) {
                         setState(() {
                           _isMobileNumberValid = false;
+                          mobileErrorMsg =
+                              'Please enter your mobile number to receive an OTP for verification';
+                        });
+                      } else if (mobileController.text.length < 10) {
+                        setState(() {
+                          _isMobileNumberValid = false;
+                          mobileErrorMsg = 'Enter a valid mobile number';
                         });
                       } else {
                         setState(() {
-                          isLoading =
-                              true; // Start loader before calling otpSignIn
+                          isLoading = true;
                         });
 
                         otpSignIn().then((_) {
                           setState(() {
-                            isLoading = false; // Stop loader after API call
+                            isLoading = false;
                           });
                         }).catchError((error) {
                           setState(() {
-                            isLoading = false; // Ensure loading stops on error
+                            isLoading = false;
                           });
                         });
                       }

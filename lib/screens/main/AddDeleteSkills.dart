@@ -81,36 +81,30 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
     final DatabaseReference skillRef =
         databaseRef.child('$sanitizedEmail/mySkills');
 
-    // Check if the skill already exists in the list
-    if (userSkills.contains(skill)) {
+    // Convert existing skills to lowercase for comparison
+    List<String> lowerCaseSkills =
+        userSkills.map((s) => s.toLowerCase()).toList();
+
+    // Also convert the new skill to lowercase
+    if (lowerCaseSkills.contains(skill.toLowerCase())) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Skill "${skill.trim()}" already exists.')),
+      // );
+      return;
+    }
+
+    try {
+      await skillRef.push().set(skill.trim());
+
+      setState(() {
+        userSkills.add(skill.trim());
+      });
+
+      fetchSkills(); // Optional: keeps things synced with Firebase
+    } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Skill already exists')),
+        SnackBar(content: Text('Failed to add skill: $error')),
       );
-    } else {
-      // Add the skill as a list entry in Firebase
-      try {
-        IconSnackBar.show(
-          context,
-          label: 'Adding skill: $skill',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-        // Add the skill to Firebase
-        await skillRef.push().set(skill);
-
-        // Optionally, update the local list (if you want it to appear immediately in the UI)
-        setState(() {
-          userSkills.add(skill);
-        });
-
-        // Optionally, fetch the latest skills from Firebase to ensure consistency
-        fetchSkills();
-      } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save skill: $error')),
-        );
-      }
     }
   }
 
@@ -118,13 +112,13 @@ class _AdddeleteskillsState extends State<Adddeleteskills> {
     final String sanitizedEmail = email.replaceAll('.', ',');
     final String? skillKey = skillKeys[skill]; // Find the skill's key
 
-    IconSnackBar.show(
-      context,
-      label: 'Deleting Skill',
-      snackBarType: SnackBarType.alert,
-      backgroundColor: Color(0xff2D2D2D),
-      iconColor: Colors.white,
-    );
+    // IconSnackBar.show(
+    //   context,
+    //   label: 'Deleting Skill',
+    //   snackBarType: SnackBarType.alert,
+    //   backgroundColor: Color(0xff2D2D2D),
+    //   iconColor: Colors.white,
+    // );
 
     if (skillKey != null) {
       await databaseRef.child('$sanitizedEmail/mySkills/$skillKey').remove();

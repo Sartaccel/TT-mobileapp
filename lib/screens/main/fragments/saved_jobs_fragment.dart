@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
@@ -34,9 +35,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
   bool isConnectionAvailable = true;
 
   Future<void> getAppliedJobsList() async {
-    final url =
-        // Uri.parse(AppConstants.BASE_URL + AppConstants.SAVED_JOBS_LISTS_GET);
-        Uri.parse(AppConstants.BASE_URL + AppConstants.GET_FAV_NEW);
+    final url = Uri.parse(AppConstants.BASE_URL + AppConstants.GET_FAV_NEW);
 
     try {
       setState(() {
@@ -57,11 +56,7 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
         var resOBJ = jsonDecode(response.body);
 
         setState(() {
-          //jobList = resOBJ['savedJobs'];
           jobList = resOBJ['favJobs'];
-        });
-
-        setState(() {
           isLoading = false;
         });
 
@@ -71,42 +66,128 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       }
     } catch (e) {
       print(e.toString());
-    } finally {
       setState(() {
         isLoading = false;
       });
+    } finally {
       var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        // IconSnackBar.show(
-        //   context,
-        //   label: 'No internet connection',
-        //   snackBarType: SnackBarType.alert,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   iconColor: Colors.white,
-        // );
-
-        setState(() {
-          isConnectionAvailable = false;
-        });
-
-        //return;  // Exit the function if no internet
-      } else {
-        setState(() {
-          isConnectionAvailable = true;
-        });
-      }
+      setState(() {
+        isConnectionAvailable = connectivityResult != ConnectivityResult.none;
+      });
     }
   }
 
+  final FToast fToast = FToast();
+
+  double _currentBottomPosition = 0.1;
+  final List<double> _activeToastPositions = [];
+
+  void _resetToastPositions() {
+    _currentBottomPosition = 0.1;
+    _activeToastPositions.clear();
+  }
+
+  void showJobRemovedToast(BuildContext context, VoidCallback onUndo) {
+    fToast.init(context);
+    fToast.removeQueuedCustomToasts();
+
+    final position = _currentBottomPosition;
+    _activeToastPositions.add(position);
+    _currentBottomPosition += 0.05;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final toastWidth = screenWidth * 0.95;
+
+    Widget toast = SizedBox(
+      width: toastWidth,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFF2D2D2D),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const Icon(Icons.bookmark_border_rounded,
+                color: Colors.white, size: 24),
+            const SizedBox(width: 8.0),
+            const Expanded(
+              child: Text(
+                "Job removed!",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontFamily: 'Lato',
+                ),
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                fToast.removeCustomToast();
+                _activeToastPositions.remove(position);
+                if (_activeToastPositions.isEmpty) {
+                  _resetToastPositions();
+                }
+                onUndo();
+              },
+              child: IntrinsicWidth(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Undo",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Lato',
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Container(
+                      height: 1,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    fToast.showToast(
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.045,
+        ),
+        child: toast,
+      ),
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: const Duration(seconds: 3),
+    );
+  }
+
   bool checkExpiry(String dateString) {
-    // Parse the date string
-    DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
-
-    // Get the current date
-    DateTime currentDate = DateTime.now();
-
-    // Compare the dates
-    return (providedDate.isBefore(currentDate));
+    try {
+      DateTime providedDate = DateFormat("yyyy-MM-dd").parse(dateString);
+      DateTime endOfDay = DateTime(
+        providedDate.year,
+        providedDate.month,
+        providedDate.day,
+        23,
+        59,
+        59,
+      );
+      return DateTime.now().isAfter(endOfDay);
+    } catch (e) {
+      return true;
+    }
   }
 
   Future<void> removeJob(int jobId) async {
@@ -115,19 +196,18 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       return;
     }
 
-    // Check internet connection before making the API call
     var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult.contains(ConnectivityResult.none)) {
+    if (connectivityResult == ConnectivityResult.none) {
       if (mounted) {
-        // IconSnackBar.show(
-        //   context,
-        //   label: 'No internet connection',
-        //   snackBarType: SnackBarType.alert,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   iconColor: Colors.white,
-        // );
+        IconSnackBar.show(
+          context,
+          label: 'No internet connection',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
       }
-      return; // Exit function if no internet
+      return;
     }
 
     final url =
@@ -151,36 +231,56 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
 
       if (response.statusCode == 200 || response.statusCode == 202) {
         if (mounted) {
-          IconSnackBar.show(
-            context,
-            label: 'Removed successfully',
-            snackBarType: SnackBarType.success,
-            backgroundColor: Colors.green,
-            iconColor: Colors.white,
-          );
+          // fToast.init(context);
+          // Widget toast = Container(
+          //   padding:
+          //       const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          //   decoration: BoxDecoration(
+          //     color: Colors.green,
+          //     borderRadius: BorderRadius.circular(12.0),
+          //   ),
+          //   child: Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       Icon(Icons.check_circle, color: Colors.white, size: 24),
+          //       SizedBox(width: 12),
+          //       Text(
+          //         "Removed successfully",
+          //         style: TextStyle(
+          //           color: Colors.white,
+          //           fontSize: 14,
+          //           fontFamily: 'lato',
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // );
+
+          // fToast.showToast(
+          //   child: toast,
+          //   gravity: ToastGravity.BOTTOM,
+          //   toastDuration: Duration(seconds: 2),
+          // );
         }
-        // Optionally refresh job list
-        // getAppliedJobsList();
       } else {
         if (mounted) {
           IconSnackBar.show(
             context,
             label: 'Failed to remove. Please try again.',
             snackBarType: SnackBarType.fail,
-            backgroundColor: Colors.red,
+            backgroundColor: Color(0xff2D2D2D),
             iconColor: Colors.white,
           );
         }
       }
     } catch (e) {
       if (kDebugMode) print("Error: $e");
-
       if (mounted) {
         IconSnackBar.show(
           context,
-          label: 'Network error. Please try again.',
-          snackBarType: SnackBarType.fail,
-          backgroundColor: Colors.red,
+          label: 'No internet connection, try again',
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
       }
@@ -193,449 +293,462 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
       statusBarColor: Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
-    return isLoading
-        ? Shimmer.fromColors(
-            baseColor: Color(0xffE6E6E6),
-            highlightColor: Color(0xffF2F2F2),
-            child: ListView.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 1,
-                              color: Color(0xffE6E6E6),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.11,
-                            height: MediaQuery.of(context).size.width * 0.11,
-                            decoration: BoxDecoration(
-                              color: Color(0xffE6E6E6),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.62,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.45,
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.70,
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.33,
-                                    height: 15,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffE6E6E6),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.33,
-                                    height: 15,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffE6E6E6),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.27,
-                                height: 15,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffE6E6E6),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Spacer(),
-                          Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: Color(0xffE6E6E6),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          )
-        : (jobList.length > 0
-            ? RefreshIndicator(
-                onRefresh: getAppliedJobsList,
-                child: ListView.builder(
-                    itemCount: jobList.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      Jobdetails(
-                                          jobData: jobList[index],
-                                          isFromSaved: true),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                            ),
-                          );
-                          getAppliedJobsList();
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: 5),
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 0.2, color: Color(0xffE6E6E6)),
-                              color: Color(0xffFCFCFC)),
-                          width: MediaQuery.of(context).size.width,
-                          height: 160,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image(
-                                image: jobList[index]['logo'] != null &&
-                                        jobList[index]['logo'].isNotEmpty
-                                    ? NetworkImage(
-                                        jobList[index]['logo'],
-                                      ) as ImageProvider<Object>
-                                    : const AssetImage(
-                                        'assets/images/tt_logo_resized.png'),
-                                height: 40,
-                                width: 40,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  // Fallback to asset if network image fails
-                                  return Image.asset(
-                                      'assets/images/tt_logo_resized.png',
-                                      height: 32,
-                                      width: 32);
-                                },
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width -
-                                          150,
-                                      child: Text(
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        jobList[index]['jobTitle'] ?? 'NA',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontFamily: 'Lato',
-                                            fontSize: 16,
-                                            color: Color(0xff333333)),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    jobList[index]['companyName'] ?? 'N/A',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontFamily: 'Lato',
-                                        fontSize: 13,
-                                        color: Color(0xff545454)),
-                                  ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width - 120,
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/ic_skills.png',
-                                          height: 14,
-                                          width: 14,
-                                          color: Colors.black,
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Flexible(
-                                            fit: FlexFit.loose,
-                                            child: Text(
-                                              'Skills : ${jobList[index]['skills']}',
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: Color(0xff545454)),
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/ic_work_type.png',
-                                            height: 14,
-                                            width: 14,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            jobList[index]['workType'] ?? 'N/A',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14,
-                                                color: Color(0xff545454)),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                255,
-                                        child: Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/images/ic_location.svg',
-                                              height: 14,
-                                              width: 14,
-                                              color: Colors.black,
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            //Text(jobList[index]['location'], overflow: TextOverflow.ellipsis, maxLines: 1, softWrap: false, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff545454)),),
-                                            Flexible(
-                                              fit: FlexFit.loose,
-                                              child: Text(
-                                                jobList[index]['location'] ??
-                                                    'N/A',
-                                                //"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                softWrap: false,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: Color(0xff545454),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 0,
-                                  ),
-                                  Container(
-                                    height: 24,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 2),
-                                    //decoration: BoxDecoration(color: checkExpiry(jobList[index]['job']['dueDate'] ) ? Color(0xffFBE2E0) : Color(0xffE0EDFB), borderRadius: BorderRadius.circular(3)),
-                                    decoration: BoxDecoration(
-                                      color: checkExpiry(jobList[index]
-                                                  ['dueDate'] ??
-                                              '1990-01-01')
-                                          ? const Color(0xffFBE2E0)
-                                          : const Color.fromARGB(
-                                              255, 255, 255, 255),
-                                      borderRadius: BorderRadius.circular(3),
-                                    ),
-                                    child:
-                                        //Text(checkExpiry(jobList[index]['job']['dueDate']) ? "Expired" : "Expires ${jobList[index]['job']['dueDate']}" , style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: checkExpiry(jobList[index]['job']['dueDate']) ? Color(0xffBA1A1A) : Color(0xff004C99)),)
-                                        Text(
-                                      checkExpiry(jobList[index]['dueDate'] ??
-                                              '1990-01-01')
-                                          ? 'Job Expired'
-                                          : processDate(jobList[index]
-                                                  ['jobCreatedDate'] ??
-                                              '1990-01-01'), // Formatting createdDate
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14,
-                                        color: checkExpiry(jobList[index]
-                                                    ['dueDate'] ??
-                                                '1990-01-01')
-                                            ? const Color(
-                                                0xffBA1A1A) // Expired color
-                                            : const Color(
-                                                0xff545454), // Active/Default color
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  var jobData =
-                                      jobList[index]; // Get job data safely
-                                  int? jobId = jobData.containsKey('jobId')
-                                      ? jobData['jobId']
-                                      : jobData['id']; // Try alternative keys
 
-                                  if (jobId == null) {
-                                    if (kDebugMode)
-                                      print(
-                                          "Error: jobId is null at index $index. Job Data: $jobData");
-                                    return; // Exit function
-                                  }
-
-                                  // Remove from UI instantly
-                                  setState(() {
-                                    jobList.removeAt(index);
-                                  });
-
-                                  // Call API to remove job
-                                  removeJob(jobId);
-                                },
-                                child: Icon(
-                                  Icons.bookmark,
-                                  color: Color(0xff004C99),
-                                  size: 25,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-              )
-            : isConnectionAvailable
-                ? Center(
-                    child: Text('No data to show here.'),
-                  )
-                : Expanded(
-                    child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+    Widget buildContent() {
+      if (isLoading) {
+        return Shimmer.fromColors(
+          baseColor: Color(0xffE6E6E6),
+          highlightColor: Color(0xffF2F2F2),
+          child: ListView.builder(
+            itemCount: 6,
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        SvgPicture.asset('assets/icon/noInternet.svg'),
-                        Text(
-                          'No Internet connection',
-                          style: TextStyle(
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Color(0xff333333)),
+                        Expanded(
+                          child: Container(height: 1, color: Color(0xffE6E6E6)),
                         ),
-                        SizedBox(
-                          height: 15,
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.11,
+                          height: MediaQuery.of(context).size.width * 0.11,
+                          decoration: BoxDecoration(
+                            color: Color(0xffE6E6E6),
+                            shape: BoxShape.circle,
+                          ),
                         ),
-                        Text(
-                          'Connect to Wi-Fi or cellular data and try again.',
-                          style: TextStyle(
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: Color(0xff545454)),
-                        ),
-                        SizedBox(height: 30),
-                        InkWell(
-                          onTap: () {
-                            getAppliedJobsList();
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width - 50,
-                            height: 44,
-                            margin: EdgeInsets.symmetric(horizontal: 0),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: AppColors.primaryColor,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Center(
-                              child: Text(
-                                'Try Again',
-                                style: TextStyle(color: Colors.white),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.62,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
+                            SizedBox(height: 10),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.45,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.70,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.33,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.33,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffE6E6E6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.27,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                color: Color(0xffE6E6E6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: Color(0xffE6E6E6),
+                            borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                       ],
                     ),
-                  )));
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      } else if (jobList.isNotEmpty) {
+        return RefreshIndicator(
+          onRefresh: getAppliedJobsList,
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: 95),
+            itemCount: jobList.length,
+            itemBuilder: (context, index) {
+              final screenWidth = MediaQuery.of(context).size.width;
+              final isSmallScreen = screenWidth < 400;
+
+              return InkWell(
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          Jobdetails(
+                              jobData: jobList[index], isFromSaved: true),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+                  getAppliedJobsList();
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 4 : 4),
+                  padding: EdgeInsets.all(isSmallScreen ? 10 : 15),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0.5, color: Color(0xffE6E6E6)),
+                    color: Color(0xffFCFCFC),
+                  ),
+                  constraints: BoxConstraints(
+                    minHeight: isSmallScreen ? 140 : 160,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: isSmallScreen ? 40 : 60,
+                              height: isSmallScreen ? 40 : 60,
+                              child: Image(
+                                image: jobList[index]['logo'] != null &&
+                                        jobList[index]['logo'].isNotEmpty
+                                    ? NetworkImage(jobList[index]['logo'])
+                                        as ImageProvider<Object>
+                                    : const AssetImage(
+                                        'assets/images/tt_logo_resized.png'),
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/tt_logo_resized.png',
+                                    fit: BoxFit.contain,
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(width: isSmallScreen ? 10 : 15),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    jobList[index]['jobTitle'],
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: 'Lato',
+                                      fontSize: isSmallScreen ? 14 : 16,
+                                      color: Color(0xff333333),
+                                    ),
+                                  ),
+                                  SizedBox(height: isSmallScreen ? 2 : 4),
+                                  Text(
+                                    jobList[index]['companyName'],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Lato',
+                                      fontSize: isSmallScreen ? 12 : 13,
+                                      color: Color(0xff545454),
+                                    ),
+                                  ),
+                                  SizedBox(height: isSmallScreen ? 2 : 4),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/images/ic_idea.svg',
+                                        height: isSmallScreen ? 18 : 20,
+                                        width: isSmallScreen ? 18 : 20,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Flexible(
+                                        child: Builder(
+                                          builder: (context) {
+                                            String skillStr =
+                                                jobList[index]['skills'] ?? '';
+                                            List<String> skills = skillStr
+                                                .split(',')
+                                                .map((s) => s.trim())
+                                                .where((s) => s.isNotEmpty)
+                                                .toList();
+
+                                            String displaySkills;
+                                            if (skills.length > 3) {
+                                              displaySkills =
+                                                  '${skills.take(3).join(', ')} +${skills.length - 3}';
+                                            } else {
+                                              displaySkills = skills.join(', ');
+                                            }
+
+                                            return Text(
+                                              'Skills: $displaySkills',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize:
+                                                    isSmallScreen ? 12 : 14,
+                                                color: Color(0xff545454),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: isSmallScreen ? 2 : 4),
+                                  Wrap(
+                                    spacing: isSmallScreen ? 8 : 12,
+                                    runSpacing: isSmallScreen ? 4 : 6,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SvgPicture.asset(
+                                            'assets/images/ic_suitcase.svg',
+                                            height: isSmallScreen ? 18 : 20,
+                                            width: isSmallScreen ? 18 : 20,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            jobList[index]['workType'] ?? 'N/A',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: isSmallScreen ? 12 : 14,
+                                              color: Color(0xff545454),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SvgPicture.asset(
+                                            'assets/images/ic_location.svg',
+                                            height: isSmallScreen ? 18 : 20,
+                                            width: isSmallScreen ? 18 : 20,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text(
+                                              jobList[index]['location'] ??
+                                                  'Not disclosed',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize:
+                                                    isSmallScreen ? 12 : 14,
+                                                color: Color(0xff545454),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  checkExpiry(jobList[index]['dueDate'] ??
+                                          '1990-01-01')
+                                      ? Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xffFEE4E2),
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
+                                          child: const Text(
+                                            'Job Expired',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xffBA1A1A),
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: 'lato',
+                                            ),
+                                          ),
+                                        )
+                                      : Text(
+                                          processDate(jobList[index]
+                                                  ['jobCreatedDate'] ??
+                                              '1990-01-01'),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: 'lato',
+                                            fontSize: isSmallScreen ? 12 : 14,
+                                            color: const Color(0xff545454),
+                                          ),
+                                        ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 0),
+                        child: InkWell(
+                          onTap: () {
+                            var jobData = jobList[index];
+                            int? jobId = jobData.containsKey('jobId')
+                                ? jobData['jobId']
+                                : jobData['id'];
+
+                            if (jobId == null) {
+                              if (kDebugMode) print("Error: jobId is null");
+                              return;
+                            }
+
+                            setState(() {
+                              jobList.removeAt(index);
+                            });
+
+                            removeJob(jobId);
+
+                            showJobRemovedToast(context, () {
+                              setState(() {
+                                jobList.insert(index, jobData);
+                              });
+                            });
+                          },
+                          child: Icon(
+                            Icons.bookmark,
+                            color: Color(0xff004C99),
+                            size: isSmallScreen ? 22 : 25,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      } else if (isConnectionAvailable) {
+        return Center(
+          child: Text('No data to show here.'),
+        );
+      } else {
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset('assets/icon/noInternet.svg'),
+              SizedBox(height: 25),
+              Text(
+                'No Internet connection',
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Color(0xff333333),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Connect to Wi-Fi or cellular data and try again.',
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: Color(0xff545454),
+                ),
+              ),
+              SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  getAppliedJobsList();
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 50,
+                  height: 44,
+                  margin: EdgeInsets.symmetric(horizontal: 0),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Try Again',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+    return Scaffold(
+      backgroundColor: Color(0xFFF7F7F7),
+      body: buildContent(),
+    );
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchProfileFromPref();
   }
 
   Future<void> fetchProfileFromPref() async {
-    //ReferralData? _referralData = await getReferralProfileData();
     CandidateProfileModel? _candidateProfileModel =
         await getCandidateProfileData();
-
     UserData? _retrievedUserData = await getUserData();
+
     setState(() {
-      //referralData = _referralData;
       candidateProfileModel = _candidateProfileModel;
       retrievedUserData = _retrievedUserData;
-
-      getAppliedJobsList();
     });
+    getAppliedJobsList();
   }
 }
