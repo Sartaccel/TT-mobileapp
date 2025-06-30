@@ -12,6 +12,9 @@ import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:http/http.dart' as http;
 import '../../../Utils.dart';
 import 'package:talent_turbo_new/screens/main/home_container.dart';
+import '../../../data/preference.dart';
+import '../../../models/candidate_profile_model.dart';
+import '../../../models/user_data_model.dart';
 
 class MobileVerificationScreen extends StatefulWidget {
   final String countryCode;
@@ -20,6 +23,7 @@ class MobileVerificationScreen extends StatefulWidget {
   final String lastName;
   final String email;
   final String password;
+  final int userId; // ADD THIS
 
   const MobileVerificationScreen({
     super.key,
@@ -29,6 +33,7 @@ class MobileVerificationScreen extends StatefulWidget {
     required this.lastName,
     required this.email,
     required this.password,
+    required this.userId, // ADD THIS
   });
 
   @override
@@ -73,7 +78,7 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
   @override
   void initState() {
     super.initState();
-    _sendOTP();
+    _startResendTimer(); // Start the timer as soon as the screen loads
   }
 
   @override
@@ -82,117 +87,75 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
     super.dispose();
   }
 
-  Future<void> _sendOTP() async {
+  Future<void> _verifyAndRegister(String otp) async {
+    print("🟡 Starting user activation process...");
+
     if (!await _hasInternet()) {
+      print("❌ No internet connection.");
       IconSnackBar.show(
         context,
-        label: "No internet connection, try again",
+        label: "No internet connection",
         snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
       );
       return;
     }
 
     final url =
-        Uri.parse(AppConstants.BASE_URL + AppConstants.VERIFY_EMAIL_PHONE);
+        Uri.parse(AppConstants.BASE_URL + AppConstants.API_NEW_VERIFY_OTP);
+
     setState(() => isLoading = true);
+
+    final activationBody = {
+      "activationKey": otp,
+      "phoneNumber": "${widget.countryCode}${widget.mobileNumber}",
+    };
+
+    print("📦 Activation Body Details:");
+    print("🔑 activationKey: ${activationBody['activationKey']}");
+    print("📱 phoneNumber: ${activationBody['phoneNumber']}");
+
+    print("📩 Activate API URL: $url");
+    print("📨 Activate Request Body: $activationBody");
 
     try {
       final response = await http
           .post(
             url,
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              "type": "phone",
-              "mobile": widget.mobileNumber,
-              "countryCode": widget.countryCode,
-            }),
+            body: jsonEncode(activationBody),
           )
           .timeout(const Duration(seconds: 30));
 
+      print("📥 Raw Response: ${response.body}");
+      print("📡 Status Code: ${response.statusCode}");
+
       final responseBody = jsonDecode(response.body);
+      print("📩 Activate Response JSON: $responseBody");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && responseBody['result'] == true) {
+        print(responseBody.toString());
+
+        final Map<String, dynamic> data = responseBody['data'];
+        // Map the API response to UserData model
+        UserData userData = UserData.fromJson(data);
+
+        await saveUserData(userData);
+
+        UserData? retrievedUserData = await getUserData();
+
+        if (kDebugMode) {
+          print('Saved Successfully');
+          print('User Name: ${retrievedUserData!.name}');
+        }
+
+        //fetchProfileData(retrievedUserData!.profileId, retrievedUserData!.token);
+        fetchCandidateProfileData(
+            retrievedUserData!.profileId, retrievedUserData!.token);
+
+        print("✅ User activated successfully.");
         IconSnackBar.show(
           context,
-          label: responseBody['message'] ?? "OTP sent successfully",
-          snackBarType: SnackBarType.success,
-        );
-        verificationToken = responseBody['token'];
-        print('Received verification token: $verificationToken');
-        // optional if needed
-        _startResendTimer();
-      } else {
-        throw Exception(responseBody['message'] ?? 'Failed to send OTP');
-      }
-    } catch (e) {
-      IconSnackBar.show(
-        context,
-        label: e.toString().replaceAll('Exception: ', ''),
-        snackBarType: SnackBarType.fail,
-      );
-    } finally {
-      setState(() => isLoading = false);
-    }
-  }
-
-  Future<void> _verifyAndRegister(String otp, String token) async {
-    if (!await _hasInternet()) {
-      IconSnackBar.show(
-        context,
-        label: "No internet connection, try again",
-        snackBarType: SnackBarType.alert,
-      );
-      return;
-    }
-
-    setState(() {
-      isLoading = true;
-      inValidOTP = false;
-    });
-
-    try {
-      // 1. Verify OTP first
-      final verifyResponse = await http.post(
-        Uri.parse(AppConstants.BASE_URL + AppConstants.VALIDATE_VERIFY_OTP),
-        headers: {'Content-Type': 'application/json', 'Authorization': token},
-        body: jsonEncode({
-          "type": "phone",
-          "verificationCode": otp,
-          "countryCode": widget.countryCode,
-          "phoneNumber": widget.mobileNumber,
-        }),
-      );
-
-      final verifyResponseBody = jsonDecode(verifyResponse.body);
-
-      if (verifyResponse.statusCode != 200) {
-        throw Exception(verifyResponseBody['message'] ?? 'Invalid OTP');
-      }
-
-      // 2. Register User after OTP verification
-      final registerResponse = await http.post(
-        Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "firstName": widget.firstName,
-          "lastName": widget.lastName,
-          "email": widget.email,
-          "password": widget.password,
-          "countryCode": widget.countryCode,
-          "phoneNumber": widget.mobileNumber,
-          "priAccUserType": "candidate"
-        }),
-      );
-
-      final registerResponseBody = jsonDecode(registerResponse.body);
-
-      if (registerResponse.statusCode == 200) {
-        // Success case
-        IconSnackBar.show(
-          context,
-          label: registerResponseBody['message'] ?? 'Registration successful!',
+          label: responseBody['message'] ?? "User activated successfully",
           snackBarType: SnackBarType.success,
         );
         Navigator.pushAndRemoveUntil(
@@ -201,39 +164,261 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
           (route) => false,
         );
       } else {
-        // Handle specific registration errors
-        String errorMessage =
-            registerResponseBody['message'] ?? 'Registration failed';
-
-        // Check for common error cases
-        if (registerResponseBody.containsKey('errors')) {
-          final errors = registerResponseBody['errors'];
-          if (errors is Map) {
-            errorMessage = errors.values.first.join(', ');
-          } else if (errors is List) {
-            errorMessage = errors.join(', ');
-          }
-        }
-
-        throw Exception(errorMessage);
+        print("❌ Activation failed: ${responseBody['message']}");
+        throw Exception(responseBody['message'] ?? 'Activation failed');
       }
     } catch (e) {
-      setState(() {
-        inValidOTP = true;
-        otpErrorMsg = e.toString().replaceAll('Exception: ', '');
-      });
-
-      // Show detailed error message
+      print("🔥 Exception during activation: $e");
       IconSnackBar.show(
         context,
-        label: otpErrorMsg,
+        label: e.toString().replaceAll('Exception: ', ''),
         snackBarType: SnackBarType.fail,
-        duration: const Duration(seconds: 3),
       );
     } finally {
       setState(() => isLoading = false);
+      print("🔚 Activation process finished. isLoading = false");
     }
   }
+
+  Future<void> _resendOtp(String userId) async {
+    print("🟡 Starting resend OTP process...");
+
+    if (!await _hasInternet()) {
+      print("❌ No internet connection.");
+      IconSnackBar.show(
+        context,
+        label: "No internet connection",
+        snackBarType: SnackBarType.alert,
+      );
+      return;
+    }
+    final url =
+        Uri.parse("${AppConstants.BASE_URL.replaceAll(RegExp(r'/$'), '')}"
+            "/api/v1/userresource/resend/otp/$userId");
+
+    print("📩 Resend OTP API URL: $url");
+    print("📩 userid: $userId");
+
+    try {
+      setState(() => isLoading = true);
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 30));
+
+      print("📥 Raw Response: ${response.body}");
+      print("📡 Status Code: ${response.statusCode}");
+
+      if (response.body.isNotEmpty) {
+        final responseBody = jsonDecode(response.body);
+        print("📩 Resend OTP Response JSON: $responseBody");
+
+        if (response.statusCode == 200 && responseBody['status'] == "OK") {
+          IconSnackBar.show(
+            context,
+            label: responseBody['message'] ?? "OTP resent successfully",
+            snackBarType: SnackBarType.success,
+          );
+          print("✅ OTP resent successfully.");
+
+          _startResendTimer(); // ✅ Restart timer here
+        } else {
+          print("❌ Resend OTP failed: ${responseBody['message']}");
+          throw Exception(responseBody['message'] ?? 'Resend OTP failed');
+        }
+      } else {
+        throw Exception('Empty response from server');
+      }
+    } catch (e) {
+      print("🔥 Exception during resend OTP: $e");
+      IconSnackBar.show(
+        context,
+        label: e.toString().replaceAll('Exception: ', ''),
+        snackBarType: SnackBarType.fail,
+      );
+    } finally {
+      setState(() => isLoading = false);
+      print("🔚 Resend OTP process finished. isLoading = false");
+    }
+  }
+
+  Future<void> fetchCandidateProfileData(int profileId, String token) async {
+    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
+    final url = Uri.parse(AppConstants.BASE_URL +
+        AppConstants.CANDIDATE_PROFILE +
+        profileId.toString());
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      // Fluttertoast.showToast(
+      //   msg: "No internet connection",
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 1,
+      //   backgroundColor: Color(0xff2D2D2D),
+      //   textColor: Colors.white,
+      //   fontSize: 16.0,
+      // );
+      IconSnackBar.show(
+        context,
+        label: "No internet connection",
+        snackBarType: SnackBarType.alert,
+        backgroundColor: Color(0xff2D2D2D),
+        iconColor: Colors.white,
+      );
+      return; // Exit the function if no internet
+    }
+
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      final response = await http.get(
+        url,
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+
+      if (kDebugMode) {
+        print(
+            'Response code ${response.statusCode} :: Response => ${response.body}');
+      }
+
+      if (response.statusCode == 200) {
+        var resOBJ = jsonDecode(response.body);
+
+        String statusMessage = resOBJ['message'];
+
+        if (statusMessage.toLowerCase().contains('success')) {
+          final Map<String, dynamic> data = resOBJ['data'];
+          //ReferralData referralData = ReferralData.fromJson(data);
+          CandidateProfileModel candidateData =
+              CandidateProfileModel.fromJson(data);
+
+          await saveCandidateProfileData(candidateData);
+
+          Navigator.pushAndRemoveUntil(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomeContainer(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+            (Route<dynamic> route) => route.isFirst,
+          );
+        }
+      } else {}
+
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print(e);
+    }
+  }
+
+  // Future<void> _verifyAndRegister(String otp, String token) async {
+  //   if (!await _hasInternet()) {
+  //     IconSnackBar.show(
+  //       context,
+  //       label: "No internet connection",
+  //       snackBarType: SnackBarType.alert,
+  //     );
+  //     return;
+  //   }
+
+  //   setState(() {
+  //     isLoading = true;
+  //     inValidOTP = false;
+  //   });
+
+  //   try {
+  //     // 1. Verify OTP first
+  //     final verifyResponse = await http.post(
+  //       Uri.parse(AppConstants.BASE_URL + AppConstants.OTPNewAPI),
+  //       headers: {'Content-Type': 'application/json', 'Authorization': token},
+  //       body: jsonEncode({
+  //         "type": "phone",
+  //         "verificationCode": otp,
+  //         "countryCode": widget.countryCode,
+  //         "phoneNumber": widget.mobileNumber,
+  //       }),
+  //     );
+
+  //     final verifyResponseBody = jsonDecode(verifyResponse.body);
+
+  //     if (verifyResponse.statusCode != 200) {
+  //       throw Exception(verifyResponseBody['message'] ?? 'Invalid OTP');
+  //     }
+
+  //     // 2. Register User after OTP verification
+  //     final registerResponse = await http.post(
+  //       Uri.parse(AppConstants.BASE_URL + AppConstants.REGISTER),
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode({
+  //         "firstName": widget.firstName,
+  //         "lastName": widget.lastName,
+  //         "email": widget.email,
+  //         "password": widget.password,
+  //         "countryCode": widget.countryCode,
+  //         "phoneNumber": widget.mobileNumber,
+  //         "priAccUserType": "candidate"
+  //       }),
+  //     );
+
+  //     final registerResponseBody = jsonDecode(registerResponse.body);
+
+  //     if (registerResponse.statusCode == 200) {
+  //       // Success case
+  //       IconSnackBar.show(
+  //         context,
+  //         label: registerResponseBody['message'] ?? 'Registration successful!',
+  //         snackBarType: SnackBarType.success,
+  //       );
+  //       Navigator.pushAndRemoveUntil(
+  //         context,
+  //         MaterialPageRoute(builder: (_) => HomeContainer()),
+  //         (route) => false,
+  //       );
+  //     } else {
+  //       // Handle specific registration errors
+  //       String errorMessage =
+  //           registerResponseBody['message'] ?? 'Registration failed';
+
+  //       // Check for common error cases
+  //       if (registerResponseBody.containsKey('errors')) {
+  //         final errors = registerResponseBody['errors'];
+  //         if (errors is Map) {
+  //           errorMessage = errors.values.first.join(', ');
+  //         } else if (errors is List) {
+  //           errorMessage = errors.join(', ');
+  //         }
+  //       }
+
+  //       throw Exception(errorMessage);
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       inValidOTP = true;
+  //       otpErrorMsg = e.toString().replaceAll('Exception: ', '');
+  //     });
+
+  //     // Show detailed error message
+  //     IconSnackBar.show(
+  //       context,
+  //       label: otpErrorMsg,
+  //       snackBarType: SnackBarType.fail,
+  //       duration: const Duration(seconds: 3),
+  //     );
+  //   } finally {
+  //     setState(() => isLoading = false);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -325,43 +510,48 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 40),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        double availableWidth = constraints.maxWidth - 40;
-                        double fieldWidth =
-                            (availableWidth / 6).clamp(40.0, 45.0);
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          double totalSpacing = 5 *
+                              12; // Assuming 6 fields with 12px spacing between them
+                          double availableWidth =
+                              constraints.maxWidth - totalSpacing;
 
-                        return OtpPinField(
-                          cursorColor: Color(0xff333333),
-                          autoFillEnable: false,
-                          maxLength: 6,
-                          fieldWidth: fieldWidth,
-                          fieldHeight: 55,
-                          onSubmit: (otp) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          onChange: (txt) {
-                            print('txt: $txt length: ${txt.length}');
-                            setState(() {
-                              enteredOTP = txt;
-                              inValidOTP = false;
-                            });
-                          },
-                          otpPinFieldStyle: OtpPinFieldStyle(
-                            activeFieldBorderColor: Color(0xff333333),
-                            defaultFieldBorderColor:
-                                inValidOTP ? Colors.red : Color(0xffA9A9A9),
-                            fieldBorderWidth: 2,
-                            filledFieldBackgroundColor: Colors.transparent,
-                            filledFieldBorderColor: Color(0xff333333),
-                          ),
-                          otpPinFieldDecoration:
-                              OtpPinFieldDecoration.underlinedPinBoxDecoration,
-                          showCursor: true,
-                          cursorWidth: 2,
-                        );
-                      },
+                          double fieldWidth = (availableWidth / 6)
+                              .clamp(40.0, 55.0); // Slightly smaller max
+
+                          return OtpPinField(
+                            cursorColor: const Color(0xff333333),
+                            autoFillEnable: false,
+                            maxLength: 6,
+                            fieldWidth: fieldWidth,
+                            fieldHeight: 55,
+                            onSubmit: (otp) => FocusScope.of(context).unfocus(),
+                            onChange: (txt) {
+                              print('txt: $txt length: ${txt.length}');
+                              setState(() {
+                                enteredOTP = txt;
+                                inValidOTP = false;
+                              });
+                            },
+                            otpPinFieldStyle: OtpPinFieldStyle(
+                              activeFieldBorderColor: const Color(0xff333333),
+                              defaultFieldBorderColor: inValidOTP
+                                  ? Colors.red
+                                  : const Color(0xffA9A9A9),
+                              fieldBorderWidth: 2,
+                              filledFieldBackgroundColor: Colors.transparent,
+                              filledFieldBorderColor: const Color(0xff333333),
+                            ),
+                            otpPinFieldDecoration: OtpPinFieldDecoration
+                                .underlinedPinBoxDecoration,
+                            showCursor: true,
+                            cursorWidth: 2,
+                          );
+                        },
+                      ),
                     ),
                     inValidOTP
                         ? Row(
@@ -395,14 +585,16 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
                               ),
                               SizedBox(width: 10),
                               InkWell(
-                                onTap: _sendOTP,
+                                onTap: () => _resendOtp(widget.userId
+                                    .toString()), // <-- Wrapped in closure with userId
                                 child: Text(
                                   'Resend',
                                   style: TextStyle(
-                                      color: Color(0xff2979FF),
-                                      fontFamily: 'Lato',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
+                                    color: Color(0xff2979FF),
+                                    fontFamily: 'Lato',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               )
                             ],
@@ -419,21 +611,17 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
                     InkWell(
                       onTap: () {
                         if (kDebugMode) print('length ${enteredOTP.length}');
+
                         if (enteredOTP.length < 6) {
                           setState(() {
                             inValidOTP = true;
                             otpErrorMsg = 'Enter OTP';
                           });
                         } else {
-                          if (verificationToken == null) {
-                            IconSnackBar.show(
-                              context,
-                              label: 'OTP token not received yet. Please wait!',
-                              snackBarType: SnackBarType.alert,
-                            );
-                            return;
-                          }
-                          _verifyAndRegister(enteredOTP, verificationToken!);
+                          if (kDebugMode)
+                            print('comestoiffcontition ${verificationToken}');
+                          print("Entered OTP: $enteredOTP");
+                          _verifyAndRegister(enteredOTP);
                         }
                       },
                       child: Container(

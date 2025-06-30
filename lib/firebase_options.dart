@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -50,21 +47,31 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBPntJzuAFSiazm87QK2vKWI4iFVj9SAe8',
-    appId: '1:293834446714:android:f6887a6ad2c2b781c9a8c3',
-    messagingSenderId: '293834446714',
-    projectId: 'projecttestings-pb',
-    databaseURL: 'https://projecttestings-pb-default-rtdb.firebaseio.com',
-    storageBucket: 'projecttestings-pb.appspot.com',
+    apiKey: 'AIzaSyAAZlC_3EVSqTDm9AjBuuW4d8bJMuwY9FE',
+    appId: '1:893425614933:android:c868bb308f347107f1d4dc',
+    messagingSenderId: '893425614933',
+    projectId: 'talentturbo-cddd3',
+    storageBucket: 'talentturbo-cddd3.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyATGeTIi1jQBLPJgW3vsRIV0oRaO7scfYQ',
-    appId: '1:293834446714:ios:51b8903c83ea9a63c9a8c3',
-    messagingSenderId: '293834446714',
-    projectId: 'projecttestings-pb',
-    databaseURL: 'https://projecttestings-pb-default-rtdb.firebaseio.com',
-    storageBucket: 'projecttestings-pb.appspot.com',
+    apiKey: 'AIzaSyDpmWRVsP1GV55_jx3o-Hys958KvESnWmo',
+    appId: '1:893425614933:ios:7422001eb19977f3f1d4dc',
+    messagingSenderId: '893425614933',
+    projectId: 'talentturbo-cddd3',
+    storageBucket: 'talentturbo-cddd3.firebasestorage.app',
+    iosClientId: '893425614933-9j08bkqtfp9opclpq2dse4cuau7cvjh6.apps.googleusercontent.com',
     iosBundleId: 'com.talentturbo.referral.talentTurboNew',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAlzxQ-GrEz4y3wfINP6d6Luf6hzNAOQQU',
+    appId: '1:893425614933:web:a05e76202b62f3d5f1d4dc',
+    messagingSenderId: '893425614933',
+    projectId: 'talentturbo-cddd3',
+    authDomain: 'talentturbo-cddd3.firebaseapp.com',
+    storageBucket: 'talentturbo-cddd3.firebasestorage.app',
+    measurementId: 'G-SCRCT732MH',
+  );
+
 }

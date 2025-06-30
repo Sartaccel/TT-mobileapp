@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -33,48 +32,13 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
   final TextEditingController otpController = TextEditingController();
   bool isLoading = false;
   bool _isOTPValid = false;
+
   bool clearOTP = false;
   bool inValidOTP = false;
   String enteredOTP = '';
   String otpErrorMsg = '';
-  bool isResendAvailable = false;
-  int resendSeconds = 30;
-  Timer? _resendTimer;
   final GlobalKey otpKey = GlobalKey();
   String otpFieldKey = UniqueKey().toString();
-
-  @override
-  void initState() {
-    super.initState();
-    _startResendTimer();
-  }
-
-  @override
-  void dispose() {
-    _resendTimer?.cancel();
-    super.dispose();
-  }
-
-  void _startResendTimer() {
-    setState(() {
-      resendSeconds = 30;
-      isResendAvailable = false;
-    });
-
-    _resendTimer?.cancel();
-    _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (resendSeconds > 0) {
-        setState(() {
-          resendSeconds--;
-        });
-      } else {
-        setState(() {
-          isResendAvailable = true;
-        });
-        _resendTimer?.cancel();
-      }
-    });
-  }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
     //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
@@ -95,7 +59,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
       // );
       IconSnackBar.show(
         context,
-        label: "No internet connection, try again",
+        label: "No internet connection",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
@@ -166,7 +130,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
     if (connectivityResult.contains(ConnectivityResult.none)) {
       IconSnackBar.show(
         context,
-        label: "No internet connection, try again",
+        label: "No internet connection",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
@@ -272,7 +236,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
       // );
       IconSnackBar.show(
         context,
-        label: "No internet connection, try again",
+        label: "No internet connection",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
@@ -439,6 +403,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: SvgPicture.asset('assets/images/otp_img.svg'),
+                        
                       ),
                     ),
                     SizedBox(
@@ -541,7 +506,6 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                         double fieldWidth = (availableWidth / 6).clamp(
                             0.12 * constraints.maxWidth,
                             0.13 * constraints.maxWidth);
-
                         return OtpPinField(
                           key: ValueKey(otpFieldKey),
                           cursorColor: Color(0xff333333),
@@ -593,55 +557,48 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                           )
                         : Container(),
                     SizedBox(height: 50),
-                    isResendAvailable
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Didn\'t receive the code?',
-                                style: TextStyle(
-                                    color: Color(0xff333333),
-                                    fontFamily: 'Lato',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    resendOTP();
-                                    enteredOTP = "";
-                                    inValidOTP = false;
-                                    otpController.clear();
-                                    otpFieldKey = UniqueKey().toString();
-                                  });
-
-                                  setState(() {
-                                    otpKey.currentState?.dispose();
-                                  });
-                                },
-                                child: Text(
-                                  'Resend',
-                                  style: TextStyle(
-                                      color: Color(0xff2979FF),
-                                      fontFamily: 'Lato',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Text(
-                            'Resend OTP in 00:$resendSeconds',
-                            style: TextStyle(
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Didn\'t receive the code?',
+                          style: TextStyle(
+                              color: Color(0xff333333),
                               fontFamily: 'Lato',
                               fontSize: 14,
-                              color: Color(0xff333333),
-                            ),
-                          ),
+                              fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                            onTap: () {
+                              setState(() {
+                                resendOTP();
+                                enteredOTP = "";
+                                inValidOTP = false;
+                                otpController.clear();
+                                otpFieldKey = UniqueKey()
+                                    .toString(); // Clear text controller
+                              });
+
+                              // Recreate the OtpPinField widget
+                              setState(() {
+                                otpKey.currentState
+                                    ?.dispose(); // Dispose the old widget
+                              });
+                            },
+                            child: Text(
+                              'Resend',
+                              style: TextStyle(
+                                  color: Color(0xff2979FF),
+                                  fontFamily: 'Lato',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            )),
+                      ],
+                    ),
                     SizedBox(
                       height: 30,
                     ),
