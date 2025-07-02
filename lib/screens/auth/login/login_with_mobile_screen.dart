@@ -235,62 +235,6 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
 
   bool isLoading = false;
 
-  void _validateMobileNumber() {
-    final mobileNumber = mobileController.text;
-
-    if (RegExp(r'^0+$').hasMatch(mobileNumber)) {
-      setState(() {
-        _isMobileNumberValid = false;
-        mobileErrorMsg = 'Invalid mobile number';
-      });
-      return;
-    }
-
-    if (RegExp(r'^1+$').hasMatch(mobileNumber)) {
-      setState(() {
-        _isMobileNumberValid = false;
-        mobileErrorMsg = 'Invalid mobile number';
-      });
-      return;
-    }
-
-    if (RegExp(r'^(0{4,}|1{4,})').hasMatch(mobileNumber)) {
-      setState(() {
-        _isMobileNumberValid = false;
-        mobileErrorMsg = 'Invalid mobile number';
-      });
-      return;
-    }
-
-    if (mobileNumber.isEmpty) {
-      setState(() {
-        _isMobileNumberValid = false;
-        mobileErrorMsg =
-            'Please enter your mobile number to receive an OTP for verification';
-      });
-    } else if (mobileNumber.length < 10) {
-      setState(() {
-        _isMobileNumberValid = false;
-        mobileErrorMsg = 'Please enter a valid 10-digit mobile number';
-      });
-    } else if (!RegExp(r'^[0-9]{10}$').hasMatch(mobileNumber)) {
-      setState(() {
-        _isMobileNumberValid = false;
-        mobileErrorMsg = 'Mobile number should contain only digits';
-      });
-    } else if (mobileNumber.startsWith('0')) {
-      setState(() {
-        _isMobileNumberValid = false;
-        mobileErrorMsg = 'Mobile number cannot start with 0';
-      });
-    } else {
-      setState(() {
-        _isMobileNumberValid = true;
-      });
-      otpSignIn();
-    }
-  }
-
   Future<void> otpSignIn() async {
     final url = Uri.parse(AppConstants.BASE_URL + AppConstants.LOGIN_BY_MOBILE);
 
@@ -314,7 +258,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
         // );
         IconSnackBar.show(
           context,
-          label: 'No internet connection, try again',
+          label: 'No internet connection',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
@@ -392,11 +336,22 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
             ),
           );
         } else {
-          setState(() {
-            _isMobileNumberValid = false;
-            mobileErrorMsg = 'This mobile number isn\'t registered';
-            isLoading = false;
-          });
+          // Fluttertoast.showToast(
+          //   msg: 'Invalid user !',
+          //   toastLength: Toast.LENGTH_SHORT,
+          //   gravity: ToastGravity.BOTTOM,
+          //   timeInSecForIosWeb: 1,
+          //   backgroundColor: Colors.red,
+          //   textColor: Colors.white,
+          //   fontSize: 16.0,
+          // );
+          IconSnackBar.show(
+            context,
+            label: 'User not found!',
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xFFBA1A1A),
+            iconColor: Colors.white,
+          );
         }
       }
     } catch (e) {
@@ -604,7 +559,32 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                   InkWell(
                     onTap: () {
                       FocusScope.of(context).unfocus();
-                      _validateMobileNumber();
+                      if (mobileController.text.isEmpty) {
+                        setState(() {
+                          _isMobileNumberValid = false;
+                          mobileErrorMsg =
+                              'Please enter your mobile number to receive an OTP for verification';
+                        });
+                      } else if (mobileController.text.length < 10) {
+                        setState(() {
+                          _isMobileNumberValid = false;
+                          mobileErrorMsg = 'Enter a valid mobile number';
+                        });
+                      } else {
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        otpSignIn().then((_) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }).catchError((error) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        });
+                      }
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -628,16 +608,17 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
                                       angle: value * 2 * 3.1416,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 4,
-                                        value: 0.20,
+                                        value: 0.20, // 1/5 of the circle
                                         backgroundColor: const Color.fromARGB(
-                                            142, 234, 232, 232),
+                                            142, 234, 232, 232), // Grey stroke
                                         valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
+                                            AlwaysStoppedAnimation<Color>(Colors
+                                                .white), // White rotating stroke
                                       ),
                                     );
                                   },
-                                  onEnd: () => {},
+                                  onEnd: () =>
+                                      {}, // Ensures smooth infinite animation
                                 ),
                               )
                             : Text(

@@ -1,46 +1,43 @@
 {
   "project_info": {
-    "project_number": "293834446714",
-    "firebase_url": "https://projecttestings-pb-default-rtdb.firebaseio.com",
-    "project_id": "projecttestings-pb",
-    "storage_bucket": "projecttestings-pb.appspot.com"
+    "project_number": "893425614933",
+    "project_id": "talentturbo-cddd3",
+    "storage_bucket": "talentturbo-cddd3.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:293834446714:android:72ccda0f6f8299f2c9a8c3",
-        "android_client_info": {
-          "package_name": "com.pb.android.talentturbo"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBPntJzuAFSiazm87QK2vKWI4iFVj9SAe8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:293834446714:android:f6887a6ad2c2b781c9a8c3",
+        "mobilesdk_app_id": "1:893425614933:android:c868bb308f347107f1d4dc",
         "android_client_info": {
           "package_name": "com.talentturbo.referral.android"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "893425614933-rde55s5reak5gma39u680oqt0bajc5u9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBPntJzuAFSiazm87QK2vKWI4iFVj9SAe8"
+          "current_key": "AIzaSyAAZlC_3EVSqTDm9AjBuuW4d8bJMuwY9FE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893425614933-rde55s5reak5gma39u680oqt0bajc5u9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "893425614933-9j08bkqtfp9opclpq2dse4cuau7cvjh6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.talentturbo.referral.talentTurboNew"
+              }
+            }
+          ]
         }
       }
     }

@@ -3,9 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talent_turbo_new/models/candidate_profile_model.dart';
 import 'package:talent_turbo_new/models/referral_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; // Add this for date formatting
 
 bool validateEmail(String email) {
+  // A basic regex pattern for email validation
   String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
   RegExp regExp = RegExp(emailPattern);
   return regExp.hasMatch(email);
@@ -79,6 +80,7 @@ Future<CandidateProfileModel?> getCandidateProfileData() async {
   return null;
 }
 
+
 String processDate(String createdDate) {
   DateTime postDate = DateTime.tryParse(createdDate) ?? DateTime(1990);
   DateTime now = DateTime.now();
@@ -98,6 +100,7 @@ String processDate(String createdDate) {
     return '$years year${years == 1 ? '' : 's'} ago';
   }
 }
+
 
 Future<void> saveJobListLocally(List<dynamic> jobs) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

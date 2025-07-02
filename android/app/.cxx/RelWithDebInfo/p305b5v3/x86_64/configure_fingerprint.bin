@@ -2,6 +2,7 @@ C/C++ Structured LogK
 I
 GC:\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txtC
 A
+<<<<<<< HEAD
 ?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	¬‰‚ˆû2§ ‰æ–ºÑ2Ž
 ‹
 ˆD:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\additional_project_files.txt	¬‰‚ˆû2 ©‰½¹Û2‹
@@ -26,3 +27,29 @@ wD:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\Re
 ~D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\prefab_config.json	¬‰‚ˆû2( ´‰½¹Û2‰
 †
 ƒD:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\symbol_folder_index.txt	¬‰‚ˆû2z ´‰½¹Û2
+=======
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	èÁÊˆð2§ ‰æ–ºÑ2Ž
+‹
+ˆD:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\additional_project_files.txt	èÁÊˆð2 ©‰½¹Û2‹
+ˆ
+…D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\android_gradle_build.json	èÁÊˆð2ê ­‰½¹Û2
+
+ŠD:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\android_gradle_build_mini.json	èÁÊˆð2Ç ±‰½¹Û2{
+y
+wD:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\build.ninja	èÁÊˆð2üÓ Íˆ½¹Û2
+}
+{D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\build.ninja.txt	èÁÊˆð2†
+ƒ
+€D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\build_file_index.txt	èÁÊˆð2G ¶‰½¹Û2‡
+„
+D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\compile_commands.json	èÁÊˆð2	‹
+ˆ
+…D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\compile_commands.json.bin	èÁÊˆð2
+‘
+Ž
+‹D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\metadata_generation_command.txt	èÁÊˆð2¡	 ³‰½¹Û2ƒ
+€
+~D:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\prefab_config.json	èÁÊˆð2( ´‰½¹Û2‰
+†
+ƒD:\ENTERKEY Solution(IT)\PROJECTS\TalentTurbo\TT_mobile_app\android\app\.cxx\RelWithDebInfo\p305b5v3\x86_64\symbol_folder_index.txt	èÁÊˆð2z ´‰½¹Û2
+>>>>>>> 2999c04f2e4875b093ecac29f1a70723bf0959ec

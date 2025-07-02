@@ -1,0 +1,2 @@
+C:/Users/91890/OneDrive/Desktop/TT-mobileapp/android/app/.cxx/Debug/4f6t1e1u/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/91890/OneDrive/Desktop/TT-mobileapp/android/app/.cxx/Debug/4f6t1e1u/armeabi-v7a/CMakeFiles/rebuild_cache.dir

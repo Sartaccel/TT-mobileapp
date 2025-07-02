@@ -32,7 +32,17 @@ class _SearchandfilterState extends State<Searchandfilter> {
   @override
   void initState() {
     super.initState();
-    _retrieveUserData();
+    _retrieveUserData().then((_) {
+      if (retrievedUserData?.token != null) {
+        fetchJobTitles('');
+      }
+    });
+
+    searchFocusNode.addListener(() {
+      if (searchFocusNode.hasFocus && jobSuggestions.isEmpty) {
+        fetchJobTitles('');
+      }
+    });
   }
 
   Future<UserData?> getUserDataFromStorage() async {
@@ -62,37 +72,65 @@ class _SearchandfilterState extends State<Searchandfilter> {
   }
 
   void fetchJobTitles(String query) {
-    if (retrievedUserData?.token == null) return;
+    if (retrievedUserData?.token == null) {
+      print("⚠️ Token is null. Aborting job title fetch.");
+      return;
+    }
 
     _debounce?.cancel();
-    setState(() {
-      isLoading = true;
-    });
+    _debounce = Timer(const Duration(milliseconds: 400), () async {
+      if (!mounted) {
+        print("🛑 Widget not mounted. Aborting fetchJobTitles.");
+        return;
+      }
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      print("🔍 Starting job title fetch for query: \"$query\"");
+      setState(() => isLoading = true);
+
       final url =
           'https://mobileapi.talentturbo.us/api/v1/jobresource/get/job/titles';
       final headers = {'Authorization': retrievedUserData!.token};
-      final data = FormData.fromMap({'jobTitle': query});
+      final data = FormData.fromMap({'jobTitle': query.trim()});
 
       try {
+        print("📡 Sending POST request to: $url");
+        print("📤 Request Data: ${data.fields}");
+
         final response =
             await dio.post(url, options: Options(headers: headers), data: data);
 
+        print("📥 Response Received: ${response.statusCode}");
         if (response.statusCode == 200 && response.data['status'] == true) {
           final jobTitles = List<String>.from(response.data['jobTitles'] ?? []);
+          print("✅ Job titles fetched successfully: $jobTitles");
+
           if (mounted) {
             setState(() {
               jobSuggestions = jobTitles;
-              isLoading = false;
             });
           }
+        } else {
+          print("⚠️ No job titles found or API returned false status.");
+          if (mounted) setState(() => jobSuggestions = []);
         }
       } catch (e) {
-        print("Error: $e");
-        if (mounted) setState(() => isLoading = false);
+        print("❌ Exception occurred while fetching job titles: $e");
+        if (mounted) setState(() => jobSuggestions = []);
+      } finally {
+        if (mounted) {
+          print("🔁 Finished job title fetch. isLoading = false");
+          setState(() => isLoading = false);
+        }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel(); // Cancels any pending timer
+    searchController.dispose(); // Disposes the TextEditingController
+    searchFocusNode.dispose(); // Disposes the FocusNode
+    super.dispose();
   }
 
   @override
@@ -106,12 +144,8 @@ class _SearchandfilterState extends State<Searchandfilter> {
       backgroundColor: const Color(0xfff7f7f7),
       body: Column(
         children: [
+          Container(height: 40, color: const Color(0xff001B3E)),
           Container(
-              width: MediaQuery.of(context).size.width,
-              height: 40,
-              color: const Color(0xff001B3E)),
-          Container(
-            width: MediaQuery.of(context).size.width,
             height: 60,
             color: const Color(0xff001B3E),
             child: Row(
@@ -200,63 +234,50 @@ class _SearchandfilterState extends State<Searchandfilter> {
                                         );
                                       },
                                     )
-                                  : ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      itemCount: options.length,
-                                      itemBuilder: (context, index) {
-                                        final String option =
-                                            options.elementAt(index);
-                                        return ListTile(
-                                          leading: SvgPicture.asset(
-                                            'assets/icon/Search.svg',
-                                            width: 22,
-                                            height: 22,
+                                  : options.isEmpty
+                                      ? const Padding(
+                                          padding: EdgeInsets.all(12.0),
+                                          child: Text(
+                                            "No job titles found.",
+                                            style:
+                                                TextStyle(color: Colors.grey),
                                           ),
-                                          title: RichText(
-                                            text: TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: searchedJob,
+                                        )
+                                      : ListView.builder(
+                                          padding: EdgeInsets.zero,
+                                          itemCount: options.length,
+                                          itemBuilder: (context, index) {
+                                            final String option =
+                                                options.elementAt(index);
+                                            return ListTile(
+                                              leading: SvgPicture.asset(
+                                                'assets/icon/Search.svg',
+                                                width: 22,
+                                                height: 22,
+                                              ),
+                                              title: Text(option,
                                                   style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: 'Lato',
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text: option.length >
-                                                          searchedJob.length
-                                                      ? option.substring(
-                                                          searchedJob.length)
-                                                      : '',
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: 'Lato',
-                                                    color: Color(0xff333333),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          onTap: () => onSelected(option),
-                                        );
-                                      },
-                                    ),
+                                                      fontSize: 18,
+                                                      fontFamily: 'Lato',
+                                                      color:
+                                                          Color(0xff333333))),
+                                              onTap: () => onSelected(option),
+                                            );
+                                          },
+                                        ),
                             ),
                           ),
                         ),
                       );
                     },
                     optionsBuilder: (TextEditingValue textEditingValue) {
-                      if (isLoading) {
-                        return List.generate(5, (index) => '');
+                      if (isLoading) return const Iterable<String>.empty();
+                      if (textEditingValue.text.isEmpty) {
+                        return jobSuggestions;
                       }
-
-                      if (textEditingValue.text.isEmpty) return jobSuggestions;
-
                       return jobSuggestions.where((title) => title
                           .toLowerCase()
-                          .startsWith(textEditingValue.text.toLowerCase()));
+                          .contains(textEditingValue.text.toLowerCase()));
                     },
                     onSelected: (String selection) {
                       setState(() {
@@ -267,18 +288,14 @@ class _SearchandfilterState extends State<Searchandfilter> {
                     },
                     fieldViewBuilder:
                         (context, controller, focusNode, onFieldSubmitted) {
-                      searchController.text = controller.text;
                       return TextField(
-                        cursorColor: const Color(0xff004C99),
                         controller: controller,
                         focusNode: focusNode,
                         onChanged: (value) {
-                          setState(() {
-                            searchedJob = value;
-                            isLoading = true;
-                          });
+                          setState(() => searchedJob = value);
                           fetchJobTitles(value);
                         },
+                        cursorColor: const Color(0xff004C99),
                         decoration: InputDecoration(
                           prefixIcon: Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -295,6 +312,7 @@ class _SearchandfilterState extends State<Searchandfilter> {
                                       searchedJob = '';
                                       jobSuggestions = [];
                                     });
+                                    fetchJobTitles('');
                                   },
                                 )
                               : null,

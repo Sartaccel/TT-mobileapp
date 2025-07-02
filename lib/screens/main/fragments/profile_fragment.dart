@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,6 @@ import 'package:talent_turbo_new/screens/main/AccountSettings.dart';
 import 'package:talent_turbo_new/screens/main/invite_and_earn.dart';
 import 'package:talent_turbo_new/screens/main/personal_details.dart';
 import 'package:talent_turbo_new/screens/main/rewards.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileFragment extends StatefulWidget {

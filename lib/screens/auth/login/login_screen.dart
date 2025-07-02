@@ -30,7 +30,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _isEmailValid = true;
   TextEditingController emailController = TextEditingController();
-  String emailErrorMessage = 'Invalid email ID';
+  String emailErrorMessage = 'Email ID is Required';
   final AuthService _googleAuthService = AuthService();
 
   bool _isPasswordValid = true;
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         IconSnackBar.show(
           context,
-          label: 'No internet connection, try again',
+          label: 'No internet connection',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
@@ -436,7 +436,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   vertical: 10, horizontal: 10),
                             ),
                             inputFormatters: [
-                              LengthLimitingTextInputFormatter(16),
                               FilteringTextInputFormatter.allow(
                                 RegExp(r'[\p{L}\p{N}\p{P}\p{S}]',
                                     unicode: true),
@@ -444,14 +443,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               FilteringTextInputFormatter.deny(RegExp(r'\s')),
                               FilteringTextInputFormatter.deny(
                                 RegExp(
-                                  r'[\u{1F600}-\u{1F64F}'
-                                  r'\u{1F300}-\u{1F5FF}'
-                                  r'\u{1F680}-\u{1F6FF}'
-                                  r'\u{1F1E0}-\u{1F1FF}'
-                                  r'\u{2600}-\u{26FF}'
-                                  r'\u{2700}-\u{27BF}]',
-                                  unicode: true,
-                                ),
+                                    r'[\u{1F300}-\u{1F6FF}|\u{1F900}-\u{1F9FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+                                    unicode: true),
                               ),
                             ],
                             onChanged: (val) {
@@ -530,7 +523,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           } else if (!validateEmail(emailController.text)) {
                             setState(() {
                               _isEmailValid = false;
-                              emailErrorMessage = 'Invalid email ID';
+                              emailErrorMessage = 'Email ID is Required';
                             });
                           }
 
