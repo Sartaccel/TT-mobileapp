@@ -1308,6 +1308,21 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         ? getValidLengthForCountry(_selectedCountryCode!)
         : 10;
 
+    String filteredMobileNumber = (() {
+      if (candidateProfileModel?.mobile != null) {
+        String cleanedMobile =
+            candidateProfileModel!.mobile!.replaceAll(RegExp(r'[^\d+]'), '');
+        return cleanedMobile.startsWith('+91') && cleanedMobile.length == 13
+            ? cleanedMobile.substring(3) // only number without +91
+            : cleanedMobile;
+      }
+      return '';
+    })();
+
+    if (mobileController.text.isEmpty && filteredMobileNumber.isNotEmpty) {
+      mobileController.text = filteredMobileNumber;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1350,9 +1365,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                   width: 10,
                 ),
                 style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: 'Lato',
-                    color: const Color(0xFF333333)),
+                  fontSize: 14,
+                  fontFamily: 'Lato',
+                  color: const Color(0xFF333333),
+                ),
                 items: countryOptions.map((countryCode) {
                   return DropdownMenuItem<String>(
                     value: countryCode,
