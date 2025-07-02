@@ -91,7 +91,34 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
         ),
         Expanded(
           child: Center(
-            child: Text('No data to show here'),
+            child: Transform.translate(
+              offset: Offset(0, -90),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset('assets/images/no_referrals.svg',
+                      width: MediaQuery.of(context).size.width * 0.9),
+                  Text(
+                    'No referrals yet',
+                    style: TextStyle(
+                        fontFamily: 'Lato',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Color(0xff333333)),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'You haven\'t referred anyone to jobs or apps yet. \nRefer now, view status, and start earning \nreward points..',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'Lato',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Color(0xff545454)),
+                  ),
+                ],
+              ),
+            ),
           ),
         )
         /* Column(

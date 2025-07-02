@@ -17,11 +17,13 @@ class SendVerificationCode extends StatefulWidget {
   final String type;
   final String? mobile;
   final String? email;
+  final VoidCallback? onOTPSent;
   const SendVerificationCode(
       {super.key,
       required this.type,
       required this.mobile,
-      required this.email});
+      required this.email,
+      this.onOTPSent});
 
   @override
   State<SendVerificationCode> createState() => _SendVerificationCodeState();
@@ -470,21 +472,22 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
     UserData? _retrievedUserData = await getUserData();
     setState(() {
       retrievedUserData = _retrievedUserData;
-
-      if (widget.type == 'phone') {
-        if (kDebugMode) {
-          print(widget.mobile);
-        }
-        String? m_mobile = widget.mobile;
-        if (m_mobile != null) {
-          sendMobileVerificationCode(m_mobile);
-        }
-        //sendMobileVerificationCode("+918056709318");
-      }
-
-      if (widget.type == "email") {
-        sendEmailVerificationCode();
-      }
     });
+
+    if (widget.type == 'phone') {
+      if (kDebugMode) {
+        print(widget.mobile);
+      }
+      String? m_mobile = widget.mobile;
+      if (m_mobile != null) {
+        await sendMobileVerificationCode(m_mobile);
+      }
+    } else if (widget.type == "email") {
+      await sendEmailVerificationCode();
+    }
+
+    if (widget.onOTPSent != null) {
+      widget.onOTPSent!();
+    }
   }
 }
