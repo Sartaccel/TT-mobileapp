@@ -49,7 +49,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         // );
         IconSnackBar.show(
           context,
-          label: 'No internet connection',
+          label: 'No internet connection, try again',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
@@ -437,29 +437,33 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
           ),
           Positioned(
-              top: 40,
-              left: 0,
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back_ios_new),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+            top: 40,
+            left: 0,
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios_new),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        'Back',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
                   ),
-                  InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                          height: 50,
-                          child: Center(
-                              child: Text(
-                            'Back',
-                            style: TextStyle(fontSize: 16),
-                          ))))
-                ],
-              )),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

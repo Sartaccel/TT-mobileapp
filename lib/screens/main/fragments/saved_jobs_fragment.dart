@@ -200,13 +200,13 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
       if (mounted) {
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection, try again',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
+        // IconSnackBar.show(
+        //   context,
+        //   label: 'No internet connection, try again',
+        //   snackBarType: SnackBarType.alert,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   iconColor: Colors.white,
+        // );
       }
       return;
     }
@@ -277,13 +277,13 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
     } catch (e) {
       if (kDebugMode) print("Error: $e");
       if (mounted) {
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection, try again',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
+        // IconSnackBar.show(
+        //   context,
+        //   label: 'No internet connection, try again',
+        //   snackBarType: SnackBarType.alert,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   iconColor: Colors.white,
+        // );
       }
     }
   }

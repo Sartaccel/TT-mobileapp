@@ -75,6 +75,12 @@ class _AddemploymentState extends State<Addemployment> {
   String selectedEmploymentType = '';
 
   String email = '';
+  String? employedFrom;
+  String? employedTo;
+
+  String _twoDigit(int value) {
+    return value.toString().padLeft(2, '0');
+  }
 
   Future<void> updateinRTDB(String id, String bodyParams) async {
     final sanitizedEmail = email.replaceAll('.', ',');
@@ -143,6 +149,13 @@ class _AddemploymentState extends State<Addemployment> {
         retrievedUserData!.profileId.toString() +
         '/employment');
 
+// Convert date formats from UI to backend format
+    String formattedStartDate =
+        formatDateForBackend(parseDate(_startDateController.text));
+    String formattedEndDate = _selectedOption == 'No'
+        ? formatDateForBackend(parseDate(_endDateController.text))
+        : '1970-01-01';
+
     final bodyParams = isEdit
         ? {
             "candidateEmployment": [
@@ -153,10 +166,8 @@ class _AddemploymentState extends State<Addemployment> {
                 "skillSet": selectedEmploymentType,
                 "city": "Nagercoil",
                 "stateName": "",
-                "employedFrom": _startDateController.text,
-                "employedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01',
+                "employedFrom": formattedStartDate, // should be 'YYYY-MM-DD'
+                "employedTo": formattedEndDate,
                 "leavingReason": txtDescriptionController.text,
                 "referenceName": "",
                 "referencePhone": "",
@@ -178,10 +189,8 @@ class _AddemploymentState extends State<Addemployment> {
                 "skillSet": selectedEmploymentType,
                 "city": "Nagercoil",
                 "stateName": "",
-                "employedFrom": _startDateController.text,
-                "employedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01',
+                "employedFrom": formattedStartDate,
+                "employedTo": formattedEndDate,
                 "leavingReason": txtDescriptionController.text,
                 "referenceName": "",
                 "referencePhone": "",
@@ -243,6 +252,35 @@ class _AddemploymentState extends State<Addemployment> {
         fetchCandidateProfileData(
             retrievedUserData!.profileId, retrievedUserData!.token);
       }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Color(0xff2D2D2D),
+          elevation: 10,
+          margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Row(
+            children: [
+              SvgPicture.asset('assets/icon/success.svg'),
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Work experience updated !',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              GestureDetector(
+                onTap: () =>
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                child: Icon(Icons.close_rounded, color: Colors.white),
+              )
+            ],
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
     } catch (e) {
       setState(() {
         if (kDebugMode) {
@@ -357,29 +395,48 @@ class _AddemploymentState extends State<Addemployment> {
   }
 
   DateTime parseDate(String dateString) {
-    // Handle if date is already in yyyy-MM-dd format
-    if (dateString.startsWith(RegExp(r'^\d{4}'))) {
-      return DateTime.parse(dateString);
+    try {
+      if (RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(dateString)) {
+        return DateTime.parse(dateString);
+      }
+
+      List<String> parts = dateString.split('-');
+      if (parts.length != 3) {
+        throw FormatException('Invalid date format');
+      }
+
+      int day = int.parse(parts[0]);
+      int month = int.parse(parts[1]);
+      int year = int.parse(parts[2]);
+
+      if (year < 100) {
+        year += (year < 70) ? 2000 : 1900;
+      }
+
+      return DateTime(year, month, day);
+    } catch (e) {
+      print('Date parse error: $e');
+      return DateTime.now();
+    }
+  }
+
+  String formatDateForDisplay(String? dateString) {
+    if (dateString == null ||
+        dateString.isEmpty ||
+        dateString == '1970-01-01') {
+      return '';
     }
 
-    // Handle dd-MM-yyyy format
-    List<String> parts = dateString.split('-');
-    if (parts.length != 3) {
-      throw FormatException(
-          'Invalid date format. Use DD-MM-YYYY or YYYY-MM-DD');
+    try {
+      DateTime date = DateTime.parse(dateString);
+      return "${_twoDigit(date.day)}-${_twoDigit(date.month)}-${date.year}";
+    } catch (e) {
+      return '';
     }
+  }
 
-    // Parse components - assuming format is dd-MM-yyyy
-    int day = int.parse(parts[0]);
-    int month = int.parse(parts[1]);
-    int year = int.parse(parts[2]);
-
-    // Handle 2-digit years if needed
-    if (year < 100) {
-      year += (year < 70) ? 2000 : 1900;
-    }
-
-    return DateTime(year, month, day);
+  String formatDateForBackend(DateTime date) {
+    return "${date.year}-${_twoDigit(date.month)}-${_twoDigit(date.day)}";
   }
 
   @override
@@ -828,8 +885,7 @@ class _AddemploymentState extends State<Addemployment> {
                                                     borderSide: BorderSide(
                                                         color: isStartDateValid
                                                             ? Color(0xffd9d9d9)
-                                                            : Color(
-                                                                0xffBA1A1A), // Default border color
+                                                            : Color(0xffBA1A1A),
                                                         width: 1),
                                                   ),
                                                   focusedBorder:
@@ -840,8 +896,7 @@ class _AddemploymentState extends State<Addemployment> {
                                                     borderSide: BorderSide(
                                                         color: isStartDateValid
                                                             ? Color(0xff004C99)
-                                                            : Color(
-                                                                0xffBA1A1A), // Border color when focused
+                                                            : Color(0xffBA1A1A),
                                                         width: 1),
                                                   ),
                                                   contentPadding:
@@ -861,7 +916,6 @@ class _AddemploymentState extends State<Addemployment> {
                                                                             1)),
                                                         firstDate:
                                                             DateTime(2000),
-                                                        //lastDate: DateTime(2101),
                                                         lastDate: DateTime.now()
                                                             .subtract(Duration(
                                                                 days: 1)),
@@ -873,11 +927,11 @@ class _AddemploymentState extends State<Addemployment> {
                                                     isStartDateValid = true;
                                                     _startDateSelected = true;
                                                     startDatems = pickedDate;
-                                                    //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+
+                                                    // Display in DD-MM-YYYY format
                                                     _startDateController.text =
-                                                        "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                                                    startYear =
-                                                        '${pickedDate.month}-${pickedDate.year}';
+                                                        "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+
                                                     _hasChanges = true;
                                                   });
                                                 }
@@ -982,19 +1036,15 @@ class _AddemploymentState extends State<Addemployment> {
                                                   if (pickedDate != null) {
                                                     setState(() {
                                                       isEndDateValid = true;
-                                                      //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+
+                                                      // Display in DD-MM-YYYY format
                                                       _endDateController.text =
-                                                          "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                                                      //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                                      endYear =
-                                                          '${pickedDate.month}-${pickedDate.year}';
+                                                          "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+
                                                       _hasChanges = true;
                                                     });
                                                   }
-                                                } else if (_selectedOption ==
-                                                        'No' &&
-                                                    _startDateSelected ==
-                                                        false) {}
+                                                }
                                               },
                                             ),
                                           ]),
@@ -1407,24 +1457,20 @@ class _AddemploymentState extends State<Addemployment> {
                                         curve: Curves.linear,
                                         builder: (context, value, child) {
                                           return Transform.rotate(
-                                            angle: value *
-                                                2 *
-                                                3.1416, // Full rotation effect
+                                            angle: value * 2 * 3.1416,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 4,
-                                              value: 0.20, // 1/5 of the circle
+                                              value: 0.20,
                                               backgroundColor:
-                                                  const Color.fromARGB(142, 234,
-                                                      232, 232), // Grey stroke
-                                              valueColor: AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  Colors
-                                                      .white), // White rotating stroke
+                                                  const Color.fromARGB(
+                                                      142, 234, 232, 232),
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Colors.white),
                                             ),
                                           );
                                         },
-                                        onEnd: () =>
-                                            {}, // Ensures smooth infinite animation
+                                        onEnd: () => {},
                                       ),
                                     )
                                   : Text(
@@ -1448,7 +1494,6 @@ class _AddemploymentState extends State<Addemployment> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchProfileFromPref();
 
@@ -1457,11 +1502,15 @@ class _AddemploymentState extends State<Addemployment> {
         isEdit = true;
         txtDesignationController.text = widget.emplomentData['jobTitle'];
         txtComanyNameController.text = widget.emplomentData['companyName'];
-        _startDateController.text = widget.emplomentData['employedFrom'];
+
+        // Format dates for display
+        _startDateController.text =
+            formatDateForDisplay(widget.emplomentData['employedFrom']);
         _endDateController.text =
             widget.emplomentData['employedTo'] == '1970-01-01'
                 ? ''
-                : widget.emplomentData['employedTo'];
+                : formatDateForDisplay(widget.emplomentData['employedTo']);
+
         isStartDateValid = true;
         isEndDateValid = true;
         _startDateSelected = true;
