@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/screens/main/notifications.dart';
 
 class MyReferralsFragment extends StatefulWidget {
@@ -11,53 +14,69 @@ class MyReferralsFragment extends StatefulWidget {
 }
 
 class _MyReferralsFragmentState extends State<MyReferralsFragment> {
+  bool isConnectionAvailable = true;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkConnection();
+
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
+      _checkConnection();
+    });
+  }
+
+  void _checkConnection() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      setState(() {
+        isConnectionAvailable =
+            result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+        isLoading = false;
+      });
+    } on SocketException catch (_) {
+      setState(() {
+        isConnectionAvailable = false;
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Change the status bar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff001B3E),
+      statusBarColor: const Color(0xff001B3E),
       statusBarIconBrightness: Brightness.light,
     ));
+
     return Column(
       children: [
         Container(
           width: MediaQuery.of(context).size.width,
           height: 40,
-          decoration: BoxDecoration(color: Color(0xff001B3E)),
+          color: const Color(0xff001B3E),
         ),
         Container(
           width: MediaQuery.of(context).size.width,
           height: 60,
-          decoration: BoxDecoration(color: Color(0xff001B3E)),
+          color: const Color(0xff001B3E),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: Container(),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                          height: 50,
-                          child: Center(
-                              child: Text(
-                            '',
-                            style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 16,
-                                color: Colors.white),
-                          ))))
-                ],
+              IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              Text(
+              const Text(
                 'My Referrals',
                 style: TextStyle(
                     color: Colors.white,
@@ -71,7 +90,7 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          NotificationScreen(),
+                          const NotificationScreen(),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                     ),
@@ -89,76 +108,119 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
             ],
           ),
         ),
+
+        // Main Content
         Expanded(
-          child: Center(
-            child: Transform.translate(
-              offset: Offset(0, -90),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset('assets/images/no_referrals.svg',
-                      width: MediaQuery.of(context).size.width * 0.9),
-                  Text(
-                    'No referrals yet',
-                    style: TextStyle(
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Color(0xff333333)),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'You haven\'t referred anyone to jobs or apps yet. \nRefer now, view status, and start earning \nreward points..',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: Color(0xff545454)),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )
-        /* Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset('assets/images/user_.webp', height: 40, width: 40,),
-
-                    SizedBox(width: 20,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          child: isConnectionAvailable
+              ? Center(
+                  child: Transform.translate(
+                    offset: const Offset(0, -90),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Kabilan', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),),
-                        SizedBox(height: 5,),
-                        Text('UI UX Designer | Microsoft', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),),
-                        SizedBox(height: 5,),
-                        Text('Referred date:  01-10-2024', style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),),
+                        SvgPicture.asset(
+                          'assets/images/no_referrals.svg',
+                          width: MediaQuery.of(context).size.width * 0.9,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'No referrals yet',
+                          style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Color(0xff333333)),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'You haven\'t referred anyone to jobs or apps yet. \nRefer now, view status, and start earning \nreward points..',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: Color(0xff545454)),
+                        ),
                       ],
-                    )
-                  ],
+                    ),
+                  ),
+                )
+              : Center(
+                  child: Transform.translate(
+                    offset: const Offset(0, -60),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icon/noInternet.svg',
+                          height: MediaQuery.of(context).size.height * 0.22,
+                        ),
+                        const SizedBox(height: 25),
+                        const Text(
+                          'No Internet connection',
+                          style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Color(0xff333333)),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Connect to Wi-Fi or cellular data and try again.',
+                          style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: Color(0xff545454)),
+                        ),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: isLoading ? null : _checkConnection,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width - 50,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: isLoading
+                                  ? SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: TweenAnimationBuilder<double>(
+                                        tween: Tween<double>(begin: 0, end: 5),
+                                        duration: const Duration(seconds: 2),
+                                        curve: Curves.linear,
+                                        builder: (context, value, child) {
+                                          return Transform.rotate(
+                                            angle: value * 2 * 3.1416,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 4,
+                                              value: 0.20,
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      142, 234, 232, 232),
+                                              valueColor:
+                                                  const AlwaysStoppedAnimation<
+                                                      Color>(Colors.white),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Try Again',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-
-                Icon(Icons.chevron_right, size: 36,)
-
-
-
-
-              ],
-            ),),
-            Divider()
-          ],
-        ),*/
+        ),
       ],
     );
   }
