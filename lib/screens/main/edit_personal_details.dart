@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:talent_turbo_new/AppColors.dart';
 import 'package:talent_turbo_new/AppConstants.dart';
 import 'package:talent_turbo_new/Utils.dart';
@@ -25,10 +26,15 @@ class EditPersonalDetails extends StatefulWidget {
 
 class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   bool isLoading = false;
+  bool _hasChanges = false;
   bool isStartDateValid = true;
   bool _startDateSelected = false;
   String emailErrorMessage = '';
   String mobileErrorMessage = '';
+  String selectedExpType = '';
+  String selectedMonType = '';
+  String? experience;
+  String? expMonth;
 
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
@@ -38,6 +44,8 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   TextEditingController dobController = TextEditingController();
   TextEditingController currentPositionController = TextEditingController();
   TextEditingController experienceController = TextEditingController();
+  TextEditingController experienceYearController = TextEditingController();
+  TextEditingController experienceMonthController = TextEditingController();
 
   String? startDateErrorMsg = 'Date of Birth is required';
   final TextEditingController _startDateController = TextEditingController();
@@ -51,8 +59,18 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   bool _isPositionValid = true;
   bool _isExperienceValid = true;
 
+  int? selectedYear;
+  int? selectedMonth;
+
   CandidateProfileModel? candidateProfileModel;
   UserData? retrievedUserData;
+
+  String getFinalExperience() {
+    return (selectedExpType == "0 Years" || selectedExpType == "Fresher") &&
+            selectedMonType == "0 Months"
+        ? "Fresher"
+        : "$selectedExpType $selectedMonType";
+  }
 
   String? _selectedCountryCode = '+91';
   final List<String> countryOptions = [
@@ -336,8 +354,22 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         }
 
         currentPositionController.text = _candidateProfileModel.position ?? '';
-        experienceController.text =
-            _candidateProfileModel.experience?.toString() ?? '0';
+
+        int years = (_candidateProfileModel.experience ?? 0).toInt();
+        int months = (_candidateProfileModel.expMonth ?? 0).toInt();
+
+        if (years == 0 && months == 0) {
+          selectedExpType = "Fresher";
+          selectedMonType = "0 Months";
+        } else {
+          selectedExpType =
+              years > 0 ? "$years ${years == 1 ? 'Year' : 'Years'}" : "";
+          selectedMonType = months > 0
+              ? "$months ${months == 1 ? 'Month' : 'Months'}"
+              : "0 Months";
+        }
+
+        experienceController.text = ((years * 12) + months).toString();
       });
     } catch (e) {
       print('Error in fetchProfileFromPref: $e');
@@ -460,14 +492,25 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
       );
       return;
     }
+    int totalExperienceInMonths = 0;
+    if (selectedExpType != "Fresher") {
+      final yearMatch = RegExp(r'(\d+)').firstMatch(selectedExpType ?? '');
+      final monthMatch = RegExp(r'(\d+)').firstMatch(selectedMonType ?? '');
 
+      int years =
+          yearMatch != null ? int.tryParse(yearMatch.group(1)!) ?? 0 : 0;
+      int months =
+          monthMatch != null ? int.tryParse(monthMatch.group(1)!) ?? 0 : 0;
+
+      totalExperienceInMonths = (years * 12) + months;
+    }
     final bodyParams = {
       "id": retrievedUserData!.profileId,
       "firstName": fNameController.text,
       "lastName": lNameController.text,
       "email": emailController.text,
       "mobile": _selectedCountryCode! + mobileController.text,
-      "experience": int.tryParse(experienceController.text) ?? 0,
+      "experience": totalExperienceInMonths,
       "location": locationController.text,
       "gender": "M",
       "position": currentPositionController.text,
@@ -600,6 +643,257 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
     fetchProfileFromPref();
   }
 
+  void _showVerificationDialog(String type, VoidCallback onContinue) {
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              insetPadding: EdgeInsets.zero,
+              child: Container(
+                width: MediaQuery.of(context).size.width - 35,
+                padding: EdgeInsets.fromLTRB(22, 15, 22, 22),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Verify Now',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff333333)),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      type == 'email'
+                          ? 'A OTP will be sent to your email.'
+                          : 'A OTP will be sent to your Mobile number.',
+                      style: TextStyle(
+                          height: 1.4,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff333333)),
+                    ),
+                    SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.60,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  height: 50,
+                                  margin: EdgeInsets.only(right: 15),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 1,
+                                          color: AppColors.primaryColor),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Center(
+                                    child: Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                          color: AppColors.primaryColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  await Future.delayed(
+                                      Duration(milliseconds: 800));
+
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+
+                                  Navigator.pop(context); // Close dialog
+                                  onContinue(); // Proceed to next screen
+                                },
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Center(
+                                    child: isLoading
+                                        ? SizedBox(
+                                            height: 24,
+                                            width: 24,
+                                            child:
+                                                TweenAnimationBuilder<double>(
+                                              tween: Tween<double>(
+                                                  begin: 0, end: 5),
+                                              duration: Duration(seconds: 2),
+                                              curve: Curves.linear,
+                                              builder: (context, value, child) {
+                                                return Transform.rotate(
+                                                  angle: value * 2 * 3.1416,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 4,
+                                                    value: 0.20,
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            142, 234, 232, 232),
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Colors.white),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          )
+                                        : Text(
+                                            'Verify',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void showDiscardConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          insetPadding: EdgeInsets.zero,
+          child: Container(
+            width: MediaQuery.of(context).size.width - 35,
+            padding: EdgeInsets.fromLTRB(22, 15, 22, 22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Discard changes?',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Are you sure you want to discard all changes?',
+                  style: TextStyle(
+                      height: 1.4,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: 50,
+                              margin: EdgeInsets.only(right: 15),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      width: 1, color: AppColors.primaryColor),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      color: AppColors.primaryColor,
+                                      fontFamily: 'lato'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                  child: Text(
+                                    'Discard',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'lato'),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -628,12 +922,23 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.arrow_back_ios_new,
-                              color: Colors.white),
-                          onPressed: () => Navigator.pop(context),
-                        ),
+                            icon: Icon(Icons.arrow_back_ios_new,
+                                color: Colors.white),
+                            onPressed: () {
+                              if (_hasChanges) {
+                                showDiscardConfirmationDialog(context);
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            }),
                         InkWell(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            if (_hasChanges) {
+                              showDiscardConfirmationDialog(context);
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          },
                           child: Container(
                             height: 50,
                             child: Center(
@@ -760,6 +1065,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           onChanged: (value) {
             setState(() {
               _isFirstNameValid = true;
+              _hasChanges = true;
             });
           },
         ),
@@ -848,6 +1154,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           onChanged: (value) {
             setState(() {
               _isLastNameValid = true;
+              _hasChanges = true;
             });
           },
         ),
@@ -926,13 +1233,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 onChanged: (value) {
                   setState(() {
                     _isEmailValid = true;
+                    _hasChanges = true;
                   });
                 },
               ),
             ),
             SizedBox(width: 10),
             InkWell(
-              onTap: () async {
+              onTap: () {
                 if (emailController.text.trim().isEmpty) {
                   setState(() {
                     _isEmailValid = false;
@@ -942,26 +1250,27 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 }
 
                 if (candidateProfileModel?.isEmailVerified != 1) {
-                  await Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          SendVerificationCode(
-                        type: "email",
-                        mobile: candidateProfileModel?.mobile,
-                        email: candidateProfileModel?.email,
+                  _showVerificationDialog('email', () async {
+                    await Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            SendVerificationCode(
+                          type: "email",
+                          mobile: candidateProfileModel?.mobile,
+                          email: candidateProfileModel?.email,
+                        ),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
                       ),
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ),
-                  );
-
-                  if (retrievedUserData != null) {
-                    fetchCandidateProfileData(
-                      retrievedUserData!.profileId,
-                      retrievedUserData!.token,
                     );
-                  }
+                    if (retrievedUserData != null) {
+                      fetchCandidateProfileData(
+                        retrievedUserData!.profileId,
+                        retrievedUserData!.token,
+                      );
+                    }
+                  });
                 }
               },
               child: Text(
@@ -999,6 +1308,21 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         ? getValidLengthForCountry(_selectedCountryCode!)
         : 10;
 
+    String filteredMobileNumber = (() {
+      if (candidateProfileModel?.mobile != null) {
+        String cleanedMobile =
+            candidateProfileModel!.mobile!.replaceAll(RegExp(r'[^\d+]'), '');
+        return cleanedMobile.startsWith('+91') && cleanedMobile.length == 13
+            ? cleanedMobile.substring(3) // only number without +91
+            : cleanedMobile;
+      }
+      return '';
+    })();
+
+    if (mobileController.text.isEmpty && filteredMobileNumber.isNotEmpty) {
+      mobileController.text = filteredMobileNumber;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1018,8 +1342,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         SizedBox(height: 7),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
+              height: 49,
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 1,
@@ -1029,21 +1355,29 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
+              padding: EdgeInsets.all(10),
               child: DropdownButton<String>(
-                underline: Container(),
                 value: _selectedCountryCode,
+                underline: SizedBox(),
+                icon: SvgPicture.asset(
+                  'assets/icon/ArrowDown.svg',
+                  height: 10,
+                  width: 10,
+                ),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Lato',
+                  color: const Color(0xFF333333),
+                ),
                 items: countryOptions.map((countryCode) {
                   return DropdownMenuItem<String>(
                     value: countryCode,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        countryCode,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Lato',
-                          color: Color(0xff545454),
-                        ),
+                    child: Text(
+                      countryCode,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Lato',
+                        color: Color(0xFF333333),
                       ),
                     ),
                   );
@@ -1051,11 +1385,12 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 onChanged: (val) {
                   setState(() {
                     _selectedCountryCode = val;
+                    _hasChanges = true;
                   });
                 },
               ),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Expanded(
               child: TextField(
                 maxLength: validLength,
@@ -1103,6 +1438,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 onChanged: (value) {
                   setState(() {
                     _isMobileNumberValid = true;
+                    _hasChanges = true;
                   });
                 },
               ),
@@ -1112,7 +1448,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               height: 50,
               child: Center(
                 child: InkWell(
-                  onTap: () async {
+                  onTap: () {
                     if (mobileController.text.trim().isEmpty) {
                       setState(() {
                         _isMobileNumberValid = false;
@@ -1131,27 +1467,28 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     }
 
                     if (candidateProfileModel?.isPhoneVerified != 1) {
-                      await Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  SendVerificationCode(
-                            type: "phone",
-                            mobile: candidateProfileModel?.mobile,
-                            email: candidateProfileModel?.email,
+                      _showVerificationDialog('phone', () async {
+                        await Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    SendVerificationCode(
+                              type: "phone",
+                              mobile: candidateProfileModel?.mobile,
+                              email: candidateProfileModel?.email,
+                            ),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
                           ),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ),
-                      );
-
-                      if (retrievedUserData != null) {
-                        fetchCandidateProfileData(
-                          retrievedUserData!.profileId,
-                          retrievedUserData!.token,
                         );
-                      }
+                        if (retrievedUserData != null) {
+                          fetchCandidateProfileData(
+                            retrievedUserData!.profileId,
+                            retrievedUserData!.token,
+                          );
+                        }
+                      });
                     }
                   },
                   child: Text(
@@ -1251,6 +1588,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           onChanged: (value) {
             setState(() {
               _isLocationValid = true;
+              _hasChanges = true;
             });
           },
         ),
@@ -1424,6 +1762,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           onChanged: (value) {
             setState(() {
               _isPositionValid = true;
+              _hasChanges = true;
             });
           },
         ),
@@ -1452,56 +1791,265 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           padding:
               EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.015),
           child: Text(
-            'Total Experience in years',
+            'Work Experience',
             style: TextStyle(fontSize: 13, fontFamily: 'Lato'),
           ),
         ),
         SizedBox(height: 7),
-        TextField(
-          controller: experienceController,
-          cursorColor: Color(0xff004C99),
-          style: TextStyle(
-            fontSize: 14,
-            fontFamily: 'Lato',
-            color: Color(0xff333333),
-          ),
-          decoration: InputDecoration(
-            hintText: 'Experience',
-            hintStyle: TextStyle(color: Color(0xff545454)),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: Color(0xffd9d9d9),
-                width: 1,
+        Row(
+          children: [
+            // Year Dropdown
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  showMaterialModalBottomSheet(
+                    backgroundColor: Colors.transparent,
+                    isDismissible: true,
+                    context: context,
+                    builder: (context) {
+                      ScrollController scrollController = ScrollController();
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.365,
+                        padding: EdgeInsets.only(top: 30, left: 10, right: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0xffFCFCFC),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25),
+                            topRight: Radius.circular(25),
+                          ),
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Color(0xff333333),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 20, right: 10),
+                                child: Scrollbar(
+                                  controller: scrollController,
+                                  thumbVisibility: true,
+                                  trackVisibility: true,
+                                  thickness: 5,
+                                  radius: Radius.circular(10),
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        thumbColor: WidgetStateProperty.all(
+                                            Color(0xff545454)),
+                                        trackColor: WidgetStateProperty.all(
+                                            Color(0xffD9D9D9)),
+                                      ),
+                                    ),
+                                    child: SingleChildScrollView(
+                                      controller: scrollController,
+                                      child: Column(
+                                        children: List.generate(21, (index) {
+                                          String label = index == 0
+                                              ? "0 Years"
+                                              : index == 20
+                                                  ? "20+ Years"
+                                                  : "$index ${index > 1 ? 'Years' : 'Year'}";
+                                          return ListTile(
+                                              title: Text(label),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedExpType = label;
+                                                  saveStringToPreferences(
+                                                      "searchExp", label);
+
+                                                  if (label == "0 Years" &&
+                                                      (selectedMonType ==
+                                                              "0 Months" ||
+                                                          selectedMonType
+                                                              .isEmpty)) {
+                                                    selectedExpType = "Fresher";
+                                                    selectedMonType =
+                                                        "0 Months";
+                                                    saveStringToPreferences(
+                                                        "searchExp", "Fresher");
+                                                  }
+                                                });
+                                                Navigator.pop(context);
+                                              });
+                                        }),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color(0xffd9d9d9)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        selectedExpType == null || selectedExpType!.isEmpty
+                            ? 'Years'
+                            : selectedExpType!,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xff333333),
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SvgPicture.asset(
+                        'assets/icon/ArrowDown.svg',
+                        height: 10,
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: Color(0xff004C99),
-                width: 1,
+            SizedBox(width: 10),
+            // Month Dropdown
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  showMaterialModalBottomSheet(
+                    backgroundColor: Colors.transparent,
+                    isDismissible: true,
+                    context: context,
+                    builder: (context) {
+                      ScrollController scrollController = ScrollController();
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.365,
+                        padding: EdgeInsets.only(top: 30, left: 10, right: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0xffFCFCFC),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25),
+                            topRight: Radius.circular(25),
+                          ),
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: Color(0xff333333),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 20, right: 10),
+                                child: Scrollbar(
+                                  controller: scrollController,
+                                  thumbVisibility: true,
+                                  trackVisibility: true,
+                                  thickness: 5,
+                                  radius: Radius.circular(10),
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        thumbColor: WidgetStateProperty.all(
+                                            Color(0xff545454)),
+                                        trackColor: WidgetStateProperty.all(
+                                            Color(0xffD9D9D9)),
+                                      ),
+                                    ),
+                                    child: SingleChildScrollView(
+                                      controller: scrollController,
+                                      child: Column(
+                                        children: List.generate(12, (index) {
+                                          String label = index == 0
+                                              ? "0 Months"
+                                              : index == 1
+                                                  ? "1 Month"
+                                                  : "$index Months";
+                                          return ListTile(
+                                              title: Text(label),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedMonType = label;
+                                                  saveStringToPreferences(
+                                                      "searchMonth", label);
+
+                                                  if ((selectedExpType ==
+                                                              "0 Years" ||
+                                                          selectedExpType
+                                                              .isEmpty) &&
+                                                      label == "0 Months") {
+                                                    selectedExpType = "Fresher";
+                                                    selectedMonType =
+                                                        "0 Months";
+                                                    saveStringToPreferences(
+                                                        "searchExp", "Fresher");
+                                                  }
+                                                });
+                                                Navigator.pop(context);
+                                              });
+                                        }),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color(0xffd9d9d9)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        selectedMonType == null || selectedMonType!.isEmpty
+                            ? 'Months'
+                            : selectedMonType!,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xff333333),
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      SvgPicture.asset(
+                        'assets/icon/ArrowDown.svg',
+                        height: 10,
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          ),
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
           ],
-          onChanged: (value) {
-            setState(() {
-              if (value.trim().isEmpty || value == '0') {
-                experienceController.text = 'Fresher';
-                experienceController.selection = TextSelection.fromPosition(
-                  TextPosition(offset: experienceController.text.length),
-                );
-                _isExperienceValid = true;
-              } else if (value != 'Fresher') {
-                _isExperienceValid = true;
-              }
-            });
-          },
         ),
       ],
     );
