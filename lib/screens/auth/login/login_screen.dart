@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         IconSnackBar.show(
           context,
-          label: 'No internet connection, try again',
+          label: 'No internet connection',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,

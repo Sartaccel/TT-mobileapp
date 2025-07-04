@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -79,8 +80,14 @@ class _JobApplyState extends State<JobApply> {
       emailController.text = _candidateProfileModel?.email ?? "";
 
       String? mobileNumber = _candidateProfileModel?.mobile;
-      if (mobileNumber != null && mobileNumber.length > 3) {
-        mobileController.text = mobileNumber.substring(3);
+      if (mobileNumber != null) {
+        // Remove all non-digit characters
+        String cleanedNumber = mobileNumber.replaceAll(RegExp(r'[^0-9]'), '');
+        // Keep only last 10 digits if longer (removes country code)
+        if (cleanedNumber.length > 10) {
+          cleanedNumber = cleanedNumber.substring(cleanedNumber.length - 10);
+        }
+        mobileController.text = cleanedNumber;
       } else {
         mobileController.text = "";
       }
@@ -241,48 +248,52 @@ class _JobApplyState extends State<JobApply> {
   }
 
   Future<File?> pickPDF() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
-    );
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx'],
+      );
 
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      String extension = file.path.split('.').last.toLowerCase();
+      if (result != null) {
+        File file = File(result.files.single.path!);
+        String extension = file.path.split('.').last.toLowerCase();
 
-      if (!_isValidExtension(extension)) {
-        IconSnackBar.show(
-          context,
-          label: 'Unsupported file type.',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-        return null;
+        if (!_isValidExtension(extension)) {
+          IconSnackBar.show(
+            context,
+            label: 'Unsupported file type.',
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xff2D2D2D),
+            iconColor: Colors.white,
+          );
+          return null;
+        }
+
+        final fileSize = await file.length();
+        if (fileSize <= 0) {
+          IconSnackBar.show(
+            context,
+            label: 'File must be greater than 0MB.',
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xff2D2D2D),
+            iconColor: Colors.white,
+          );
+          return null;
+        } else if (fileSize > 5 * 1024 * 1024) {
+          IconSnackBar.show(
+            context,
+            label: 'File must be less than 5MB.',
+            snackBarType: SnackBarType.alert,
+            backgroundColor: Color(0xff2D2D2D),
+            iconColor: Colors.white,
+          );
+          return null;
+        }
+
+        return file;
       }
-
-      final fileSize = await file.length();
-      if (fileSize <= 0) {
-        IconSnackBar.show(
-          context,
-          label: 'File must be greater than 0MB.',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-        return null;
-      } else if (fileSize > 5 * 1024 * 1024) {
-        IconSnackBar.show(
-          context,
-          label: 'File must be less than 5MB.',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
-        return null;
-      }
-
-      return file;
+    } on PlatformException catch (e) {
+      print("File picking error: $e");
     }
     return null;
   }
@@ -325,19 +336,33 @@ class _JobApplyState extends State<JobApply> {
 
       if (response.statusCode == 200 || response.statusCode == 202) {
         await setUpdatedTimeInRTDB();
-        // IconSnackBar.show(
-        //   context,
-        //   label: 'Successfully uploaded',
-        //   snackBarType: SnackBarType.success,
-        //   backgroundColor: Color(0xff4CAF50),
-        //   iconColor: Colors.white,
-        // );
         await fetchCandidateProfileData(retrievedUserData!.profileId, token);
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || 
+          e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        IconSnackBar.show(
+          context,
+          label: "No internet connection, try again",
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
+      } else {
+        IconSnackBar.show(
+          context,
+          label: "Failed to upload resume. Please try again.",
+          snackBarType: SnackBarType.alert,
+          backgroundColor: Color(0xff2D2D2D),
+          iconColor: Colors.white,
+        );
       }
     } catch (e) {
       IconSnackBar.show(
         context,
-        label: e.toString(),
+        label: "An error occurred while uploading resume",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
@@ -870,7 +895,7 @@ class _JobApplyState extends State<JobApply> {
                                   width:
                                       (MediaQuery.of(context).size.width) - 130,
                                   child: TextField(
-                                    readOnly: true,
+                                    keyboardType: TextInputType.phone,
                                     maxLength: 10,
                                     controller: mobileController,
                                     cursorColor: Color(0xff004C99),

@@ -28,6 +28,7 @@ class EditPersonalDetails extends StatefulWidget {
 class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   bool isLoading = false;
   bool _hasChanges = false;
+  bool fieldsEnabled = true;
   bool isStartDateValid = true;
   bool _startDateSelected = false;
   String emailErrorMessage = '';
@@ -925,37 +926,43 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                         IconButton(
                             icon: Icon(Icons.arrow_back_ios_new,
                                 color: Colors.white),
-                            onPressed: () {
-                              if (_hasChanges) {
-                                showDiscardConfirmationDialog(context);
-                              } else {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                            secondaryAnimation) =>
-                                        PersonalDetails(),
-                                    transitionDuration: Duration.zero,
-                                    reverseTransitionDuration: Duration.zero,
-                                  ),
-                                );
-                              }
-                            }),
+                            onPressed: fieldsEnabled
+                                ? () {
+                                    if (_hasChanges) {
+                                      showDiscardConfirmationDialog(context);
+                                    } else {
+                                      Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation,
+                                                  secondaryAnimation) =>
+                                              PersonalDetails(),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration:
+                                              Duration.zero,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                : null),
                         InkWell(
-                          onTap: () {
-                            if (_hasChanges) {
-                              showDiscardConfirmationDialog(context);
-                            } else {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      PersonalDetails(),
-                                  transitionDuration: Duration.zero,
-                                  reverseTransitionDuration: Duration.zero,
-                                ),
-                              );
-                            }
-                          },
+                          onTap: fieldsEnabled
+                              ? () {
+                                  if (_hasChanges) {
+                                    showDiscardConfirmationDialog(context);
+                                  } else {
+                                    Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                                secondaryAnimation) =>
+                                            PersonalDetails(),
+                                        transitionDuration: Duration.zero,
+                                        reverseTransitionDuration:
+                                            Duration.zero,
+                                      ),
+                                    );
+                                  }
+                                }
+                              : null,
                           child: Container(
                             height: 50,
                             child: Center(
@@ -1030,6 +1037,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         ),
         SizedBox(height: 7),
         TextField(
+          enabled: fieldsEnabled,
           controller: fNameController,
           cursorColor: Color(0xff004C99),
           textCapitalization: TextCapitalization.words,
@@ -1079,12 +1087,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               },
             ),
           ],
-          onChanged: (value) {
-            setState(() {
-              _isFirstNameValid = true;
-              _hasChanges = true;
-            });
-          },
+          onChanged: fieldsEnabled
+              ? (value) {
+                  setState(() {
+                    _isFirstNameValid = true;
+                    _hasChanges = true;
+                  });
+                }
+              : null,
         ),
         if (!_isFirstNameValid)
           Padding(
@@ -1139,6 +1149,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               },
             ),
           ],
+          enabled: fieldsEnabled,
           controller: lNameController,
           cursorColor: Color(0xff004C99),
           textCapitalization: TextCapitalization.words,
@@ -1168,12 +1179,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           ),
           keyboardType: TextInputType.text,
-          onChanged: (value) {
-            setState(() {
-              _isLastNameValid = true;
-              _hasChanges = true;
-            });
-          },
+          onChanged: fieldsEnabled
+              ? (value) {
+                  setState(() {
+                    _isLastNameValid = true;
+                    _hasChanges = true;
+                  });
+                }
+              : null,
         ),
         if (!_isLastNameValid)
           Padding(
@@ -1399,17 +1412,20 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     ),
                   );
                 }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    _selectedCountryCode = val;
-                    _hasChanges = true;
-                  });
-                },
+                onChanged: fieldsEnabled
+                    ? (val) {
+                        setState(() {
+                          _selectedCountryCode = val;
+                          _hasChanges = true;
+                        });
+                      }
+                    : null,
               ),
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Expanded(
               child: TextField(
+                enabled: fieldsEnabled,
                 maxLength: validLength,
                 controller: mobileController,
                 cursorColor: Color(0xff004C99),
@@ -1452,12 +1468,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                 ],
-                onChanged: (value) {
-                  setState(() {
-                    _isMobileNumberValid = true;
-                    _hasChanges = true;
-                  });
-                },
+                onChanged: fieldsEnabled
+                    ? (value) {
+                        setState(() {
+                          _isMobileNumberValid = true;
+                          _hasChanges = true;
+                        });
+                      }
+                    : null,
               ),
             ),
             SizedBox(width: 10),
@@ -1465,49 +1483,52 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               height: 50,
               child: Center(
                 child: InkWell(
-                  onTap: () {
-                    if (mobileController.text.trim().isEmpty) {
-                      setState(() {
-                        _isMobileNumberValid = false;
-                        mobileErrorMessage = 'Mobile number cannot be empty';
-                      });
-                      return;
-                    }
+                  onTap: fieldsEnabled
+                      ? () {
+                          if (mobileController.text.trim().isEmpty) {
+                            setState(() {
+                              _isMobileNumberValid = false;
+                              mobileErrorMessage =
+                                  'Mobile number cannot be empty';
+                            });
+                            return;
+                          }
 
-                    if (mobileController.text.length != validLength) {
-                      setState(() {
-                        _isMobileNumberValid = false;
-                        mobileErrorMsg =
-                            'Enter a valid $validLength digits mobile number';
-                      });
-                      return;
-                    }
+                          if (mobileController.text.length != validLength) {
+                            setState(() {
+                              _isMobileNumberValid = false;
+                              mobileErrorMsg =
+                                  'Enter a valid $validLength digits mobile number';
+                            });
+                            return;
+                          }
 
-                    if (candidateProfileModel?.isPhoneVerified != 1) {
-                      _showVerificationDialog('phone', () async {
-                        await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    SendVerificationCode(
-                              type: "phone",
-                              mobile: candidateProfileModel?.mobile,
-                              email: candidateProfileModel?.email,
-                            ),
-                            transitionDuration: Duration.zero,
-                            reverseTransitionDuration: Duration.zero,
-                          ),
-                        );
-                        if (retrievedUserData != null) {
-                          fetchCandidateProfileData(
-                            retrievedUserData!.profileId,
-                            retrievedUserData!.token,
-                          );
+                          if (candidateProfileModel?.isPhoneVerified != 1) {
+                            _showVerificationDialog('phone', () async {
+                              await Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      SendVerificationCode(
+                                    type: "phone",
+                                    mobile: candidateProfileModel?.mobile,
+                                    email: candidateProfileModel?.email,
+                                  ),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                                ),
+                              );
+                              if (retrievedUserData != null) {
+                                fetchCandidateProfileData(
+                                  retrievedUserData!.profileId,
+                                  retrievedUserData!.token,
+                                );
+                              }
+                            });
+                          }
                         }
-                      });
-                    }
-                  },
+                      : null,
                   child: Text(
                     candidateProfileModel?.isPhoneVerified == 1
                         ? 'Verified'
@@ -1558,6 +1579,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         ),
         SizedBox(height: 7),
         TextField(
+          enabled: fieldsEnabled,
           autocorrect: false,
           enableSuggestions: false,
           controller: locationController,
@@ -1602,12 +1624,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               },
             ),
           ],
-          onChanged: (value) {
-            setState(() {
-              _isLocationValid = true;
-              _hasChanges = true;
-            });
-          },
+          onChanged: fieldsEnabled
+              ? (value) {
+                  setState(() {
+                    _isLocationValid = true;
+                    _hasChanges = true;
+                  });
+                }
+              : null,
         ),
         if (!_isLocationValid)
           Padding(
@@ -1644,6 +1668,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         ),
         SizedBox(height: 7),
         TextField(
+          enabled: fieldsEnabled,
           controller: _startDateController,
           cursorColor: Color(0xff004C99),
           style: TextStyle(
@@ -1680,23 +1705,25 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           ),
           readOnly: true,
-          onTap: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now().subtract(Duration(days: 1)),
-              firstDate: DateTime(1970),
-              lastDate: DateTime.now().subtract(Duration(days: 1)),
-              initialDatePickerMode: DatePickerMode.year,
-            );
-            if (pickedDate != null) {
-              setState(() {
-                isStartDateValid = true;
-                _startDateSelected = true;
-                _startDateController.text =
-                    "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
-              });
-            }
-          },
+          onTap: fieldsEnabled
+              ? () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now().subtract(Duration(days: 1)),
+                    firstDate: DateTime(1970),
+                    lastDate: DateTime.now().subtract(Duration(days: 1)),
+                    initialDatePickerMode: DatePickerMode.year,
+                  );
+                  if (pickedDate != null) {
+                    setState(() {
+                      isStartDateValid = true;
+                      _startDateSelected = true;
+                      _startDateController.text =
+                          "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+                    });
+                  }
+                }
+              : null,
         ),
         if (!isStartDateValid)
           Padding(
@@ -1733,6 +1760,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         ),
         SizedBox(height: 7),
         TextField(
+          enabled: fieldsEnabled,
           autocorrect: false,
           enableSuggestions: false,
           controller: currentPositionController,
@@ -1776,12 +1804,14 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               },
             ),
           ],
-          onChanged: (value) {
-            setState(() {
-              _isPositionValid = true;
-              _hasChanges = true;
-            });
-          },
+          onChanged: fieldsEnabled
+              ? (value) {
+                  setState(() {
+                    _isPositionValid = true;
+                    _hasChanges = true;
+                  });
+                }
+              : null,
         ),
         if (!_isPositionValid)
           Padding(
@@ -1818,98 +1848,111 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
             // Year Dropdown
             Expanded(
               child: GestureDetector(
-                onTap: () {
-                  showMaterialModalBottomSheet(
-                    backgroundColor: Colors.transparent,
-                    isDismissible: true,
-                    context: context,
-                    builder: (context) {
-                      ScrollController scrollController = ScrollController();
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.365,
-                        padding: EdgeInsets.only(top: 30, left: 10, right: 10),
-                        decoration: BoxDecoration(
-                          color: Color(0xffFCFCFC),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25),
-                          ),
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              height: 5,
+                onTap: fieldsEnabled
+                    ? () {
+                        showMaterialModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          isDismissible: true,
+                          context: context,
+                          builder: (context) {
+                            ScrollController scrollController =
+                                ScrollController();
+                            return Container(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.365,
+                              padding:
+                                  EdgeInsets.only(top: 30, left: 10, right: 10),
                               decoration: BoxDecoration(
-                                color: Color(0xff333333),
-                                borderRadius: BorderRadius.circular(10),
+                                color: Color(0xffFCFCFC),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(bottom: 20, right: 10),
-                                child: Scrollbar(
-                                  controller: scrollController,
-                                  thumbVisibility: true,
-                                  trackVisibility: true,
-                                  thickness: 5,
-                                  radius: Radius.circular(10),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        thumbColor: WidgetStateProperty.all(
-                                            Color(0xff545454)),
-                                        trackColor: WidgetStateProperty.all(
-                                            Color(0xffD9D9D9)),
-                                      ),
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff333333),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: SingleChildScrollView(
-                                      controller: scrollController,
-                                      child: Column(
-                                        children: List.generate(21, (index) {
-                                          String label = index == 0
-                                              ? "0 Years"
-                                              : index == 20
-                                                  ? "20+ Years"
-                                                  : "$index ${index > 1 ? 'Years' : 'Year'}";
-                                          return ListTile(
-                                              title: Text(label),
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedExpType = label;
-                                                  saveStringToPreferences(
-                                                      "searchExp", label);
+                                  ),
+                                  SizedBox(height: 10),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: 20, right: 10),
+                                      child: Scrollbar(
+                                        controller: scrollController,
+                                        thumbVisibility: true,
+                                        trackVisibility: true,
+                                        thickness: 5,
+                                        radius: Radius.circular(10),
+                                        child: Theme(
+                                          data: Theme.of(context).copyWith(
+                                            scrollbarTheme: ScrollbarThemeData(
+                                              thumbColor:
+                                                  WidgetStateProperty.all(
+                                                      Color(0xff545454)),
+                                              trackColor:
+                                                  WidgetStateProperty.all(
+                                                      Color(0xffD9D9D9)),
+                                            ),
+                                          ),
+                                          child: SingleChildScrollView(
+                                            controller: scrollController,
+                                            child: Column(
+                                              children:
+                                                  List.generate(21, (index) {
+                                                String label = index == 0
+                                                    ? "0 Years"
+                                                    : index == 20
+                                                        ? "20+ Years"
+                                                        : "$index ${index > 1 ? 'Years' : 'Year'}";
+                                                return ListTile(
+                                                    title: Text(label),
+                                                    onTap: () {
+                                                      setState(() {
+                                                        selectedExpType = label;
+                                                        saveStringToPreferences(
+                                                            "searchExp", label);
 
-                                                  if (label == "0 Years" &&
-                                                      (selectedMonType ==
-                                                              "0 Months" ||
-                                                          selectedMonType
-                                                              .isEmpty)) {
-                                                    selectedExpType = "Fresher";
-                                                    selectedMonType =
-                                                        "0 Months";
-                                                    saveStringToPreferences(
-                                                        "searchExp", "Fresher");
-                                                  }
-                                                });
-                                                Navigator.pop(context);
-                                              });
-                                        }),
+                                                        if (label ==
+                                                                "0 Years" &&
+                                                            (selectedMonType ==
+                                                                    "0 Months" ||
+                                                                selectedMonType
+                                                                    .isEmpty)) {
+                                                          selectedExpType =
+                                                              "Fresher";
+                                                          selectedMonType =
+                                                              "0 Months";
+                                                          saveStringToPreferences(
+                                                              "searchExp",
+                                                              "Fresher");
+                                                        }
+                                                      });
+                                                      Navigator.pop(context);
+                                                    });
+                                              }),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
+                            );
+                          },
+                        );
+                      }
+                    : null,
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   decoration: BoxDecoration(
@@ -1944,98 +1987,112 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
             // Month Dropdown
             Expanded(
               child: GestureDetector(
-                onTap: () {
-                  showMaterialModalBottomSheet(
-                    backgroundColor: Colors.transparent,
-                    isDismissible: true,
-                    context: context,
-                    builder: (context) {
-                      ScrollController scrollController = ScrollController();
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.365,
-                        padding: EdgeInsets.only(top: 30, left: 10, right: 10),
-                        decoration: BoxDecoration(
-                          color: Color(0xffFCFCFC),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25),
-                          ),
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              height: 5,
+                onTap: fieldsEnabled
+                    ? () {
+                        showMaterialModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          isDismissible: true,
+                          context: context,
+                          builder: (context) {
+                            ScrollController scrollController =
+                                ScrollController();
+                            return Container(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.365,
+                              padding:
+                                  EdgeInsets.only(top: 30, left: 10, right: 10),
                               decoration: BoxDecoration(
-                                color: Color(0xff333333),
-                                borderRadius: BorderRadius.circular(10),
+                                color: Color(0xffFCFCFC),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(bottom: 20, right: 10),
-                                child: Scrollbar(
-                                  controller: scrollController,
-                                  thumbVisibility: true,
-                                  trackVisibility: true,
-                                  thickness: 5,
-                                  radius: Radius.circular(10),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        thumbColor: WidgetStateProperty.all(
-                                            Color(0xff545454)),
-                                        trackColor: WidgetStateProperty.all(
-                                            Color(0xffD9D9D9)),
-                                      ),
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff333333),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: SingleChildScrollView(
-                                      controller: scrollController,
-                                      child: Column(
-                                        children: List.generate(12, (index) {
-                                          String label = index == 0
-                                              ? "0 Months"
-                                              : index == 1
-                                                  ? "1 Month"
-                                                  : "$index Months";
-                                          return ListTile(
-                                              title: Text(label),
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedMonType = label;
-                                                  saveStringToPreferences(
-                                                      "searchMonth", label);
+                                  ),
+                                  SizedBox(height: 10),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: 20, right: 10),
+                                      child: Scrollbar(
+                                        controller: scrollController,
+                                        thumbVisibility: true,
+                                        trackVisibility: true,
+                                        thickness: 5,
+                                        radius: Radius.circular(10),
+                                        child: Theme(
+                                          data: Theme.of(context).copyWith(
+                                            scrollbarTheme: ScrollbarThemeData(
+                                              thumbColor:
+                                                  WidgetStateProperty.all(
+                                                      Color(0xff545454)),
+                                              trackColor:
+                                                  WidgetStateProperty.all(
+                                                      Color(0xffD9D9D9)),
+                                            ),
+                                          ),
+                                          child: SingleChildScrollView(
+                                            controller: scrollController,
+                                            child: Column(
+                                              children:
+                                                  List.generate(12, (index) {
+                                                String label = index == 0
+                                                    ? "0 Months"
+                                                    : index == 1
+                                                        ? "1 Month"
+                                                        : "$index Months";
+                                                return ListTile(
+                                                    title: Text(label),
+                                                    onTap: () {
+                                                      setState(() {
+                                                        selectedMonType = label;
+                                                        saveStringToPreferences(
+                                                            "searchMonth",
+                                                            label);
 
-                                                  if ((selectedExpType ==
-                                                              "0 Years" ||
-                                                          selectedExpType
-                                                              .isEmpty) &&
-                                                      label == "0 Months") {
-                                                    selectedExpType = "Fresher";
-                                                    selectedMonType =
-                                                        "0 Months";
-                                                    saveStringToPreferences(
-                                                        "searchExp", "Fresher");
-                                                  }
-                                                });
-                                                Navigator.pop(context);
-                                              });
-                                        }),
+                                                        if ((selectedExpType ==
+                                                                    "0 Years" ||
+                                                                selectedExpType
+                                                                    .isEmpty) &&
+                                                            label ==
+                                                                "0 Months") {
+                                                          selectedExpType =
+                                                              "Fresher";
+                                                          selectedMonType =
+                                                              "0 Months";
+                                                          saveStringToPreferences(
+                                                              "searchExp",
+                                                              "Fresher");
+                                                        }
+                                                      });
+                                                      Navigator.pop(context);
+                                                    });
+                                              }),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
+                            );
+                          },
+                        );
+                      }
+                    : null,
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   decoration: BoxDecoration(

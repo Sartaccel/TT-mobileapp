@@ -35,6 +35,7 @@ class _AddemploymentState extends State<Addemployment> {
   bool isLoading = false;
   bool _hasChanges = false;
   bool isEdit = false;
+  bool fieldsEnabled = true;
 
   DateTime startDatems = DateTime.now();
 
@@ -136,6 +137,7 @@ class _AddemploymentState extends State<Addemployment> {
         print(response);
         setState(() {
           isLoading = false;
+          fieldsEnabled = true;
         });
       }
     } catch (e) {
@@ -232,6 +234,7 @@ class _AddemploymentState extends State<Addemployment> {
       }
       setState(() {
         isLoading = true;
+        fieldsEnabled = false;
       });
 
       final response = await http.post(
@@ -287,6 +290,7 @@ class _AddemploymentState extends State<Addemployment> {
           print(e);
         }
         isLoading = false;
+        fieldsEnabled = true;
       });
     }
   }
@@ -461,35 +465,61 @@ class _AddemploymentState extends State<Addemployment> {
                   Row(
                     children: [
                       IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            if (_hasChanges) {
-                              showDiscardConfirmationDialog(context);
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          }),
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                        ),
+                        onPressed: fieldsEnabled
+                            ? () {
+                                bool _hasChanges = txtDesignationController
+                                        .text.isNotEmpty ||
+                                    txtComanyNameController.text.isNotEmpty ||
+                                    _startDateController.text.isNotEmpty ||
+                                    (_selectedOption == 'No' &&
+                                        _endDateController.text.isNotEmpty) ||
+                                    selectedWorkType.isNotEmpty ||
+                                    selectedEmploymentType.isNotEmpty ||
+                                    txtDescriptionController.text.isNotEmpty;
+                                if (_hasChanges) {
+                                  showDiscardConfirmationDialog(context);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              }
+                            : null,
+                      ),
                       InkWell(
-                          onTap: () {
-                            if (_hasChanges) {
-                              showDiscardConfirmationDialog(context);
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
-                          child: Container(
-                              height: 50,
-                              child: Center(
-                                  child: Text(
-                                'Back',
-                                style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    fontSize: 16,
-                                    color: Colors.white),
-                              ))))
+                        onTap: fieldsEnabled
+                            ? () {
+                                bool _hasChanges = txtDesignationController
+                                        .text.isNotEmpty ||
+                                    txtComanyNameController.text.isNotEmpty ||
+                                    _startDateController.text.isNotEmpty ||
+                                    (_selectedOption == 'No' &&
+                                        _endDateController.text.isNotEmpty) ||
+                                    selectedWorkType.isNotEmpty ||
+                                    selectedEmploymentType.isNotEmpty ||
+                                    txtDescriptionController.text.isNotEmpty;
+                                if (_hasChanges) {
+                                  showDiscardConfirmationDialog(context);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              }
+                            : null,
+                        child: Container(
+                          height: 50,
+                          child: Center(
+                            child: Text(
+                              'Back',
+                              style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 16,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   //SizedBox(width: 80,)
@@ -541,6 +571,7 @@ class _AddemploymentState extends State<Addemployment> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
+                                enabled: fieldsEnabled,
                                 textCapitalization: TextCapitalization.none,
                                 autocorrect: false,
                                 enableSuggestions: false,
@@ -640,6 +671,7 @@ class _AddemploymentState extends State<Addemployment> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
+                                enabled: fieldsEnabled,
                                 textCapitalization: TextCapitalization.none,
                                 autocorrect: false,
                                 enableSuggestions: false,
@@ -752,14 +784,16 @@ class _AddemploymentState extends State<Addemployment> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectedOption = value;
-                                        _endDateController.text = '';
-                                        isEndDateValid = true;
-                                        _hasChanges = true;
-                                      });
-                                    },
+                                    onChanged: fieldsEnabled
+                                        ? (value) {
+                                            setState(() {
+                                              _selectedOption = value;
+                                              _endDateController.text = '';
+                                              isEndDateValid = true;
+                                              _hasChanges = true;
+                                            });
+                                          }
+                                        : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -799,13 +833,15 @@ class _AddemploymentState extends State<Addemployment> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isEndDateValid = true;
-                                        _selectedOption = value;
-                                        _hasChanges = true;
-                                      });
-                                    },
+                                    onChanged: fieldsEnabled
+                                        ? (value) {
+                                            setState(() {
+                                              isEndDateValid = true;
+                                              _selectedOption = value;
+                                              _hasChanges = true;
+                                            });
+                                          }
+                                        : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -859,6 +895,7 @@ class _AddemploymentState extends State<Addemployment> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             TextField(
+                                              enabled: fieldsEnabled,
                                               controller: _startDateController,
                                               style: TextStyle(
                                                   fontSize: 14,
@@ -904,38 +941,48 @@ class _AddemploymentState extends State<Addemployment> {
                                                           vertical: 10,
                                                           horizontal: 10)),
                                               readOnly: true,
-                                              onTap: () async {
-                                                DateTime? pickedDate =
-                                                    await showDatePicker(
-                                                        context: context,
-                                                        initialDate:
-                                                            DateTime.now()
-                                                                .subtract(
-                                                                    Duration(
-                                                                        days:
-                                                                            1)),
-                                                        firstDate:
-                                                            DateTime(2000),
-                                                        lastDate: DateTime.now()
-                                                            .subtract(Duration(
-                                                                days: 1)),
-                                                        initialDatePickerMode:
-                                                            DatePickerMode
-                                                                .year);
-                                                if (pickedDate != null) {
-                                                  setState(() {
-                                                    isStartDateValid = true;
-                                                    _startDateSelected = true;
-                                                    startDatems = pickedDate;
+                                              onTap: fieldsEnabled
+                                                  ? () async {
+                                                      DateTime? pickedDate =
+                                                          await showDatePicker(
+                                                              context: context,
+                                                              initialDate: DateTime
+                                                                      .now()
+                                                                  .subtract(
+                                                                      Duration(
+                                                                          days:
+                                                                              1)),
+                                                              firstDate:
+                                                                  DateTime(
+                                                                      2000),
+                                                              lastDate: DateTime
+                                                                      .now()
+                                                                  .subtract(
+                                                                      Duration(
+                                                                          days:
+                                                                              1)),
+                                                              initialDatePickerMode:
+                                                                  DatePickerMode
+                                                                      .year);
+                                                      if (pickedDate != null) {
+                                                        setState(() {
+                                                          isStartDateValid =
+                                                              true;
+                                                          _startDateSelected =
+                                                              true;
+                                                          startDatems =
+                                                              pickedDate;
 
-                                                    // Display in DD-MM-YYYY format
-                                                    _startDateController.text =
-                                                        "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+                                                          // Display in DD-MM-YYYY format
+                                                          _startDateController
+                                                                  .text =
+                                                              "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
 
-                                                    _hasChanges = true;
-                                                  });
-                                                }
-                                              },
+                                                          _hasChanges = true;
+                                                        });
+                                                      }
+                                                    }
+                                                  : null,
                                             ),
                                           ]),
                                     ],
@@ -970,6 +1017,7 @@ class _AddemploymentState extends State<Addemployment> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             TextField(
+                                              enabled: fieldsEnabled,
                                               controller: _endDateController,
                                               style: TextStyle(
                                                   fontSize: 14,
@@ -1017,35 +1065,43 @@ class _AddemploymentState extends State<Addemployment> {
                                                 ),
                                               ),
                                               readOnly: true,
-                                              onTap: () async {
-                                                if (_selectedOption == 'No' &&
-                                                    _startDateSelected ==
-                                                        true) {
-                                                  DateTime? pickedDate =
-                                                      await showDatePicker(
-                                                          context: context,
-                                                          initialDate:
-                                                              startDatems,
-                                                          firstDate:
-                                                              startDatems,
-                                                          lastDate:
-                                                              DateTime.now(),
-                                                          initialDatePickerMode:
-                                                              DatePickerMode
-                                                                  .year);
-                                                  if (pickedDate != null) {
-                                                    setState(() {
-                                                      isEndDateValid = true;
+                                              onTap: fieldsEnabled
+                                                  ? () async {
+                                                      if (_selectedOption ==
+                                                              'No' &&
+                                                          _startDateSelected ==
+                                                              true) {
+                                                        DateTime? pickedDate =
+                                                            await showDatePicker(
+                                                                context:
+                                                                    context,
+                                                                initialDate:
+                                                                    startDatems,
+                                                                firstDate:
+                                                                    startDatems,
+                                                                lastDate:
+                                                                    DateTime
+                                                                        .now(),
+                                                                initialDatePickerMode:
+                                                                    DatePickerMode
+                                                                        .year);
+                                                        if (pickedDate !=
+                                                            null) {
+                                                          setState(() {
+                                                            isEndDateValid =
+                                                                true;
 
-                                                      // Display in DD-MM-YYYY format
-                                                      _endDateController.text =
-                                                          "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+                                                            // Display in DD-MM-YYYY format
+                                                            _endDateController
+                                                                    .text =
+                                                                "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
 
-                                                      _hasChanges = true;
-                                                    });
-                                                  }
-                                                }
-                                              },
+                                                            _hasChanges = true;
+                                                          });
+                                                        }
+                                                      }
+                                                    }
+                                                  : null,
                                             ),
                                           ]),
                                     ],
@@ -1098,69 +1154,76 @@ class _AddemploymentState extends State<Addemployment> {
                             borderRadius: BorderRadius.circular(10)),
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: InkWell(
-                          onTap: () {
-                            showMaterialModalBottomSheet(
-                              backgroundColor: Color(0x00000000),
-                              isDismissible: true,
-                              context: context,
-                              builder: (context) => Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 30, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  color: Color(0xffFCFCFC),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(25),
-                                    topRight: Radius.circular(25),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.25,
-                                      height: 5,
+                          onTap: fieldsEnabled
+                              ? () {
+                                  showMaterialModalBottomSheet(
+                                    backgroundColor: Color(0x00000000),
+                                    isDismissible: true,
+                                    context: context,
+                                    builder: (context) => Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 30, horizontal: 10),
                                       decoration: BoxDecoration(
-                                        color: Colors.black, // Adjust color
-                                        borderRadius: BorderRadius.circular(10),
+                                        color: Color(0xffFCFCFC),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(25),
+                                          topRight: Radius.circular(25),
+                                        ),
+                                      ),
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.25,
+                                            height: 5,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black, // Adjust color
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          ListTile(
+                                            title: Text('On Site'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedWorkType = 'On Site';
+                                                isWorkTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text('Hybrid'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedWorkType = 'Hybrid';
+                                                isWorkTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text('Work from home'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedWorkType =
+                                                    'Work from home';
+                                                isWorkTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    ListTile(
-                                      title: Text('On Site'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedWorkType = 'On Site';
-                                          isWorkTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      title: Text('Hybrid'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedWorkType = 'Hybrid';
-                                          isWorkTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      title: Text('Work from home'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedWorkType = 'Work from home';
-                                          isWorkTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                                  );
+                                }
+                              : null,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -1202,90 +1265,99 @@ class _AddemploymentState extends State<Addemployment> {
                             borderRadius: BorderRadius.circular(10)),
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: InkWell(
-                          onTap: () {
-                            showMaterialModalBottomSheet(
-                              isDismissible: true,
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 30, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  color: Color(0xffFCFCFC),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.25,
-                                      height: 5,
+                          onTap: fieldsEnabled
+                              ? () {
+                                  showMaterialModalBottomSheet(
+                                    isDismissible: true,
+                                    context: context,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) => Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 30, horizontal: 10),
                                       decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(10),
+                                        color: Color(0xffFCFCFC),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
+                                      ),
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.25,
+                                            height: 5,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          ListTile(
+                                            title: Text('Full time'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEmploymentType =
+                                                    'Full time';
+                                                isEmploymentTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text('Part time'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEmploymentType =
+                                                    'Part time';
+                                                isEmploymentTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text('Internship'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEmploymentType =
+                                                    'Internship';
+                                                isEmploymentTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text('Freelance'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEmploymentType =
+                                                    'Freelance';
+                                                isEmploymentTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text('Self-employed'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEmploymentType =
+                                                    'Self-employed';
+                                                isEmploymentTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    ListTile(
-                                      title: Text('Full time'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEmploymentType = 'Full time';
-                                          isEmploymentTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      title: Text('Part time'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEmploymentType = 'Part time';
-                                          isEmploymentTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      title: Text('Internship'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEmploymentType = 'Internship';
-                                          isEmploymentTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      title: Text('Freelance'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEmploymentType = 'Freelance';
-                                          isEmploymentTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      title: Text('Self-employed'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEmploymentType =
-                                              'Self-employed';
-                                          isEmploymentTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                                  );
+                                }
+                              : null,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -1319,6 +1391,7 @@ class _AddemploymentState extends State<Addemployment> {
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
+                          enabled: fieldsEnabled,
                           maxLines: 4,
                           maxLength: maxLength,
                           controller: txtDescriptionController,
@@ -1377,67 +1450,70 @@ class _AddemploymentState extends State<Addemployment> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 0, vertical: 20),
                         child: InkWell(
-                          onTap: () {
-                            if ((_selectedOption == 'No' &&
-                                    _endDateController.text.isEmpty) ||
-                                txtDesignationController.text.isEmpty ||
-                                txtComanyNameController.text.isEmpty ||
-                                txtDescriptionController.text.isEmpty ||
-                                _startDateController.text.isEmpty ||
-                                selectedWorkType.isEmpty ||
-                                selectedEmploymentType.isEmpty) {
-                              if (txtDesignationController.text.isEmpty) {
-                                setState(() {
-                                  _isDesignationValid = false;
-                                });
-                              }
+                          onTap: fieldsEnabled
+                              ? () {
+                                  if ((_selectedOption == 'No' &&
+                                          _endDateController.text.isEmpty) ||
+                                      txtDesignationController.text.isEmpty ||
+                                      txtComanyNameController.text.isEmpty ||
+                                      txtDescriptionController.text.isEmpty ||
+                                      _startDateController.text.isEmpty ||
+                                      selectedWorkType.isEmpty ||
+                                      selectedEmploymentType.isEmpty) {
+                                    if (txtDesignationController.text.isEmpty) {
+                                      setState(() {
+                                        _isDesignationValid = false;
+                                      });
+                                    }
 
-                              if (txtComanyNameController.text.isEmpty) {
-                                setState(() {
-                                  _isCompanyNameValid = false;
-                                });
-                              }
+                                    if (txtComanyNameController.text.isEmpty) {
+                                      setState(() {
+                                        _isCompanyNameValid = false;
+                                      });
+                                    }
 
-                              if (_startDateController.text.isEmpty) {
-                                setState(() {
-                                  isStartDateValid = false;
-                                });
-                              }
+                                    if (_startDateController.text.isEmpty) {
+                                      setState(() {
+                                        isStartDateValid = false;
+                                      });
+                                    }
 
-                              if (_selectedOption == 'No' &&
-                                  _endDateController.text.isEmpty) {
-                                setState(() {
-                                  isEndDateValid = false;
-                                });
-                              }
+                                    if (_selectedOption == 'No' &&
+                                        _endDateController.text.isEmpty) {
+                                      setState(() {
+                                        isEndDateValid = false;
+                                      });
+                                    }
 
-                              if (selectedWorkType.isEmpty) {
-                                setState(() {
-                                  isWorkTypeValid = false;
-                                });
-                              }
+                                    if (selectedWorkType.isEmpty) {
+                                      setState(() {
+                                        isWorkTypeValid = false;
+                                      });
+                                    }
 
-                              if (selectedEmploymentType.isEmpty) {
-                                setState(() {
-                                  isEmploymentTypeValid = false;
-                                });
-                              }
+                                    if (selectedEmploymentType.isEmpty) {
+                                      setState(() {
+                                        isEmploymentTypeValid = false;
+                                      });
+                                    }
 
-                              if (txtDescriptionController.text.isEmpty) {
-                                setState(() {
-                                  _isDescriptionValid = false;
-                                });
-                              }
-                            } else {
-                              if (kDebugMode) {
-                                print('Performing operation................');
-                              }
+                                    if (txtDescriptionController.text.isEmpty) {
+                                      setState(() {
+                                        _isDescriptionValid = false;
+                                      });
+                                    }
+                                  } else {
+                                    if (kDebugMode) {
+                                      print(
+                                          'Performing operation................');
+                                    }
 
-                              if (isLoading == false) {
-                                updateEmployment();
-                              }
-                            }
-                          },
+                                    if (isLoading == false) {
+                                      updateEmployment();
+                                    }
+                                  }
+                                }
+                              : null,
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: 44,

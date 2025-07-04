@@ -258,7 +258,7 @@ class _MobileNumberLoginState extends State<MobileNumberLogin> {
         // );
         IconSnackBar.show(
           context,
-          label: 'No internet connection, try again',
+          label: 'No internet connection',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,

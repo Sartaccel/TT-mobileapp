@@ -28,6 +28,7 @@ class Addeducation extends StatefulWidget {
 class _AddeducationState extends State<Addeducation> {
   bool isEdit = false;
   bool _hasChanges = false;
+  bool fieldsEnabled = true;
 
   DateTime startDatems = DateTime.now();
 
@@ -183,6 +184,7 @@ class _AddeducationState extends State<Addeducation> {
       }
       setState(() {
         isLoading = true;
+        fieldsEnabled = false;
       });
 
       final response = await http.post(
@@ -241,6 +243,7 @@ class _AddeducationState extends State<Addeducation> {
           print(e);
         }
         isLoading = false;
+        fieldsEnabled = true;
       });
     }
   }
@@ -294,6 +297,7 @@ class _AddeducationState extends State<Addeducation> {
         print(response);
         setState(() {
           isLoading = false;
+          fieldsEnabled = true;
         });
       }
     } catch (e) {
@@ -426,25 +430,30 @@ class _AddeducationState extends State<Addeducation> {
                   Row(
                     children: [
                       IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            if (_hasChanges) {
-                              showDiscardConfirmationDialog(context);
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          }),
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                        ),
+                        onPressed: fieldsEnabled
+                            ? () {
+                                if (_hasChanges) {
+                                  showDiscardConfirmationDialog(context);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              }
+                            : null,
+                      ),
                       InkWell(
-                          onTap: () {
-                            if (_hasChanges) {
-                              showDiscardConfirmationDialog(context);
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
+                          onTap: fieldsEnabled
+                              ? () {
+                                  if (_hasChanges) {
+                                    showDiscardConfirmationDialog(context);
+                                  } else {
+                                    Navigator.pop(context);
+                                  }
+                                }
+                              : null,
                           child: Container(
                               height: 50,
                               child: Center(
@@ -506,6 +515,7 @@ class _AddeducationState extends State<Addeducation> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
+                                enabled: fieldsEnabled,
                                 textCapitalization: TextCapitalization.none,
                                 autocorrect: false,
                                 enableSuggestions: false,
@@ -601,6 +611,7 @@ class _AddeducationState extends State<Addeducation> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
+                                enabled: fieldsEnabled,
                                 textCapitalization: TextCapitalization.none,
                                 autocorrect: false,
                                 enableSuggestions: false,
@@ -697,6 +708,7 @@ class _AddeducationState extends State<Addeducation> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
+                                enabled: fieldsEnabled,
                                 textCapitalization: TextCapitalization.none,
                                 autocorrect: false,
                                 enableSuggestions: false,
@@ -810,14 +822,16 @@ class _AddeducationState extends State<Addeducation> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectedOption = value;
-                                        _endDateController.text = '';
-                                        isEndDateValid = true;
-                                        _hasChanges = true;
-                                      });
-                                    },
+                                    onChanged: fieldsEnabled
+                                        ? (value) {
+                                            setState(() {
+                                              _selectedOption = value;
+                                              _endDateController.text = '';
+                                              isEndDateValid = true;
+                                              _hasChanges = true;
+                                            });
+                                          }
+                                        : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -857,13 +871,15 @@ class _AddeducationState extends State<Addeducation> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isEndDateValid = true;
-                                        _selectedOption = value;
-                                        _hasChanges = true;
-                                      });
-                                    },
+                                    onChanged: fieldsEnabled
+                                        ? (value) {
+                                            setState(() {
+                                              isEndDateValid = true;
+                                              _selectedOption = value;
+                                              _hasChanges = true;
+                                            });
+                                          }
+                                        : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -913,6 +929,7 @@ class _AddeducationState extends State<Addeducation> {
                                       ),
                                       SizedBox(height: 7),
                                       TextField(
+                                        enabled: fieldsEnabled,
                                         controller: _startDateController,
                                         cursorColor: Color(0xff004C99),
                                         style: TextStyle(
@@ -954,39 +971,46 @@ class _AddeducationState extends State<Addeducation> {
                                                     vertical: 10,
                                                     horizontal: 10)),
                                         readOnly: true,
-                                        onTap: () async {
-                                          DateTime? pickedDate =
-                                              await showDatePicker(
-                                                  context: context,
-                                                  initialDate: DateTime.now()
-                                                      .subtract(
-                                                          Duration(days: 1)),
-                                                  firstDate: DateTime(2000),
-                                                  lastDate: DateTime.now()
-                                                      .subtract(
-                                                          Duration(days: 1)),
-                                                  initialDatePickerMode:
-                                                      DatePickerMode.year);
-                                          if (pickedDate != null) {
-                                            setState(() {
-                                              startDatems = pickedDate;
-                                              isStartDateValid = true;
-                                              _startDateSelected = true;
+                                        onTap: fieldsEnabled
+                                            ? () async {
+                                                DateTime? pickedDate =
+                                                    await showDatePicker(
+                                                        context: context,
+                                                        initialDate:
+                                                            DateTime.now()
+                                                                .subtract(
+                                                                    Duration(
+                                                                        days:
+                                                                            1)),
+                                                        firstDate:
+                                                            DateTime(2000),
+                                                        lastDate: DateTime.now()
+                                                            .subtract(Duration(
+                                                                days: 1)),
+                                                        initialDatePickerMode:
+                                                            DatePickerMode
+                                                                .year);
+                                                if (pickedDate != null) {
+                                                  setState(() {
+                                                    startDatems = pickedDate;
+                                                    isStartDateValid = true;
+                                                    _startDateSelected = true;
 
-                                              // For UI (DD-MM-YYYY)
-                                              _startDateController.text =
-                                                  "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+                                                    // For UI (DD-MM-YYYY)
+                                                    _startDateController.text =
+                                                        "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
 
-                                              // For backend (YYYY-MM-DD)
-                                              graduatedFrom =
-                                                  "${pickedDate.year}-${_twoDigit(pickedDate.month)}-${_twoDigit(pickedDate.day)}";
+                                                    // For backend (YYYY-MM-DD)
+                                                    graduatedFrom =
+                                                        "${pickedDate.year}-${_twoDigit(pickedDate.month)}-${_twoDigit(pickedDate.day)}";
 
-                                              startYear =
-                                                  pickedDate.year.toString();
-                                              _hasChanges = true;
-                                            });
-                                          }
-                                        },
+                                                    startYear = pickedDate.year
+                                                        .toString();
+                                                    _hasChanges = true;
+                                                  });
+                                                }
+                                              }
+                                            : null,
                                       ),
                                     ],
                                   ),
@@ -1016,6 +1040,7 @@ class _AddeducationState extends State<Addeducation> {
                                       ),
                                       SizedBox(height: 7),
                                       TextField(
+                                        enabled: fieldsEnabled,
                                         controller: _endDateController,
                                         cursorColor: Color(0xff004C99),
                                         style: TextStyle(
@@ -1065,35 +1090,37 @@ class _AddeducationState extends State<Addeducation> {
                                             _hasChanges = true;
                                           });
                                         },
-                                        onTap: () async {
-                                          // Allow date picking regardless of option
-                                          DateTime? pickedDate =
-                                              await showDatePicker(
-                                            context: context,
-                                            initialDate: startDatems,
-                                            firstDate: startDatems,
-                                            lastDate: DateTime.now(),
-                                            initialDatePickerMode:
-                                                DatePickerMode.year,
-                                          );
-                                          if (pickedDate != null) {
-                                            setState(() {
-                                              isEndDateValid = true;
+                                        onTap: fieldsEnabled
+                                            ? () async {
+                                                // Allow date picking regardless of option
+                                                DateTime? pickedDate =
+                                                    await showDatePicker(
+                                                  context: context,
+                                                  initialDate: startDatems,
+                                                  firstDate: startDatems,
+                                                  lastDate: DateTime.now(),
+                                                  initialDatePickerMode:
+                                                      DatePickerMode.year,
+                                                );
+                                                if (pickedDate != null) {
+                                                  setState(() {
+                                                    isEndDateValid = true;
 
-                                              // For UI (DD-MM-YYYY)
-                                              _endDateController.text =
-                                                  "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+                                                    // For UI (DD-MM-YYYY)
+                                                    _endDateController.text =
+                                                        "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
 
-                                              // For backend (YYYY-MM-DD)
-                                              graduatedTo =
-                                                  "${pickedDate.year}-${_twoDigit(pickedDate.month)}-${_twoDigit(pickedDate.day)}";
+                                                    // For backend (YYYY-MM-DD)
+                                                    graduatedTo =
+                                                        "${pickedDate.year}-${_twoDigit(pickedDate.month)}-${_twoDigit(pickedDate.day)}";
 
-                                              endYear =
-                                                  pickedDate.year.toString();
-                                              _hasChanges = true;
-                                            });
-                                          }
-                                        },
+                                                    endYear = pickedDate.year
+                                                        .toString();
+                                                    _hasChanges = true;
+                                                  });
+                                                }
+                                              }
+                                            : null,
                                       ),
                                     ],
                                   ),
@@ -1145,73 +1172,81 @@ class _AddeducationState extends State<Addeducation> {
                             borderRadius: BorderRadius.circular(10)),
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: InkWell(
-                          onTap: () {
-                            showMaterialModalBottomSheet(
-                              backgroundColor: Color(0x00000000),
-                              isDismissible: true,
-                              context: context,
-                              builder: (context) => Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 30, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  color: Color(0xffFCFCFC),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(25),
-                                    topRight: Radius.circular(25),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.25,
-                                      height: 5,
+                          onTap: fieldsEnabled
+                              ? () {
+                                  showMaterialModalBottomSheet(
+                                    backgroundColor: Color(0x00000000),
+                                    isDismissible: true,
+                                    context: context,
+                                    builder: (context) => Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 30, horizontal: 10),
                                       decoration: BoxDecoration(
-                                        color: Colors.black, // Adjust color
-                                        borderRadius: BorderRadius.circular(10),
+                                        color: Color(0xffFCFCFC),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(25),
+                                          topRight: Radius.circular(25),
+                                        ),
+                                      ),
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.25,
+                                            height: 5,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black, // Adjust color
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          ListTile(
+                                            //leading: Icon(Icons.visibility_outlined),
+                                            title: Text('Full time'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEducationType =
+                                                    'Full time';
+                                                isEducationTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            //leading: Icon(Icons.refresh),
+                                            title: Text('Part time'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEducationType =
+                                                    'Part time';
+                                                isEducationTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ListTile(
+                                            //leading: Icon(Icons.download),
+                                            title: Text('Correspondence'),
+                                            onTap: () {
+                                              setState(() {
+                                                selectedEducationType =
+                                                    'Correspondence';
+                                                isEducationTypeValid = true;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    ListTile(
-                                      //leading: Icon(Icons.visibility_outlined),
-                                      title: Text('Full time'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEducationType = 'Full time';
-                                          isEducationTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      //leading: Icon(Icons.refresh),
-                                      title: Text('Part time'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEducationType = 'Part time';
-                                          isEducationTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      //leading: Icon(Icons.download),
-                                      title: Text('Correspondence'),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedEducationType =
-                                              'Correspondence';
-                                          isEducationTypeValid = true;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                                  );
+                                }
+                              : null,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -1247,59 +1282,61 @@ class _AddeducationState extends State<Addeducation> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: InkWell(
-                onTap: () {
-                  if ((_selectedOption == 'No' &&
-                          _endDateController.text.isEmpty) ||
-                      txtQualificationController.text.isEmpty ||
-                      txtSpecializationController.text.isEmpty ||
-                      txtInstituteController.text.isEmpty ||
-                      _startDateController.text.isEmpty) {
-                    if (txtQualificationController.text.isEmpty) {
-                      setState(() {
-                        isQualificationValid = false;
-                      });
-                    }
+                onTap: fieldsEnabled
+                    ? () {
+                        if ((_selectedOption == 'No' &&
+                                _endDateController.text.isEmpty) ||
+                            txtQualificationController.text.isEmpty ||
+                            txtSpecializationController.text.isEmpty ||
+                            txtInstituteController.text.isEmpty ||
+                            _startDateController.text.isEmpty) {
+                          if (txtQualificationController.text.isEmpty) {
+                            setState(() {
+                              isQualificationValid = false;
+                            });
+                          }
 
-                    if (txtSpecializationController.text.isEmpty) {
-                      setState(() {
-                        isSpecializationValid = false;
-                      });
-                    }
+                          if (txtSpecializationController.text.isEmpty) {
+                            setState(() {
+                              isSpecializationValid = false;
+                            });
+                          }
 
-                    if (txtInstituteController.text.isEmpty) {
-                      setState(() {
-                        isInstituteValid = false;
-                      });
-                    }
+                          if (txtInstituteController.text.isEmpty) {
+                            setState(() {
+                              isInstituteValid = false;
+                            });
+                          }
 
-                    if (_startDateController.text.isEmpty) {
-                      setState(() {
-                        isStartDateValid = false;
-                      });
-                    }
+                          if (_startDateController.text.isEmpty) {
+                            setState(() {
+                              isStartDateValid = false;
+                            });
+                          }
 
-                    if (_selectedOption == 'No' &&
-                        _endDateController.text.isEmpty) {
-                      setState(() {
-                        isEndDateValid = false;
-                      });
-                    }
+                          if (_selectedOption == 'No' &&
+                              _endDateController.text.isEmpty) {
+                            setState(() {
+                              isEndDateValid = false;
+                            });
+                          }
 
-                    if (selectedEducationType.isEmpty) {
-                      setState(() {
-                        isEducationTypeValid = false;
-                      });
-                    }
-                  } else {
-                    if (kDebugMode) {
-                      print('Performing operation................');
-                    }
+                          if (selectedEducationType.isEmpty) {
+                            setState(() {
+                              isEducationTypeValid = false;
+                            });
+                          }
+                        } else {
+                          if (kDebugMode) {
+                            print('Performing operation................');
+                          }
 
-                    if (isLoading == false) {
-                      updateEducation();
-                    }
-                  }
-                },
+                          if (isLoading == false) {
+                            updateEducation();
+                          }
+                        }
+                      }
+                    : null,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 44,
