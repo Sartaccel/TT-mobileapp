@@ -59,7 +59,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
       // );
       IconSnackBar.show(
         context,
-        label: "No internet connection",
+        label: "No internet connection, try again",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
@@ -130,7 +130,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
     if (connectivityResult.contains(ConnectivityResult.none)) {
       IconSnackBar.show(
         context,
-        label: "No internet connection",
+        label: "No internet connection, try again",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
@@ -236,7 +236,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
       // );
       IconSnackBar.show(
         context,
-        label: "No internet connection",
+        label: "No internet connection, try again",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,
@@ -403,7 +403,6 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: SvgPicture.asset('assets/images/otp_img.svg'),
-                        
                       ),
                     ),
                     SizedBox(

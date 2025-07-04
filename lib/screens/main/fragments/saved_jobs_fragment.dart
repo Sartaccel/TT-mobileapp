@@ -200,13 +200,13 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
       if (mounted) {
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection, try again',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
+        // IconSnackBar.show(
+        //   context,
+        //   label: 'No internet connection, try again',
+        //   snackBarType: SnackBarType.alert,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   iconColor: Colors.white,
+        // );
       }
       return;
     }
@@ -277,13 +277,13 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
     } catch (e) {
       if (kDebugMode) print("Error: $e");
       if (mounted) {
-        IconSnackBar.show(
-          context,
-          label: 'No internet connection, try again',
-          snackBarType: SnackBarType.alert,
-          backgroundColor: Color(0xff2D2D2D),
-          iconColor: Colors.white,
-        );
+        // IconSnackBar.show(
+        //   context,
+        //   label: 'No internet connection, try again',
+        //   snackBarType: SnackBarType.alert,
+        //   backgroundColor: Color(0xff2D2D2D),
+        //   iconColor: Colors.white,
+        // );
       }
     }
   }
@@ -684,10 +684,39 @@ class _SavedJobsFragmentState extends State<SavedJobsFragment> {
                                     });
                                   });
                                 },
-                                child: Icon(
-                                  Icons.bookmark,
-                                  color: Color(0xff004C99),
-                                  size: isSmallScreen ? 22 : 25,
+                                child: TweenAnimationBuilder<double>(
+                                  duration: Duration(milliseconds: 400),
+                                  tween: Tween<double>(
+                                    begin: jobList[index]['isFavorite'] == "1"
+                                        ? 0
+                                        : 1,
+                                    end: jobList[index]['isFavorite'] == "1"
+                                        ? 1
+                                        : 0,
+                                  ),
+                                  builder: (context, value, child) {
+                                    return Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: [
+                                        Icon(
+                                          Icons.bookmark_border_rounded,
+                                          size: isSmallScreen ? 22 : 25,
+                                          color: Colors.black54,
+                                        ),
+                                        ClipRect(
+                                          child: Align(
+                                            alignment: Alignment.topCenter,
+                                            heightFactor: value,
+                                            child: Icon(
+                                              Icons.bookmark,
+                                              size: isSmallScreen ? 22 : 25,
+                                              color: Color(0xff004C99),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                             ),

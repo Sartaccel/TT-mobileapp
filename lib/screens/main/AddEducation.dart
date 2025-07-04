@@ -34,6 +34,9 @@ class _AddeducationState extends State<Addeducation> {
   ReferralData? referralData;
   UserData? retrievedUserData;
 
+  String? graduatedFrom;
+  String? graduatedTo;
+
   String? _selectedOption = 'No';
   String startYear = '', endYear = '';
   String? dateErrorMsg = 'Start date and end date are required';
@@ -67,35 +70,59 @@ class _AddeducationState extends State<Addeducation> {
   bool isLoading = false;
 
   DateTime parseDate(String dateString) {
-    // Split the date string into its components
-    List<String> parts = dateString.split('-');
+    try {
+      if (RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(dateString)) {
+        return DateTime.parse(dateString);
+      }
 
-    // Check if the format is valid
-    if (parts.length != 3) {
-      throw FormatException('Invalid date format. Use YY-MM-DD.');
+      List<String> parts = dateString.split('-');
+      if (parts.length != 3) {
+        throw FormatException('Invalid date format');
+      }
+
+      int day = int.parse(parts[0]);
+      int month = int.parse(parts[1]);
+      int year = int.parse(parts[2]);
+
+      if (year < 100) {
+        year += (year < 70) ? 2000 : 1900;
+      }
+
+      return DateTime(year, month, day);
+    } catch (e) {
+      print('Date parse error: $e');
+      return DateTime.now();
     }
-
-    // Parse the year, month, and day
-    int year = int.parse(parts[0]);
-    int month = int.parse(parts[1]);
-    int day = int.parse(parts[2]);
-
-    // If the year is in 2 digits, adjust it to a 4-digit year
-    if (year < 100) {
-      year += (year < 70)
-          ? 2000
-          : 1900; // Assuming 00-69 is 21st century and 70-99 is 20th century
-    }
-
-    // Return the DateTime object
-    return DateTime(year, month, day);
   }
+
+  String formatDateForDisplay(String? dateString) {
+    if (dateString == null ||
+        dateString.isEmpty ||
+        dateString == '1970-01-01') {
+      return '';
+    }
+
+    try {
+      DateTime date = DateTime.parse(dateString);
+      return "${_twoDigit(date.day)}-${_twoDigit(date.month)}-${date.year}";
+    } catch (e) {
+      return '';
+    }
+  }
+
+  String _twoDigit(int value) => value.toString().padLeft(2, '0');
 
   Future<void> updateEducation() async {
     final url = Uri.parse(AppConstants.BASE_URL +
         AppConstants.ADD_UPDATE_EDUCATION +
         retrievedUserData!.profileId.toString() +
         '/education');
+
+    String finalGraduatedFrom =
+        graduatedFrom ?? widget.educationDetail?['graduatedFrom'] ?? '';
+    String finalGraduatedTo = _selectedOption == 'No'
+        ? (graduatedTo ?? widget.educationDetail?['graduatedTo'] ?? '')
+        : '1970-01-01';
 
     final bodyParams = isEdit
         ? {
@@ -110,10 +137,8 @@ class _AddeducationState extends State<Addeducation> {
                 "countryId": "IN",
                 "percentage": 78,
                 "specialization": txtSpecializationController.text,
-                "graduatedFrom": _startDateController.text,
-                "graduatedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01'
+                "graduatedFrom": finalGraduatedFrom,
+                "graduatedTo": finalGraduatedTo
               }
             ]
           }
@@ -129,10 +154,8 @@ class _AddeducationState extends State<Addeducation> {
                 "countryId": "IN",
                 "percentage": 78,
                 "specialization": txtSpecializationController.text,
-                "graduatedFrom": _startDateController.text,
-                "graduatedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01'
+                "graduatedFrom": finalGraduatedFrom,
+                "graduatedTo": finalGraduatedTo
               }
             ]
           };
@@ -180,7 +203,35 @@ class _AddeducationState extends State<Addeducation> {
         fetchCandidateProfileData(
             retrievedUserData!.profileId, retrievedUserData!.token);
       }
-
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Color(0xff2D2D2D),
+          elevation: 10,
+          margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Row(
+            children: [
+              SvgPicture.asset('assets/icon/success.svg'),
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Educational Details updated !',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              GestureDetector(
+                onTap: () =>
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                child: Icon(Icons.close_rounded, color: Colors.white),
+              )
+            ],
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
       /*setState(() {
         isLoading = false;
       });*/
@@ -921,8 +972,15 @@ class _AddeducationState extends State<Addeducation> {
                                               startDatems = pickedDate;
                                               isStartDateValid = true;
                                               _startDateSelected = true;
+
+                                              // For UI (DD-MM-YYYY)
                                               _startDateController.text =
-                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                                                  "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+
+                                              // For backend (YYYY-MM-DD)
+                                              graduatedFrom =
+                                                  "${pickedDate.year}-${_twoDigit(pickedDate.month)}-${_twoDigit(pickedDate.day)}";
+
                                               startYear =
                                                   pickedDate.year.toString();
                                               _hasChanges = true;
@@ -1020,12 +1078,18 @@ class _AddeducationState extends State<Addeducation> {
                                           );
                                           if (pickedDate != null) {
                                             setState(() {
-                                              isEndDateValid =
-                                                  true; // Mark date as valid
+                                              isEndDateValid = true;
+
+                                              // For UI (DD-MM-YYYY)
                                               _endDateController.text =
-                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}"; // Update field
-                                              endYear = pickedDate.year
-                                                  .toString(); // Optionally store the year
+                                                  "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+
+                                              // For backend (YYYY-MM-DD)
+                                              graduatedTo =
+                                                  "${pickedDate.year}-${_twoDigit(pickedDate.month)}-${_twoDigit(pickedDate.day)}";
+
+                                              endYear =
+                                                  pickedDate.year.toString();
                                               _hasChanges = true;
                                             });
                                           }
@@ -1285,7 +1349,6 @@ class _AddeducationState extends State<Addeducation> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchProfileFromPref();
 
@@ -1296,15 +1359,30 @@ class _AddeducationState extends State<Addeducation> {
         txtSpecializationController.text =
             widget.educationDetail['specialization'];
         txtInstituteController.text = widget.educationDetail['schoolName'];
-        _startDateController.text =
-            widget.educationDetail['graduatedFrom'] ?? '';
+
+        // Convert YYYY-MM-DD to DD-MM-YYYY for display
+        if (widget.educationDetail['graduatedFrom'] != null) {
+          DateTime fromDate =
+              parseDate(widget.educationDetail['graduatedFrom']);
+          _startDateController.text =
+              "${_twoDigit(fromDate.day)}-${_twoDigit(fromDate.month)}-${fromDate.year}";
+          graduatedFrom = widget.educationDetail['graduatedFrom'];
+          startYear = fromDate.year.toString();
+        }
+
         _selectedOption = widget.educationDetail['graduatedTo'] == '1970-01-01'
             ? 'Yes'
             : 'No';
-        _endDateController.text =
-            widget.educationDetail['graduatedTo'] == '1970-01-01'
-                ? ''
-                : widget.educationDetail['graduatedTo'] ?? '';
+
+        if (widget.educationDetail['graduatedTo'] != null &&
+            widget.educationDetail['graduatedTo'] != '1970-01-01') {
+          DateTime toDate = parseDate(widget.educationDetail['graduatedTo']);
+          _endDateController.text =
+              "${_twoDigit(toDate.day)}-${_twoDigit(toDate.month)}-${toDate.year}";
+          graduatedTo = widget.educationDetail['graduatedTo'];
+          endYear = toDate.year.toString();
+        }
+
         isStartDateValid = true;
         isEndDateValid = true;
         _startDateSelected = true;

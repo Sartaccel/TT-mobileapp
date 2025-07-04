@@ -127,6 +127,11 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
       "mobile": mobile,
     };
 
+    print("📤 Sending mobile verification code...");
+    print("🔗 URL: $url");
+    print("📦 Body: $bodyParams");
+    print("🔐 Token: ${retrievedUserData?.token}");
+
     setState(() {
       isLoading = true;
     });
@@ -136,31 +141,38 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': retrievedUserData!.token
+          'Authorization': retrievedUserData!.token,
         },
         body: jsonEncode(bodyParams),
       );
 
-      if (kDebugMode) {
-        print('${response.statusCode} :: ${response.body}');
-      }
+      print("✅ Response Status: ${response.statusCode}");
+      print("📨 Response Body: ${response.body}");
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      print("❌ Error while sending verification code: $e");
     } finally {
       setState(() {
         isLoading = false;
       });
+      print("📴 Done sending request. isLoading = false");
     }
   }
 
   Future<void> sendEmailVerificationCode() async {
     final url =
         Uri.parse(AppConstants.BASE_URL + AppConstants.VERIFY_EMAIL_PHONE);
+
+    // Updated body with assumed correct key: "userEmail" instead of "email"
     final bodyParams = {
       "type": "email",
+      "userEmail": retrievedUserData
+          ?.email, // Change key if backend expects different name
     };
+
+    print("📤 Sending email verification code...");
+    print("🔗 URL: $url");
+    print("📦 Body: $bodyParams");
+    print("🔐 Token: ${retrievedUserData?.token}");
 
     setState(() {
       isLoading = true;
@@ -171,22 +183,27 @@ class _SendVerificationCodeState extends State<SendVerificationCode> {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': retrievedUserData!.token
+          'Authorization': retrievedUserData!.token,
         },
         body: jsonEncode(bodyParams),
       );
 
-      if (kDebugMode) {
-        print('${response.statusCode} :: ${response.body}');
+      print("✅ Response Status: ${response.statusCode}");
+      print("📨 Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("🎉 Email verification code sent successfully.");
+      } else {
+        final error = jsonDecode(response.body);
+        print("⚠️ Error Response Details: $error");
       }
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      print("❌ Exception occurred: $e");
     } finally {
       setState(() {
         isLoading = false;
       });
+      print("📴 Done sending email request. isLoading = false");
     }
   }
 

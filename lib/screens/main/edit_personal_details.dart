@@ -16,6 +16,7 @@ import 'package:talent_turbo_new/models/candidate_profile_model.dart';
 import 'package:talent_turbo_new/models/user_data_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:talent_turbo_new/screens/intermediate/send_verification_code.dart';
+import 'package:talent_turbo_new/screens/main/personal_details.dart';
 
 class EditPersonalDetails extends StatefulWidget {
   const EditPersonalDetails({super.key});
@@ -935,7 +936,15 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                               if (_hasChanges) {
                                 showDiscardConfirmationDialog(context);
                               } else {
-                                Navigator.pop(context);
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        PersonalDetails(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                  ),
+                                );
                               }
                             }),
                         InkWell(
@@ -943,7 +952,15 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                             if (_hasChanges) {
                               showDiscardConfirmationDialog(context);
                             } else {
-                              Navigator.pop(context);
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      PersonalDetails(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                                ),
+                              );
                             }
                           },
                           child: Container(
@@ -1734,7 +1751,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           inputFormatters: [
             LengthLimitingTextInputFormatter(40),
             FilteringTextInputFormatter.allow(
-              RegExp(r"[a-zA-Z0-9\s.,\-&']"),
+              RegExp(r"[a-zA-Z0-9\s.,\-&'#@+/]"),
             ),
             FilteringTextInputFormatter.deny(RegExp(r'^ ')),
             TextInputFormatter.withFunction(

@@ -1371,8 +1371,7 @@ class _PersonalDetailsState extends State<PersonalDetails>
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                educationList[index]['specialization'] ??
-                                    'Unknown',
+                                educationList[index]['degree'] ?? 'Unknown',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 softWrap: true,

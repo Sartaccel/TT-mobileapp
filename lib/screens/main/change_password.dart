@@ -70,20 +70,48 @@ class _ChangePasswordState extends State<ChangePassword> {
         String statusMessage = resOBJ["message"];
 
         if (statusMessage.toLowerCase().contains('success')) {
-          IconSnackBar.show(
-            context,
-            label: statusMessage,
-            snackBarType: SnackBarType.success,
-            backgroundColor: Color(0xff4CAF50),
-            iconColor: Colors.white,
-          );
+          // IconSnackBar.show(
+          //   context,
+          //   label: statusMessage,
+          //   snackBarType: SnackBarType.success,
+          //   backgroundColor: Color(0xff4CAF50),
+          //   iconColor: Colors.white,
+          // );
 
           // Update stored credentials with new password
           if (loadedCredentials != null) {
             loadedCredentials!.password = new_passwordController.text;
             await loadedCredentials!.saveCredentials();
           }
-
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Color(0xff2D2D2D),
+              elevation: 10,
+              margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              content: Row(
+                children: [
+                  SvgPicture.asset('assets/icon/success.svg'),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Password changed !',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () =>
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                    child: Icon(Icons.close_rounded, color: Colors.white),
+                  )
+                ],
+              ),
+              duration: Duration(seconds: 3),
+            ),
+          );
           Navigator.pop(context);
         } else {
           IconSnackBar.show(
@@ -98,13 +126,13 @@ class _ChangePasswordState extends State<ChangePassword> {
         if (kDebugMode) {
           print('${response.statusCode} :: ${response.body}');
         }
-        IconSnackBar.show(
-          context,
-          label: 'Failed to update password. Please try again.',
-          snackBarType: SnackBarType.fail,
-          backgroundColor: Color(0xFFBA1A1A),
-          iconColor: Colors.white,
-        );
+        // IconSnackBar.show(
+        //   context,
+        //   label: 'Failed to update password. Please try again.',
+        //   snackBarType: SnackBarType.fail,
+        //   backgroundColor: Color(0xFFBA1A1A),
+        //   iconColor: Colors.white,
+        // );
       }
     } catch (e) {
       setState(() {
@@ -113,13 +141,13 @@ class _ChangePasswordState extends State<ChangePassword> {
       if (kDebugMode) {
         print(e.toString());
       }
-      IconSnackBar.show(
-        context,
-        label: 'An error occurred. Please try again.',
-        snackBarType: SnackBarType.fail,
-        backgroundColor: Color(0xFFBA1A1A),
-        iconColor: Colors.white,
-      );
+      // IconSnackBar.show(
+      //   context,
+      //   label: 'An error occurred. Please try again.',
+      //   snackBarType: SnackBarType.fail,
+      //   backgroundColor: Color(0xFFBA1A1A),
+      //   iconColor: Colors.white,
+      // );
     }
   }
 
@@ -307,14 +335,18 @@ class _ChangePasswordState extends State<ChangePassword> {
                           confirm_passwordErrorMessage = 'Password is required';
                           isValid = false;
                         });
-                      } else if (new_passwordController.text !=
-                          confirm_passwordController.text) {
-                        setState(() {
-                          _isConfirmPasswordValid = false;
-                          confirm_passwordErrorMessage =
-                              'New Password didn\'t match';
-                          isValid = false;
-                        });
+                      } else {
+                        if (new_passwordController.text !=
+                            confirm_passwordController.text) {
+                          setState(() {
+                            _isConfirmPasswordValid = false;
+                            confirm_passwordErrorMessage =
+                                'New Password didn\'t match';
+                            _isNewPasswordValid = false;
+                            new_passwordErrorMessage = '';
+                            isValid = false;
+                          });
+                        }
                       }
 
                       if (isValid && !isLoading) {

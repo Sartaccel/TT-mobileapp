@@ -94,7 +94,7 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
       print("❌ No internet connection.");
       IconSnackBar.show(
         context,
-        label: "No internet connection",
+        label: "No internet connection, try again",
         snackBarType: SnackBarType.alert,
       );
       return;
@@ -187,7 +187,7 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
       print("❌ No internet connection.");
       IconSnackBar.show(
         context,
-        label: "No internet connection",
+        label: "No internet connection, try again",
         snackBarType: SnackBarType.alert,
       );
       return;
@@ -262,7 +262,7 @@ class _MobileVerificationScreenState extends State<MobileVerificationScreen> {
       // );
       IconSnackBar.show(
         context,
-        label: "No internet connection",
+        label: "No internet connection, try again",
         snackBarType: SnackBarType.alert,
         backgroundColor: Color(0xff2D2D2D),
         iconColor: Colors.white,

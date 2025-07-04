@@ -552,7 +552,7 @@ class _JobStatusState extends State<JobStatus> {
                               Border.all(width: 0, color: Color(0xffFCFCFC)),
                           color: Color(0xffFCFCFC)),
                       width: MediaQuery.of(context).size.width,
-                      height: 220,
+                      height: 200,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -579,7 +579,6 @@ class _JobStatusState extends State<JobStatus> {
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   width:
@@ -605,10 +604,11 @@ class _JobStatusState extends State<JobStatus> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontFamily: 'Lato',
-                                        fontSize: 13,
+                                        fontSize: 14,
                                         color: Color(0xff545454)),
                                   ),
                                 ),
+                                SizedBox(height: 10),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -647,6 +647,7 @@ class _JobStatusState extends State<JobStatus> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 14,
+                                                fontFamily: 'Lato',
                                                 color: Color(0xff545454)),
                                           );
                                         },
@@ -654,6 +655,7 @@ class _JobStatusState extends State<JobStatus> {
                                     ),
                                   ],
                                 ),
+                                SizedBox(height: 7),
                                 Wrap(
                                   spacing: 12,
                                   runSpacing: 6,
@@ -676,6 +678,7 @@ class _JobStatusState extends State<JobStatus> {
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 14,
+                                              fontFamily: 'Lato',
                                               color: Color(0xff545454)),
                                         ),
                                       ],
@@ -701,6 +704,7 @@ class _JobStatusState extends State<JobStatus> {
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 14,
+                                                  fontFamily: 'Lato',
                                                   color: Color(0xff545454)),
                                             )),
                                       ],
@@ -723,6 +727,7 @@ class _JobStatusState extends State<JobStatus> {
                                 //     ),
                                 //   ),
                                 // )
+                                SizedBox(height: 7),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 2),
@@ -737,6 +742,7 @@ class _JobStatusState extends State<JobStatus> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 14,
+                                      fontFamily: 'Lato',
                                       color: getStatusTextColor(
                                           widget.jobData['statusName']),
                                     ),
@@ -798,7 +804,7 @@ class _JobStatusState extends State<JobStatus> {
                                     children: [
                                       Icon(
                                         Icons.bookmark_border_rounded,
-                                        size: 25,
+                                        size: 30,
                                         color: Colors.black54,
                                       ),
                                       ClipRect(
@@ -807,7 +813,7 @@ class _JobStatusState extends State<JobStatus> {
                                           heightFactor: value,
                                           child: Icon(
                                             Icons.bookmark,
-                                            size: 25,
+                                            size: 30,
                                             color: Color(0xff004C99),
                                           ),
                                         ),
@@ -820,9 +826,6 @@ class _JobStatusState extends State<JobStatus> {
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 5,
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
@@ -839,7 +842,7 @@ class _JobStatusState extends State<JobStatus> {
                               highlightColor: Color(0xffF2F2F2),
                               child: SizedBox(
                                 height:
-                                    MediaQuery.of(context).size.height * 0.45,
+                                    MediaQuery.of(context).size.height * 0.4,
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
@@ -1030,12 +1033,6 @@ class _JobStatusState extends State<JobStatus> {
                                                 ],
                                               ),
                                             ],
-                                          ),
-                                          SizedBox(height: 15),
-                                          Container(
-                                            width: double.infinity,
-                                            height: 1,
-                                            color: Color(0xffE6E6E6),
                                           ),
                                         ],
                                       ),
