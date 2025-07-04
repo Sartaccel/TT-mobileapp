@@ -27,6 +27,7 @@ class Addeducation extends StatefulWidget {
 
 class _AddeducationState extends State<Addeducation> {
   bool isEdit = false;
+  bool fieldsEnabled = true;
 
   DateTime startDatems = DateTime.now();
 
@@ -66,27 +67,20 @@ class _AddeducationState extends State<Addeducation> {
   bool isLoading = false;
 
   DateTime parseDate(String dateString) {
-    // Split the date string into its components
     List<String> parts = dateString.split('-');
 
-    // Check if the format is valid
     if (parts.length != 3) {
       throw FormatException('Invalid date format. Use YY-MM-DD.');
     }
 
-    // Parse the year, month, and day
     int year = int.parse(parts[0]);
     int month = int.parse(parts[1]);
     int day = int.parse(parts[2]);
 
-    // If the year is in 2 digits, adjust it to a 4-digit year
     if (year < 100) {
-      year += (year < 70)
-          ? 2000
-          : 1900; // Assuming 00-69 is 21st century and 70-99 is 20th century
+      year += (year < 70) ? 2000 : 1900;
     }
 
-    // Return the DateTime object
     return DateTime(year, month, day);
   }
 
@@ -119,7 +113,6 @@ class _AddeducationState extends State<Addeducation> {
         : {
             "candidateEducation": [
               {
-                //"id" : 2064,
                 "schoolName": txtInstituteController.text,
                 "degree": txtQualificationController.text,
                 "city": selectedEducationType,
@@ -139,26 +132,19 @@ class _AddeducationState extends State<Addeducation> {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult == ConnectivityResult.none) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
         IconSnackBar.show(
           context,
-          label: 'No internet connection, try again',
+          label: 'No internet connection',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
-        return; // Exit the function if no internet
+        return;
       }
+      
       setState(() {
         isLoading = true;
+        fieldsEnabled = false;
       });
 
       final response = await http.post(
@@ -179,31 +165,23 @@ class _AddeducationState extends State<Addeducation> {
         fetchCandidateProfileData(
             retrievedUserData!.profileId, retrievedUserData!.token);
       }
-
-      /*setState(() {
-        isLoading = false;
-      });*/
     } catch (e) {
       setState(() {
         if (kDebugMode) {
           print(e);
         }
         isLoading = false;
+        fieldsEnabled = true;
       });
     }
   }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
     final url = Uri.parse(AppConstants.BASE_URL +
         AppConstants.CANDIDATE_PROFILE +
         profileId.toString());
 
     try {
-      setState(() {
-        isLoading = true;
-      });
-
       final response = await http.get(
         url,
         headers: {'Content-Type': 'application/json', 'Authorization': token},
@@ -221,31 +199,143 @@ class _AddeducationState extends State<Addeducation> {
 
         if (statusMessage.toLowerCase().contains('success')) {
           final Map<String, dynamic> data = resOBJ['data'];
-          //ReferralData referralData = ReferralData.fromJson(data);
           CandidateProfileModel candidateData =
               CandidateProfileModel.fromJson(data);
 
           await saveCandidateProfileData(candidateData);
 
-          /*Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => PersonalDetails()),
-                (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
-          );*/
-
           Navigator.pop(context);
-          setState(() {
-            isLoading = false;
-          });
         }
-      } else {
-        print(response);
-        setState(() {
-          isLoading = false;
-        });
       }
     } catch (e) {
       print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+        fieldsEnabled = true;
+      });
+    }
+  }
+
+  void showDiscardConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          insetPadding: EdgeInsets.zero,
+          child: Container(
+            width: MediaQuery.of(context).size.width - 35,
+            padding: EdgeInsets.fromLTRB(22, 15, 22, 22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Discard changes?',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Are you sure you want to discard all changes?',
+                  style: TextStyle(
+                      height: 1.4,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: 50,
+                              margin: EdgeInsets.only(right: 15),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      width: 1, color: AppColors.primaryColor),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      color: AppColors.primaryColor,
+                                      fontFamily: 'lato'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                  child: Text(
+                                    'Discard',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'lato'),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  bool hasChanges() {
+    if (isEdit) {
+      return txtQualificationController.text != widget.educationDetail['degree'] ||
+          txtSpecializationController.text != widget.educationDetail['specialization'] ||
+          txtInstituteController.text != widget.educationDetail['schoolName'] ||
+          _startDateController.text != widget.educationDetail['graduatedFrom'] ||
+          _selectedOption != (widget.educationDetail['graduatedTo'] == '1970-01-01' ? 'Yes' : 'No') ||
+          (_selectedOption == 'No' && _endDateController.text != (widget.educationDetail['graduatedTo'] == '1970-01-01' ? '' : widget.educationDetail['graduatedTo'])) ||
+          selectedEducationType != widget.educationDetail['city'];
+    } else {
+      return txtQualificationController.text.isNotEmpty ||
+          txtSpecializationController.text.isNotEmpty ||
+          txtInstituteController.text.isNotEmpty ||
+          _startDateController.text.isNotEmpty ||
+          (_selectedOption == 'No' && _endDateController.text.isNotEmpty) ||
+          selectedEducationType.isNotEmpty;
     }
   }
 
@@ -275,14 +365,22 @@ class _AddeducationState extends State<Addeducation> {
                           Icons.arrow_back_ios_new,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: fieldsEnabled ? () {
+                          if (hasChanges()) {
+                            showDiscardConfirmationDialog(context);
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        } : null,
                       ),
                       InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                          onTap: fieldsEnabled ? () {
+                            if (hasChanges()) {
+                              showDiscardConfirmationDialog(context);
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          } : null,
                           child: Container(
                               height: 50,
                               child: Center(
@@ -295,7 +393,6 @@ class _AddeducationState extends State<Addeducation> {
                               ))))
                     ],
                   ),
-                  //SizedBox(width: 80,)
                   Text(
                     'Education',
                     style: TextStyle(color: Colors.white, fontSize: 16),
@@ -319,9 +416,7 @@ class _AddeducationState extends State<Addeducation> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.015,
@@ -344,13 +439,11 @@ class _AddeducationState extends State<Addeducation> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
-                                textCapitalization: TextCapitalization.none,
-                                autocorrect: false,
-                                enableSuggestions: false,
+                                enabled: fieldsEnabled,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(80),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z0-9.\-'\s]"),
+                                    RegExp(r"[a-zA-Z0-9\s.,\-&'@!#()_:;?/]"),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),
@@ -395,7 +488,6 @@ class _AddeducationState extends State<Addeducation> {
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
                                 onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
                                   setState(() {
                                     isQualificationValid = true;
                                   });
@@ -438,13 +530,11 @@ class _AddeducationState extends State<Addeducation> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
-                                textCapitalization: TextCapitalization.none,
-                                autocorrect: false,
-                                enableSuggestions: false,
+                                enabled: fieldsEnabled,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(100),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z\s.,\-&']"),
+                                    RegExp(r"[a-zA-Z0-9\s.,\-&'@!#()_:;?/]"),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),
@@ -490,7 +580,6 @@ class _AddeducationState extends State<Addeducation> {
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
                                 onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
                                   setState(() {
                                     isSpecializationValid = true;
                                   });
@@ -533,13 +622,11 @@ class _AddeducationState extends State<Addeducation> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
-                                textCapitalization: TextCapitalization.none,
-                                autocorrect: false,
-                                enableSuggestions: false,
+                                enabled: fieldsEnabled,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(100),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z\s.,\-&']"),
+                                    RegExp(r"[a-zA-Z0-9\s.,\-&'@!#()_:;?/]"),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),
@@ -547,7 +634,6 @@ class _AddeducationState extends State<Addeducation> {
                                   TextInputFormatter.withFunction(
                                     (oldValue, newValue) {
                                       final text = newValue.text;
-
                                       if (text.contains('  ')) {
                                         return oldValue;
                                       }
@@ -586,7 +672,6 @@ class _AddeducationState extends State<Addeducation> {
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
                                 onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
                                   setState(() {
                                     isInstituteValid = true;
                                   });
@@ -615,9 +700,7 @@ class _AddeducationState extends State<Addeducation> {
                             fontFamily: 'Lato',
                             color: Color(0xff333333)),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -645,13 +728,13 @@ class _AddeducationState extends State<Addeducation> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
+                                    onChanged: fieldsEnabled ? (value) {
                                       setState(() {
                                         _selectedOption = value;
                                         _endDateController.text = '';
                                         isEndDateValid = true;
                                       });
-                                    },
+                                    } : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -666,7 +749,7 @@ class _AddeducationState extends State<Addeducation> {
                               ],
                             ),
                           ),
-                          SizedBox(width: 5), // Space between Yes and No
+                          SizedBox(width: 5),
                           Expanded(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -691,12 +774,12 @@ class _AddeducationState extends State<Addeducation> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
+                                    onChanged: fieldsEnabled ? (value) {
                                       setState(() {
                                         isEndDateValid = true;
                                         _selectedOption = value;
                                       });
-                                    },
+                                    } : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -713,9 +796,7 @@ class _AddeducationState extends State<Addeducation> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      SizedBox(height: 20),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -746,6 +827,7 @@ class _AddeducationState extends State<Addeducation> {
                                       ),
                                       SizedBox(height: 7),
                                       TextField(
+                                        enabled: fieldsEnabled,
                                         controller: _startDateController,
                                         cursorColor: Color(0xff004C99),
                                         style: TextStyle(
@@ -787,7 +869,7 @@ class _AddeducationState extends State<Addeducation> {
                                                     vertical: 10,
                                                     horizontal: 10)),
                                         readOnly: true,
-                                        onTap: () async {
+                                        onTap: fieldsEnabled ? () async {
                                           DateTime? pickedDate =
                                               await showDatePicker(
                                                   context: context,
@@ -811,7 +893,7 @@ class _AddeducationState extends State<Addeducation> {
                                                   pickedDate.year.toString();
                                             });
                                           }
-                                        },
+                                        } : null,
                                       ),
                                     ],
                                   ),
@@ -841,6 +923,7 @@ class _AddeducationState extends State<Addeducation> {
                                       ),
                                       SizedBox(height: 7),
                                       TextField(
+                                        enabled: fieldsEnabled && _selectedOption == 'No',
                                         controller: _endDateController,
                                         cursorColor: Color(0xff004C99),
                                         style: TextStyle(
@@ -884,13 +967,11 @@ class _AddeducationState extends State<Addeducation> {
                                         ),
                                         readOnly: true,
                                         onChanged: (text) {
-                                          // Validate input as user types
                                           setState(() {
                                             isEndDateValid = text.isNotEmpty;
                                           });
                                         },
-                                        onTap: () async {
-                                          // Allow date picking regardless of option
+                                        onTap: fieldsEnabled && _selectedOption == 'No' ? () async {
                                           DateTime? pickedDate =
                                               await showDatePicker(
                                             context: context,
@@ -902,15 +983,14 @@ class _AddeducationState extends State<Addeducation> {
                                           );
                                           if (pickedDate != null) {
                                             setState(() {
-                                              isEndDateValid =
-                                                  true; // Mark date as valid
+                                              isEndDateValid = true;
                                               _endDateController.text =
-                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}"; // Update field
+                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
                                               endYear = pickedDate.year
-                                                  .toString(); // Optionally store the year
+                                                  .toString();
                                             });
                                           }
-                                        },
+                                        } : null,
                                       ),
                                     ],
                                   ),
@@ -962,7 +1042,7 @@ class _AddeducationState extends State<Addeducation> {
                             borderRadius: BorderRadius.circular(10)),
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: InkWell(
-                          onTap: () {
+                          onTap: fieldsEnabled ? () {
                             showMaterialModalBottomSheet(
                               backgroundColor: Color(0x00000000),
                               isDismissible: true,
@@ -986,12 +1066,11 @@ class _AddeducationState extends State<Addeducation> {
                                           0.25,
                                       height: 5,
                                       decoration: BoxDecoration(
-                                        color: Colors.black, // Adjust color
+                                        color: Colors.black,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
                                     ListTile(
-                                      //leading: Icon(Icons.visibility_outlined),
                                       title: Text('Full time'),
                                       onTap: () {
                                         setState(() {
@@ -1002,7 +1081,6 @@ class _AddeducationState extends State<Addeducation> {
                                       },
                                     ),
                                     ListTile(
-                                      //leading: Icon(Icons.refresh),
                                       title: Text('Part time'),
                                       onTap: () {
                                         setState(() {
@@ -1013,7 +1091,6 @@ class _AddeducationState extends State<Addeducation> {
                                       },
                                     ),
                                     ListTile(
-                                      //leading: Icon(Icons.download),
                                       title: Text('Correspondence'),
                                       onTap: () {
                                         setState(() {
@@ -1028,7 +1105,7 @@ class _AddeducationState extends State<Addeducation> {
                                 ),
                               ),
                             );
-                          },
+                          } : null,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -1052,9 +1129,7 @@ class _AddeducationState extends State<Addeducation> {
                               ),
                             ],
                           )),
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                     ],
                   ),
                 ),
@@ -1064,7 +1139,7 @@ class _AddeducationState extends State<Addeducation> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: InkWell(
-                onTap: () {
+                onTap: fieldsEnabled ? () {
                   if ((_selectedOption == 'No' &&
                           _endDateController.text.isEmpty) ||
                       txtQualificationController.text.isEmpty ||
@@ -1116,7 +1191,7 @@ class _AddeducationState extends State<Addeducation> {
                       updateEducation();
                     }
                   }
-                },
+                } : null,
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 44,
@@ -1166,7 +1241,6 @@ class _AddeducationState extends State<Addeducation> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchProfileFromPref();
 

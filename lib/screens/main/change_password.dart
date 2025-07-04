@@ -44,6 +44,12 @@ class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController new_passwordController = TextEditingController();
   TextEditingController confirm_passwordController = TextEditingController();
 
+  bool get hasChanges {
+    return old_passwordController.text.isNotEmpty ||
+        new_passwordController.text.isNotEmpty ||
+        confirm_passwordController.text.isNotEmpty;
+  }
+
   Future<void> setNewPassword() async {
     final url = Uri.parse(
         AppConstants.BASE_URL + AppConstants.FORGOT_PASSWORD_UPDATE_PASSWORD);
@@ -156,12 +162,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          if (hasChanges) {
+                            showDiscardConfirmationDialog(context);
+                          } else {
+                            Navigator.pop(context);
+                          }
                         },
                       ),
                       InkWell(
                           onTap: () {
-                            Navigator.pop(context);
+                            if (hasChanges) {
+                              showDiscardConfirmationDialog(context);
+                            } else {
+                              Navigator.pop(context);
+                            }
                           },
                           child: Container(
                               height: 50,
@@ -371,6 +385,109 @@ class _ChangePasswordState extends State<ChangePassword> {
     );
   }
 
+  void showDiscardConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          insetPadding: EdgeInsets.zero,
+          child: Container(
+            width: MediaQuery.of(context).size.width - 35,
+            padding: EdgeInsets.fromLTRB(22, 15, 22, 22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Discard changes?',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Are you sure you want to discard all changes?',
+                  style: TextStyle(
+                      height: 1.4,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: 50,
+                              margin: EdgeInsets.only(right: 15),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      width: 1, color: AppColors.primaryColor),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      color: AppColors.primaryColor,
+                                      fontFamily: 'lato'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                  child: Text(
+                                    'Discard',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'lato'),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildPasswordField({
     required String label,
     required TextEditingController controller,
@@ -439,15 +556,15 @@ class _ChangePasswordState extends State<ChangePassword> {
             FilteringTextInputFormatter.allow(
               RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
             ),
-            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+            FilteringTextInputFormatter.deny(RegExp(r'\s')), // Deny spaces
             FilteringTextInputFormatter.deny(
               RegExp(
-                r'[\u{1F600}-\u{1F64F}'
-                r'\u{1F300}-\u{1F5FF}'
-                r'\u{1F680}-\u{1F6FF}'
-                r'\u{1F1E0}-\u{1F1FF}'
-                r'\u{2600}-\u{26FF}'
-                r'\u{2700}-\u{27BF}]',
+                r'[\u{1F600}-\u{1F64F}' 
+                r'\u{1F300}-\u{1F5FF}' 
+                r'\u{1F680}-\u{1F6FF}' 
+                r'\u{1F1E0}-\u{1F1FF}' 
+                r'\u{2600}-\u{26FF}' 
+                r'\u{2700}-\u{27BF}]', 
                 unicode: true,
               ),
             ),

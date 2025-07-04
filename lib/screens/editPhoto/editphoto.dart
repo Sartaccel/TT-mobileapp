@@ -26,6 +26,8 @@ import 'package:http/http.dart' as http;
 import 'package:talent_turbo_new/screens/editPhoto/snack.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
+import 'dart:async';
+import 'dart:io' show InternetAddress, SocketException;
 
 class EditPhotoPage extends StatefulWidget {
   final String? initialImagePath;
@@ -50,6 +52,18 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
   CandidateProfileModel? candidateProfileModel;
   UserData? retrievedUserData;
 
+  Future<bool> _checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+    return false;
+  }
+
   Future<void> _requestPermissions() async {
     if (await Permission.camera.request().isDenied) {
       return;
@@ -65,6 +79,12 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
   }
 
   Future<void> _openCamera() async {
+    final hasConnection = await _checkInternetConnection();
+    if (!hasConnection) {
+      _showNetworkError();
+      return;
+    }
+
     await _requestPermissions();
     setState(() {
       isImageLoading = true;
@@ -86,8 +106,91 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       setState(() {
         isImageLoading = false;
       });
-      _showError('Failed to capture image: $e');
+      _showError('Failed to capture image');
     }
+  }
+
+  Future<void> _openGallery() async {
+    final hasConnection = await _checkInternetConnection();
+    if (!hasConnection) {
+      _showNetworkError();
+      return;
+    }
+
+    await _requestPermissions();
+    setState(() {
+      isImageLoading = true;
+    });
+
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        final mimeType = lookupMimeType(image.path);
+        final fileSize = await image.length();
+
+        if (mimeType == 'image/jpeg' && fileSize <= 5 * 1024 * 1024) {
+          bool validDimensions = await _validateImageDimensions(image);
+          if (validDimensions) {
+            setState(() {
+              _imageFile = image;
+              isImageLoading = false;
+            });
+          } else {
+            final XFile? processedImage = await processResizeImage(image);
+            setState(() {
+              _imageFile = processedImage;
+              isImageLoading = false;
+            });
+          }
+        } else {
+          final XFile? processedImage = await processResizeImage(image);
+          setState(() {
+            _imageFile = processedImage;
+            isImageLoading = false;
+          });
+        }
+      } else {
+        setState(() {
+          isImageLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isImageLoading = false;
+      });
+      _showError('Failed to pick image');
+    }
+  }
+
+  Future<bool> _validateImageDimensions(XFile image) async {
+    Uint8List bytes = await image.readAsBytes();
+    try {
+      final decodedImage = img.decodeImage(bytes);
+      if (decodedImage != null) {
+        const maxDimension = 4000;
+        return decodedImage.width <= maxDimension &&
+            decodedImage.height <= maxDimension;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  void _showNetworkError() {
+    IconSnackBar.show(
+      context,
+      label: "No internet connection, try again",
+      snackBarType: SnackBarType.alert,
+      backgroundColor: Color(0xff2D2D2D),
+      iconColor: Colors.white,
+    );
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   Future<XFile?> processResizeImage(XFile? image) async {
@@ -132,73 +235,6 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       print("Error processing image: $e");
       return null;
     }
-  }
-
-  Future<void> _openGallery() async {
-    await _requestPermissions();
-    setState(() {
-      isImageLoading = true;
-    });
-
-    try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image != null) {
-        final mimeType = lookupMimeType(image.path);
-        final fileSize = await image.length();
-
-        if (mimeType == 'image/jpeg' && fileSize <= 5 * 1024 * 1024) {
-          bool validDimensions = await _validateImageDimensions(image);
-          if (validDimensions) {
-            setState(() {
-              _imageFile = image;
-              isImageLoading = false;
-            });
-          } else {
-            final XFile? processedImage = await processResizeImage(image);
-            setState(() {
-              _imageFile = processedImage;
-              isImageLoading = false;
-            });
-          }
-        } else {
-          final XFile? processedImage = await processResizeImage(image);
-          setState(() {
-            _imageFile = processedImage;
-            isImageLoading = false;
-          });
-        }
-      } else {
-        setState(() {
-          isImageLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        isImageLoading = false;
-      });
-      _showError('Failed to pick image: $e');
-    }
-  }
-
-  Future<bool> _validateImageDimensions(XFile image) async {
-    Uint8List bytes = await image.readAsBytes();
-    try {
-      final decodedImage = img.decodeImage(bytes);
-      if (decodedImage != null) {
-        const maxDimension = 4000;
-        return decodedImage.width <= maxDimension &&
-            decodedImage.height <= maxDimension;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return false;
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
   }
 
   Future<void> _removeImage() async {
@@ -366,13 +402,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
       fetchCandidateProfileData(
           retrievedUserData!.profileId, retrievedUserData!.token);
     } catch (e) {
-      IconSnackBar.show(
-        context,
-        label: e.toString(),
-        snackBarType: SnackBarType.alert,
-        backgroundColor: Color(0xff2D2D2D),
-        iconColor: Colors.white,
-      );
+      // No toast here as per requirements
     } finally {
       setState(() {
         isImageLoading = false;
@@ -735,8 +765,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                                   File file = File(_imageFile!.path);
                                   uploadImage(file);
                                 } else {
-                                  showCustomSnackbar(
-                                      context, 'Failed to upload!');
+                                  _showError('Failed to upload!');
                                 }
                               },
                               child: Text(
@@ -791,11 +820,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                                 });
                               }
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text("Please select an image first.")),
-                              );
+                              _showError("Please select an image first.");
                             }
                           },
                           child: Text(

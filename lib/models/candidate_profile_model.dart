@@ -93,6 +93,8 @@ class CandidateProfileModel {
     );
   }
 
+  get expMonth => null;
+
   // Method to convert a Candidate object into a JSON map
   Map<String, dynamic> toJson() {
     return {

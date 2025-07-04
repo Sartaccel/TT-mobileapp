@@ -36,6 +36,7 @@ class _AddemploymentState extends State<Addemployment> {
 
   bool isLoading = false;
   bool isEdit = false;
+  bool fieldsEnabled = true; // New flag to control field enable/disable state
 
   DateTime startDatems = DateTime.now();
 
@@ -79,23 +80,17 @@ class _AddemploymentState extends State<Addemployment> {
 
   Future<void> updateinRTDB(String id, String bodyParams) async {
     final sanitizedEmail = email.replaceAll('.', ',');
-    //final snapshot = await databaseRef.child('$sanitizedEmail/notificationSettings').get();
     databaseRef.child('${sanitizedEmail}/employmentData').set({
       'bodyParams': bodyParams,
     });
   }
 
   Future<void> fetchCandidateProfileData(int profileId, String token) async {
-    //final url = Uri.parse(AppConstants.BASE_URL + AppConstants.REFERRAL_PROFILE + profileId.toString());
     final url = Uri.parse(AppConstants.BASE_URL +
         AppConstants.CANDIDATE_PROFILE +
         profileId.toString());
 
     try {
-      setState(() {
-        isLoading = true;
-      });
-
       final response = await http.get(
         url,
         headers: {'Content-Type': 'application/json', 'Authorization': token},
@@ -113,28 +108,21 @@ class _AddemploymentState extends State<Addemployment> {
 
         if (statusMessage.toLowerCase().contains('success')) {
           final Map<String, dynamic> data = resOBJ['data'];
-          //ReferralData referralData = ReferralData.fromJson(data);
           CandidateProfileModel candidateData =
               CandidateProfileModel.fromJson(data);
 
           await saveCandidateProfileData(candidateData);
 
-          /*Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => PersonalDetails()),
-                (Route<dynamic> route) => route.isFirst, // This will keep Screen 1
-          );*/
-
           Navigator.pop(context);
         }
-      } else {
-        print(response);
-        setState(() {
-          isLoading = false;
-        });
       }
     } catch (e) {
       print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+        fieldsEnabled = true; // Re-enable fields when operation completes
+      });
     }
   }
 
@@ -166,8 +154,6 @@ class _AddemploymentState extends State<Addemployment> {
                 "is_current": _selectedOption == 'No' ? false : true,
                 "countryId": "US",
                 "workType": selectedWorkType
-                /*"employedFrom1": startYear,
-          "employedTo1": endYear*/
               }
             ]
           }
@@ -191,8 +177,6 @@ class _AddemploymentState extends State<Addemployment> {
                 "is_current": _selectedOption == 'No' ? false : true,
                 "countryId": "US",
                 "workType": selectedWorkType
-                /*"employedFrom1": startYear,
-          "employedTo1": endYear*/
               }
             ]
           };
@@ -204,26 +188,19 @@ class _AddemploymentState extends State<Addemployment> {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult == ConnectivityResult.none) {
-        // Fluttertoast.showToast(
-        //   msg: "No internet connection",
-        //   toastLength: Toast.LENGTH_SHORT,
-        //   gravity: ToastGravity.BOTTOM,
-        //   timeInSecForIosWeb: 1,
-        //   backgroundColor: Color(0xff2D2D2D),
-        //   textColor: Colors.white,
-        //   fontSize: 16.0,
-        // );
         IconSnackBar.show(
           context,
-          label: 'No internet connection, try again',
+          label: 'No internet connection',
           snackBarType: SnackBarType.alert,
           backgroundColor: Color(0xff2D2D2D),
           iconColor: Colors.white,
         );
-        return; // Exit the function if no internet
+        return;
       }
+      
       setState(() {
         isLoading = true;
+        fieldsEnabled = false; // Disable fields when loading starts
       });
 
       final response = await http.post(
@@ -250,34 +227,130 @@ class _AddemploymentState extends State<Addemployment> {
           print(e);
         }
         isLoading = false;
+        fieldsEnabled = true; // Re-enable fields if there's an error
       });
     }
   }
 
   DateTime parseDate(String dateString) {
-    // Handle if date is already in yyyy-MM-dd format
-    if (dateString.startsWith(RegExp(r'^\d{4}'))) {
-      return DateTime.parse(dateString);
-    }
-
-    // Handle dd-MM-yyyy format
     List<String> parts = dateString.split('-');
+
     if (parts.length != 3) {
-      throw FormatException(
-          'Invalid date format. Use DD-MM-YYYY or YYYY-MM-DD');
+      throw FormatException('Invalid date format. Use YY-MM-DD.');
     }
 
-    // Parse components - assuming format is dd-MM-yyyy
-    int day = int.parse(parts[0]);
+    int year = int.parse(parts[0]);
     int month = int.parse(parts[1]);
-    int year = int.parse(parts[2]);
+    int day = int.parse(parts[2]);
 
-    // Handle 2-digit years if needed
     if (year < 100) {
       year += (year < 70) ? 2000 : 1900;
     }
 
     return DateTime(year, month, day);
+  }
+
+  void showDiscardConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          insetPadding: EdgeInsets.zero,
+          child: Container(
+            width: MediaQuery.of(context).size.width - 35,
+            padding: EdgeInsets.fromLTRB(22, 15, 22, 22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Discard changes?',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Are you sure you want to discard all changes?',
+                  style: TextStyle(
+                      height: 1.4,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: 50,
+                              margin: EdgeInsets.only(right: 15),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      width: 1, color: AppColors.primaryColor),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      color: AppColors.primaryColor,
+                                      fontFamily: 'lato'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                  child: Text(
+                                    'Discard',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'lato'),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -306,14 +379,38 @@ class _AddemploymentState extends State<Addemployment> {
                           Icons.arrow_back_ios_new,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: fieldsEnabled ? () {
+                          bool hasChanges = txtDesignationController.text.isNotEmpty ||
+                              txtComanyNameController.text.isNotEmpty ||
+                              _startDateController.text.isNotEmpty ||
+                              (_selectedOption == 'No' && _endDateController.text.isNotEmpty) ||
+                              selectedWorkType.isNotEmpty ||
+                              selectedEmploymentType.isNotEmpty ||
+                              txtDescriptionController.text.isNotEmpty;
+                          
+                          if (hasChanges) {
+                            showDiscardConfirmationDialog(context);
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        } : null,
                       ),
                       InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                          onTap: fieldsEnabled ? () {
+                            bool hasChanges = txtDesignationController.text.isNotEmpty ||
+                                txtComanyNameController.text.isNotEmpty ||
+                                _startDateController.text.isNotEmpty ||
+                                (_selectedOption == 'No' && _endDateController.text.isNotEmpty) ||
+                                selectedWorkType.isNotEmpty ||
+                                selectedEmploymentType.isNotEmpty ||
+                                txtDescriptionController.text.isNotEmpty;
+                            
+                            if (hasChanges) {
+                              showDiscardConfirmationDialog(context);
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          } : null,
                           child: Container(
                               height: 50,
                               child: Center(
@@ -326,7 +423,6 @@ class _AddemploymentState extends State<Addemployment> {
                               ))))
                     ],
                   ),
-                  //SizedBox(width: 80,)
                   Text(
                     'Work Experience',
                     style: TextStyle(color: Colors.white, fontSize: 16),
@@ -350,9 +446,7 @@ class _AddemploymentState extends State<Addemployment> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.015,
@@ -375,9 +469,7 @@ class _AddemploymentState extends State<Addemployment> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
-                                textCapitalization: TextCapitalization.none,
-                                autocorrect: false,
-                                enableSuggestions: false,
+                                enabled: fieldsEnabled,
                                 controller: txtDesignationController,
                                 cursorColor: Color(0xff004C99),
                                 style: TextStyle(
@@ -409,23 +501,24 @@ class _AddemploymentState extends State<Addemployment> {
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(40),
+                                  LengthLimitingTextInputFormatter(30),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z0-9\s.,\-&']"),
+                                    RegExp(r'[a-zA-Z ]'),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),
                                   ),
                                   TextInputFormatter.withFunction(
                                     (oldValue, newValue) {
-                                      if (newValue.text.contains('  '))
+                                      final text = newValue.text;
+                                      if (text.contains('  ')) {
                                         return oldValue;
+                                      }
                                       return newValue;
                                     },
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
                                   setState(() {
                                     _isDesignationValid = true;
                                   });
@@ -446,9 +539,7 @@ class _AddemploymentState extends State<Addemployment> {
                                 ),
                             ]),
                       ),
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.015,
@@ -464,18 +555,14 @@ class _AddemploymentState extends State<Addemployment> {
                                   : Color(0xffBA1A1A)),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 10),
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextField(
-                                textCapitalization: TextCapitalization.none,
-                                autocorrect: false,
-                                enableSuggestions: false,
+                                enabled: fieldsEnabled,
                                 controller: txtComanyNameController,
                                 cursorColor: Color(0xff004C99),
                                 style: TextStyle(
@@ -507,23 +594,24 @@ class _AddemploymentState extends State<Addemployment> {
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10)),
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(40),
+                                  LengthLimitingTextInputFormatter(30),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z0-9\s.,\-&']"),
+                                    RegExp(r'[a-zA-Z ]'),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),
                                   ),
                                   TextInputFormatter.withFunction(
                                     (oldValue, newValue) {
-                                      if (newValue.text.contains('  '))
+                                      final text = newValue.text;
+                                      if (text.contains('  ')) {
                                         return oldValue;
+                                      }
                                       return newValue;
                                     },
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  // Validate the email here and update _isEmailValid
                                   setState(() {
                                     _isCompanyNameValid = true;
                                   });
@@ -544,9 +632,7 @@ class _AddemploymentState extends State<Addemployment> {
                                 ),
                             ]),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                      SizedBox(height: 20),
                       Text(
                         'Is this your current company?',
                         style: TextStyle(
@@ -554,9 +640,7 @@ class _AddemploymentState extends State<Addemployment> {
                             fontFamily: 'Lato',
                             color: Color(0xff333333)),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -584,13 +668,13 @@ class _AddemploymentState extends State<Addemployment> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
+                                    onChanged: fieldsEnabled ? (value) {
                                       setState(() {
                                         _selectedOption = value;
                                         _endDateController.text = '';
                                         isEndDateValid = true;
                                       });
-                                    },
+                                    } : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -605,7 +689,7 @@ class _AddemploymentState extends State<Addemployment> {
                               ],
                             ),
                           ),
-                          SizedBox(width: 5), // Space between Yes and No
+                          SizedBox(width: 5),
                           Expanded(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -630,12 +714,12 @@ class _AddemploymentState extends State<Addemployment> {
                                         WidgetStateProperty.resolveWith<Color>(
                                       (states) => Colors.transparent,
                                     ),
-                                    onChanged: (value) {
+                                    onChanged: fieldsEnabled ? (value) {
                                       setState(() {
                                         isEndDateValid = true;
                                         _selectedOption = value;
                                       });
-                                    },
+                                    } : null,
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -652,9 +736,7 @@ class _AddemploymentState extends State<Addemployment> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -689,6 +771,7 @@ class _AddemploymentState extends State<Addemployment> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             TextField(
+                                              enabled: fieldsEnabled,
                                               controller: _startDateController,
                                               style: TextStyle(
                                                   fontSize: 14,
@@ -715,8 +798,7 @@ class _AddemploymentState extends State<Addemployment> {
                                                     borderSide: BorderSide(
                                                         color: isStartDateValid
                                                             ? Color(0xffd9d9d9)
-                                                            : Color(
-                                                                0xffBA1A1A), // Default border color
+                                                            : Color(0xffBA1A1A),
                                                         width: 1),
                                                   ),
                                                   focusedBorder:
@@ -727,8 +809,7 @@ class _AddemploymentState extends State<Addemployment> {
                                                     borderSide: BorderSide(
                                                         color: isStartDateValid
                                                             ? Color(0xff004C99)
-                                                            : Color(
-                                                                0xffBA1A1A), // Border color when focused
+                                                            : Color(0xffBA1A1A),
                                                         width: 1),
                                                   ),
                                                   contentPadding:
@@ -736,7 +817,7 @@ class _AddemploymentState extends State<Addemployment> {
                                                           vertical: 10,
                                                           horizontal: 10)),
                                               readOnly: true,
-                                              onTap: () async {
+                                              onTap: fieldsEnabled ? () async {
                                                 DateTime? pickedDate =
                                                     await showDatePicker(
                                                         context: context,
@@ -748,7 +829,6 @@ class _AddemploymentState extends State<Addemployment> {
                                                                             1)),
                                                         firstDate:
                                                             DateTime(2000),
-                                                        //lastDate: DateTime(2101),
                                                         lastDate: DateTime.now()
                                                             .subtract(Duration(
                                                                 days: 1)),
@@ -760,14 +840,13 @@ class _AddemploymentState extends State<Addemployment> {
                                                     isStartDateValid = true;
                                                     _startDateSelected = true;
                                                     startDatems = pickedDate;
-                                                    //_startDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                                                     _startDateController.text =
                                                         "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
                                                     startYear =
                                                         '${pickedDate.month}-${pickedDate.year}';
                                                   });
                                                 }
-                                              },
+                                              } : null,
                                             ),
                                           ]),
                                     ],
@@ -802,6 +881,7 @@ class _AddemploymentState extends State<Addemployment> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             TextField(
+                                              enabled: fieldsEnabled && _selectedOption == 'No',
                                               controller: _endDateController,
                                               style: TextStyle(
                                                   fontSize: 14,
@@ -849,10 +929,8 @@ class _AddemploymentState extends State<Addemployment> {
                                                 ),
                                               ),
                                               readOnly: true,
-                                              onTap: () async {
-                                                if (_selectedOption == 'No' &&
-                                                    _startDateSelected ==
-                                                        true) {
+                                              onTap: fieldsEnabled && _selectedOption == 'No' ? () async {
+                                                if (_startDateSelected == true) {
                                                   DateTime? pickedDate =
                                                       await showDatePicker(
                                                           context: context,
@@ -868,19 +946,14 @@ class _AddemploymentState extends State<Addemployment> {
                                                   if (pickedDate != null) {
                                                     setState(() {
                                                       isEndDateValid = true;
-                                                      //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                                                       _endDateController.text =
                                                           "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                                                      //_endDateController.text ="${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                                                       endYear =
                                                           '${pickedDate.month}-${pickedDate.year}';
                                                     });
                                                   }
-                                                } else if (_selectedOption ==
-                                                        'No' &&
-                                                    _startDateSelected ==
-                                                        false) {}
-                                              },
+                                                }
+                                              } : null,
                                             ),
                                           ]),
                                     ],
@@ -933,7 +1006,7 @@ class _AddemploymentState extends State<Addemployment> {
                             borderRadius: BorderRadius.circular(10)),
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: InkWell(
-                          onTap: () {
+                          onTap: fieldsEnabled ? () {
                             showMaterialModalBottomSheet(
                               backgroundColor: Color(0x00000000),
                               isDismissible: true,
@@ -957,7 +1030,7 @@ class _AddemploymentState extends State<Addemployment> {
                                           0.25,
                                       height: 5,
                                       decoration: BoxDecoration(
-                                        color: Colors.black, // Adjust color
+                                        color: Colors.black,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
@@ -995,7 +1068,7 @@ class _AddemploymentState extends State<Addemployment> {
                                 ),
                               ),
                             );
-                          },
+                          } : null,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -1007,9 +1080,7 @@ class _AddemploymentState extends State<Addemployment> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.015,
@@ -1037,7 +1108,7 @@ class _AddemploymentState extends State<Addemployment> {
                             borderRadius: BorderRadius.circular(10)),
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: InkWell(
-                          onTap: () {
+                          onTap: fieldsEnabled ? () {
                             showMaterialModalBottomSheet(
                               isDismissible: true,
                               context: context,
@@ -1120,7 +1191,7 @@ class _AddemploymentState extends State<Addemployment> {
                                 ),
                               ),
                             );
-                          },
+                          } : null,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -1132,9 +1203,7 @@ class _AddemploymentState extends State<Addemployment> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.015,
@@ -1154,6 +1223,7 @@ class _AddemploymentState extends State<Addemployment> {
                       Container(
                         width: (MediaQuery.of(context).size.width) - 20,
                         child: TextField(
+                          enabled: fieldsEnabled,
                           maxLines: 4,
                           maxLength: maxLength,
                           controller: txtDescriptionController,
@@ -1172,8 +1242,7 @@ class _AddemploymentState extends State<Addemployment> {
                                 borderSide: BorderSide(
                                     color: _isDescriptionValid
                                         ? Color(0xffd9d9d9)
-                                        : Color(
-                                            0xffBA1A1A), // Default border color
+                                        : Color(0xffBA1A1A),
                                     width: 1),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -1181,14 +1250,12 @@ class _AddemploymentState extends State<Addemployment> {
                                 borderSide: BorderSide(
                                     color: _isDescriptionValid
                                         ? Color(0xff004C99)
-                                        : Color(
-                                            0xffBA1A1A), // Border color when focused
+                                        : Color(0xffBA1A1A),
                                     width: 1),
                               ),
                               errorText: _isDescriptionValid
                                   ? null
                                   : descriptionErrorMsg,
-                              // Display error message if invalid
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10)),
                           inputFormatters: [
@@ -1196,22 +1263,19 @@ class _AddemploymentState extends State<Addemployment> {
                                 RegExp(r'[a-zA-Z0-9\s]')),
                           ],
                           onChanged: (value) {
-                            // Validate the email here and update _isEmailValid
                             setState(() {
                               _isDescriptionValid = true;
                             });
                           },
                         ),
                       ),
-                      SizedBox(
-                        height: 25,
-                      ),
+                      SizedBox(height: 25),
                       Container(
                         width: double.infinity,
                         padding:
                             EdgeInsets.symmetric(horizontal: 0, vertical: 20),
                         child: InkWell(
-                          onTap: () {
+                          onTap: fieldsEnabled ? () {
                             if ((_selectedOption == 'No' &&
                                     _endDateController.text.isEmpty) ||
                                 txtDesignationController.text.isEmpty ||
@@ -1271,7 +1335,7 @@ class _AddemploymentState extends State<Addemployment> {
                                 updateEmployment();
                               }
                             }
-                          },
+                          } : null,
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: 44,
@@ -1291,24 +1355,20 @@ class _AddemploymentState extends State<Addemployment> {
                                         curve: Curves.linear,
                                         builder: (context, value, child) {
                                           return Transform.rotate(
-                                            angle: value *
-                                                2 *
-                                                3.1416, // Full rotation effect
+                                            angle: value * 2 * 3.1416,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 4,
-                                              value: 0.20, // 1/5 of the circle
+                                              value: 0.20,
                                               backgroundColor:
                                                   const Color.fromARGB(142, 234,
-                                                      232, 232), // Grey stroke
+                                                      232, 232),
                                               valueColor: AlwaysStoppedAnimation<
                                                       Color>(
-                                                  Colors
-                                                      .white), // White rotating stroke
+                                                  Colors.white),
                                             ),
                                           );
                                         },
-                                        onEnd: () =>
-                                            {}, // Ensures smooth infinite animation
+                                        onEnd: () => {},
                                       ),
                                     )
                                   : Text(
@@ -1332,7 +1392,6 @@ class _AddemploymentState extends State<Addemployment> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchProfileFromPref();
 

@@ -907,62 +907,61 @@ class _PersonalDetailsState extends State<PersonalDetails>
     );
   }
 
-  Widget _buildUploadedResume() {
-    return InkWell(
-      onTap: () => _showResumeOptions(),
-      child: Container(
-        padding: EdgeInsets.zero,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: const Color(0xafFAFCFF),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+ Widget _buildUploadedResume() {
+  return Container(
+    padding: EdgeInsets.zero,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12),
+      color: const Color(0xafFAFCFF),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
           children: [
-            Row(
+            Image.asset(
+              'assets/images/curriculum.png',
+              width: 55,
+              height: 55,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  'assets/images/curriculum.png',
-                  width: 55,
-                  height: 55,
+                Text(
+                  candidateProfileModel.fileName ?? '',
+                  style: const TextStyle(
+                    color: Color(0xff004C99),
+                    fontSize: 14,
+                    fontFamily: 'NunitoSans',
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      candidateProfileModel.fileName ?? '',
-                      style: const TextStyle(
-                        color: Color(0xff004C99),
-                        fontSize: 14,
-                        fontFamily: 'NunitoSans',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'Last upload ${_formatResumeDate(candidateProfileModel.lastResumeUpdatedDate)}',
-                      style: const TextStyle(
-                        color: Color(0xff545454),
-                        fontSize: 12,
-                        fontFamily: 'NunitoSans',
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'Last upload ${_formatResumeDate(candidateProfileModel.lastResumeUpdatedDate)}',
+                  style: const TextStyle(
+                    color: Color(0xff545454),
+                    fontSize: 12,
+                    fontFamily: 'NunitoSans',
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                right: MediaQuery.of(context).size.width * 0.02,
-              ),
-              child: SvgPicture.asset('assets/icon/moreDot.svg'),
-            ),
           ],
         ),
-      ),
-    );
-  }
-
+        Padding(
+          padding: EdgeInsets.only(
+            right: MediaQuery.of(context).size.width * 0.02,
+          ),
+          child: GestureDetector(
+            onTap: () => _showResumeOptions(),
+            child: SvgPicture.asset('assets/icon/moreDot.svg'),
+          ),
+        ),
+      ],
+    ),
+  );
+}
   void _showResumeOptions() {
     showModalBottomSheet(
       backgroundColor: Color(0x00000000),
@@ -1072,161 +1071,162 @@ class _PersonalDetailsState extends State<PersonalDetails>
         final item = workList[index];
         return Column(
           children: [
-            InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                  backgroundColor: const Color(0x00000000),
-                  context: context,
-                  builder: (context) => Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.03,
-                      horizontal: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Color(0xffFCFCFC),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25),
-                      ),
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        ListTile(
-                          leading:
-                              SvgPicture.asset('assets/images/tabler_edit.svg'),
-                          title: const Text('Edit'),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    Addemployment(emplomentData: item),
-                              ),
-                            );
-                            _initializeData();
-                          },
-                        ),
-                        ListTile(
-                          leading:
-                              const Icon(Icons.delete, color: Colors.black),
-                          title: const Text('Delete'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            _showDeleteConfirmationDialog(
-                                'employment', item['id'].toString());
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 30,
-                        height: MediaQuery.of(context).size.width - 360,
-                        child: Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-                            if (index != workList.length - 1)
-                              Positioned(
-                                top: 15,
-                                child: Container(
-                                  height: MediaQuery.of(context).size.width,
-                                  width: 2,
-                                  color: const Color(0xff004C99),
-                                ),
-                              ),
-                            Container(
-                              width: 17,
-                              height: 17,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xff004C99),
-                                  width: 2.5,
-                                ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      height: MediaQuery.of(context).size.width - 360,
+                      child: Stack(
+                        alignment: Alignment.topCenter,
+                        children: [
+                          if (index != workList.length - 1)
+                            Positioned(
+                              top: 15,
+                              child: Container(
+                                height: MediaQuery.of(context).size.width,
+                                width: 2,
+                                color: const Color(0xff004C99),
                               ),
                             ),
+                          Container(
+                            width: 17,
+                            height: 17,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xff004C99),
+                                width: 2.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                    Transform.translate(
+                      offset:
+                          Offset(0, -MediaQuery.of(context).size.width * 0.015),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item['jobTitle'] ?? '',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Color(0xff333333),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              item['companyName'] ?? '',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              softWrap: true,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: Color(0xff333333),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '${_formatToMonthYear(item['employedFrom'])} - ${item['employedTo'] == '1970-01-01' ? 'Present' : _formatToMonthYear(item['employedTo'])}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                fontFamily: 'lato',
+                                color: Color(0xff7D7C7C),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                      Transform.translate(
-                        offset: Offset(
-                            0, -MediaQuery.of(context).size.width * 0.015),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.02,
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        backgroundColor: const Color(0x00000000),
+                        context: context,
+                        builder: (context) => Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.height * 0.03,
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.03,
                           ),
+                          decoration: const BoxDecoration(
+                            color: Color(0xffFCFCFC),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              topRight: Radius.circular(25),
+                            ),
+                          ),
+                          width: MediaQuery.of(context).size.width,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                item['jobTitle'] ?? '',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: true,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                  color: Color(0xff333333),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                              Text(
-                                item['companyName'] ?? '',
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                softWrap: true,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: Color(0xff333333),
-                                ),
+                              ListTile(
+                                leading: SvgPicture.asset(
+                                    'assets/images/tabler_edit.svg'),
+                                title: const Text('Edit'),
+                                onTap: () async {
+                                  Navigator.pop(context);
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Addemployment(emplomentData: item),
+                                    ),
+                                  );
+                                  _initializeData();
+                                },
                               ),
-                              const SizedBox(height: 10),
-                              Text(
-                                '${_formatToMonthYear(item['employedFrom'])} - ${item['employedTo'] == '1970-01-01' ? 'Present' : _formatToMonthYear(item['employedTo'])}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  fontFamily: 'lato',
-                                  color: Color(0xff7D7C7C),
-                                ),
+                              ListTile(
+                                leading: const Icon(Icons.delete,
+                                    color: Colors.black),
+                                title: const Text('Delete'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  _showDeleteConfirmationDialog(
+                                      'employment', item['id'].toString());
+                                },
                               ),
-                              const SizedBox(height: 10),
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width * 0.02,
-                    ),
+                      );
+                    },
                     child: SvgPicture.asset('assets/icon/moreDot.svg'),
-                  )
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -1261,169 +1261,172 @@ class _PersonalDetailsState extends State<PersonalDetails>
       itemBuilder: (context, index) {
         return Column(
           children: [
-            InkWell(
-              onTap: () {
-                showMaterialModalBottomSheet(
-                  backgroundColor: const Color(0x00000000),
-                  isDismissible: true,
-                  context: context,
-                  builder: (context) => Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.03,
-                      horizontal: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Color(0xffFCFCFC),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      height: MediaQuery.of(context).size.width - 360,
+                      child: Stack(
+                        alignment: Alignment.topCenter,
+                        children: [
+                          if (index != educationList.length - 1)
+                            Positioned(
+                              top: 15,
+                              child: Container(
+                                height: MediaQuery.of(context).size.width,
+                                width: 2,
+                                color: const Color(0xff004C99),
+                              ),
+                            ),
+                          Container(
+                            width: 17,
+                            height: 17,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: const Color(0xff004C99),
+                                width: 2.5,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                    Transform.translate(
+                      offset:
+                          Offset(0, -MediaQuery.of(context).size.width * 0.022),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7,
                         ),
-                        ListTile(
-                          leading:
-                              SvgPicture.asset('assets/images/tabler_edit.svg'),
-                          title: const Text('Edit'),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Addeducation(
-                                    educationDetail: educationList[index]),
-                              ),
-                            );
-                            _initializeData();
-                          },
-                        ),
-                        ListTile(
-                          leading:
-                              const Icon(Icons.delete, color: Colors.black),
-                          title: const Text('Delete'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            _showDeleteConfirmationDialog('education',
-                                educationList[index]['id'].toString());
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 30,
-                        height: MediaQuery.of(context).size.width - 360,
-                        child: Stack(
-                          alignment: Alignment.topCenter,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            if (index != educationList.length - 1)
-                              Positioned(
-                                top: 15,
-                                child: Container(
-                                  height: MediaQuery.of(context).size.width,
-                                  width: 2,
-                                  color: const Color(0xff004C99),
-                                ),
+                            Text(
+                              educationList[index]['degree'] ?? 'Unknown',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                fontFamily: 'lato',
+                                color: Color(0xff333333),
                               ),
-                            Container(
-                              width: 17,
-                              height: 17,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: const Color(0xff004C99),
-                                  width: 2.5,
-                                ),
+                            ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.01),
+                            Text(
+                              educationList[index]['schoolName'] ?? 'Unknown',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              softWrap: true,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'lato',
+                                fontSize: 14,
+                                color: Color(0xff333333),
+                              ),
+                            ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.01),
+                            Text(
+                              '${_formatToMonthYear(educationList[index]['graduatedFrom'])} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : _formatToMonthYear(educationList[index]['graduatedTo'])}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                fontFamily: 'lato',
+                                color: Color(0xff7D7C7C),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                      Transform.translate(
-                        offset: Offset(
-                            0, -MediaQuery.of(context).size.width * 0.022),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.02,
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      showMaterialModalBottomSheet(
+                        backgroundColor: const Color(0x00000000),
+                        isDismissible: true,
+                        context: context,
+                        builder: (context) => Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.height * 0.03,
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.03,
                           ),
+                          decoration: const BoxDecoration(
+                            color: Color(0xffFCFCFC),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              topRight: Radius.circular(25),
+                            ),
+                          ),
+                          width: MediaQuery.of(context).size.width,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                educationList[index]['specialization'] ??
-                                    'Unknown',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: true,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                  fontFamily: 'lato',
-                                  color: Color(0xff333333),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
-                              Text(
-                                educationList[index]['schoolName'] ?? 'Unknown',
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                softWrap: true,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'lato',
-                                  fontSize: 14,
-                                  color: Color(0xff333333),
-                                ),
+                              ListTile(
+                                leading: SvgPicture.asset(
+                                    'assets/images/tabler_edit.svg'),
+                                title: const Text('Edit'),
+                                onTap: () async {
+                                  Navigator.pop(context);
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Addeducation(
+                                          educationDetail:
+                                              educationList[index]),
+                                    ),
+                                  );
+                                  _initializeData();
+                                },
                               ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
-                              Text(
-                                '${_formatToMonthYear(educationList[index]['graduatedFrom'])} - ${educationList[index]['graduatedTo'] == '1970-01-01' ? 'Present' : _formatToMonthYear(educationList[index]['graduatedTo'])}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  fontFamily: 'lato',
-                                  color: Color(0xff7D7C7C),
-                                ),
+                              ListTile(
+                                leading: const Icon(Icons.delete,
+                                    color: Colors.black),
+                                title: const Text('Delete'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  _showDeleteConfirmationDialog(
+                                    'education',
+                                    educationList[index]['id'].toString(),
+                                  );
+                                },
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width * 0.02,
-                    ),
+                      );
+                    },
                     child: SvgPicture.asset('assets/icon/moreDot.svg'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         );
@@ -1562,6 +1565,35 @@ class _PersonalDetailsState extends State<PersonalDetails>
                                     ),
                                   ),
                                 ),
+                                // Positioned(
+                                //   top: 30,
+                                //   left: 10,
+                                //   child: Row(
+                                //     children: [
+                                //       IconButton(
+                                //         icon: const Icon(
+                                //             Icons.arrow_back_ios_new,
+                                //             color: Colors.white),
+                                //         onPressed: () => Navigator.pop(context),
+                                //       ),
+                                //       InkWell(
+                                //         onTap: () => Navigator.pop(context),
+                                //         child: Container(
+                                //           height: 40,
+                                //           alignment: Alignment.center,
+                                //           child: const Text(
+                                //             'Back',
+                                //             style: TextStyle(
+                                //               fontFamily: 'Lato',
+                                //               fontSize: 16,
+                                //               color: Colors.white,
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                                 Positioned(
                                   top: MediaQuery.of(context).size.height *
                                       0.007,
@@ -1690,7 +1722,6 @@ class _PersonalDetailsState extends State<PersonalDetails>
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             color: Color(0xff333333),
-                                            fontFamily: 'Lato',
                                             fontSize: 20,
                                           ),
                                           maxLines: 1,
@@ -1878,7 +1909,7 @@ class _PersonalDetailsState extends State<PersonalDetails>
                                 'Work Experience',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.bold,
                                   color: Color(0xff333333),
                                 ),
                               ),
@@ -1934,7 +1965,7 @@ class _PersonalDetailsState extends State<PersonalDetails>
                                 'Educational Details',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.bold,
                                   color: Color(0xff333333),
                                 ),
                               ),
@@ -1994,7 +2025,7 @@ class _PersonalDetailsState extends State<PersonalDetails>
                                 'Skills',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.bold,
                                   color: Color(0xff333333),
                                 ),
                               ),

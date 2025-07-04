@@ -889,7 +889,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 inputFormatters: [
-                                   LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(30),
                                   FilteringTextInputFormatter.allow(RegExp(
                                       r'[a-zA-Z\s]')), // Allow only letters and spaces
                                 ],
@@ -1022,38 +1022,56 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                               controller: emailController,
                               cursorColor: Color(0xff004C99),
                               style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff333333)),
+                                fontSize: 14,
+                                fontFamily: 'Lato',
+                                color: Color(0xff333333),
+                              ),
+                              inputFormatters: [
+                                // Deny space at the beginning
+                                FilteringTextInputFormatter.deny(RegExp(r'^ ')),
+
+                                // Prevent multiple spaces between words
+                                TextInputFormatter.withFunction(
+                                    (oldValue, newValue) {
+                                  final newText = newValue.text;
+
+                                  // Prevent more than one space consecutively
+                                  if (newText.contains(RegExp(r' {2,}'))) {
+                                    return oldValue;
+                                  }
+
+                                  return newValue;
+                                }),
+                              ],
                               decoration: InputDecoration(
-                                  hintText: 'Enter your email address',
-                                  hintStyle:
-                                      TextStyle(color: Color(0xff545454)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isEmailValid
-                                            ? Color(0xffd9d9d9)
-                                            : Color(
-                                                0xffBA1A1A), // Default border color
-                                        width: 1),
+                                hintText: 'Enter your email address',
+                                hintStyle: TextStyle(color: Color(0xff545454)),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                    color: _isEmailValid
+                                        ? Color(0xffd9d9d9)
+                                        : Color(0xffBA1A1A),
+                                    width: 1,
                                   ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                        color: _isEmailValid
-                                            ? Color(0xff004C99)
-                                            : Color(
-                                                0xffBA1A1A), // Border color when focused
-                                        width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                    color: _isEmailValid
+                                        ? Color(0xff004C99)
+                                        : Color(0xffBA1A1A),
+                                    width: 1,
                                   ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10)),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                              ),
                               keyboardType: TextInputType.emailAddress,
                               onChanged: (value) {
-                                // Validate the email here and update _isEmailValid
                                 setState(() {
                                   _isEmailValid = true;
                                 });
@@ -1076,6 +1094,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                           ],
                         ),
                       ),
+
                       Padding(
                         padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.015,
