@@ -27,12 +27,14 @@ class Addeducation extends StatefulWidget {
 
 class _AddeducationState extends State<Addeducation> {
   bool isEdit = false;
-  bool fieldsEnabled = true;
 
   DateTime startDatems = DateTime.now();
 
   ReferralData? referralData;
   UserData? retrievedUserData;
+
+  String? graduatedFrom;
+  String? graduatedTo;
 
   String? _selectedOption = 'No';
   String startYear = '', endYear = '';
@@ -67,20 +69,27 @@ class _AddeducationState extends State<Addeducation> {
   bool isLoading = false;
 
   DateTime parseDate(String dateString) {
+    // Split the date string into its components
     List<String> parts = dateString.split('-');
 
+    // Check if the format is valid
     if (parts.length != 3) {
       throw FormatException('Invalid date format. Use YY-MM-DD.');
     }
 
+    // Parse the year, month, and day
     int year = int.parse(parts[0]);
     int month = int.parse(parts[1]);
     int day = int.parse(parts[2]);
 
+    // If the year is in 2 digits, adjust it to a 4-digit year
     if (year < 100) {
-      year += (year < 70) ? 2000 : 1900;
+      year += (year < 70)
+          ? 2000
+          : 1900; // Assuming 00-69 is 21st century and 70-99 is 20th century
     }
 
+    // Return the DateTime object
     return DateTime(year, month, day);
   }
 
@@ -89,6 +98,12 @@ class _AddeducationState extends State<Addeducation> {
         AppConstants.ADD_UPDATE_EDUCATION +
         retrievedUserData!.profileId.toString() +
         '/education');
+
+    String finalGraduatedFrom =
+        graduatedFrom ?? widget.educationDetail?['graduatedFrom'] ?? '';
+    String finalGraduatedTo = _selectedOption == 'No'
+        ? (graduatedTo ?? widget.educationDetail?['graduatedTo'] ?? '')
+        : '1970-01-01';
 
     final bodyParams = isEdit
         ? {
@@ -103,10 +118,8 @@ class _AddeducationState extends State<Addeducation> {
                 "countryId": "IN",
                 "percentage": 78,
                 "specialization": txtSpecializationController.text,
-                "graduatedFrom": _startDateController.text,
-                "graduatedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01'
+                "graduatedFrom": finalGraduatedFrom,
+                "graduatedTo": finalGraduatedTo
               }
             ]
           }
@@ -121,10 +134,8 @@ class _AddeducationState extends State<Addeducation> {
                 "countryId": "IN",
                 "percentage": 78,
                 "specialization": txtSpecializationController.text,
-                "graduatedFrom": _startDateController.text,
-                "graduatedTo": _selectedOption == 'No'
-                    ? _endDateController.text
-                    : '1970-01-01'
+                "graduatedFrom": finalGraduatedFrom,
+                "graduatedTo": finalGraduatedTo
               }
             ]
           };
@@ -165,6 +176,10 @@ class _AddeducationState extends State<Addeducation> {
         fetchCandidateProfileData(
             retrievedUserData!.profileId, retrievedUserData!.token);
       }
+
+      /*setState(() {
+        isLoading = false;
+      });*/
     } catch (e) {
       setState(() {
         if (kDebugMode) {
@@ -339,6 +354,109 @@ class _AddeducationState extends State<Addeducation> {
     }
   }
 
+  void showDiscardConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          insetPadding: EdgeInsets.zero,
+          child: Container(
+            width: MediaQuery.of(context).size.width - 35,
+            padding: EdgeInsets.fromLTRB(22, 15, 22, 22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Discard changes?',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Are you sure you want to discard all changes?',
+                  style: TextStyle(
+                      height: 1.4,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'lato',
+                      color: Color(0xff333333)),
+                ),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: 50,
+                              margin: EdgeInsets.only(right: 15),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      width: 1, color: AppColors.primaryColor),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      color: AppColors.primaryColor,
+                                      fontFamily: 'lato'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                  child: Text(
+                                    'Discard',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'lato'),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -365,22 +483,14 @@ class _AddeducationState extends State<Addeducation> {
                           Icons.arrow_back_ios_new,
                           color: Colors.white,
                         ),
-                        onPressed: fieldsEnabled ? () {
-                          if (hasChanges()) {
-                            showDiscardConfirmationDialog(context);
-                          } else {
-                            Navigator.pop(context);
-                          }
-                        } : null,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
                       InkWell(
-                          onTap: fieldsEnabled ? () {
-                            if (hasChanges()) {
-                              showDiscardConfirmationDialog(context);
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          } : null,
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                           child: Container(
                               height: 50,
                               child: Center(
@@ -490,6 +600,7 @@ class _AddeducationState extends State<Addeducation> {
                                 onChanged: (value) {
                                   setState(() {
                                     isQualificationValid = true;
+                                    _hasChanges = true;
                                   });
                                 },
                               ),
@@ -582,6 +693,7 @@ class _AddeducationState extends State<Addeducation> {
                                 onChanged: (value) {
                                   setState(() {
                                     isSpecializationValid = true;
+                                    _hasChanges = true;
                                   });
                                 },
                               ),
@@ -674,6 +786,7 @@ class _AddeducationState extends State<Addeducation> {
                                 onChanged: (value) {
                                   setState(() {
                                     isInstituteValid = true;
+                                    _hasChanges = true;
                                   });
                                 },
                               ),
@@ -733,6 +846,7 @@ class _AddeducationState extends State<Addeducation> {
                                         _selectedOption = value;
                                         _endDateController.text = '';
                                         isEndDateValid = true;
+                                        _hasChanges = true;
                                       });
                                     } : null,
                                   ),
@@ -778,6 +892,7 @@ class _AddeducationState extends State<Addeducation> {
                                       setState(() {
                                         isEndDateValid = true;
                                         _selectedOption = value;
+                                        _hasChanges = true;
                                       });
                                     } : null,
                                   ),
@@ -887,10 +1002,18 @@ class _AddeducationState extends State<Addeducation> {
                                               startDatems = pickedDate;
                                               isStartDateValid = true;
                                               _startDateSelected = true;
+
+                                              // For UI (DD-MM-YYYY)
                                               _startDateController.text =
-                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                                                  "${_twoDigit(pickedDate.day)}-${_twoDigit(pickedDate.month)}-${pickedDate.year}";
+
+                                              // For backend (YYYY-MM-DD)
+                                              graduatedFrom =
+                                                  "${pickedDate.year}-${_twoDigit(pickedDate.month)}-${_twoDigit(pickedDate.day)}";
+
                                               startYear =
                                                   pickedDate.year.toString();
+                                              _hasChanges = true;
                                             });
                                           }
                                         } : null,
@@ -969,6 +1092,7 @@ class _AddeducationState extends State<Addeducation> {
                                         onChanged: (text) {
                                           setState(() {
                                             isEndDateValid = text.isNotEmpty;
+                                            _hasChanges = true;
                                           });
                                         },
                                         onTap: fieldsEnabled && _selectedOption == 'No' ? () async {
@@ -983,11 +1107,12 @@ class _AddeducationState extends State<Addeducation> {
                                           );
                                           if (pickedDate != null) {
                                             setState(() {
-                                              isEndDateValid = true;
+                                              isEndDateValid =
+                                                  true; // Mark date as valid
                                               _endDateController.text =
-                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                                                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}"; // Update field
                                               endYear = pickedDate.year
-                                                  .toString();
+                                                  .toString(); // Optionally store the year
                                             });
                                           }
                                         } : null,
@@ -1251,15 +1376,30 @@ class _AddeducationState extends State<Addeducation> {
         txtSpecializationController.text =
             widget.educationDetail['specialization'];
         txtInstituteController.text = widget.educationDetail['schoolName'];
-        _startDateController.text =
-            widget.educationDetail['graduatedFrom'] ?? '';
+
+        // Convert YYYY-MM-DD to DD-MM-YYYY for display
+        if (widget.educationDetail['graduatedFrom'] != null) {
+          DateTime fromDate =
+              parseDate(widget.educationDetail['graduatedFrom']);
+          _startDateController.text =
+              "${_twoDigit(fromDate.day)}-${_twoDigit(fromDate.month)}-${fromDate.year}";
+          graduatedFrom = widget.educationDetail['graduatedFrom'];
+          startYear = fromDate.year.toString();
+        }
+
         _selectedOption = widget.educationDetail['graduatedTo'] == '1970-01-01'
             ? 'Yes'
             : 'No';
-        _endDateController.text =
-            widget.educationDetail['graduatedTo'] == '1970-01-01'
-                ? ''
-                : widget.educationDetail['graduatedTo'] ?? '';
+
+        if (widget.educationDetail['graduatedTo'] != null &&
+            widget.educationDetail['graduatedTo'] != '1970-01-01') {
+          DateTime toDate = parseDate(widget.educationDetail['graduatedTo']);
+          _endDateController.text =
+              "${_twoDigit(toDate.day)}-${_twoDigit(toDate.month)}-${toDate.year}";
+          graduatedTo = widget.educationDetail['graduatedTo'];
+          endYear = toDate.year.toString();
+        }
+
         isStartDateValid = true;
         isEndDateValid = true;
         _startDateSelected = true;
