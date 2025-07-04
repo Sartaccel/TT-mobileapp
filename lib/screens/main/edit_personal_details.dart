@@ -398,7 +398,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // Use Bearer if backend requires it
+          'Authorization': 'Bearer $token',
         },
       );
 
@@ -409,39 +409,46 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         final resObj = jsonDecode(response.body);
 
         if (resObj['message']?.toLowerCase().contains('success') ?? false) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Color(0xff2D2D2D),
-              elevation: 10,
-              margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              content: Row(
-                children: [
-                  SvgPicture.asset('assets/icon/success.svg'),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Personal details updated!',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () =>
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar(),
-                    child: Icon(Icons.close_rounded, color: Colors.white),
-                  )
-                ],
-              ),
-              duration: Duration(seconds: 3),
-            ),
-          );
           if (resObj['data'] != null) {
             final Map<String, dynamic> data = resObj['data'];
             final candidateData = CandidateProfileModel.fromJson(data);
+
+            // Save and update UI
             await saveCandidateProfileData(candidateData);
+
+            setState(() {
+              candidateProfileModel = candidateData; // ✅ This updates the UI
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Color(0xff2D2D2D),
+                elevation: 10,
+                margin: EdgeInsets.only(bottom: 30, left: 15, right: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                content: Row(
+                  children: [
+                    SvgPicture.asset('assets/icon/success.svg'),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Personal details updated!',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () =>
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                      child: Icon(Icons.close_rounded, color: Colors.white),
+                    )
+                  ],
+                ),
+                duration: Duration(seconds: 3),
+              ),
+            );
           } else {
             print("⚠️ 'data' field is missing in the response.");
           }
@@ -1185,9 +1192,10 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           child: Text(
             'Email',
             style: TextStyle(
-                fontSize: 13,
-                fontFamily: 'Lato',
-                color: _isEmailValid ? Color(0xff000000) : Color(0xffBA1A1A)),
+              fontSize: 13,
+              fontFamily: 'Lato',
+              color: _isEmailValid ? Color(0xff000000) : Color(0xffBA1A1A),
+            ),
           ),
         ),
         SizedBox(height: 7),
@@ -1240,7 +1248,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
             ),
             SizedBox(width: 10),
             InkWell(
-              onTap: () {
+              onTap: () async {
                 if (emailController.text.trim().isEmpty) {
                   setState(() {
                     _isEmailValid = false;
@@ -1250,32 +1258,31 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 }
 
                 if (candidateProfileModel?.isEmailVerified != 1) {
-                  _showVerificationDialog('email', () async {
-                    await Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            SendVerificationCode(
-                          type: "email",
-                          mobile: candidateProfileModel?.mobile,
-                          email: candidateProfileModel?.email,
-                        ),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
+                  final result = await Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          SendVerificationCode(
+                        type: "email",
+                        mobile: candidateProfileModel?.mobile,
+                        email: candidateProfileModel?.email,
                       ),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+
+                  if (result == 'verified' && retrievedUserData != null) {
+                    await fetchCandidateProfileData(
+                      retrievedUserData!.profileId,
+                      retrievedUserData!.token,
                     );
-                    if (retrievedUserData != null) {
-                      fetchCandidateProfileData(
-                        retrievedUserData!.profileId,
-                        retrievedUserData!.token,
-                      );
-                    }
-                  });
+                  }
                 }
               },
               child: Text(
                 candidateProfileModel?.isEmailVerified == 1
-                    ? 'Verified'
+                    ? 'Verified in Email'
                     : 'Verify',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
@@ -1313,7 +1320,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         String cleanedMobile =
             candidateProfileModel!.mobile!.replaceAll(RegExp(r'[^\d+]'), '');
         return cleanedMobile.startsWith('+91') && cleanedMobile.length == 13
-            ? cleanedMobile.substring(3) // only number without +91
+            ? cleanedMobile.substring(3)
             : cleanedMobile;
       }
       return '';
@@ -1342,7 +1349,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
         SizedBox(height: 7),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               height: 49,
@@ -1359,27 +1365,15 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               child: DropdownButton<String>(
                 value: _selectedCountryCode,
                 underline: SizedBox(),
-                icon: SvgPicture.asset(
-                  'assets/icon/ArrowDown.svg',
-                  height: 10,
-                  width: 10,
-                ),
+                icon: SvgPicture.asset('assets/icon/ArrowDown.svg',
+                    height: 10, width: 10),
                 style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Lato',
-                  color: const Color(0xFF333333),
-                ),
-                items: countryOptions.map((countryCode) {
+                    fontSize: 14, fontFamily: 'Lato', color: Color(0xFF333333)),
+                items: countryOptions.map((code) {
                   return DropdownMenuItem<String>(
-                    value: countryCode,
-                    child: Text(
-                      countryCode,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Lato',
-                        color: Color(0xFF333333),
-                      ),
-                    ),
+                    value: code,
+                    child: Text(code,
+                        style: TextStyle(fontSize: 14, fontFamily: 'Lato')),
                   );
                 }).toList(),
                 onChanged: (val) {
@@ -1397,10 +1391,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 controller: mobileController,
                 cursorColor: Color(0xff004C99),
                 style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Lato',
-                  color: Color(0xff333333),
-                ),
+                    fontSize: 14, fontFamily: 'Lato', color: Color(0xff333333)),
                 decoration: InputDecoration(
                   counterText: '',
                   hintText: 'Enter mobile number',
@@ -1432,9 +1423,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                       EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 ),
                 keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-                ],
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (value) {
                   setState(() {
                     _isMobileNumberValid = true;
@@ -1448,7 +1437,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               height: 50,
               child: Center(
                 child: InkWell(
-                  onTap: () {
+                  onTap: () async {
                     if (mobileController.text.trim().isEmpty) {
                       setState(() {
                         _isMobileNumberValid = false;
@@ -1460,40 +1449,39 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     if (mobileController.text.length != validLength) {
                       setState(() {
                         _isMobileNumberValid = false;
-                        mobileErrorMsg =
-                            'Enter a valid $validLength digits mobile number';
+                        mobileErrorMessage =
+                            'Enter a valid $validLength digit mobile number';
                       });
                       return;
                     }
 
                     if (candidateProfileModel?.isPhoneVerified != 1) {
-                      _showVerificationDialog('phone', () async {
-                        await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    SendVerificationCode(
-                              type: "phone",
-                              mobile: candidateProfileModel?.mobile,
-                              email: candidateProfileModel?.email,
-                            ),
-                            transitionDuration: Duration.zero,
-                            reverseTransitionDuration: Duration.zero,
+                      final result = await Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  SendVerificationCode(
+                            type: "phone",
+                            mobile: candidateProfileModel?.mobile,
+                            email: candidateProfileModel?.email,
                           ),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+
+                      if (result == 'verified' && retrievedUserData != null) {
+                        await fetchCandidateProfileData(
+                          retrievedUserData!.profileId,
+                          retrievedUserData!.token,
                         );
-                        if (retrievedUserData != null) {
-                          fetchCandidateProfileData(
-                            retrievedUserData!.profileId,
-                            retrievedUserData!.token,
-                          );
-                        }
-                      });
+                      }
                     }
                   },
                   child: Text(
                     candidateProfileModel?.isPhoneVerified == 1
-                        ? 'Verified'
+                        ? 'Verified in Mobile Number'
                         : 'Verify',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -1510,12 +1498,9 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           Padding(
             padding: EdgeInsets.only(top: 4),
             child: Text(
-              mobileErrorMsg,
+              mobileErrorMessage,
               style: TextStyle(
-                fontSize: 12,
-                color: Color(0xffBA1A1A),
-                fontFamily: 'Lato',
-              ),
+                  fontSize: 12, color: Color(0xffBA1A1A), fontFamily: 'Lato'),
             ),
           ),
         SizedBox(height: _isMobileNumberValid ? 20 : 7),
