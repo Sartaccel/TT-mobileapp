@@ -339,7 +339,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
     if (connectivityResult == ConnectivityResult.none) {
       IconSnackBar.show(
         context,
-        label: 'No internet connection',
+        label: 'No internet connection, try again',
         snackBarType: SnackBarType.alert,
       );
       return;
@@ -463,7 +463,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
     } else if (!validateEmail(emailController.text)) {
       setState(() {
         _isEmailValid = false;
-        emailErrorMsg = 'Enter a valid email address';
+        emailErrorMsg = 'Enter a valid Email Id';
       });
       isValid = false;
     } else {
@@ -581,7 +581,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
       if (connectivityResult == ConnectivityResult.none) {
         IconSnackBar.show(
           context,
-          label: 'No internet connection',
+          label: 'No internet connection, try again',
           snackBarType: SnackBarType.alert,
           backgroundColor: const Color(0xff2D2D2D),
           iconColor: Colors.white,
@@ -889,7 +889,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 inputFormatters: [
-                                   LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(30),
                                   FilteringTextInputFormatter.allow(RegExp(
                                       r'[a-zA-Z\s]')), // Allow only letters and spaces
                                 ],

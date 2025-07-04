@@ -568,40 +568,47 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             left: 0,
                             right: 0,
                             child: Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '${candidateProfileModel?.candidateName ?? 'N/A'}',
-                                    style: TextStyle(
-                                      fontFamily: 'NunitoSans',
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xff333333),
-                                      fontSize: 16,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      '${candidateProfileModel?.candidateName ?? 'N/A'}',
+                                      style: TextStyle(
+                                        fontFamily: 'NunitoSans',
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xff333333),
+                                        fontSize: 16,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.clip,
+                                      maxLines: 1,
                                     ),
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.clip,
-                                    maxLines: 1,
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
-                                        size: 17,
-                                      ),
-                                      Text(
-                                        '${candidateProfileModel?.location ?? 'Location not updated'}',
-                                        style: TextStyle(
-                                          fontFamily: 'NunitoSans',
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xff333333),
-                                          fontSize: 14,
+                                    SizedBox(height: 5),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          size: 17,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        Text(
+                                          '${candidateProfileModel?.location ?? 'Location not updated'}',
+                                          style: TextStyle(
+                                            fontFamily: 'NunitoSans',
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xff333333),
+                                            fontSize: 14,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.clip,
+                                          maxLines: 2,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
