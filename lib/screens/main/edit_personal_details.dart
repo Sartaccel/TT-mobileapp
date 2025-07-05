@@ -1225,6 +1225,24 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           children: [
             Expanded(
               child: TextField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(r'[a-zA-Z0-9.@]'),
+                  ),
+                  FilteringTextInputFormatter.deny(
+                    RegExp(r'^ '),
+                  ),
+                  TextInputFormatter.withFunction(
+                    (oldValue, newValue) {
+                      final text = newValue.text;
+                      if (text.contains('  ')) {
+                        return oldValue;
+                      }
+                      return newValue;
+                    },
+                  ),
+                ],
+                enabled: fieldsEnabled,
                 controller: emailController,
                 cursorColor: Color(0xff004C99),
                 style: TextStyle(
@@ -1466,6 +1484,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                 ),
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
+                  LengthLimitingTextInputFormatter(10),
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                 ],
                 onChanged: fieldsEnabled

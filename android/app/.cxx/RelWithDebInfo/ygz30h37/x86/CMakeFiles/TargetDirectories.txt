@@ -1,0 +1,2 @@
+D:/ENTERKEY Solution(IT)/PROJECTS/TTM_App/TT-mobileapp/android/app/.cxx/RelWithDebInfo/ygz30h37/x86/CMakeFiles/edit_cache.dir
+D:/ENTERKEY Solution(IT)/PROJECTS/TTM_App/TT-mobileapp/android/app/.cxx/RelWithDebInfo/ygz30h37/x86/CMakeFiles/rebuild_cache.dir
