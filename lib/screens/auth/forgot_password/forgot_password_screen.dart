@@ -379,26 +379,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     curve: Curves.linear,
                                     builder: (context, value, child) {
                                       return Transform.rotate(
-                                        angle: value *
-                                            2 *
-                                            3.1416, // Full rotation effect
+                                        angle: value * 2 * 3.1416,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 4,
-                                          value: 0.20, // 1/5 of the circle
+                                          value: 0.20,
                                           backgroundColor: const Color.fromARGB(
-                                              142,
-                                              234,
-                                              232,
-                                              232), // Grey stroke
-                                          valueColor: AlwaysStoppedAnimation<
-                                                  Color>(
-                                              Colors
-                                                  .white), // White rotating stroke
+                                              142, 234, 232, 232),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
                                         ),
                                       );
                                     },
-                                    onEnd: () =>
-                                        {}, // Ensures smooth infinite animation
+                                    onEnd: () => {},
                                   ),
                                 )
                               : Text(

@@ -436,6 +436,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   vertical: 10, horizontal: 10),
                             ),
                             inputFormatters: [
+                              LengthLimitingTextInputFormatter(20),
                               FilteringTextInputFormatter.allow(
                                 RegExp(r'[\p{L}\p{N}\p{P}\p{S}]',
                                     unicode: true),

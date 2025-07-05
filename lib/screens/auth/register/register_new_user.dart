@@ -945,8 +945,8 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   fontFamily: 'Lato',
                                   color: Color(0xff333333)),
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(
-                                    r'[a-zA-Z\s]')), // Allow only letters and spaces
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[a-zA-Z\s]')),
                               ],
                               decoration: InputDecoration(
                                   hintText: 'Enter your last name',
@@ -1027,21 +1027,21 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                 color: Color(0xff333333),
                               ),
                               inputFormatters: [
-                                // Deny space at the beginning
-                                FilteringTextInputFormatter.deny(RegExp(r'^ ')),
-
-                                // Prevent multiple spaces between words
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Z0-9.@]'),
+                                ),
+                                FilteringTextInputFormatter.deny(
+                                  RegExp(r'^ '),
+                                ),
                                 TextInputFormatter.withFunction(
-                                    (oldValue, newValue) {
-                                  final newText = newValue.text;
-
-                                  // Prevent more than one space consecutively
-                                  if (newText.contains(RegExp(r' {2,}'))) {
-                                    return oldValue;
-                                  }
-
-                                  return newValue;
-                                }),
+                                  (oldValue, newValue) {
+                                    final text = newValue.text;
+                                    if (text.contains('  ')) {
+                                      return oldValue;
+                                    }
+                                    return newValue;
+                                  },
+                                ),
                               ],
                               decoration: InputDecoration(
                                 hintText: 'Enter your email address',
@@ -1158,6 +1158,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 10)),
                               inputFormatters: [
+                                LengthLimitingTextInputFormatter(20),
                                 FilteringTextInputFormatter.allow(
                                   RegExp(r'[\p{L}\p{N}\p{P}\p{S}]',
                                       unicode: true),
@@ -1243,8 +1244,7 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                     borderSide: BorderSide(
                                         color: _isConfirmPasswordValid
                                             ? Color(0xffd9d9d9)
-                                            : Color(
-                                                0xffBA1A1A), // Default border color
+                                            : Color(0xffBA1A1A),
                                         width: 1),
                                   ),
                                   focusedBorder: OutlineInputBorder(
@@ -1252,13 +1252,13 @@ class _RegisterNewUserState extends State<RegisterNewUser> {
                                     borderSide: BorderSide(
                                         color: _isConfirmPasswordValid
                                             ? Color(0xff004C99)
-                                            : Color(
-                                                0xffBA1A1A), // Border color when focused
+                                            : Color(0xffBA1A1A),
                                         width: 1),
                                   ),
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 10)),
                               inputFormatters: [
+                                LengthLimitingTextInputFormatter(20),
                                 FilteringTextInputFormatter.allow(
                                   RegExp(r'[\p{L}\p{N}\p{P}\p{S}]',
                                       unicode: true),

@@ -552,7 +552,7 @@ class _JobStatusState extends State<JobStatus> {
                               Border.all(width: 0, color: Color(0xffFCFCFC)),
                           color: Color(0xffFCFCFC)),
                       width: MediaQuery.of(context).size.width,
-                      height: 200,
+                      height: 225,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -520,9 +520,9 @@ class _AddeducationState extends State<Addeducation> {
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(80),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z0-9.\-'\s]"),
+                                    RegExp(r"[a-zA-Z0-9\s.,\-&'@!#()_/]"),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),
@@ -616,9 +616,9 @@ class _AddeducationState extends State<Addeducation> {
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(100),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z\s.,\-&']"),
+                                    RegExp(r"[a-zA-Z0-9\s.,\-&'@!#()_/]"),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),
@@ -713,9 +713,9 @@ class _AddeducationState extends State<Addeducation> {
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(30),
+                                  LengthLimitingTextInputFormatter(100),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r"[a-zA-Z\s.,\-&']"),
+                                    RegExp(r"[a-zA-Z0-9\s.,\-&'@!#()_/]"),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r'^ '),

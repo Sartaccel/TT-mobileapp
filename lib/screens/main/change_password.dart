@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,6 @@ import 'package:talent_turbo_new/Utils.dart';
 import 'package:talent_turbo_new/models/login_data_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:talent_turbo_new/models/user_data_model.dart';
-
 import '../../AppColors.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -584,19 +582,19 @@ class _ChangePasswordState extends State<ChangePassword> {
             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           ),
           inputFormatters: [
-            LengthLimitingTextInputFormatter(16),
+            LengthLimitingTextInputFormatter(20),
             FilteringTextInputFormatter.allow(
               RegExp(r'[\p{L}\p{N}\p{P}\p{S}]', unicode: true),
             ),
-            FilteringTextInputFormatter.deny(RegExp(r'\s')), // Deny spaces
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
             FilteringTextInputFormatter.deny(
               RegExp(
-                r'[\u{1F600}-\u{1F64F}' 
-                r'\u{1F300}-\u{1F5FF}' 
-                r'\u{1F680}-\u{1F6FF}' 
-                r'\u{1F1E0}-\u{1F1FF}' 
-                r'\u{2600}-\u{26FF}' 
-                r'\u{2700}-\u{27BF}]', 
+                r'[\u{1F600}-\u{1F64F}'
+                r'\u{1F300}-\u{1F5FF}'
+                r'\u{1F680}-\u{1F6FF}'
+                r'\u{1F1E0}-\u{1F1FF}'
+                r'\u{2600}-\u{26FF}'
+                r'\u{2700}-\u{27BF}]',
                 unicode: true,
               ),
             ),

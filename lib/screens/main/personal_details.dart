@@ -907,61 +907,62 @@ class _PersonalDetailsState extends State<PersonalDetails>
     );
   }
 
- Widget _buildUploadedResume() {
-  return Container(
-    padding: EdgeInsets.zero,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12),
-      color: const Color(0xafFAFCFF),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Image.asset(
-              'assets/images/curriculum.png',
-              width: 55,
-              height: 55,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  candidateProfileModel.fileName ?? '',
-                  style: const TextStyle(
-                    color: Color(0xff004C99),
-                    fontSize: 14,
-                    fontFamily: 'NunitoSans',
-                    fontWeight: FontWeight.w600,
+  Widget _buildUploadedResume() {
+    return Container(
+      padding: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xafFAFCFF),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Image.asset(
+                'assets/images/curriculum.png',
+                width: 55,
+                height: 55,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    candidateProfileModel.fileName ?? '',
+                    style: const TextStyle(
+                      color: Color(0xff004C99),
+                      fontSize: 14,
+                      fontFamily: 'NunitoSans',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Text(
-                  'Last upload ${_formatResumeDate(candidateProfileModel.lastResumeUpdatedDate)}',
-                  style: const TextStyle(
-                    color: Color(0xff545454),
-                    fontSize: 12,
-                    fontFamily: 'NunitoSans',
-                    fontWeight: FontWeight.normal,
+                  Text(
+                    'Last upload ${_formatResumeDate(candidateProfileModel.lastResumeUpdatedDate)}',
+                    style: const TextStyle(
+                      color: Color(0xff545454),
+                      fontSize: 12,
+                      fontFamily: 'NunitoSans',
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * 0.02,
             ),
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            right: MediaQuery.of(context).size.width * 0.02,
+            child: GestureDetector(
+              onTap: () => _showResumeOptions(),
+              child: SvgPicture.asset('assets/icon/moreDot.svg'),
+            ),
           ),
-          child: GestureDetector(
-            onTap: () => _showResumeOptions(),
-            child: SvgPicture.asset('assets/icon/moreDot.svg'),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
+
   void _showResumeOptions() {
     showModalBottomSheet(
       backgroundColor: Color(0x00000000),

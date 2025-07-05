@@ -68,15 +68,9 @@ class _MyReferralsFragmentState extends State<MyReferralsFragment> {
           height: 60,
           color: const Color(0xff001B3E),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              const Text(
+              Text(
                 'My Referrals',
                 style: TextStyle(
                     color: Colors.white,
